@@ -7,6 +7,8 @@ interface User {
   first_name: string;
   last_name: string;
   is_staff: boolean;
+  is_premium: boolean;
+  subscription_status: string;
 }
 
 interface AuthContextType {

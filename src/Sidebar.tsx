@@ -8,7 +8,6 @@ import {
   ChevronLeft, 
   ChevronRight,
   User,
-  ExternalLink,
   Shield
 } from 'lucide-react';
 import { useAuth } from './AuthContext';
@@ -45,7 +44,7 @@ const SidebarItem: React.FC<{
 
 const Sidebar: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -97,6 +96,27 @@ const Sidebar: React.FC = () => {
             collapsed={isCollapsed}
           />
         ))}
+
+        {user?.is_staff && (
+           <a
+            href="http://localhost:8000/admin/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`
+              flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group
+              text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface mt-8
+            `}
+          >
+            <div className="group-hover:text-primary transition-colors">
+              <Shield size={20} />
+            </div>
+            {!isCollapsed && (
+              <span className="font-bold text-sm tracking-tight whitespace-nowrap overflow-hidden">
+                Admin Panel
+              </span>
+            )}
+          </a>
+        )}
       </nav>
 
       {/* Sidebar Footer */}
