@@ -8,7 +8,8 @@ import {
   ChevronLeft, 
   ChevronRight,
   User,
-  Shield
+  Shield,
+  Users as UsersIcon
 } from 'lucide-react';
 import { useAuth } from './AuthContext';
 
@@ -57,8 +58,13 @@ const Sidebar: React.FC = () => {
     { icon: <LayoutDashboard size={20} />, label: 'Dashboard', to: '/dashboard' },
     { icon: <Globe size={20} />, label: 'Websites', to: '/websites' },
     { icon: <User size={20} />, label: 'Profile', to: '/profile' },
-    { icon: <Settings size={20} />, label: 'Settings', to: '/settings' },
   ];
+
+  if (user?.is_staff) {
+      navItems.push({ icon: <UsersIcon size={20} />, label: 'Users', to: '/users' });
+  }
+
+  navItems.push({ icon: <Settings size={20} />, label: 'Settings', to: '/settings' });
 
   return (
     <aside 
@@ -112,7 +118,7 @@ const Sidebar: React.FC = () => {
             </div>
             {!isCollapsed && (
               <span className="font-bold text-sm tracking-tight whitespace-nowrap overflow-hidden">
-                Admin Panel
+                Django Admin
               </span>
             )}
           </a>

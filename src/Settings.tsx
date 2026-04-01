@@ -22,19 +22,9 @@ const Settings: React.FC = () => {
               <h2 className="text-xl font-black text-on-surface mb-6 flex items-center gap-2">
                 <Palette size={20} className="text-primary" /> Appearance
               </h2>
-              <div className="grid grid-cols-3 gap-4">
-                {['light', 'dark', 'system'].map((t) => (
-                  <button
-                    key={t}
-                    onClick={() => setTheme(t as any)}
-                    className={`p-4 rounded-2xl border-2 transition-all capitalize font-bold ${
-                      theme === t ? 'border-primary bg-primary/5 text-primary' : 'border-outline-variant hover:border-primary/50'
-                    }`}
-                  >
-                    {t}
-                  </button>
-                ))}
-              </div>
+              <p className="text-on-surface-variant font-medium">
+                  Theme controls are always available via the floating palette button on the bottom right of your screen.
+              </p>
             </section>
 
             {/* Notifications */}

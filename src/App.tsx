@@ -6,11 +6,13 @@ import Dashboard from './Dashboard';
 import Profile from './Profile';
 import Websites from './Websites';
 import Settings from './Settings';
+import Users from './Users';
+import FloatingThemeToggle from './FloatingThemeToggle';
 import { ThemeProvider } from './ThemeContext';
 import { AuthProvider, useAuth } from './AuthContext';
 
-const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+const PrivateRoute: React.FC<{ children: React.ReactNode, adminOnly?: boolean }> = ({ children, adminOnly }) => {
+  const { isAuthenticated, user, loading } = useAuth();
   
   if (loading) {
       return <div className="min-h-screen bg-surface flex items-center justify-center">
@@ -18,7 +20,15 @@ const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       </div>;
   }
   
-  return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
+  if (!isAuthenticated) return <Navigate to="/login" />;
+  if (adminOnly && !user?.is_staff) return <Navigate to="/dashboard" />;
+  
+  return (
+    <>
+      {children}
+      <FloatingThemeToggle />
+    </>
+  );
 };
 
 function App() {
@@ -59,6 +69,14 @@ function App() {
               element={
                 <PrivateRoute>
                   <Settings />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/users"
+              element={
+                <PrivateRoute adminOnly>
+                  <Users />
                 </PrivateRoute>
               }
             />
