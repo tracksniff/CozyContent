@@ -1,0 +1,33 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches:
+      - backend
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            # Pull latest backend changes
+            cd ~/cosycontent/backend/CozyContent
+            git pull origin backend
+
+            # Redeploy everything via orchestrator
+            cd ~/orchestrator
+            docker-compose down
+            docker-compose build django-api
+            docker-compose up -d
+
+            # Clean up
+            docker system prune -f
+
+            echo "Backend deployed successfully!"
