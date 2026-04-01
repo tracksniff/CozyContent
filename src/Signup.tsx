@@ -26,7 +26,7 @@ const Signup: React.FC = () => {
     setError('');
     
     try {
-      await axios.post('http://localhost:8000/api/register/', formData);
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/register/`, formData);
       navigate('/login');
     } catch (err: any) {
       const errorMsg = err.response?.data ? JSON.stringify(err.response.data) : 'Signup failed. Please try again.';

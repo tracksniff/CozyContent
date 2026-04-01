@@ -18,7 +18,7 @@ const Login: React.FC = () => {
     setIsLoading(true);
     setError('');
     try {
-      const response = await axios.post('http://localhost:8000/api/login/', { email, password });
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/login/`, { email, password });
       login(response.data.access);
       navigate('/dashboard');
     } catch (err: any) {

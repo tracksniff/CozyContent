@@ -105,7 +105,7 @@ const Sidebar: React.FC = () => {
 
         {user?.is_staff && (
            <a
-            href="http://localhost:8000/admin/"
+            href={`${import.meta.env.VITE_API_URL}/admin/`}
             target="_blank"
             rel="noopener noreferrer"
             className={`

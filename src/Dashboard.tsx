@@ -15,7 +15,7 @@ const Dashboard: React.FC = () => {
   const fetchWebsites = async () => {
     if (!token) return;
     try {
-      const response = await axios.get('http://localhost:8000/api/websites/', {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/websites/`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setWebsites(response.data);
@@ -43,7 +43,7 @@ const Dashboard: React.FC = () => {
   const handleAddWebsite = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8000/api/websites/', newWebsite, {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/websites/`, newWebsite, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setNewWebsite({ name: '', url: '' });
@@ -55,7 +55,7 @@ const Dashboard: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      await axios.delete(`http://localhost:8000/api/websites/${id}/`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/websites/${id}/`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchWebsites();

@@ -29,7 +29,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchUser = async (authToken: string) => {
     try {
-      const response = await axios.get('http://localhost:8000/api/user/', {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/user/`, {
         headers: { Authorization: `Bearer ${authToken}` }
       });
       setUser(response.data);

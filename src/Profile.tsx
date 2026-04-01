@@ -11,7 +11,7 @@ const Profile: React.FC = () => {
   const handleCheckout = async (planType: 'one_time' | 'monthly') => {
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:8000/api/create-checkout-session/', 
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/create-checkout-session/`, 
         { plan_type: planType },
         { headers: { Authorization: `Bearer ${token}` } }
       );

@@ -21,7 +21,7 @@ const Websites: React.FC = () => {
   const fetchWebsites = async () => {
     if (!token) return;
     try {
-      const response = await axios.get('http://localhost:8000/api/websites/', {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/websites/`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setWebsites(response.data);
@@ -35,7 +35,7 @@ const Websites: React.FC = () => {
   const fetchUsers = async () => {
     if (!token || !user?.is_staff) return;
     try {
-      const response = await axios.get('http://localhost:8000/api/users/', {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/users/`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUsers(response.data);
@@ -63,7 +63,7 @@ const Websites: React.FC = () => {
           payload.owner_id = parseInt(newWebsite.owner_id);
       }
       
-      await axios.post('http://localhost:8000/api/websites/', payload, {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/websites/`, payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setNewWebsite({ name: '', url: '', owner_id: '', hosting_type: 'PLATFORM' });
@@ -80,7 +80,7 @@ const Websites: React.FC = () => {
       if (!newOwnerId) return;
       
       try {
-          await axios.patch(`http://localhost:8000/api/websites/${siteId}/`, {
+          await axios.patch(`${import.meta.env.VITE_API_URL}/api/websites/${siteId}/`, {
               owner_id: parseInt(newOwnerId)
           }, {
               headers: { Authorization: `Bearer ${token}` }
@@ -95,7 +95,7 @@ const Websites: React.FC = () => {
   const handleDelete = async (id: number) => {
     if (!window.confirm('Are you sure you want to delete this website?')) return;
     try {
-      await axios.delete(`http://localhost:8000/api/websites/${id}/`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/websites/${id}/`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchWebsites();
