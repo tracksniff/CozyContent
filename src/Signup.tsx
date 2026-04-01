@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { Eye, EyeOff, ArrowLeft, ShieldCheck } from 'lucide-react';
+import { useAuth } from './AuthContext';
 
 const Signup: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +15,7 @@ const Signup: React.FC = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,13 +23,18 @@ const Signup: React.FC = () => {
       setError("Passwords don't match");
       return;
     }
-    
+
     setIsLoading(true);
     setError('');
-    
+
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/register/`, formData);
-      navigate('/login');
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/register/`, formData);
+      if (response.data.access) {
+        login(response.data.access);
+        navigate('/dashboard');
+      } else {
+        navigate('/login');
+      }
     } catch (err: any) {
       const errorMsg = err.response?.data ? JSON.stringify(err.response.data) : 'Signup failed. Please try again.';
       setError(errorMsg);
@@ -35,7 +42,6 @@ const Signup: React.FC = () => {
       setIsLoading(false);
     }
   };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };

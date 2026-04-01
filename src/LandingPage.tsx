@@ -462,9 +462,15 @@ const LandingPage = () => {
               className="relative group"
             >
               <div className="absolute inset-0 bg-surface rounded-[2.5rem] border border-outline-variant/20 shadow-lg transition-all duration-500 group-hover:shadow-xl"></div>
+              
+              {/* Most Popular Badge */}
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 z-10 border border-white/20">
+                Most Popular
+              </div>
+
               <div className="relative p-10 flex flex-col h-full">
                 <div className="mb-8">
-                  <h3 className="text-xl font-bold mb-3">Option 2: Monthly Plan</h3>
+                  <h3 className="text-xl font-bold mb-3">Monthly Plan</h3>
                   <p className="text-on-surface-variant font-medium leading-relaxed text-sm">
                     Website included with hosting & maintenance.
                   </p>
@@ -478,8 +484,6 @@ const LandingPage = () => {
 
                 <div className="space-y-4 mb-10 flex-grow">
                   {[
-                    'Website included',
-                    'Hosting & SSL',
                     'Security & Backups',
                     '1 small edit/month',
                     'Performance optimization'
@@ -510,7 +514,7 @@ const LandingPage = () => {
 
               <div className="relative p-10 flex flex-col h-full">
                 <div className="mb-8">
-                  <h3 className="text-xl font-bold mb-3">Option 1: One-Time Payment</h3>
+                  <h3 className="text-xl font-bold mb-3">One-Time Payment</h3>
                   <p className="text-on-surface-variant font-medium leading-relaxed text-sm">
                     £249 for your fully built website. Delivered ready to use.
                   </p>
