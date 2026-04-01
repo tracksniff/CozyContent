@@ -293,14 +293,68 @@ const LandingPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.3 }}
-              className="flex flex-col sm:flex-row justify-center gap-5"
+              className="mt-12 max-w-lg mx-auto bg-surface-container-low p-8 rounded-[2.5rem] border border-outline-variant/30 shadow-2xl relative overflow-hidden"
             >
-              <button className="bg-primary text-white px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl hover:shadow-primary/20 hover:-translate-y-1 transition-all flex items-center justify-center gap-2">
-                View Example <ArrowRight className="w-5 h-5" />
-              </button>
-              <Link to="/signup" className="bg-on-surface text-surface px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-lg transition-all shadow-md active:scale-95 flex items-center justify-center">
-                Get My Website
-              </Link>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+              
+              <h3 className="text-xl font-black mb-6 text-on-surface">Get Your Custom Quote</h3>
+              <form 
+                className="space-y-4 relative z-10"
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  const target = e.target as any;
+                  const data = {
+                    name: target.name.value,
+                    email: target.email.value,
+                    message: target.message.value
+                  };
+                  try {
+                    const btn = target.querySelector('button');
+                    const originalText = btn.innerText;
+                    btn.innerText = 'Sending...';
+                    btn.disabled = true;
+                    
+                    await axios.post(`${import.meta.env.VITE_API_URL}/api/contact-us/`, data);
+                    alert('Message sent successfully! We will get back to you soon.');
+                    target.reset();
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                  } catch (err) {
+                    alert('Failed to send message. Please try again.');
+                    console.error(err);
+                  }
+                }}
+              >
+                <div className="grid grid-cols-2 gap-4">
+                  <input
+                    name="name"
+                    type="text"
+                    placeholder="Your Name"
+                    required
+                    className="w-full px-5 py-4 bg-surface border border-outline-variant/50 rounded-2xl focus:border-primary outline-none transition-all text-on-surface font-medium text-sm"
+                  />
+                  <input
+                    name="email"
+                    type="email"
+                    placeholder="Your Email"
+                    required
+                    className="w-full px-5 py-4 bg-surface border border-outline-variant/50 rounded-2xl focus:border-primary outline-none transition-all text-on-surface font-medium text-sm"
+                  />
+                </div>
+                <textarea
+                  name="message"
+                  placeholder="Tell us about your project..."
+                  required
+                  rows={3}
+                  className="w-full px-5 py-4 bg-surface border border-outline-variant/50 rounded-2xl focus:border-primary outline-none transition-all text-on-surface font-medium text-sm resize-none"
+                ></textarea>
+                <button
+                  type="submit"
+                  className="w-full bg-primary text-white py-4 rounded-2xl font-black text-sm hover:shadow-xl hover:shadow-primary/20 transition-all active:scale-[0.98]"
+                >
+                  Send Message & Get Started
+                </button>
+              </form>
             </motion.div>
           </div>
 

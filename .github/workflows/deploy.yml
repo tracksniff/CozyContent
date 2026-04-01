@@ -1,0 +1,33 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches:
+      - frontend
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            # Pull latest frontend changes
+            cd ~/cosycontent/frontend/CozyContent
+            git pull origin frontend
+
+            # Redeploy everything via orchestrator
+            cd ~/orchestrator
+            docker-compose down
+            docker-compose build react-app
+            docker-compose up -d
+
+            # Clean up
+            docker system prune -f
+
+            echo "✅ Frontend deployed successfully!"

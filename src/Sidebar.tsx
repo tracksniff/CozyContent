@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { 
   LayoutDashboard, 
   Globe, 
@@ -11,29 +12,32 @@ import {
   Shield,
   Users as UsersIcon,
   Menu,
-  X
+  X,
+  Edit3,
+  CheckCircle,
+  AlertCircle
 } from 'lucide-react';
 import { useAuth } from './AuthContext';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const SidebarItem: React.FC<{ 
   icon: React.ReactNode; 
   label: string; 
-  to: string; 
+  to?: string; 
   active?: boolean;
   collapsed?: boolean;
   onClick?: () => void;
 }> = ({ icon, label, to, active, collapsed, onClick }) => {
-  return (
-    <Link
-      to={to}
-      onClick={onClick}
+  const content = (
+    <div
       className={`
-        flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group
+        flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group cursor-pointer
         ${active 
           ? 'bg-primary text-white shadow-lg shadow-primary/20' 
           : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
         }
       `}
+      onClick={onClick}
     >
       <div className={`${active ? 'text-white' : 'group-hover:text-primary'} transition-colors`}>
         {icon}
@@ -43,16 +47,32 @@ const SidebarItem: React.FC<{
           {label}
         </span>
       )}
-    </Link>
+    </div>
   );
+
+  if (to) {
+    return <Link to={to}>{content}</Link>;
+  }
+  return content;
 };
 
 const Sidebar: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const { logout, user } = useAuth();
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [websites, setWebsites] = useState<any[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { logout, user, token } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    if (token && showEditModal) {
+      axios.get(`${import.meta.env.VITE_API_URL}/api/websites/`, {
+        headers: { Authorization: `Bearer ${token}` }
+      }).then(res => setWebsites(res.data));
+    }
+  }, [token, showEditModal]);
 
   const handleLogout = () => {
     logout();
@@ -72,6 +92,26 @@ const Sidebar: React.FC = () => {
   navItems.push({ icon: <Settings size={20} />, label: 'Settings', to: '/settings' });
 
   const toggleMobile = () => setIsMobileOpen(!isMobileOpen);
+
+  const handleEditRequest = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    const target = e.target as any;
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/request-edit/`, {
+        website_id: target.website.value,
+        details: target.details.value
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      alert('Edit request sent! We will process it within 24 hours.');
+      setShowEditModal(false);
+    } catch (err) {
+      alert('Failed to send request.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <>
@@ -144,6 +184,17 @@ const Sidebar: React.FC = () => {
             />
           ))}
 
+          {/* Request Edit Option */}
+          <SidebarItem
+            icon={<Edit3 size={20} />}
+            label="Request Edit"
+            collapsed={isCollapsed}
+            onClick={() => {
+              setShowEditModal(true);
+              setIsMobileOpen(false);
+            }}
+          />
+
           {user?.is_staff && (
              <a
               href={`${import.meta.env.VITE_API_URL}/admin/`}
@@ -185,6 +236,82 @@ const Sidebar: React.FC = () => {
           </button>
         </div>
       </aside>
+
+      {/* Edit Request Modal */}
+      <AnimatePresence>
+        {showEditModal && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/60 backdrop-blur-md"
+              onClick={() => setShowEditModal(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-lg bg-surface rounded-[2.5rem] border border-outline-variant shadow-2xl overflow-hidden"
+            >
+              <div className="p-8 md:p-10">
+                <div className="flex justify-between items-start mb-8">
+                  <div>
+                    <h2 className="text-3xl font-black tracking-tight text-on-surface">Request an Edit</h2>
+                    <p className="mt-2 text-on-surface-variant font-medium">What would you like us to change?</p>
+                  </div>
+                  <button 
+                    onClick={() => setShowEditModal(false)}
+                    className="p-2 hover:bg-surface-container-high rounded-full transition-colors"
+                  >
+                    <X size={24} />
+                  </button>
+                </div>
+
+                <form className="space-y-6" onSubmit={handleEditRequest}>
+                  <div>
+                    <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-3 ml-1">Select Website</label>
+                    <select
+                      name="website"
+                      required
+                      className="w-full px-5 py-4 bg-surface-container-low border border-outline-variant rounded-2xl focus:border-primary outline-none transition-all font-bold text-sm"
+                    >
+                      {websites.map(site => (
+                        <option key={site.id} value={site.id}>{site.name}</option>
+                      ))}
+                      {websites.length === 0 && <option value="">No websites available</option>}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-3 ml-1">Edit Details</label>
+                    <textarea
+                      name="details"
+                      required
+                      rows={4}
+                      placeholder="Be as specific as possible. E.g., 'Change the header color to blue' or 'Update the contact number'..."
+                      className="w-full px-5 py-4 bg-surface-container-low border border-outline-variant rounded-2xl focus:border-primary outline-none transition-all font-medium text-sm resize-none"
+                    ></textarea>
+                  </div>
+
+                  <div className="pt-2">
+                    <button
+                      disabled={isSubmitting || websites.length === 0}
+                      className="w-full py-4 bg-primary text-white font-black rounded-2xl hover:shadow-xl hover:shadow-primary/20 transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+                    >
+                      {isSubmitting ? (
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      ) : (
+                        <>Submit Edit Request <CheckCircle size={18} /></>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </>
   );
 };
