@@ -184,10 +184,10 @@ const Sidebar: React.FC = () => {
             />
           ))}
 
-          {/* Request Edit Option */}
+          {/* Request Changes Option */}
           <SidebarItem
             icon={<Edit3 size={20} />}
-            label="Request Edit"
+            label="Request Changes"
             collapsed={isCollapsed}
             onClick={() => {
               setShowEditModal(true);
@@ -257,7 +257,7 @@ const Sidebar: React.FC = () => {
               <div className="p-8 md:p-10">
                 <div className="flex justify-between items-start mb-8">
                   <div>
-                    <h2 className="text-3xl font-black tracking-tight text-on-surface">Request an Edit</h2>
+                    <h2 className="text-3xl font-black tracking-tight text-on-surface">Request Changes</h2>
                     <p className="mt-2 text-on-surface-variant font-medium">What would you like us to change?</p>
                   </div>
                   <button 

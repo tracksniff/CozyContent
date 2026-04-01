@@ -2,9 +2,12 @@ import React from 'react';
 import Sidebar from './Sidebar';
 import { Settings as SettingsIcon, Bell, Lock, Eye, Palette, HelpCircle } from 'lucide-react';
 import { useTheme } from './ThemeContext';
+import { useAuth } from './AuthContext';
+import axios from 'axios';
 
 const Settings: React.FC = () => {
   const { theme, setTheme } = useTheme();
+  const { user } = useAuth();
 
   return (
     <div className="min-h-screen bg-surface flex transition-colors duration-300">
@@ -74,10 +77,50 @@ const Settings: React.FC = () => {
                 <HelpCircle size={20} className="text-primary" /> Help & Support
               </h2>
               <div className="p-6 bg-primary/5 border border-primary/20 rounded-3xl">
-                <p className="text-on-surface-variant font-medium mb-4">Need help with your website or account?</p>
-                <button className="bg-primary text-white px-8 py-3 rounded-xl font-black text-sm hover:shadow-lg transition-all">
-                  Contact Support
-                </button>
+                <p className="text-on-surface-variant font-medium mb-6">Need help with your website or account? Send us a message.</p>
+                
+                <form 
+                  className="space-y-4"
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    const target = e.target as any;
+                    const data = {
+                      name: `${user?.first_name || ''} ${user?.last_name || ''}`.trim() || "User",
+                      email: user?.email || "noreply@cosycontent.com",
+                      message: target.message.value
+                    };
+                    try {
+                      const btn = target.querySelector('button');
+                      btn.disabled = true;
+                      btn.innerText = 'Sending...';
+                      
+                      await axios.post(`${import.meta.env.VITE_API_URL}/api/contact-us/`, data);
+                      alert('Support request sent! We will get back to you soon.');
+                      target.reset();
+                      btn.innerText = 'Send Message';
+                      btn.disabled = false;
+                    } catch (err) {
+                      alert('Failed to send message.');
+                      const btn = target.querySelector('button');
+                      btn.innerText = 'Send Message';
+                      btn.disabled = false;
+                    }
+                  }}
+                >
+                  <textarea
+                    name="message"
+                    required
+                    rows={3}
+                    placeholder="Describe your issue or question..."
+                    className="w-full px-5 py-4 bg-surface border border-outline-variant/50 rounded-2xl focus:border-primary outline-none transition-all text-on-surface font-medium text-sm resize-none"
+                  ></textarea>
+                  <button 
+                    type="submit"
+                    className="bg-primary text-white px-8 py-3 rounded-xl font-black text-sm hover:shadow-lg transition-all"
+                  >
+                    Send Message
+                  </button>
+                </form>
               </div>
             </section>
           </div>
