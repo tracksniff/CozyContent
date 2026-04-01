@@ -18,11 +18,22 @@ const Login: React.FC = () => {
     setIsLoading(true);
     setError('');
     try {
+      console.log('Attempting login to:', `${import.meta.env.VITE_API_URL}/api/login/`);
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/login/`, { email, password });
-      login(response.data.access);
-      navigate('/dashboard');
+      console.log('Login response:', response.status, response.data);
+      
+      if (response.data && response.data.access) {
+        login(response.data.access);
+        navigate('/dashboard');
+      } else {
+        setError('Login successful but no access token received.');
+        console.error('Missing access token in response:', response.data);
+      }
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Login failed. Please check your credentials.');
+      console.error('Login error:', err);
+      const detail = err.response?.data?.detail;
+      const message = detail || (err.response ? `Server error: ${err.response.status}` : 'Login failed. Network error or CORS issue.');
+      setError(message);
     } finally {
       setIsLoading(false);
     }

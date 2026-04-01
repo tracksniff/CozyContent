@@ -28,15 +28,21 @@ const Signup: React.FC = () => {
     setError('');
 
     try {
+      console.log('Attempting signup to:', `${import.meta.env.VITE_API_URL}/api/register/`);
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/register/`, formData);
-      if (response.data.access) {
+      console.log('Signup response:', response.status, response.data);
+      
+      if (response.data && response.data.access) {
         login(response.data.access);
         navigate('/dashboard');
       } else {
+        console.warn('Signup successful but no access token returned, redirecting to login.');
         navigate('/login');
       }
     } catch (err: any) {
-      const errorMsg = err.response?.data ? JSON.stringify(err.response.data) : 'Signup failed. Please try again.';
+      console.error('Signup error:', err);
+      const errorData = err.response?.data;
+      const errorMsg = errorData ? JSON.stringify(errorData) : 'Signup failed. Network error or CORS issue.';
       setError(errorMsg);
     } finally {
       setIsLoading(false);
