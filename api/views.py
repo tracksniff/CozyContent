@@ -16,6 +16,7 @@ import logging
 import os
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 
 logger = logging.getLogger(__name__)
 
