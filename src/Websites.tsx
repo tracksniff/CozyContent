@@ -113,16 +113,16 @@ const Websites: React.FC = () => {
   return (
     <div className="min-h-screen bg-surface flex transition-colors duration-300">
       <Sidebar />
-      <main className="flex-grow ml-20 lg:ml-64 p-8 lg:p-12 transition-all duration-500">
+      <main className="flex-grow lg:ml-64 p-6 md:p-8 lg:p-12 transition-all duration-500 mt-16 lg:mt-0">
         <div className="max-w-6xl mx-auto">
-          <header className="mb-12 flex justify-between items-center">
+          <header className="mb-10 lg:mb-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div>
-              <h1 className="text-4xl font-black font-headline text-on-surface tracking-tight mb-2">Websites</h1>
-              <p className="text-on-surface-variant font-medium">Manage hosted {user?.is_staff ? 'platform' : 'personal'} assets.</p>
+              <h1 className="text-3xl lg:text-4xl font-black font-headline text-on-surface tracking-tight mb-2">Websites</h1>
+              <p className="text-on-surface-variant font-medium text-sm lg:text-base">Manage hosted {user?.is_staff ? 'platform' : 'personal'} assets.</p>
             </div>
             <button 
                 onClick={() => setShowAddForm(!showAddForm)}
-                className="bg-primary text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:shadow-lg transition-all active:scale-95"
+                className="w-full md:w-auto bg-primary text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:shadow-lg transition-all active:scale-95"
             >
                 <Plus size={20} /> {showAddForm ? 'Cancel' : 'Register Website'}
             </button>

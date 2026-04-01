@@ -27,22 +27,22 @@ const Profile: React.FC = () => {
   return (
     <div className="min-h-screen bg-surface flex transition-colors duration-300">
       <Sidebar />
-      <main className="flex-grow ml-20 lg:ml-64 p-8 lg:p-12 transition-all duration-500">
+      <main className="flex-grow lg:ml-64 p-6 md:p-8 lg:p-12 transition-all duration-500 mt-16 lg:mt-0">
         <div className="max-w-4xl mx-auto">
-          <header className="mb-12">
-            <h1 className="text-4xl font-black font-headline text-on-surface tracking-tight mb-2">My Profile</h1>
-            <p className="text-on-surface-variant font-medium">Manage your personal information and subscription.</p>
+          <header className="mb-10 lg:mb-12">
+            <h1 className="text-3xl lg:text-4xl font-black font-headline text-on-surface tracking-tight mb-2">My Profile</h1>
+            <p className="text-on-surface-variant font-medium text-sm lg:text-base">Manage your personal information and subscription.</p>
           </header>
 
-          <div className="grid gap-8">
+          <div className="grid gap-6 md:gap-8">
             {/* User Info Card */}
-            <div className="bg-surface-container-low p-8 rounded-[2.5rem] border border-outline-variant shadow-sm flex items-center gap-6">
-              <div className="w-20 h-20 bg-primary/10 text-primary rounded-3xl flex items-center justify-center">
+            <div className="bg-surface-container-low p-6 md:p-8 rounded-[2.5rem] border border-outline-variant shadow-sm flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
+              <div className="w-20 h-20 bg-primary/10 text-primary rounded-3xl flex items-center justify-center shrink-0">
                 <User size={40} />
               </div>
-              <div>
-                <h2 className="text-2xl font-black text-on-surface">{user?.first_name} {user?.last_name}</h2>
-                <p className="text-on-surface-variant font-medium">{user?.email}</p>
+              <div className="overflow-hidden">
+                <h2 className="text-2xl font-black text-on-surface truncate">{user?.first_name} {user?.last_name}</h2>
+                <p className="text-on-surface-variant font-medium truncate">{user?.email}</p>
                 {user?.is_staff && (
                   <div className="mt-2 inline-flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-black uppercase tracking-widest border border-primary/20">
                     <Shield size={12} /> Staff Member

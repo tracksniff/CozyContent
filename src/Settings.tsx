@@ -9,11 +9,11 @@ const Settings: React.FC = () => {
   return (
     <div className="min-h-screen bg-surface flex transition-colors duration-300">
       <Sidebar />
-      <main className="flex-grow ml-20 lg:ml-64 p-8 lg:p-12 transition-all duration-500">
+      <main className="flex-grow lg:ml-64 p-6 md:p-8 lg:p-12 transition-all duration-500 mt-16 lg:mt-0">
         <div className="max-w-4xl mx-auto">
-          <header className="mb-12">
-            <h1 className="text-4xl font-black font-headline text-on-surface tracking-tight mb-2">Settings</h1>
-            <p className="text-on-surface-variant font-medium">Customize your experience and security preferences.</p>
+          <header className="mb-10 lg:mb-12">
+            <h1 className="text-3xl lg:text-4xl font-black font-headline text-on-surface tracking-tight mb-2">Settings</h1>
+            <p className="text-on-surface-variant font-medium text-sm lg:text-base">Customize your experience and security preferences.</p>
           </header>
 
           <div className="space-y-6">

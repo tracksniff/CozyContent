@@ -74,15 +74,15 @@ const Dashboard: React.FC = () => {
     <div className="min-h-screen bg-surface flex transition-colors duration-300">
       <Sidebar />
       
-      <main className="flex-grow ml-20 lg:ml-64 p-8 lg:p-12 transition-all duration-500">
+      <main className="flex-grow lg:ml-64 p-6 md:p-8 lg:p-12 transition-all duration-500 mt-16 lg:mt-0">
         <div className="max-w-6xl mx-auto">
           {/* Header Section */}
-          <header className="mb-12 flex justify-between items-start">
+          <header className="mb-10 lg:mb-12 flex flex-col md:flex-row justify-between items-start gap-4">
             <div>
-              <h1 className="text-4xl font-black font-headline text-on-surface tracking-tight mb-2">
+              <h1 className="text-3xl lg:text-4xl font-black font-headline text-on-surface tracking-tight mb-2">
                 {user?.is_staff ? 'Admin Dashboard' : `Welcome Back, ${user?.first_name || 'User'}`}
               </h1>
-              <p className="text-on-surface-variant font-medium">
+              <p className="text-on-surface-variant font-medium text-sm lg:text-base">
                 {user?.is_staff ? 'Manage all websites across the platform.' : 'Manage and monitor your digital ecosystem.'}
               </p>
             </div>
