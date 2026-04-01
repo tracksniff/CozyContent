@@ -74,7 +74,20 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-CORS_ALLOW_ALL_ORIGINS = True # For development, we can restrict this later
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://cosycontent.com",
+    "http://cosycontent.com",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://cosycontent.com",
+    "http://cosycontent.com",
+    "https://api.cosycontent.com",
+]
+
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'cozybackend.urls'
 
