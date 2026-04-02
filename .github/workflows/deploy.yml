@@ -23,8 +23,7 @@ jobs:
 
             # Redeploy everything via orchestrator
             cd ~/orchestrator
-            docker-compose down
-            docker-compose build react-app
+            docker-compose build cosycontent-react
             docker-compose up -d
 
             # Clean up
