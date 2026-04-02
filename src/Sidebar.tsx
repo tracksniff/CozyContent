@@ -141,14 +141,14 @@ const Sidebar: React.FC = () => {
 
       <aside 
         className={`
-          fixed left-0 top-0 h-screen bg-surface border-r border-outline-variant transition-all duration-500 z-50 flex flex-col
+          fixed left-0 top-0 h-screen h-[100dvh] bg-surface border-r border-outline-variant transition-all duration-500 z-50 flex flex-col
           ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
           ${isCollapsed ? 'lg:w-20' : 'lg:w-64'}
           w-64
         `}
       >
         {/* Sidebar Header */}
-        <div className="p-6 flex items-center justify-between mb-8">
+        <div className="p-6 flex items-center justify-between mb-4 md:mb-8 shrink-0">
           <div className={`flex items-center gap-2 overflow-hidden transition-all duration-500 ${isCollapsed ? 'lg:opacity-0' : 'opacity-100'}`}>
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shrink-0">
               <span className="text-white font-black italic">C</span>
@@ -171,7 +171,7 @@ const Sidebar: React.FC = () => {
         </div>
 
         {/* Navigation Items */}
-        <nav className="flex-grow px-4 space-y-2">
+        <nav className="flex-grow px-4 space-y-2 overflow-y-auto">
           {navItems.map((item) => (
             <SidebarItem
               key={item.to}
@@ -218,7 +218,7 @@ const Sidebar: React.FC = () => {
         </nav>
 
         {/* Sidebar Footer */}
-        <div className="p-4 space-y-2 border-t border-outline-variant/50">
+        <div className="p-4 pb-8 md:pb-4 space-y-2 border-t border-outline-variant/50 shrink-0">
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
             className="hidden lg:flex w-full items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-xl transition-all group"
