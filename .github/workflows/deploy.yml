@@ -23,8 +23,7 @@ jobs:
 
             # Redeploy everything via orchestrator
             cd ~/orchestrator
-            docker-compose down
-            docker-compose build django-api
+            docker-compose build cosycontent-django
             docker-compose up -d
 
             # Clean up
