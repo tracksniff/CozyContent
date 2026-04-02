@@ -148,38 +148,38 @@ const OurBrands = () => {
           </div>
 
 
-          <section className="mt-32 py-24 px-8 bg-primary/5 rounded-[3rem] border border-primary/10">
+          <section className="mt-20 md:mt-32 py-16 md:py-24 px-4 md:px-8 bg-primary/5 rounded-[2rem] md:rounded-[3rem] border border-primary/10">
             <div className="max-w-4xl mx-auto text-center">
-              <h2 className="text-4xl font-black mb-12 tracking-tight">Built with Purpose</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+              <h2 className="text-3xl md:text-4xl font-black mb-8 md:mb-12 tracking-tight">Built with Purpose</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 text-left">
                 {[
                   { title: 'Simplicity over complexity', icon: <Layout className="w-5 h-5" /> },
                   { title: 'Speed over unnecessary features', icon: <Zap className="w-5 h-5" /> },
                   { title: 'Design that serves function', icon: <Target className="w-5 h-5" /> },
                   { title: 'Scalable from day one', icon: <Cpu className="w-5 h-5" /> }
                 ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-4 p-6 bg-surface rounded-2xl border border-outline-variant/10 shadow-sm">
+                  <div key={i} className="flex items-center gap-4 p-5 md:p-6 bg-surface rounded-2xl border border-outline-variant/10 shadow-sm">
                     <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
                       {item.icon}
                     </div>
-                    <span className="font-bold text-lg">{item.title}</span>
+                    <span className="font-bold text-base md:text-lg">{item.title}</span>
                   </div>
                 ))}
               </div>
-              <p className="mt-12 text-xl text-on-surface-variant font-medium">
+              <p className="mt-8 md:mt-12 text-lg md:text-xl text-on-surface-variant font-medium">
                 At Cosy Content, every project is built with the same principles. We don’t just build websites — we build digital products that are designed to work.
               </p>
             </div>
           </section>
 
-          <section className="mt-32 text-center pb-20">
-            <h2 className="text-3xl font-black mb-4">More Coming Soon</h2>
-            <p className="text-on-surface-variant font-medium mb-12 max-w-2xl mx-auto">
+          <section className="mt-20 md:mt-32 text-center pb-20 px-4">
+            <h2 className="text-2xl md:text-3xl font-black mb-4">More Coming Soon</h2>
+            <p className="text-on-surface-variant font-medium mb-10 md:mb-12 max-w-2xl mx-auto text-base">
               We’re continuously building and launching new projects. Each one is an opportunity to refine our process and push our standards further.
             </p>
-            <div className="bg-surface-container-high p-12 rounded-[2.5rem] border border-outline-variant/20 inline-block max-w-xl">
-              <p className="text-2xl font-bold mb-8">🚀 Want something similar built for your business?</p>
-              <Link to="/contact" className="bg-primary text-white px-10 py-5 rounded-2xl font-black text-lg hover:shadow-2xl shadow-primary/20 transition-all inline-block active:scale-95">
+            <div className="bg-surface-container-high p-8 md:p-12 rounded-[2rem] md:rounded-[2.5rem] border border-outline-variant/20 inline-block w-full max-w-xl">
+              <p className="text-xl md:text-2xl font-bold mb-8">🚀 Want something similar built for your business?</p>
+              <Link to="/contact" className="bg-primary text-white px-8 md:px-10 py-4 md:py-5 rounded-2xl font-black text-base md:text-lg hover:shadow-2xl shadow-primary/20 transition-all inline-block w-full sm:w-auto active:scale-95">
                 Get Your Website
               </Link>
             </div>

@@ -6,18 +6,18 @@ const CookiePolicy = () => {
   return (
     <div className="bg-surface text-on-surface font-body transition-colors duration-300 min-h-screen">
       <Navbar />
-      <main className="pt-44 pb-32 px-8">
-        <div className="max-w-4xl mx-auto bg-surface-container-low p-12 rounded-[2.5rem] border border-outline-variant/20 shadow-xl">
+      <main className="pt-32 md:pt-44 pb-20 md:pb-32 px-4 md:px-8">
+        <div className="max-w-4xl mx-auto bg-surface-container-low p-6 md:p-12 rounded-[2rem] md:rounded-[2.5rem] border border-outline-variant/20 shadow-xl">
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl font-black mb-8 tracking-tighter"
+            className="text-3xl md:text-5xl font-black mb-6 md:mb-8 tracking-tighter"
           >
             Cookie Policy
           </motion.h1>
-          <p className="text-on-surface-variant mb-12 font-bold italic">Last updated: April 02, 2026</p>
+          <p className="text-on-surface-variant mb-8 md:mb-12 font-bold italic text-sm md:text-base">Last updated: April 02, 2026</p>
           
-          <div className="prose dark:prose-invert max-w-none space-y-8 text-on-surface-variant font-medium leading-relaxed">
+          <div className="prose dark:prose-invert max-w-none space-y-6 md:space-y-8 text-on-surface-variant font-medium leading-relaxed text-sm md:text-base">
             <h2 className="text-2xl font-bold text-on-surface mb-4">What Are Cookies</h2>
             <p>As is common practice on almost all professional websites, this site uses cookies, which are tiny files downloaded to your computer, to improve your experience. This page describes what information they gather, how we use it and why we sometimes need to store these cookies.</p>
 

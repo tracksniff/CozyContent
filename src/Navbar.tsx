@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sun, Moon, Monitor } from 'lucide-react';
+import { Sun, Moon, Monitor, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from './ThemeContext';
@@ -8,6 +8,7 @@ import { useAuth } from './AuthContext';
 const Navbar = () => {
   const { theme, setTheme } = useTheme();
   const [showThemeMenu, setShowThemeMenu] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { isAuthenticated } = useAuth();
   const location = useLocation();
 
@@ -24,17 +25,22 @@ const Navbar = () => {
     { label: 'Contact', href: '/contact' }
   ];
 
+  const handleNavClick = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   return (
-    <nav className="fixed top-0 w-full z-50 px-6 py-4">
-      <div className="max-w-6xl mx-auto flex justify-between items-center px-6 py-3 rounded-2xl bg-surface/60 dark:bg-surface-container-high/40 backdrop-blur-xl border border-outline-variant/30 dark:border-primary/20 shadow-lg shadow-black/5 transition-all">
-        <Link to="/" className="flex items-center gap-2">
+    <nav className="fixed top-0 w-full z-50 px-4 md:px-6 py-4">
+      <div className="max-w-6xl mx-auto flex justify-between items-center px-4 md:px-6 py-3 rounded-2xl bg-surface/60 dark:bg-surface-container-high/40 backdrop-blur-xl border border-outline-variant/30 dark:border-primary/20 shadow-lg shadow-black/5 transition-all">
+        <Link to="/" className="flex items-center gap-2" onClick={handleNavClick}>
           <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
             <span className="text-white font-black text-lg italic">C</span>
           </div>
           <span className="text-lg font-bold tracking-tight text-on-surface">Cosy Content</span>
         </Link>
 
-        <div className="hidden md:flex items-center space-x-10">
+        {/* Desktop Nav */}
+        <div className="hidden md:flex items-center space-x-8">
           {navItems.map((item) => (
             item.href.startsWith('/#') ? (
               <a
@@ -58,12 +64,12 @@ const Navbar = () => {
           ))}
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 md:gap-3">
           {/* Theme Toggle */}
           <div className="relative">
             <button
               onClick={() => setShowThemeMenu(!showThemeMenu)}
-              className="p-2.5 rounded-xl border border-outline-variant/20 bg-surface/50 dark:bg-white/5 hover:bg-surface-container-high transition-colors shadow-sm"
+              className="p-2 md:p-2.5 rounded-xl border border-outline-variant/20 bg-surface/50 dark:bg-white/5 hover:bg-surface-container-high transition-colors shadow-sm"
             >
               <ThemeIcon />
             </button>
@@ -104,22 +110,73 @@ const Navbar = () => {
             </AnimatePresence>
           </div>
 
-          {isAuthenticated ? (
-            <Link to="/dashboard" className="bg-on-surface text-surface px-5 py-2.5 rounded-xl text-sm font-bold hover:shadow-lg transition-all shadow-md active:scale-95">
-              Dashboard
-            </Link>
-          ) : (
-            <>
-              <Link to="/login" className="text-on-surface-variant px-4 py-2 text-sm font-bold hover:text-primary transition-colors">
-                Login
+          <div className="hidden md:flex items-center gap-3">
+            {isAuthenticated ? (
+              <Link to="/dashboard" className="bg-on-surface text-surface px-5 py-2.5 rounded-xl text-sm font-bold hover:shadow-lg transition-all shadow-md active:scale-95">
+                Dashboard
               </Link>
-              <Link to="/signup" className="bg-on-surface text-surface px-5 py-2.5 rounded-xl text-sm font-bold hover:shadow-lg transition-all shadow-md active:scale-95">
-                Sign Up
-              </Link>
-            </>
-          )}
+            ) : (
+              <>
+                <Link to="/login" className="text-on-surface-variant px-4 py-2 text-sm font-bold hover:text-primary transition-colors">
+                  Login
+                </Link>
+                <Link to="/signup" className="bg-on-surface text-surface px-5 py-2.5 rounded-xl text-sm font-bold hover:shadow-lg transition-all shadow-md active:scale-95">
+                  Sign Up
+                </Link>
+              </>
+            )}
+          </div>
+
+          {/* Mobile Menu Toggle */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden p-2 rounded-xl border border-outline-variant/20 bg-surface/50 hover:bg-surface-container-high transition-colors"
+          >
+            {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="md:hidden absolute top-24 left-4 right-4 bg-surface rounded-[2rem] border border-outline-variant/20 shadow-2xl p-8 z-40 backdrop-blur-xl"
+          >
+            <div className="flex flex-col gap-6">
+              {navItems.map((item) => (
+                <Link
+                  key={item.label}
+                  to={item.href}
+                  onClick={handleNavClick}
+                  className="text-lg font-bold text-on-surface-variant hover:text-primary transition-colors"
+                >
+                  {item.label}
+                </Link>
+              ))}
+              <div className="pt-6 border-t border-outline-variant/10 flex flex-col gap-4">
+                {isAuthenticated ? (
+                  <Link to="/dashboard" onClick={handleNavClick} className="w-full bg-primary text-white py-4 rounded-2xl text-center font-black">
+                    Dashboard
+                  </Link>
+                ) : (
+                  <>
+                    <Link to="/login" onClick={handleNavClick} className="w-full py-4 rounded-2xl text-center font-bold text-on-surface-variant border border-outline-variant/20">
+                      Login
+                    </Link>
+                    <Link to="/signup" onClick={handleNavClick} className="w-full bg-on-surface text-surface py-4 rounded-2xl text-center font-black">
+                      Sign Up
+                    </Link>
+                  </>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };

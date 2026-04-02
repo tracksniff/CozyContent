@@ -6,18 +6,18 @@ const PrivacyPolicy = () => {
   return (
     <div className="bg-surface text-on-surface font-body transition-colors duration-300 min-h-screen">
       <Navbar />
-      <main className="pt-44 pb-32 px-8">
-        <div className="max-w-4xl mx-auto bg-surface-container-low p-12 rounded-[2.5rem] border border-outline-variant/20 shadow-xl">
+      <main className="pt-32 md:pt-44 pb-20 md:pb-32 px-4 md:px-8">
+        <div className="max-w-4xl mx-auto bg-surface-container-low p-6 md:p-12 rounded-[2rem] md:rounded-[2.5rem] border border-outline-variant/20 shadow-xl">
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl font-black mb-8 tracking-tighter"
+            className="text-3xl md:text-5xl font-black mb-6 md:mb-8 tracking-tighter"
           >
             Privacy Policy
           </motion.h1>
-          <p className="text-on-surface-variant mb-12 font-bold italic">Last updated: April 02, 2026</p>
+          <p className="text-on-surface-variant mb-8 md:mb-12 font-bold italic text-sm md:text-base">Last updated: April 02, 2026</p>
           
-          <div className="prose dark:prose-invert max-w-none space-y-8 text-on-surface-variant font-medium leading-relaxed">
+          <div className="prose dark:prose-invert max-w-none space-y-6 md:space-y-8 text-on-surface-variant font-medium leading-relaxed text-sm md:text-base">
             <p>
               This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.
             </p>
