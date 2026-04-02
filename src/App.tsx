@@ -7,22 +7,27 @@ import Profile from './Profile';
 import Websites from './Websites';
 import Settings from './Settings';
 import Users from './Users';
+import OurBrands from './OurBrands';
+import PrivacyPolicy from './PrivacyPolicy';
+import TermsConditions from './TermsConditions';
+import CookiePolicy from './CookiePolicy';
+import Contact from './Contact';
 import FloatingThemeToggle from './FloatingThemeToggle';
 import { ThemeProvider } from './ThemeContext';
 import { AuthProvider, useAuth } from './AuthContext';
 
 const PrivateRoute: React.FC<{ children: React.ReactNode, adminOnly?: boolean }> = ({ children, adminOnly }) => {
   const { isAuthenticated, user, loading } = useAuth();
-  
+
   if (loading) {
       return <div className="min-h-screen bg-surface flex items-center justify-center">
           <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
       </div>;
   }
-  
+
   if (!isAuthenticated) return <Navigate to="/login" />;
   if (adminOnly && !user?.is_staff) return <Navigate to="/dashboard" />;
-  
+
   return (
     <>
       {children}
@@ -40,6 +45,11 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/our-brands" element={<OurBrands />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-conditions" element={<TermsConditions />} />
+            <Route path="/cookie-policy" element={<CookiePolicy />} />
+            <Route path="/contact" element={<Contact />} />
             <Route
               path="/dashboard"
               element={

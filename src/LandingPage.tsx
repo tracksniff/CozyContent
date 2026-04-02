@@ -2,22 +2,16 @@ import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from
 import {
   ArrowRight,
   CheckCircle2,
-  Smartphone,
-  Search,
   ShieldCheck,
   Zap,
-  MousePointerClick,
-  ChevronRight,
-  ArrowUpRight,
-  Sun,
-  Moon,
   Monitor,
   Check
 } from 'lucide-react';
-import { useTheme } from './ThemeContext';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from './AuthContext';
+import Navbar from './Navbar';
+import Footer from './Footer';
+import axios from 'axios';
 
 const MousePerspective = ({ children, className }: { children: React.ReactNode, className?: string }) => {
   const x = useMotionValue(0);
@@ -109,10 +103,8 @@ const PortfolioSlider = () => {
             alt={PORTFOLIO_IMAGES[index].title}
             className="w-full h-full object-cover shadow-2xl"
           />
-          {/* Subtle Overlay for Text Readability */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
 
-          {/* Slide Info */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -125,7 +117,6 @@ const PortfolioSlider = () => {
         </motion.div>
       </AnimatePresence>
 
-      {/* Navigation Dots */}
       <div className="absolute bottom-10 right-10 flex gap-2 z-30">
         {PORTFOLIO_IMAGES.map((_, i) => (
           <button
@@ -140,9 +131,6 @@ const PortfolioSlider = () => {
 };
 
 const LandingPage = () => {
-  const { theme, setTheme } = useTheme();
-  const [showThemeMenu, setShowThemeMenu] = useState(false);
-
   const fadeInUp = {
     initial: { opacity: 0, y: 20 },
     whileInView: { opacity: 1, y: 0 },
@@ -156,100 +144,9 @@ const LandingPage = () => {
     viewport: { once: true }
   };
 
-  const ThemeIcon = () => {
-    if (theme === 'light') return <Sun className="w-4 h-4" />;
-    if (theme === 'dark') return < Moon className="w-4 h-4" />;
-    return <Monitor className="w-4 h-4" />;
-  };
-
   return (
     <div className="bg-surface text-on-surface font-body selection:bg-primary/20 selection:text-primary overflow-x-hidden transition-colors duration-300">
-      {/* Premium Glass Navigation */}
-      <nav className="fixed top-0 w-full z-50 px-6 py-4">
-        <div className="max-w-6xl mx-auto flex justify-between items-center px-6 py-3 rounded-2xl bg-surface/60 dark:bg-surface-container-high/40 backdrop-blur-xl border border-outline-variant/30 dark:border-primary/20 shadow-lg shadow-black/5 transition-all">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
-              <span className="text-white font-black text-lg italic">C</span>
-            </div>
-            <span className="text-lg font-bold tracking-tight text-on-surface">Cosy Content</span>
-          </div>
-
-          <div className="hidden md:flex items-center space-x-10">
-            {['Services', 'Pricing', 'Portfolio', 'About'].map((item) => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                className="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors relative group"
-              >
-                {item}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full"></span>
-              </a>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-3">
-            {/* Theme Toggle */}
-            <div className="relative">
-              <button
-                onClick={() => setShowThemeMenu(!showThemeMenu)}
-                className="p-2.5 rounded-xl border border-outline-variant/20 bg-surface/50 dark:bg-white/5 hover:bg-surface-container-high transition-colors shadow-sm"
-              >
-                <ThemeIcon />
-              </button>
-
-              <AnimatePresence>
-                {showThemeMenu && (
-                  <>
-                    <div
-                      className="fixed inset-0 z-10"
-                      onClick={() => setShowThemeMenu(false)}
-                    ></div>
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                      animate={{ opacity: 1, scale: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                      className="absolute right-0 mt-2 w-36 rounded-2xl bg-surface border border-outline-variant/20 shadow-xl z-20 overflow-hidden backdrop-blur-md"
-                    >
-                      {[
-                        { id: 'light', icon: Sun, label: 'Light' },
-                        { id: 'dark', icon: Moon, label: 'Dark' },
-                        { id: 'system', icon: Monitor, label: 'System' }
-                      ].map((t) => (
-                        <button
-                          key={t.id}
-                          onClick={() => {
-                            setTheme(t.id as any);
-                            setShowThemeMenu(false);
-                          }}
-                          className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors hover:bg-surface-container-high ${theme === t.id ? 'text-primary bg-primary/5' : 'text-on-surface-variant'}`}
-                        >
-                          <t.icon className="w-4 h-4" />
-                          {t.label}
-                        </button>
-                      ))}
-                    </motion.div>
-                  </>
-                )}
-              </AnimatePresence>
-            </div>
-
-            {useAuth().isAuthenticated ? (
-              <Link to="/dashboard" className="bg-on-surface text-surface px-5 py-2.5 rounded-xl text-sm font-bold hover:shadow-lg transition-all shadow-md active:scale-95">
-                Dashboard
-              </Link>
-            ) : (
-              <>
-                <Link to="/login" className="text-on-surface-variant px-4 py-2 text-sm font-bold hover:text-primary transition-colors">
-                  Login
-                </Link>
-                <Link to="/signup" className="bg-on-surface text-surface px-5 py-2.5 rounded-xl text-sm font-bold hover:shadow-lg transition-all shadow-md active:scale-95">
-                  Sign Up
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero Section */}
       <header className="relative pt-44 pb-32 overflow-hidden">
@@ -517,7 +414,6 @@ const LandingPage = () => {
             >
               <div className="absolute inset-0 bg-surface rounded-[2.5rem] border border-outline-variant/20 shadow-lg transition-all duration-500 group-hover:shadow-xl"></div>
               
-              {/* Most Popular Badge */}
               <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 z-10 border border-white/20">
                 Most Popular
               </div>
@@ -667,38 +563,7 @@ const LandingPage = () => {
         </MousePerspective>
       </section>
 
-      {/* Minimal Footer */}
-      <footer className="py-20 border-t border-outline-variant/10 transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-12 flex flex-col md:flex-row justify-between items-start gap-12">
-          <div className="max-w-xs">
-            <div className="text-2xl font-black tracking-tighter mb-6">Cosy Content</div>
-            <p className="text-on-surface-variant font-medium leading-relaxed">
-              Modern websites in 24 hours. No stress, just results.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-16">
-            <div>
-              <h4 className="font-bold mb-6 text-xs tracking-widest uppercase text-on-surface-variant">Navigation</h4>
-              <ul className="space-y-4 text-on-surface-variant font-medium">
-                <li><a href="#" className="hover:text-primary transition-colors">Services</a></li>
-                <li><a href="#pricing" className="hover:text-primary transition-colors">Pricing</a></li>
-                <li><a href="mailto:contact@cosycontent.com" className="hover:text-primary transition-colors">Contact</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-6 text-xs tracking-widest uppercase text-on-surface-variant">Legal</h4>
-              <ul className="space-y-4 text-on-surface-variant font-medium">
-                <li><a href="#" className="hover:text-primary transition-colors">Privacy</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Terms</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div className="max-w-7xl mx-auto px-12 mt-20 pt-8 border-t border-outline-variant/5 text-sm text-on-surface-variant/60 font-medium">
-          Copyright 2026 © Cosy Content Limited. All rights reserved.
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
