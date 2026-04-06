@@ -74,7 +74,7 @@ const Websites: React.FC = () => {
     }
   };
 
-  const handleTransfer = async (siteId: number, currentOwnerId: number) => {
+  const handleTransfer = async (siteId: number, _currentOwnerId: number) => {
       if (!user?.is_staff) return;
       const newOwnerId = prompt("Enter the New Owner ID:");
       if (!newOwnerId) return;

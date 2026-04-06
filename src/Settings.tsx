@@ -1,12 +1,12 @@
 import React from 'react';
 import Sidebar from './Sidebar';
-import { Settings as SettingsIcon, Bell, Lock, Eye, Palette, HelpCircle } from 'lucide-react';
+import { Bell, Lock, Eye, Palette, HelpCircle } from 'lucide-react';
 import { useTheme } from './ThemeContext';
 import { useAuth } from './AuthContext';
 import axios from 'axios';
 
 const Settings: React.FC = () => {
-  const { theme, setTheme } = useTheme();
+  useTheme();
   const { user } = useAuth();
 
   return (

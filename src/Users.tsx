@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import Sidebar from './Sidebar';
-import { User, Search, Shield, ShieldAlert, Plus, Mail } from 'lucide-react';
+import { User, Search, Shield, Plus, Mail } from 'lucide-react';
 import axios from 'axios';
 
 const Users: React.FC = () => {

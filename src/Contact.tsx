@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Mail, Phone, Clock, Send } from 'lucide-react';
+import { Mail, Clock, Send } from 'lucide-react';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import { useState } from 'react';

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from './AuthContext';
 import Sidebar from './Sidebar';
-import { User, Shield, CreditCard, CheckCircle2, Zap } from 'lucide-react';
+import { User, Shield, CreditCard, CheckCircle2 } from 'lucide-react';
 import axios from 'axios';
 
 const Profile: React.FC = () => {

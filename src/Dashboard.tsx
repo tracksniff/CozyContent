@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Plus, Trash2, ExternalLink, Globe, Search } from 'lucide-react';
 import Sidebar from './Sidebar';
