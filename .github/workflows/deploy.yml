@@ -1,14 +1,11 @@
-name: Deploy Frontend
-
+name: Deploy Cosycontent Frontend
 on:
   push:
     branches:
       - frontend
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.0.0
@@ -21,12 +18,14 @@ jobs:
             cd ~/cosycontent/frontend/CozyContent
             git pull origin frontend
 
-            # Redeploy everything via orchestrator
+            # Rebuild only the cosycontent react frontend
             cd ~/orchestrator
             docker-compose build cosycontent-react
-            docker-compose up -d
 
-            # Clean up
-            docker system prune -f
+            # Restart only the cosycontent react frontend (everything else stays running)
+            docker-compose up -d cosycontent-react
 
-            echo "✅ Frontend deployed successfully!"
+            # Clean up dangling images from the build
+            docker image prune -f
+
+            echo "✅ Cosycontent Frontend deployed successfully!"
