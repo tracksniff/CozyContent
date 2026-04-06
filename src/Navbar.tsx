@@ -1,16 +1,32 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sun, Moon, Monitor, Menu, X } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from './ThemeContext';
 import { useAuth } from './AuthContext';
+import logoHorizontal from './assets/Logo JPG/Cosy_Content_Ltd_-_Horizontal_2-removebg-preview.png';
 
 const Navbar = () => {
   const { theme, setTheme } = useTheme();
   const [showThemeMenu, setShowThemeMenu] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [systemTheme, setSystemTheme] = useState<'light' | 'dark'>(
+    window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  );
   const { isAuthenticated } = useAuth();
   const location = useLocation();
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e: MediaQueryListEvent) => {
+      setSystemTheme(e.matches ? 'dark' : 'light');
+    };
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  // Determine which logo to show based on theme
+  const isDark = theme === 'dark' || (theme === 'system' && systemTheme === 'dark');
 
   const ThemeIcon = () => {
     if (theme === 'light') return <Sun className="w-4 h-4" />;
@@ -32,11 +48,14 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 w-full z-50 px-4 md:px-6 py-4">
       <div className="max-w-6xl mx-auto flex justify-between items-center px-4 md:px-6 py-3 rounded-2xl bg-surface/60 dark:bg-surface-container-high/40 backdrop-blur-xl border border-outline-variant/30 dark:border-primary/20 shadow-lg shadow-black/5 transition-all">
-        <Link to="/" className="flex items-center gap-2" onClick={handleNavClick}>
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
-            <span className="text-white font-black text-lg italic">C</span>
+        <Link to="/" className="flex items-center" onClick={handleNavClick}>
+          <div className="h-12 md:h-16 flex items-center justify-center">
+            <img 
+              src={logoHorizontal} 
+              alt="Cosy Content Logo" 
+              className={`h-full w-auto object-contain ${isDark ? 'dark:invert' : ''}`} 
+            />
           </div>
-          <span className="text-lg font-bold tracking-tight text-on-surface">Cosy Content</span>
         </Link>
 
         {/* Desktop Nav */}

@@ -3,6 +3,7 @@ import { useAuth } from './AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import logo from './assets/PNG/Cosy Content Ltd -05.png';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -51,8 +52,8 @@ const Login: React.FC = () => {
       <div className="w-full max-w-md relative">
         {/* Overlapping Logo - Simplified */}
         <div className="absolute -top-6 left-1/2 -translate-x-1/2 z-10">
-          <div className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center border-4 border-surface shadow-md">
-            <span className="text-white font-black text-2xl italic">C</span>
+          <div className="w-16 h-16 bg-surface rounded-2xl flex items-center justify-center border-4 border-surface shadow-md p-2 transition-transform hover:scale-110 duration-500">
+            <img src={logo} alt="Cosy Content Logo" className="w-full h-full object-contain" />
           </div>
         </div>
 

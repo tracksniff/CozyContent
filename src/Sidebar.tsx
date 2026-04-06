@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from './AuthContext';
 import { AnimatePresence, motion } from 'framer-motion';
+import logo from './assets/PNG/Cosy Content Ltd -05.png';
 
 const SidebarItem: React.FC<{ 
   icon: React.ReactNode; 
@@ -118,8 +119,8 @@ const Sidebar: React.FC = () => {
       {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-surface border-b border-outline-variant z-40 flex items-center justify-between px-6 transition-colors duration-300">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-            <span className="text-white font-black italic">C</span>
+          <div className="w-8 h-8 flex items-center justify-center">
+            <img src={logo} alt="Cosy Content Logo" className="w-full h-full object-contain" />
           </div>
           <span className="font-black text-lg tracking-tighter">Cosy Content</span>
         </div>
@@ -150,15 +151,15 @@ const Sidebar: React.FC = () => {
         {/* Sidebar Header */}
         <div className="p-6 flex items-center justify-between mb-4 md:mb-8 shrink-0">
           <div className={`flex items-center gap-2 overflow-hidden transition-all duration-500 ${isCollapsed ? 'lg:opacity-0' : 'opacity-100'}`}>
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shrink-0">
-              <span className="text-white font-black italic">C</span>
+            <div className="w-8 h-8 flex items-center justify-center shrink-0">
+              <img src={logo} alt="Cosy Content Logo" className="w-full h-full object-contain" />
             </div>
             <span className="font-black text-lg tracking-tighter truncate">Cosy Content</span>
           </div>
           
           {isCollapsed && (
-            <div className="absolute left-6 w-8 h-8 bg-primary rounded-lg hidden lg:flex items-center justify-center">
-              <span className="text-white font-black italic">C</span>
+            <div className="absolute left-6 w-8 h-8 hidden lg:flex items-center justify-center">
+              <img src={logo} alt="Cosy Content Logo" className="w-full h-full object-contain" />
             </div>
           )}
 
