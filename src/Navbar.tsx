@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from './ThemeContext';
 import { useAuth } from './AuthContext';
-import logoHorizontal from './assets/Logo JPG/Cosy_Content_Ltd_-_Horizontal_2-removebg-preview.png';
+import logoLight from './assets/Logo JPG/Cosy_Content_Ltd_-_Horizontal_2-removebg-preview.png';
+import logoDark from './assets/Logo JPG/Cosy_Content_Ltd_-_Horizontal-removebg-preview.png';
 
 const Navbar = () => {
   const { theme, setTheme } = useTheme();
@@ -27,6 +28,7 @@ const Navbar = () => {
 
   // Determine which logo to show based on theme
   const isDark = theme === 'dark' || (theme === 'system' && systemTheme === 'dark');
+  const currentLogo = isDark ? logoDark : logoLight;
 
   const ThemeIcon = () => {
     if (theme === 'light') return <Sun className="w-4 h-4" />;
@@ -51,9 +53,9 @@ const Navbar = () => {
         <Link to="/" className="flex items-center" onClick={handleNavClick}>
           <div className="h-12 md:h-16 flex items-center justify-center">
             <img 
-              src={logoHorizontal} 
+              src={currentLogo} 
               alt="Cosy Content Logo" 
-              className={`h-full w-auto object-contain ${isDark ? 'dark:invert' : ''}`} 
+              className="h-full w-auto object-contain" 
             />
           </div>
         </Link>
@@ -151,7 +153,7 @@ const Navbar = () => {
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="md:hidden p-2 rounded-xl border border-outline-variant/20 bg-surface/50 hover:bg-surface-container-high transition-colors"
           >
-            {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </div>

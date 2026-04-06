@@ -1,17 +1,41 @@
 import { Link } from 'react-router-dom';
-import logo from './assets/Logo JPG/Cosy_Content_Ltd_-_Horizontal_2-removebg-preview.png';
+import logoLight from './assets/Logo JPG/Cosy_Content_Ltd_-_Horizontal_2-removebg-preview.png';
+import logoDark from './assets/Logo JPG/Cosy_Content_Ltd_-_Horizontal-removebg-preview.png';
 import facebook from './assets/Social Media Icons/Cosy Content Ltd - Facebook.png';
 import instagram from './assets/Social Media Icons/Cosy Content Ltd - Instagram.png';
 import linkedin from './assets/Social Media Icons/Cosy Content Ltd - Linkedin.png';
 import tiktok from './assets/Social Media Icons/Cosy Content Ltd - TikTok.png';
+import { useTheme } from './ThemeContext';
+import { useState, useEffect } from 'react';
 
 const Footer = () => {
+  const { theme } = useTheme();
+  const [systemTheme, setSystemTheme] = useState<'light' | 'dark'>(
+    window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  );
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e: MediaQueryListEvent) => {
+      setSystemTheme(e.matches ? 'dark' : 'light');
+    };
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  const isDark = theme === 'dark' || (theme === 'system' && systemTheme === 'dark');
+  const currentLogo = isDark ? logoDark : logoLight;
+
   return (
     <footer className="py-16 md:py-20 border-t border-outline-variant/10 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-start gap-12 md:gap-8">
         <div className="max-w-xs">
           <div className="flex items-center gap-2 mb-4 md:mb-6">
-            <img src={logo} alt="Cosy Content Logo" className="h-20 w-auto object-contain dark:invert" />
+            <img 
+              src={currentLogo} 
+              alt="Cosy Content Logo" 
+              className="h-20 w-auto object-contain" 
+            />
           </div>
           <p className="text-on-surface-variant font-medium leading-relaxed text-sm md:text-base mb-8">
             Modern websites in 24 hours. No stress, just results.
