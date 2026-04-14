@@ -280,12 +280,14 @@ class StripeWebhookView(generics.GenericAPIView):
 
         if event['type'] == 'checkout.session.completed':
             session = event['data']['object']
-            metadata = session.get('metadata', {})
-            user_id = metadata.get('user_id')
-            application_id = metadata.get('application_id')
             
-            customer_details = session.get('customer_details', {})
-            email = customer_details.get('email')
+            # In newer Stripe versions, use attribute access or .metadata
+            metadata = getattr(session, 'metadata', {})
+            user_id = getattr(metadata, 'user_id', None)
+            application_id = getattr(metadata, 'application_id', None)
+            
+            customer_details = getattr(session, 'customer_details', None)
+            email = getattr(customer_details, 'email', None) if customer_details else None
 
             if not user_id and email:
                 # User doesn't exist, create account
