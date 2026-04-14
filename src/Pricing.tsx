@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import axios from 'axios';
 import { Check, ArrowLeft, Loader2, ArrowRight } from 'lucide-react';
 import logo from './assets/PNG/Cosy Content Ltd -05.png';
