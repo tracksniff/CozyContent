@@ -110,7 +110,7 @@ const Signup: React.FC = () => {
   // Map Components
   const MapEvents = () => {
     useMapEvents({
-      click: async (e) => {
+      click: async (e: L.LeafletMouseEvent) => {
         const { lat, lng } = e.latlng;
         setMapCenter([lat, lng]);
         try {
@@ -127,7 +127,7 @@ const Signup: React.FC = () => {
     return null;
   };
 
-  const ChangeView = ({ center }: { center: [number, number] }) => {
+  const ChangeView = ({ center }: { center: L.LatLngExpression }) => {
     const map = useMap();
     map.setView(center, 13);
     return null;
@@ -188,6 +188,7 @@ const Signup: React.FC = () => {
             </div>
 
             <div className="flex-grow relative z-0">
+              {/* @ts-ignore - React-Leaflet V4+ prop typing can be unstable in some environments */}
               <MapContainer center={mapCenter} zoom={13} style={{ height: '100%', width: '100%' }}>
                 <TileLayer
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

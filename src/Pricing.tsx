@@ -6,7 +6,6 @@ import logo from './assets/PNG/Cosy Content Ltd -05.png';
 
 const Pricing: React.FC = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const { applicationId, email } = location.state || {};
   const [isLoading, setIsLoading] = useState<string | null>(null);
 
