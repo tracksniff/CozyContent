@@ -280,9 +280,12 @@ class StripeWebhookView(generics.GenericAPIView):
 
         if event['type'] == 'checkout.session.completed':
             session = event['data']['object']
-            user_id = session['metadata'].get('user_id')
-            application_id = session['metadata'].get('application_id')
-            email = session.get('customer_details', {}).get('email')
+            metadata = session.get('metadata', {})
+            user_id = metadata.get('user_id')
+            application_id = metadata.get('application_id')
+            
+            customer_details = session.get('customer_details', {})
+            email = customer_details.get('email')
 
             if not user_id and email:
                 # User doesn't exist, create account
