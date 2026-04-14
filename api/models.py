@@ -38,6 +38,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 class ClientApplication(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending Payment'),
+        ('processing', 'AI Generating...'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+    ]
     company_name = models.CharField(max_length=255)
     website_url = models.URLField()
     industry = models.CharField(max_length=100)
@@ -45,6 +51,7 @@ class ClientApplication(models.Model):
     city_location = models.CharField(max_length=255)
     testimonials = models.TextField(blank=True, null=True)
     branding_colors = models.CharField(max_length=255)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='applications')
 

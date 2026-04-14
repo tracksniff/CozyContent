@@ -12,6 +12,10 @@ def process_application_task(application_id, user_id):
     try:
         application = ClientApplication.objects.get(id=application_id)
         user = User.objects.get(id=user_id)
+        
+        # Set status to processing
+        application.status = 'processing'
+        application.save()
 
         # 1. Prepare data for Gemini
         app_data = {
@@ -30,6 +34,8 @@ def process_application_task(application_id, user_id):
         
         if not code_files:
             logger.error(f"Failed to generate code for {application.company_name}")
+            application.status = 'failed'
+            application.save()
             return False
 
         # 3. Create repo and push to GitHub
@@ -40,16 +46,27 @@ def process_application_task(application_id, user_id):
             # 4. Create Website record for the user
             Website.objects.create(
                 name=application.company_name,
-                url=repo_url, # Or application.website_url, depending on preference
+                url=repo_url,
                 owner=user,
                 hosting_type='PLATFORM'
             )
+            # Set status to completed
+            application.status = 'completed'
+            application.save()
             logger.info(f"Successfully processed application {application.id} for user {user.email}")
             return True
         else:
             logger.error(f"Failed to push code to GitHub for {application.company_name}")
+            application.status = 'failed'
+            application.save()
             return False
 
     except Exception as e:
         logger.error(f"Unexpected error in process_application_task: {str(e)}")
+        try:
+            application = ClientApplication.objects.get(id=application_id)
+            application.status = 'failed'
+            application.save()
+        except:
+            pass
         return False
