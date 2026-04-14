@@ -83,6 +83,13 @@ const Signup: React.FC = () => {
       data.append('uploaded_images', image);
     });
 
+    // Validate HTTPS URL
+    if (formData.website_url && !formData.website_url.startsWith('https://')) {
+      setError('Website URL must start with https://');
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/applications/`, data, {
         headers: { 'Content-Type': 'multipart/form-data' }
