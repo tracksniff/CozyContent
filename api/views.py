@@ -278,10 +278,10 @@ class StripeWebhookView(generics.GenericAPIView):
         except stripe.error.SignatureVerificationError as e:
             return HttpResponse(status=400)
 
-        if event['type'] == 'checkout.session.completed':
-            session = event['data']['object']
+        if event.type == 'checkout.session.completed':
+            session = event.data.object
             
-            # In newer Stripe versions, use attribute access or .metadata
+            # Use attribute access for Stripe v15+
             metadata = getattr(session, 'metadata', {})
             user_id = getattr(metadata, 'user_id', None)
             application_id = getattr(metadata, 'application_id', None)
@@ -302,7 +302,7 @@ class StripeWebhookView(generics.GenericAPIView):
             if user_id:
                 user = User.objects.get(id=user_id)
                 user.is_premium = True
-                user.stripe_customer_id = session.get('customer')
+                user.stripe_customer_id = getattr(session, 'customer', None)
                 user.subscription_status = 'active'
                 user.save()
 
@@ -314,7 +314,6 @@ class StripeWebhookView(generics.GenericAPIView):
                         app.save()
 
                         # Start background processing (Gemini + GitHub)
-                        # We will define process_application_task in api/tasks.py
                         from .tasks import process_application_task
                         threading.Thread(target=process_application_task, args=(app.id, user.id)).start()
                     except ClientApplication.DoesNotExist:
