@@ -45,7 +45,7 @@ class ClientApplication(models.Model):
         ('failed', 'Failed'),
     ]
     company_name = models.CharField(max_length=255)
-    website_url = models.URLField()
+    website_url = models.URLField(blank=True, null=True)
     industry = models.CharField(max_length=100)
     services_list = models.TextField()
     city_location = models.CharField(max_length=255)

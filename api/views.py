@@ -202,9 +202,15 @@ class UserViewSet(viewsets.ModelViewSet):
 from .utils import send_welcome_email
 
 class ClientApplicationViewSet(viewsets.ModelViewSet):
-    queryset = ClientApplication.objects.all()
     serializer_class = ClientApplicationSerializer
     permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            if self.request.user.is_staff:
+                return ClientApplication.objects.all()
+            return ClientApplication.objects.filter(user=self.request.user)
+        return ClientApplication.objects.none()
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
