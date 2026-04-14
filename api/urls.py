@@ -30,5 +30,6 @@ urlpatterns = [
     path("request-edit/", RequestEditView.as_view(), name="request_edit"),
     path("create-checkout-session/", CreateCheckoutSessionView.as_view(), name="create_checkout_session"),
     path("stripe-webhook/", StripeWebhookView.as_view(), name="stripe_webhook"),
+    path("stripe-webhook", StripeWebhookView.as_view(), name="stripe_webhook_no_slash"),
     path("", include(router.urls)),
 ]
