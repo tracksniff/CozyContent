@@ -2,12 +2,14 @@ import google.generativeai as genai
 import os
 import logging
 import json
+import time
 
 logger = logging.getLogger(__name__)
 
-def generate_website_code(application_data):
+def generate_website_code(application_data, retries=3, delay=5):
     """
-    Generate React + Vite codebase based on application data using Gemini API
+    Generate React + Vite codebase based on application data using Gemini API.
+    Includes retry logic for rate limits.
     """
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
@@ -15,7 +17,8 @@ def generate_website_code(application_data):
         return None
 
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-2.0-flash') # or gemini-1.5-pro
+    # Using gemini-1.5-flash as a fallback or default if 2.0 is overloaded
+    model = genai.GenerativeModel('gemini-1.5-flash') 
 
     prompt = f"""
     Create a complete, modern, and professional React website using Vite and Tailwind CSS for the following company:
@@ -28,32 +31,35 @@ def generate_website_code(application_data):
     Branding Colors: {application_data['branding_colors']}
 
     Requirements:
-    1. Visuals: Use modern, high-quality aesthetics. Provide placeholders for images if needed, but aim for a visually complete prototype.
-    2. Styling: Use Tailwind CSS. Ensure consistent spacing, typography, and interactive feedback.
-    3. Structure:
-       - Header/Navbar
-       - Hero section with a strong call to action.
-       - Services section detailing what they offer.
-       - Testimonials section (if provided).
-       - Contact section with a form and location details.
-       - Footer.
+    1. Visuals: Use modern, high-quality aesthetics. Provide placeholders for images if needed.
+    2. Styling: Use Tailwind CSS.
+    3. Structure: Header, Hero, Services, Testimonials, Contact, Footer.
     4. Code Quality: Clean, modular React components (TypeScript).
-    5. Output: Provide the full code as a JSON object where keys are file paths and values are file contents.
-       Example: {{"src/App.tsx": "...", "src/components/Header.tsx": "...", "package.json": "..."}}
-       Include all necessary configuration files (package.json, tailwind.config.js, vite.config.ts, tsconfig.json, index.html, etc.) to make it a runnable project.
+    5. Output: Provide the full code ONLY as a raw JSON object where keys are file paths and values are file contents.
+       Example: {{"src/App.tsx": "...", "package.json": "..."}}
     """
 
-    try:
-        response = model.generate_content(prompt)
-        # Extract JSON from response
-        text = response.text
-        # Sometimes Gemini wraps JSON in code blocks
-        if "```json" in text:
-            text = text.split("```json")[1].split("```")[0].strip()
-        elif "```" in text:
-            text = text.split("```")[1].split("```")[0].strip()
-        
-        return json.loads(text)
-    except Exception as e:
-        logger.error(f"Error generating website code: {str(e)}")
-        return None
+    for attempt in range(retries):
+        try:
+            response = model.generate_content(prompt)
+            text = response.text
+            
+            # Extract JSON from response
+            if "```json" in text:
+                text = text.split("```json")[1].split("```")[0].strip()
+            elif "```" in text:
+                text = text.split("```")[1].split("```")[0].strip()
+            
+            return json.loads(text)
+            
+        except Exception as e:
+            if "429" in str(e) and attempt < retries - 1:
+                wait_time = delay * (2 ** attempt) # Exponential backoff: 5s, 10s, 20s
+                logger.warning(f"Gemini Rate Limit (429) hit. Retrying in {wait_time}s... (Attempt {attempt + 1}/{retries})")
+                time.sleep(wait_time)
+                continue
+            else:
+                logger.error(f"Error generating website code: {str(e)}")
+                return None
+    
+    return None
