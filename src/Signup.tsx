@@ -278,7 +278,7 @@ const Signup: React.FC = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">Current Website (if any)</label>
+                    <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">Current Website (Optional)</label>
                     <input
                       name="website_url"
                       placeholder="https://acmeplumbing.com"

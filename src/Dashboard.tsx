@@ -1,23 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import axios from 'axios';
-import { Plus, Trash2, ExternalLink, Globe, Search } from 'lucide-react';
+import { Plus, Trash2, ExternalLink, Globe, Search, Sparkles, Loader2, Cpu, Palette, Zap } from 'lucide-react';
 import Sidebar from './Sidebar';
+
+const funMessages = [
+  "Consulting the AI Oracles...",
+  "Polishing the Pixels...",
+  "Brewing Digital Coffee...",
+  "Assembling the React Components...",
+  "Optimizing for maximum Cozyness...",
+  "Teaching the AI about your brand...",
+  "Constructing the Virtual Foundation...",
+  "Sprinkling some CSS Magic...",
+  "Synchronizing with the Matrix...",
+  "Fine-tuning the User Experience..."
+];
 
 const Dashboard: React.FC = () => {
   const [websites, setWebsites] = useState<any[]>([]);
+  const [applications, setApplications] = useState<any[]>([]);
   const [fetchingWebsites, setFetchingWebsites] = useState(true);
+  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const [newWebsite, setNewWebsite] = useState({ name: '', url: '' });
   const [searchQuery, setSearchQuery] = useState('');
   const { token, user, loading: authLoading } = useAuth();
 
-  const fetchWebsites = async () => {
+  const fetchData = async () => {
     if (!token) return;
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/websites/`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setWebsites(response.data);
+      const [sitesRes, appsRes] = await Promise.all([
+        axios.get(`${import.meta.env.VITE_API_URL}/api/websites/`, {
+          headers: { Authorization: `Bearer ${token}` }
+        }),
+        axios.get(`${import.meta.env.VITE_API_URL}/api/applications/`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+      ]);
+      setWebsites(sitesRes.data);
+      setApplications(appsRes.data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -27,9 +48,20 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     if (!authLoading) {
-      fetchWebsites();
+      fetchData();
+      const interval = setInterval(() => {
+        fetchData(); // Poll for updates
+      }, 5000);
+      return () => clearInterval(interval);
     }
   }, [token, authLoading]);
+
+  useEffect(() => {
+    const messageInterval = setInterval(() => {
+      setCurrentMessageIndex((prev) => (prev + 1) % funMessages.length);
+    }, 3000);
+    return () => clearInterval(messageInterval);
+  }, []);
 
   if (authLoading) {
     return (
@@ -39,6 +71,8 @@ const Dashboard: React.FC = () => {
     );
   }
 
+  const processingApps = applications.filter(app => app.status === 'processing');
+
   const handleAddWebsite = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -46,7 +80,7 @@ const Dashboard: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setNewWebsite({ name: '', url: '' });
-      fetchWebsites();
+      fetchData();
     } catch (err) {
       console.error(err);
     }
@@ -57,7 +91,7 @@ const Dashboard: React.FC = () => {
       await axios.delete(`${import.meta.env.VITE_API_URL}/api/websites/${id}/`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      fetchWebsites();
+      fetchData();
     } catch (err) {
       console.error(err);
     }
@@ -91,6 +125,44 @@ const Dashboard: React.FC = () => {
               </div>
             )}
           </header>
+
+          {/* AI Generation Progress Spinner */}
+          {processingApps.length > 0 && (
+            <div className="mb-12 relative overflow-hidden bg-primary/5 rounded-[3rem] border border-primary/10 p-8 md:p-12 animate-in fade-in zoom-in-95 duration-700 shadow-xl shadow-primary/5">
+               <div className="absolute top-0 right-0 p-8 opacity-10">
+                 <Sparkles size={120} className="animate-pulse" />
+               </div>
+               
+               <div className="relative z-10 flex flex-col items-center text-center">
+                 <div className="relative mb-8">
+                    <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full animate-pulse"></div>
+                    <div className="relative w-24 h-24 bg-surface rounded-full flex items-center justify-center border-4 border-primary/20 shadow-xl overflow-hidden">
+                       <div className="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                       <Sparkles size={32} className="text-primary animate-bounce" />
+                    </div>
+                 </div>
+
+                 <h2 className="text-2xl font-black text-on-surface mb-4 tracking-tight">
+                    Your Website is coming to life!
+                 </h2>
+                 
+                 <div className="bg-surface/50 backdrop-blur-sm px-8 py-4 rounded-2xl border border-primary/10 inline-flex items-center gap-4 min-w-[320px] transition-all duration-500 hover:scale-105 shadow-sm">
+                    <div className="flex gap-2 text-primary">
+                        <Cpu size={20} className="animate-pulse" />
+                        <Palette size={20} className="animate-bounce" style={{ animationDelay: '0.2s' }} />
+                        <Zap size={20} className="animate-pulse" style={{ animationDelay: '0.4s' }} />
+                    </div>
+                    <p className="text-primary font-black uppercase tracking-widest text-[11px] min-w-[240px]">
+                        {funMessages[currentMessageIndex]}
+                    </p>
+                 </div>
+                 
+                 <p className="mt-8 text-on-surface-variant text-xs font-medium max-w-sm">
+                   Our AI is currently building your custom code, setting up your GitHub repo, and launching your brand. It should take about a minute!
+                 </p>
+               </div>
+            </div>
+          )}
 
           {/* Stats/Overview Cards (Simple) */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
