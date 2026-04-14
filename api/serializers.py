@@ -1,5 +1,34 @@
 from rest_framework import serializers
-from .models import User, Website
+from .models import User, Website, ClientApplication, ApplicationImage
+
+class ApplicationImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ApplicationImage
+        fields = ('id', 'image', 'uploaded_at')
+
+class ClientApplicationSerializer(serializers.ModelSerializer):
+    images = ApplicationImageSerializer(many=True, read_only=True)
+    uploaded_images = serializers.ListField(
+        child=serializers.ImageField(max_length=1000000, allow_empty_file=False, use_url=False),
+        write_only=True,
+        required=False
+    )
+
+    class Meta:
+        model = ClientApplication
+        fields = (
+            'id', 'company_name', 'website_url', 'industry', 'services_list',
+            'city_location', 'testimonials', 'branding_colors', 'created_at',
+            'images', 'uploaded_images'
+        )
+        read_only_fields = ('id', 'created_at', 'images')
+
+    def create(self, validated_data):
+        uploaded_images = validated_data.pop('uploaded_images', [])
+        application = ClientApplication.objects.create(**validated_data)
+        for image in uploaded_images:
+            ApplicationImage.objects.create(application=application, image=image)
+        return application
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=False)

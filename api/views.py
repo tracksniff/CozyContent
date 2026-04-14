@@ -1,9 +1,12 @@
 from rest_framework import generics, status, permissions, viewsets
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import RegisterSerializer, UserSerializer, WebsiteSerializer
-from .models import User, Website
+from .serializers import RegisterSerializer, UserSerializer, WebsiteSerializer, ClientApplicationSerializer
+from .models import User, Website, ClientApplication
 import stripe
+import random
+import string
+import threading
 from django.conf import settings
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -196,36 +199,57 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
     queryset = User.objects.all()
 
+from .utils import send_welcome_email
+
+class ClientApplicationViewSet(viewsets.ModelViewSet):
+    queryset = ClientApplication.objects.all()
+    serializer_class = ClientApplicationSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        application = serializer.save()
+        return Response({'id': application.id, 'message': 'Application saved successfully'}, status=status.HTTP_201_CREATED)
+
 class CreateCheckoutSessionView(generics.GenericAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def post(self, request):
         plan_type = request.data.get('plan_type')
+        application_id = request.data.get('application_id')
+        user_email = request.data.get('email')
+        
         try:
+            if request.user.is_authenticated:
+                customer_email = request.user.email
+                user_id = request.user.id
+            else:
+                customer_email = user_email
+                user_id = None
+
             if plan_type == 'one_time':
-                price_data = {
-                    'currency': 'gbp',
-                    'product_data': {'name': 'Cosy Content Website (One-time)'},
-                    'unit_amount': 24900,
-                }
+                price_id = settings.STRIPE_ONE_TIME_PRICE_ID
                 mode = 'payment'
             else:
-                price_data = {
-                    'currency': 'gbp',
-                    'product_data': {'name': 'Cosy Content Monthly Subscription'},
-                    'unit_amount': 5900,
-                    'recurring': {'interval': 'month'},
-                }
+                price_id = settings.STRIPE_MONTHLY_PRICE_ID
                 mode = 'subscription'
 
+            metadata = {
+                'plan_type': plan_type,
+                'application_id': application_id
+            }
+            if user_id:
+                metadata['user_id'] = user_id
+
             checkout_session = stripe.checkout.Session.create(
-                customer_email=request.user.email,
+                customer_email=customer_email,
                 payment_method_types=['card'],
-                line_items=[{'price_data': price_data, 'quantity': 1}],
+                line_items=[{'price': price_id, 'quantity': 1}],
                 mode=mode,
                 success_url=settings.FRONTEND_URL + '/dashboard?success=true',
                 cancel_url=settings.FRONTEND_URL + '/dashboard?canceled=true',
-                metadata={'user_id': request.user.id, 'plan_type': plan_type}
+                metadata=metadata
             )
             return Response({'url': checkout_session.url})
         except Exception as e:
@@ -251,12 +275,39 @@ class StripeWebhookView(generics.GenericAPIView):
         if event['type'] == 'checkout.session.completed':
             session = event['data']['object']
             user_id = session['metadata'].get('user_id')
+            application_id = session['metadata'].get('application_id')
+            email = session.get('customer_details', {}).get('email')
+
+            if not user_id and email:
+                # User doesn't exist, create account
+                try:
+                    user = User.objects.get(email=email)
+                except User.DoesNotExist:
+                    temp_password = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
+                    user = User.objects.create_user(email=email, password=temp_password)
+                    send_welcome_email(email, temp_password)
+                user_id = user.id
+
             if user_id:
                 user = User.objects.get(id=user_id)
                 user.is_premium = True
                 user.stripe_customer_id = session.get('customer')
                 user.subscription_status = 'active'
                 user.save()
+
+                if application_id:
+                    # Link application to user
+                    try:
+                        app = ClientApplication.objects.get(id=application_id)
+                        app.user = user
+                        app.save()
+
+                        # Start background processing (Gemini + GitHub)
+                        # We will define process_application_task in api/tasks.py
+                        from .tasks import process_application_task
+                        threading.Thread(target=process_application_task, args=(app.id, user.id)).start()
+                    except ClientApplication.DoesNotExist:
+                        pass
 
         return HttpResponse(status=200)
 

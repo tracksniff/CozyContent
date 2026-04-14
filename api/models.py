@@ -37,6 +37,28 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
+class ClientApplication(models.Model):
+    company_name = models.CharField(max_length=255)
+    website_url = models.URLField()
+    industry = models.CharField(max_length=100)
+    services_list = models.TextField()
+    city_location = models.CharField(max_length=255)
+    testimonials = models.TextField(blank=True, null=True)
+    branding_colors = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='applications')
+
+    def __str__(self):
+        return self.company_name
+
+class ApplicationImage(models.Model):
+    application = models.ForeignKey(ClientApplication, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='application_images/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Image for {self.application.company_name}"
+
 class Website(models.Model):
     HOSTING_CHOICES = [
         ('PLATFORM', 'Hosted by Cozy Content'),

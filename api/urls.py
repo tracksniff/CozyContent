@@ -5,6 +5,7 @@ from .views import (
     UserDetailView, 
     UserViewSet,
     WebsiteViewSet, 
+    ClientApplicationViewSet,
     CreateCheckoutSessionView, 
     StripeWebhookView,
     contact_us,
@@ -18,6 +19,7 @@ from rest_framework_simplejwt.views import (
 router = DefaultRouter()
 router.register(r"websites", WebsiteViewSet, basename="website")
 router.register(r"users", UserViewSet, basename="user")
+router.register(r"applications", ClientApplicationViewSet, basename="application")
 
 urlpatterns = [
     path("register/", RegisterView.as_view(), name="auth_register"),
