@@ -16,6 +16,7 @@ import Contact from './Contact';
 import FloatingThemeToggle from './FloatingThemeToggle';
 import { ThemeProvider } from './ThemeContext';
 import { AuthProvider, useAuth } from './AuthContext';
+import { Toaster } from 'react-hot-toast';
 
 const PrivateRoute: React.FC<{ children: React.ReactNode, adminOnly?: boolean }> = ({ children, adminOnly }) => {
   const { isAuthenticated, user, loading } = useAuth();
@@ -40,6 +41,7 @@ const PrivateRoute: React.FC<{ children: React.ReactNode, adminOnly?: boolean }>
 function App() {
   return (
     <ThemeProvider>
+      <Toaster position="top-right" />
       <AuthProvider>
         <Router>
           <Routes>

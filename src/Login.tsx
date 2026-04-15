@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import logo from './assets/PNG/Cosy Content Ltd -05.png';
+import toast from 'react-hot-toast';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -13,6 +14,19 @@ const Login: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('success') === 'true' && params.get('new_user') === 'true') {
+      toast.success('Account created! Please check your email for your login password.', {
+        duration: 6000,
+        icon: '🎉',
+      });
+      // Clear the URL parameters without reloading the page
+      window.history.replaceState({}, '', location.pathname);
+    }
+  }, [location]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

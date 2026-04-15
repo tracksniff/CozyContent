@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { Plus, Trash2, ExternalLink, Globe, Search, Sparkles, Loader2, Cpu, Palette, Zap } from 'lucide-react';
 import Sidebar from './Sidebar';
+import toast from 'react-hot-toast';
 
 const funMessages = [
   "Consulting the AI Oracles...",
@@ -25,6 +27,19 @@ const Dashboard: React.FC = () => {
   const [newWebsite, setNewWebsite] = useState({ name: '', url: '' });
   const [searchQuery, setSearchQuery] = useState('');
   const { token, user, loading: authLoading } = useAuth();
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('success') === 'true' && !params.get('new_user')) {
+      toast.success('Payment successful! Your subscription has been updated.', {
+        duration: 5000,
+        icon: '💳',
+      });
+      // Clear the URL parameters without reloading the page
+      window.history.replaceState({}, '', location.pathname);
+    }
+  }, [location]);
 
   const fetchData = async () => {
     if (!token) return;
