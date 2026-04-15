@@ -247,13 +247,17 @@ class CreateCheckoutSessionView(generics.GenericAPIView):
             }
             if user_id:
                 metadata['user_id'] = user_id
+                success_url = settings.FRONTEND_URL + '/dashboard?success=true'
+            else:
+                # Guest user
+                success_url = settings.FRONTEND_URL + '/login?success=true&new_user=true'
 
             checkout_session = stripe.checkout.Session.create(
                 customer_email=customer_email,
                 payment_method_types=['card'],
                 line_items=[{'price': price_id, 'quantity': 1}],
                 mode=mode,
-                success_url=settings.FRONTEND_URL + '/dashboard?success=true',
+                success_url=success_url,
                 cancel_url=settings.FRONTEND_URL + '/dashboard?canceled=true',
                 metadata=metadata
             )
@@ -293,10 +297,16 @@ class StripeWebhookView(generics.GenericAPIView):
                 # User doesn't exist, create account
                 try:
                     user = User.objects.get(email=email)
+                    logger.info(f"User {email} already exists, skipping creation.")
                 except User.DoesNotExist:
+                    logger.info(f"Creating new user account for {email}")
                     temp_password = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
                     user = User.objects.create_user(email=email, password=temp_password)
-                    send_welcome_email(email, temp_password)
+                    sent = send_welcome_email(email, temp_password)
+                    if sent:
+                        logger.info(f"Welcome email sent to {email}")
+                    else:
+                        logger.error(f"Failed to send welcome email to {email}")
                 user_id = user.id
 
             if user_id:

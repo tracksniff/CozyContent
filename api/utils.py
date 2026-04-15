@@ -9,6 +9,7 @@ def send_welcome_email(user_email, temp_password):
     """
     Send welcome email with temporary password using Brevo API
     """
+    logger.info(f"Attempting to send welcome email to {user_email}")
     brevo_api_key = os.getenv("BREVO_API_KEY")
     brevo_sender_email = os.getenv("BREVO_SENDER_EMAIL", "noreply@cosycontent.com")
     brevo_sender_name = os.getenv("BREVO_SENDER_NAME", "Cosy Content")
@@ -53,10 +54,11 @@ def send_welcome_email(user_email, temp_password):
     try:
         response = requests.post("https://api.brevo.com/v3/smtp/email", json=payload, headers=headers)
         if response.status_code == 201:
+            logger.info(f"Successfully sent welcome email to {user_email}")
             return True
         else:
-            logger.error(f"Brevo API error: {response.status_code} - {response.text}")
+            logger.error(f"Brevo API error for {user_email}: {response.status_code} - {response.text}")
             return False
     except Exception as e:
-        logger.error(f"Error sending welcome email: {str(e)}")
+        logger.error(f"Error sending welcome email to {user_email}: {str(e)}")
         return False
