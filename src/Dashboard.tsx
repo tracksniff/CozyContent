@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { Plus, Trash2, ExternalLink, Globe, Search, Sparkles, Loader2, Cpu, Palette, Zap } from 'lucide-react';
+import { Plus, Trash2, ExternalLink, Globe, Search, Sparkles, Cpu, Palette, Zap } from 'lucide-react';
 import Sidebar from './Sidebar';
 import toast from 'react-hot-toast';
 

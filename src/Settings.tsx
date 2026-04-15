@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Sidebar from './Sidebar';
-import { Bell, Lock, Eye, Palette, HelpCircle, ShieldCheck, KeyRound } from 'lucide-react';
+import { Bell, Lock, Eye, Palette, HelpCircle, KeyRound } from 'lucide-react';
 import { useTheme } from './ThemeContext';
 import { useAuth } from './AuthContext';
 import axios from 'axios';
