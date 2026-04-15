@@ -9,7 +9,10 @@ from .views import (
     CreateCheckoutSessionView, 
     StripeWebhookView,
     contact_us,
-    RequestEditView
+    RequestEditView,
+    RequestPasswordResetOTPView,
+    VerifyPasswordResetOTPView,
+    ChangePasswordView
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -28,6 +31,9 @@ urlpatterns = [
     path("user/", UserDetailView.as_view(), name="user_detail"),
     path("contact-us/", contact_us, name="contact_us"),
     path("request-edit/", RequestEditView.as_view(), name="request_edit"),
+    path("forgot-password/request/", RequestPasswordResetOTPView.as_view(), name="forgot_password_request"),
+    path("forgot-password/verify/", VerifyPasswordResetOTPView.as_view(), name="forgot_password_verify"),
+    path("change-password/", ChangePasswordView.as_view(), name="change_password"),
     path("create-checkout-session/", CreateCheckoutSessionView.as_view(), name="create_checkout_session"),
     path("stripe-webhook/", StripeWebhookView.as_view(), name="stripe_webhook"),
     path("stripe-webhook", StripeWebhookView.as_view(), name="stripe_webhook_no_slash"),

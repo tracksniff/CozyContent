@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.utils import timezone
+import datetime
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -80,3 +82,16 @@ class Website(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.owner.email})"
+
+class PasswordResetOTP(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    otp = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_used = models.BooleanField(default=False)
+
+    def is_expired(self):
+        # OTP expires in 15 minutes
+        return timezone.now() > self.created_at + datetime.timedelta(minutes=15)
+
+    def __str__(self):
+        return f"OTP for {self.user.email}"

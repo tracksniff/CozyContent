@@ -2,7 +2,7 @@ from rest_framework import generics, status, permissions, viewsets
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import RegisterSerializer, UserSerializer, WebsiteSerializer, ClientApplicationSerializer
-from .models import User, Website, ClientApplication
+from .models import User, Website, ClientApplication, PasswordResetOTP
 import stripe
 import random
 import string
@@ -199,7 +199,7 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
     queryset = User.objects.all()
 
-from .utils import send_welcome_email
+from .utils import send_welcome_email, send_otp_email
 
 class ClientApplicationViewSet(viewsets.ModelViewSet):
     serializer_class = ClientApplicationSerializer
@@ -339,3 +339,82 @@ class WebsiteViewSet(viewsets.ModelViewSet):
         if self.request.user.is_staff:
             return Website.objects.all()
         return Website.objects.filter(owner=self.request.user)
+
+class RequestPasswordResetOTPView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        email = request.data.get('email')
+        if not email:
+            return Response({"error": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            # We return 200 even if user doesn't exist for security (prevent email enumeration)
+            return Response({"message": "If an account with this email exists, an OTP has been sent."}, status=status.HTTP_200_OK)
+        
+        # Generate 6-digit OTP
+        otp_code = ''.join(random.choices(string.digits, k=6))
+        
+        # Save OTP to database
+        PasswordResetOTP.objects.create(user=user, otp=otp_code)
+        
+        # Send OTP via email
+        sent = send_otp_email(email, otp_code)
+        
+        if sent:
+            return Response({"message": "If an account with this email exists, an OTP has been sent."}, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "Failed to send email. Please try again later."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class VerifyPasswordResetOTPView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        email = request.data.get('email')
+        otp_code = request.data.get('otp')
+        new_password = request.data.get('new_password')
+        
+        if not all([email, otp_code, new_password]):
+            return Response({"error": "Email, OTP, and new password are required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            user = User.objects.get(email=email)
+            # Get the latest unused OTP for this user
+            otp_obj = PasswordResetOTP.objects.filter(user=user, otp=otp_code, is_used=False).order_by('-created_at').first()
+            
+            if not otp_obj:
+                return Response({"error": "Invalid OTP"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            if otp_obj.is_expired():
+                return Response({"error": "OTP has expired"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Update password and mark OTP as used
+            user.set_password(new_password)
+            user.save()
+            otp_obj.is_used = True
+            otp_obj.save()
+            
+            return Response({"success": True, "message": "Password reset successfully!"}, status=status.HTTP_200_OK)
+            
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        old_password = request.data.get('old_password')
+        new_password = request.data.get('new_password')
+        
+        if not all([old_password, new_password]):
+            return Response({"error": "Old and new passwords are required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        user = request.user
+        if not user.check_password(old_password):
+            return Response({"error": "Incorrect old password"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        user.set_password(new_password)
+        user.save()
+        return Response({"success": True, "message": "Password changed successfully!"}, status=status.HTTP_200_OK)

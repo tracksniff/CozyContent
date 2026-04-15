@@ -5,6 +5,62 @@ from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
+def send_otp_email(user_email, otp):
+    """
+    Send OTP for password reset using Brevo API
+    """
+    logger.info(f"Attempting to send OTP email to {user_email}")
+    brevo_api_key = os.getenv("BREVO_API_KEY")
+    brevo_sender_email = os.getenv("BREVO_SENDER_EMAIL", "noreply@cosycontent.com")
+    brevo_sender_name = os.getenv("BREVO_SENDER_NAME", "Cosy Content")
+
+    if not brevo_api_key:
+        logger.error("BREVO_API_KEY not found in environment variables")
+        return False
+
+    subject = "Your Password Reset OTP - Cosy Content"
+    
+    html_content = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e9ecef; border-radius: 8px;">
+            <h2 style="color: #3b82f6;">Password Reset Request</h2>
+            <p>You requested to reset your password. Use the following OTP to proceed:</p>
+            <div style="margin-top: 20px; padding: 20px; background-color: #f8f9fa; border-radius: 4px; text-align: center;">
+                <h1 style="font-size: 32px; letter-spacing: 5px; color: #3b82f6; margin: 0;">{otp}</h1>
+            </div>
+            <p style="margin-top: 20px;">This OTP will expire in 15 minutes. If you did not request this, please ignore this email.</p>
+            <p style="margin-top: 20px; font-size: 12px; color: #6c757d;">© 2026 Cosy Content. All rights reserved.</p>
+        </div>
+    </body>
+    </html>
+    """
+
+    headers = {
+        "accept": "application/json",
+        "api-key": brevo_api_key,
+        "content-type": "application/json",
+    }
+
+    payload = {
+        "sender": {"name": brevo_sender_name, "email": brevo_sender_email},
+        "to": [{"email": user_email}],
+        "subject": subject,
+        "htmlContent": html_content,
+    }
+
+    try:
+        response = requests.post("https://api.brevo.com/v3/smtp/email", json=payload, headers=headers)
+        if response.status_code == 201:
+            logger.info(f"Successfully sent OTP email to {user_email}")
+            return True
+        else:
+            logger.error(f"Brevo API error for {user_email}: {response.status_code} - {response.text}")
+            return False
+    except Exception as e:
+        logger.error(f"Error sending OTP email to {user_email}: {str(e)}")
+        return False
+
 def send_welcome_email(user_email, temp_password):
     """
     Send welcome email with temporary password using Brevo API
