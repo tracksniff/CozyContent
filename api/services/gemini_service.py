@@ -210,7 +210,7 @@ Example shape (do not include this example in your output):
             ) and attempt < retries - 1:
                 wait_time = delay * (2**attempt)  # Exponential backoff: 5s, 10s, 20s
                 logger.warning(
-                    f"Gemini Rate Limit hit. Retrying in {wait_time}s… "
+                    f"Gemini Rate Limit hit. Retrying in {wait_time}s…. "
                     f"(Attempt {attempt + 1}/{retries})"
                 )
                 time.sleep(wait_time)
