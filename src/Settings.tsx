@@ -1,13 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Sidebar from './Sidebar';
-import { Bell, Lock, Eye, Palette, HelpCircle } from 'lucide-react';
+import { Bell, Lock, Eye, Palette, HelpCircle, ShieldCheck, KeyRound } from 'lucide-react';
 import { useTheme } from './ThemeContext';
 import { useAuth } from './AuthContext';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const Settings: React.FC = () => {
   useTheme();
-  const { user } = useAuth();
+  const { user, token } = useAuth();
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isChanging, setIsChanging] = useState(false);
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      toast.error('New passwords do not match.');
+      return;
+    }
+    setIsChanging(true);
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/change-password/`,
+        { old_password: oldPassword, new_password: newPassword },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success('Password changed successfully!');
+      setOldPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (err: any) {
+      toast.error(err.response?.data?.error || 'Failed to change password.');
+    } finally {
+      setIsChanging(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-surface flex transition-colors duration-300">
@@ -59,6 +88,54 @@ const Settings: React.FC = () => {
               <h2 className="text-xl font-black text-on-surface mb-6 flex items-center gap-2">
                 <Lock size={20} className="text-primary" /> Security
               </h2>
+
+              <div className="mb-8 p-6 bg-surface rounded-3xl border border-outline-variant/50">
+                <h3 className="text-sm font-black uppercase tracking-widest text-on-surface-variant mb-4 flex items-center gap-2">
+                  <KeyRound size={16} /> Change Password
+                </h3>
+                <form onSubmit={handleChangePassword} className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="md:col-span-2">
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">Current Password</label>
+                      <input
+                        type="password"
+                        required
+                        className="w-full px-4 py-3 bg-surface border border-outline-variant rounded-2xl focus:border-primary outline-none text-sm font-medium"
+                        value={oldPassword}
+                        onChange={(e) => setOldPassword(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">New Password</label>
+                      <input
+                        type="password"
+                        required
+                        className="w-full px-4 py-3 bg-surface border border-outline-variant rounded-2xl focus:border-primary outline-none text-sm font-medium"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">Confirm New Password</label>
+                      <input
+                        type="password"
+                        required
+                        className="w-full px-4 py-3 bg-surface border border-outline-variant rounded-2xl focus:border-primary outline-none text-sm font-medium"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={isChanging}
+                    className="mt-2 px-6 py-3 bg-primary text-white font-black rounded-xl hover:brightness-110 transition-all text-xs uppercase tracking-widest disabled:opacity-70"
+                  >
+                    {isChanging ? 'Updating...' : 'Update Password'}
+                  </button>
+                </form>
+              </div>
+
               <div className="space-y-4">
                 <button className="w-full text-left px-6 py-4 bg-surface border border-outline-variant rounded-2xl font-bold hover:border-primary transition-all flex items-center justify-between">
                   Two-Factor Authentication

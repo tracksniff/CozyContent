@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import LandingPage from './LandingPage';
 import Login from './Login';
 import Signup from './Signup';
+import ForgotPassword from './ForgotPassword';
 import Pricing from './Pricing';
 import Dashboard from './Dashboard';
 import Profile from './Profile';
@@ -48,6 +49,7 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/our-brands" element={<OurBrands />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
