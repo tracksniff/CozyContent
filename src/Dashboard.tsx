@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { Plus, Trash2, ExternalLink, Globe, Search, Sparkles, Cpu, Palette, Zap } from 'lucide-react';
+import { Plus, Trash2, ExternalLink, Globe, Search, Sparkles, Cpu, Palette, Zap, Star, Clock, CheckCircle2, Upload, MessageSquare, Send } from 'lucide-react';
 import Sidebar from './Sidebar';
 import toast from 'react-hot-toast';
 
@@ -26,8 +26,54 @@ const Dashboard: React.FC = () => {
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const [newWebsite, setNewWebsite] = useState({ name: '', url: '' });
   const [searchQuery, setSearchQuery] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
+  const [feedback, setFeedback] = useState<{ [key: number]: string }>({});
   const { token, user, loading: authLoading } = useAuth();
   const location = useLocation();
+
+  const handleFileUpload = async (applicationId: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !token) return;
+
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/applications/${applicationId}/add_attachment/`, formData, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      toast.success('File uploaded successfully!');
+      fetchData();
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to upload file.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleSubmitFeedback = async (applicationId: number) => {
+    if (!feedback[applicationId] || !token) return;
+
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/applications/${applicationId}/add_feedback/`, {
+        section_name: 'General / 80% Review',
+        comment: feedback[applicationId]
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Feedback submitted!');
+      setFeedback({ ...feedback, [applicationId]: '' });
+      fetchData();
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to submit feedback.');
+    }
+  };
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -176,6 +222,173 @@ const Dashboard: React.FC = () => {
                    Our AI is currently building your custom code, setting up your GitHub repo, and launching your brand. It should take about a minute!
                  </p>
                </div>
+            </div>
+          )}
+
+          {/* Project Progress & Reviews (Customer Only) */}
+          {!user?.is_staff && applications.map(app => (
+            <div key={app.id} className="mb-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Progress Timeline */}
+              <div className="bg-surface-container-low p-8 rounded-[2.5rem] border border-outline-variant shadow-sm">
+                <div className="flex items-center justify-between mb-8">
+                  <h3 className="text-xl font-black text-on-surface flex items-center gap-2">
+                    <Clock size={20} className="text-primary" /> Project Timeline
+                  </h3>
+                  <div className="px-3 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-black uppercase tracking-widest">
+                    {app.progress}% Complete
+                  </div>
+                </div>
+
+                <div className="space-y-6 relative">
+                  <div className="absolute left-4 top-2 bottom-2 w-0.5 bg-outline-variant/30"></div>
+                  
+                  {[
+                    { label: 'Application Started', target: 0, desc: 'Your project has been received.' },
+                    { label: 'AI Generation', target: 20, desc: 'Claude is building your codebase.' },
+                    { label: 'GitHub Deployment', target: 60, desc: 'Code is being pushed to your repository.' },
+                    { label: 'Live Preview (80%)', target: 80, desc: 'Review your site and provide feedback.' },
+                    { label: 'Final Handover', target: 100, desc: 'Site is 100% complete and live.' }
+                  ].map((step, idx) => {
+                    const isDone = app.progress >= step.target;
+                    const isCurrent = app.progress >= step.target && (idx === 4 || app.progress < [0, 20, 60, 80, 100][idx+1]);
+                    
+                    return (
+                      <div key={idx} className={`relative pl-10 flex gap-4 transition-all ${isDone ? 'opacity-100' : 'opacity-40'}`}>
+                        <div className={`absolute left-0 w-8 h-8 rounded-full flex items-center justify-center border-4 ${isDone ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20' : 'bg-surface border-outline-variant text-on-surface-variant'}`}>
+                          {isDone ? <CheckCircle2 size={16} /> : <div className="w-2 h-2 rounded-full bg-current"></div>}
+                        </div>
+                        <div>
+                          <h4 className={`text-sm font-black ${isCurrent ? 'text-primary' : 'text-on-surface'}`}>{step.label}</h4>
+                          <p className="text-[10px] font-medium text-on-surface-variant">{step.desc}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Review & Feedback Section */}
+              <div className="space-y-8">
+                {/* GMB Review Box */}
+                {app.progress >= 80 && (
+                  <div className="bg-primary/5 p-8 rounded-[2.5rem] border border-primary/20 shadow-xl relative overflow-hidden group">
+                    <div className="absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                      <Star size={120} />
+                    </div>
+                    <h3 className="text-xl font-black text-on-surface mb-2 tracking-tight">Enjoying the experience?</h3>
+                    <p className="text-sm font-medium text-on-surface-variant mb-6">Your feedback means the world to us. Please leave a review on our Google profile!</p>
+                    <a 
+                      href="https://g.page/r/CcL50VdU9y65EAE/review" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95"
+                    >
+                      <Star size={18} fill="currentColor" /> Leave a Review
+                    </a>
+                  </div>
+                )}
+
+                {/* Feedback & Uploads */}
+                <div className="bg-surface-container-low p-8 rounded-[2.5rem] border border-outline-variant shadow-sm">
+                  <h3 className="text-lg font-black text-on-surface mb-6 flex items-center gap-2">
+                    <MessageSquare size={18} className="text-primary" /> Requests & Feedback
+                  </h3>
+                  
+                  <div className="space-y-6">
+                    <div>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 mb-2 block">Leave Feedback (80% Stage)</label>
+                      <div className="relative">
+                        <textarea 
+                          className="w-full p-4 bg-surface border border-outline-variant rounded-2xl focus:border-primary outline-none text-sm min-h-[100px] font-medium transition-all"
+                          placeholder="Tell us what you'd like changed..."
+                          value={feedback[app.id] || ''}
+                          onChange={e => setFeedback({...feedback, [app.id]: e.target.value})}
+                        ></textarea>
+                        <button 
+                          onClick={() => handleSubmitFeedback(app.id)}
+                          disabled={!feedback[app.id]}
+                          className="absolute bottom-4 right-4 p-2 bg-primary text-white rounded-xl disabled:opacity-50 hover:brightness-110 transition-all shadow-md"
+                        >
+                          <Send size={16} />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="pt-4 border-t border-outline-variant/30">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 mb-2 block">Attachments & Assets</label>
+                      <div className="flex items-center gap-4">
+                        <label className="flex-grow cursor-pointer group">
+                          <div className="w-full py-3 px-4 bg-surface border-2 border-dashed border-outline-variant rounded-xl group-hover:border-primary transition-all flex items-center justify-center gap-2 text-sm font-bold text-on-surface-variant group-hover:text-primary">
+                            {isUploading ? <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div> : <Upload size={18} />}
+                            Upload Image or File
+                          </div>
+                          <input type="file" className="hidden" onChange={e => handleFileUpload(app.id, e)} />
+                        </label>
+                      </div>
+                      
+                      {app.attachments?.length > 0 && (
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          {app.attachments.map((file: any) => (
+                            <div key={file.id} className="px-3 py-1 bg-surface border border-outline-variant rounded-lg text-[10px] font-bold flex items-center gap-2">
+                              {file.filename}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {/* Admin Feedback Management */}
+          {user?.is_staff && applications.some(app => app.feedbacks?.length > 0 || app.attachments?.length > 0) && (
+            <div className="mb-12">
+              <h2 className="text-2xl font-black text-on-surface tracking-tight mb-6">Customer Requests</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {applications.filter(app => app.feedbacks?.length > 0 || app.attachments?.length > 0).map(app => (
+                  <div key={app.id} className="bg-surface-container-low p-6 rounded-[2rem] border border-outline-variant shadow-sm">
+                    <div className="flex justify-between items-start mb-4">
+                      <h3 className="font-bold text-on-surface">{app.company_name}</h3>
+                      <div className="px-2 py-0.5 bg-surface border border-outline-variant rounded text-[10px] font-bold">
+                        App ID: {app.id}
+                      </div>
+                    </div>
+                    
+                    {app.feedbacks?.length > 0 && (
+                      <div className="mb-4 space-y-2">
+                        <div className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Feedback</div>
+                        {app.feedbacks.map((f: any) => (
+                          <div key={f.id} className="p-3 bg-surface border border-outline-variant rounded-xl text-xs">
+                            <p className="font-medium text-on-surface">{f.comment}</p>
+                            <span className="text-[9px] text-on-surface-variant uppercase mt-1 block">{new Date(f.created_at).toLocaleString()}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {app.attachments?.length > 0 && (
+                      <div className="space-y-2">
+                        <div className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Attachments</div>
+                        <div className="flex flex-wrap gap-2">
+                          {app.attachments.map((a: any) => (
+                            <a 
+                              key={a.id} 
+                              href={a.file} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="px-3 py-1 bg-primary/5 text-primary border border-primary/10 rounded-lg text-[10px] font-bold hover:bg-primary/10 transition-all"
+                            >
+                              {a.filename}
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 

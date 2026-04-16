@@ -96,12 +96,7 @@ const Signup: React.FC = () => {
       });
       
       if (response.data.id) {
-        navigate('/pricing', { 
-          state: { 
-            applicationId: response.data.id,
-            email: formData.email 
-          } 
-        });
+        navigate('/checkout', { state: { applicationId: response.data.id, email: formData.email } });
       }
     } catch (err: any) {
       console.error('Submission error:', err);

@@ -1,152 +1,111 @@
-import React, { useState } from 'react';
-import { useLocation, Link } from 'react-router-dom';
-import axios from 'axios';
-import { Check, ArrowLeft, Loader2, ArrowRight } from 'lucide-react';
-import logo from './assets/PNG/Cosy Content Ltd -05.png';
+import React from 'react';
+import { Check, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import Navbar from './Navbar';
+import Footer from './Footer';
 
-const Pricing: React.FC = () => {
-  const location = useLocation();
-  const { applicationId, email } = location.state || {};
-  const [isLoading, setIsLoading] = useState<string | null>(null);
-
-  if (!applicationId) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-surface p-6">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">No application found</h2>
-          <Link to="/signup" className="text-primary font-bold hover:underline">Start an application</Link>
-        </div>
-      </div>
-    );
-  }
-
-  const handleSelectPlan = async (planType: 'monthly' | 'one_time') => {
-    setIsLoading(planType);
-    try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/create-checkout-session/`, {
-        plan_type: planType,
-        application_id: applicationId,
-        email: email
-      });
-      if (response.data.url) {
-        window.location.href = response.data.url;
-      }
-    } catch (err) {
-      console.error('Error creating checkout session:', err);
-      alert('Failed to start checkout. Please try again.');
-    } finally {
-      setIsLoading(null);
+const PricingPage: React.FC = () => {
+  const plans = [
+    {
+      name: 'Monthly Growth',
+      price: '£59',
+      period: '/mo',
+      desc: 'Perfect for established businesses needing ongoing support.',
+      features: [
+        'AI-Powered Custom Website',
+        'Fast & Secure Hosting',
+        'Unlimited Content Updates',
+        'Priority Technical Support',
+        'Monthly Performance Reports',
+        'Daily Backups'
+      ],
+      cta: 'Get Started',
+      popular: true
+    },
+    {
+      name: 'One-Time Launch',
+      price: '£249',
+      period: ' Fixed',
+      desc: 'Great for businesses who want full ownership from day one.',
+      features: [
+        'AI-Powered Custom Website',
+        'Full Source Code Handover',
+        '24-Hour Delivery',
+        'Vite + React + TypeScript',
+        'Tailwind CSS Ready',
+        'Self-Hosting Support'
+      ],
+      cta: 'Claim Ownership',
+      popular: false
     }
-  };
+  ];
 
   return (
-    <div className="min-h-screen bg-surface transition-colors duration-300 p-6 md:p-12">
-      <div className="max-w-5xl mx-auto">
-        <div className="flex flex-col items-center mb-16">
-          <img src={logo} alt="Cosy Content Logo" className="w-16 h-16 object-contain mb-6" />
-          <h1 className="text-4xl md:text-5xl font-black text-center tracking-tight mb-4">Choose Your Plan</h1>
-          <p className="text-on-surface-variant text-center max-w-lg font-medium">
-            Almost there! Select the plan that works best for your business to launch your new website.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
-          {/* Monthly Plan */}
-          <div className="bg-surface-container-low p-10 rounded-[2.5rem] border border-outline-variant flex flex-col h-full shadow-lg">
-            <div className="mb-8">
-              <h3 className="text-xl font-bold mb-3">Monthly Subscription</h3>
-              <p className="text-on-surface-variant font-medium text-sm leading-relaxed">
-                £59/month for hosting, maintenance, and unlimited updates. No setup fee.
-              </p>
-            </div>
-
-            <div className="flex items-baseline gap-2 mb-8">
-              <span className="text-5xl font-black text-on-surface">£59</span>
-              <span className="text-on-surface-variant font-bold text-sm uppercase tracking-widest">/mo</span>
-            </div>
-
-            <div className="space-y-4 mb-10 flex-grow">
-              {[
-                'Fully built website',
-                'Fast, secure hosting',
-                'Maintenance and backups',
-                'Unlimited content updates',
-                'Domain management'
-              ].map((item, i) => (
-                <div key={i} className="flex items-start gap-3">
-                  <div className="mt-1 flex-shrink-0 w-4 h-4 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Check className="w-2.5 h-2.5 text-primary" strokeWidth={3} />
-                  </div>
-                  <span className="text-on-surface-variant font-bold text-xs">{item}</span>
-                </div>
-              ))}
-            </div>
-
-            <button
-              onClick={() => handleSelectPlan('monthly')}
-              disabled={isLoading !== null}
-              className="w-full py-4 rounded-xl bg-surface border-2 border-primary text-primary font-black hover:bg-primary/5 transition-all text-base flex items-center justify-center gap-2"
-            >
-              {isLoading === 'monthly' ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Subscribe Now'}
-            </button>
+    <div className="min-h-screen bg-surface">
+      <Navbar />
+      
+      <main className="pt-32 pb-20 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h1 className="text-5xl md:text-6xl font-black text-on-surface tracking-tight mb-6">Simple, Transparent Pricing</h1>
+            <p className="text-xl text-on-surface-variant max-w-2xl mx-auto font-medium">
+              Choose the plan that fits your business goals. No hidden fees, just high-quality AI-built websites.
+            </p>
           </div>
 
-          {/* One-Time Payment */}
-          <div className="relative group h-full">
-            <div className="absolute inset-0 bg-surface rounded-[2.5rem] border-2 border-primary shadow-xl transition-all duration-500 group-hover:scale-[1.01]"></div>
-            <div className="relative p-10 flex flex-col h-full">
-              <div className="absolute -top-4 right-8 bg-primary text-white px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest">
-                Recommended
-              </div>
-
-              <div className="mb-8">
-                <h3 className="text-xl font-bold mb-3">One-Time Payment</h3>
-                <p className="text-on-surface-variant font-medium text-sm leading-relaxed">
-                  £249 for your fully built website. Delivered ready to use.
-                </p>
-              </div>
-
-              <div className="flex items-baseline gap-2 mb-8">
-                <span className="text-5xl font-black text-on-surface">£249</span>
-                <span className="text-on-surface-variant font-bold text-sm uppercase tracking-widest">Fixed</span>
-              </div>
-
-              <div className="space-y-4 mb-10 flex-grow">
-                {[
-                  'Fully built website',
-                  'No ongoing commitment',
-                  'Full source files available',
-                  'Handover within 24 hours',
-                  'Ready to use'
-                ].map((item, i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <div className="mt-1 flex-shrink-0 w-4 h-4 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Check className="w-2.5 h-2.5 text-primary" strokeWidth={3} />
-                    </div>
-                    <span className="text-on-surface-variant font-bold text-xs">{item}</span>
-                  </div>
-                ))}
-              </div>
-
-              <button
-                onClick={() => handleSelectPlan('one_time')}
-                disabled={isLoading !== null}
-                className="w-full py-4 rounded-xl bg-primary text-white font-black shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all text-base flex items-center justify-center gap-2"
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {plans.map((plan, idx) => (
+              <div 
+                key={idx} 
+                className={`p-10 rounded-[3rem] border flex flex-col transition-all duration-500 hover:scale-[1.02] ${plan.popular ? 'bg-primary text-white border-primary shadow-2xl shadow-primary/30' : 'bg-surface-container-low border-outline-variant shadow-lg'}`}
               >
-                {isLoading === 'one_time' ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Claim Ownership <ArrowRight className="w-4 h-4" /></>}
-              </button>
-            </div>
+                {plan.popular && (
+                  <div className="mb-4 inline-block px-4 py-1 bg-white/20 rounded-full text-[10px] font-black uppercase tracking-widest self-start">
+                    Most Popular
+                  </div>
+                )}
+                <h3 className="text-2xl font-black mb-2">{plan.name}</h3>
+                <p className={`text-sm mb-8 font-medium ${plan.popular ? 'text-white/80' : 'text-on-surface-variant'}`}>{plan.desc}</p>
+                
+                <div className="flex items-baseline gap-1 mb-10">
+                  <span className="text-6xl font-black">{plan.price}</span>
+                  <span className={`text-sm font-black uppercase tracking-widest ${plan.popular ? 'text-white/60' : 'text-on-surface-variant'}`}>{plan.period}</span>
+                </div>
+
+                <div className="space-y-4 mb-10 flex-grow">
+                  {plan.features.map((feature, fIdx) => (
+                    <div key={fIdx} className="flex items-center gap-3">
+                      <div className={`w-5 h-5 rounded-full flex items-center justify-center ${plan.popular ? 'bg-white/20' : 'bg-primary/10'}`}>
+                        <Check className={`w-3 h-3 ${plan.popular ? 'text-white' : 'text-primary'}`} strokeWidth={4} />
+                      </div>
+                      <span className="text-sm font-bold">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <Link 
+                  to="/signup" 
+                  className={`py-4 rounded-2xl font-black text-center transition-all flex items-center justify-center gap-2 ${plan.popular ? 'bg-white text-primary hover:brightness-110' : 'bg-primary text-white hover:shadow-lg hover:shadow-primary/20'}`}
+                >
+                  {plan.cta} <ArrowRight size={18} />
+                </Link>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-20 text-center bg-surface-container-low p-12 rounded-[4rem] border border-outline-variant border-dashed">
+            <h3 className="text-3xl font-black text-on-surface mb-4">Need a custom enterprise solution?</h3>
+            <p className="text-on-surface-variant font-medium mb-8">We offer bulk discounts for agencies and multiple brand management.</p>
+            <Link to="/contact" className="inline-flex items-center gap-2 text-primary font-black uppercase tracking-widest hover:gap-4 transition-all">
+              Contact Sales <ArrowRight size={16} />
+            </Link>
           </div>
         </div>
+      </main>
 
-        <div className="mt-12 text-center">
-           <Link to="/signup" className="inline-flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors font-bold text-sm">
-             <ArrowLeft size={16} /> Back to Application
-           </Link>
-        </div>
-      </div>
+      <Footer />
     </div>
   );
 };
 
-export default Pricing;
+export default PricingPage;

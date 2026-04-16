@@ -3,7 +3,10 @@ import LandingPage from './LandingPage';
 import Login from './Login';
 import Signup from './Signup';
 import ForgotPassword from './ForgotPassword';
+import Checkout from './Checkout';
 import Pricing from './Pricing';
+import ServicePage from './ServicePage';
+import LocalSEOPage from './LocalSEOPage';
 import Dashboard from './Dashboard';
 import Profile from './Profile';
 import Websites from './Websites';
@@ -50,7 +53,10 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/checkout" element={<Checkout />} />
             <Route path="/pricing" element={<Pricing />} />
+            <Route path="/services/:niche" element={<ServicePage />} />
+            <Route path="/services/:niche/:city" element={<LocalSEOPage />} />
             <Route path="/our-brands" element={<OurBrands />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-conditions" element={<TermsConditions />} />
