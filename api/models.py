@@ -54,11 +54,32 @@ class ClientApplication(models.Model):
     testimonials = models.TextField(blank=True, null=True)
     branding_colors = models.CharField(max_length=255)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    progress = models.IntegerField(default=0)  # 0 to 100
+    is_reviewed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='applications')
 
     def __str__(self):
         return self.company_name
+
+class Feedback(models.Model):
+    application = models.ForeignKey(ClientApplication, on_delete=models.CASCADE, related_name='feedbacks')
+    section_name = models.CharField(max_length=255)
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_resolved = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Feedback for {self.application.company_name} - {self.section_name}"
+
+class Attachment(models.Model):
+    application = models.ForeignKey(ClientApplication, on_delete=models.CASCADE, related_name='attachments')
+    file = models.FileField(upload_to='application_attachments/')
+    filename = models.CharField(max_length=255)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Attachment for {self.application.company_name}: {self.filename}"
 
 class ApplicationImage(models.Model):
     application = models.ForeignKey(ClientApplication, on_delete=models.CASCADE, related_name='images')

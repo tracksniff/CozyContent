@@ -1,4 +1,4 @@
-import google.generativeai as genai
+import anthropic
 import os
 import logging
 import json
@@ -9,38 +9,42 @@ logger = logging.getLogger(__name__)
 
 def generate_website_code(application_data, retries=3, delay=5):
     """
-    Generate React + Vite codebase based on application data using Gemini API.
+    Generate React + Vite codebase based on application data using the Claude API.
     Includes retry logic for rate limits.
     """
-    api_key = os.getenv("GEMINI_API_KEY")
+    api_key = os.getenv("ANTHROPIC_API_KEY")
     if not api_key:
-        logger.error("GEMINI_API_KEY not found")
+        logger.error("ANTHROPIC_API_KEY not found")
         return None
 
-    genai.configure(api_key=api_key)
+    # claude-sonnet-4-6: best balance of intelligence and speed for large code generation tasks.
+    # Swap to "claude-opus-4-6" for maximum reasoning on the most complex projects.
+    client = anthropic.Anthropic(api_key=api_key)
+    MODEL = "claude-sonnet-4-6"
 
-    # gemini-2.5-pro: Google's most advanced reasoning model — state-of-the-art
-    # for complex coding tasks, web app generation, and agentic workflows.
-    model = genai.GenerativeModel(
-        model_name="gemini-2.5-pro",
-        generation_config=genai.GenerationConfig(
-            temperature=0.4,  # Low temperature for deterministic, correct code
-            top_p=0.95,
-            max_output_tokens=32768,  # Large budget for full multi-file codebases
-        ),
-    )
-
-    prompt = f"""
+    system_prompt = """\
 You are a senior full-stack software engineer and UI/UX architect with 10+ years of
 experience building production-grade React applications. You specialise in modern,
 accessible, and visually stunning web interfaces that convert visitors into customers.
 
+Your code is always:
+- Complete and production-ready — no stubs, no placeholders, no TODOs.
+- Strongly typed (TypeScript interfaces; no `any`).
+- Cleanly structured with single-responsibility components (~120 lines max per file).
+- Accessible: semantic HTML5, ARIA labels, keyboard navigation, contrast >= 4.5:1.
+- Responsive: mobile-first, breakpoints at sm (640 px), md (768 px), lg (1024 px).
+
+You ALWAYS respond with a single raw JSON object. Keys are relative file paths;
+values are the complete file contents as strings. No markdown fences, no explanation,
+no preamble, no postamble — ONLY the JSON object.\
+"""
+
+    user_prompt = f"""
 ════════════════════════════════════════════════════════
 TASK
 ════════════════════════════════════════════════════════
 Generate a complete, production-ready React + Vite + TypeScript + Tailwind CSS website
-for the company described below. Every file must be fully implemented — no stubs, no
-placeholders, no TODOs.
+for the company described below.
 
 ════════════════════════════════════════════════════════
 COMPANY DETAILS
@@ -56,7 +60,7 @@ Brand Colors : {application_data["branding_colors"]}
 ════════════════════════════════════════════════════════
 DESIGN PRINCIPLES  (follow strictly)
 ════════════════════════════════════════════════════════
-1. Visual Hierarchy   — clear H1 → H2 → body type scale; whitespace-driven layout.
+1. Visual Hierarchy   — clear H1 -> H2 -> body type scale; whitespace-driven layout.
 2. Color System       — derive a full palette from the brand colors: primary,
                         primary-dark, accent, neutral-light, neutral-dark, surface, text.
                         Define them as CSS custom properties in index.css.
@@ -66,7 +70,7 @@ DESIGN PRINCIPLES  (follow strictly)
 5. Motion             — subtle entrance animations (Framer Motion or CSS transitions);
                         no gratuitous movement. Respect prefers-reduced-motion.
 6. Accessibility      — semantic HTML5, ARIA labels, keyboard-navigable nav, color
-                        contrast ≥ 4.5:1 for body text, focus-visible rings.
+                        contrast >= 4.5:1 for body text, focus-visible rings.
 7. Responsiveness     — mobile-first; breakpoints: sm (640 px), md (768 px), lg (1024 px).
 8. Images             — use https://picsum.photos/seed/<unique-seed>/W/H for every
                         image placeholder. Choose seeds related to the industry.
@@ -78,12 +82,12 @@ ARCHITECTURE & DESIGN PATTERNS  (follow strictly)
 ════════════════════════════════════════════════════════
 - Feature-based folder structure:
     src/
-      components/     ← shared UI atoms (Button, Card, SectionTitle, …)
-      sections/       ← page sections (Hero, Services, Testimonials, Contact, …)
-      hooks/          ← custom hooks (useIntersectionObserver for scroll-reveal, …)
-      types/          ← TypeScript interfaces / types
-      utils/          ← helpers
-      assets/         ← (empty; images served via URL)
+      components/     <- shared UI atoms (Button, Card, SectionTitle, ...)
+      sections/       <- page sections (Hero, Services, Testimonials, Contact, ...)
+      hooks/          <- custom hooks (useIntersectionObserver for scroll-reveal, ...)
+      types/          <- TypeScript interfaces / types
+      utils/          <- helpers
+      assets/         <- (empty; images served via URL)
       App.tsx
       main.tsx
       index.css
@@ -136,21 +140,21 @@ REQUIRED FILES
 ════════════════════════════════════════════════════════
 Produce ALL of the following (and any additional files your architecture requires):
 
-  package.json          ← scripts: dev, build, preview, lint
+  package.json          <- scripts: dev, build, preview, lint
   vite.config.ts
   tsconfig.json
   tsconfig.node.json
   index.html
-  tailwind.config.ts    ← extend theme with brand color tokens
+  tailwind.config.ts    <- extend theme with brand color tokens
   postcss.config.js
   .eslintrc.cjs
   src/main.tsx
   src/App.tsx
-  src/index.css         ← CSS custom properties + Tailwind base
+  src/index.css         <- CSS custom properties + Tailwind base
   src/types/index.ts
-  src/utils/cn.ts       ← clsx + tailwind-merge helper
+  src/utils/cn.ts       <- clsx + tailwind-merge helper
   src/hooks/useScrollReveal.ts
-  src/hooks/useCounter.ts   ← animated counter hook
+  src/hooks/useCounter.ts   <- animated counter hook
   src/components/Button.tsx
   src/components/Card.tsx
   src/components/SectionTitle.tsx
@@ -180,8 +184,15 @@ Example shape (do not include this example in your output):
 
     for attempt in range(retries):
         try:
-            response = model.generate_content(prompt)
-            text = response.text.strip()
+            response = client.messages.create(
+                model=MODEL,
+                max_tokens=16000,  # Large budget for full multi-file codebases
+                temperature=0.4,  # Low temperature for deterministic, correct code
+                system=system_prompt,
+                messages=[{"role": "user", "content": user_prompt}],
+            )
+
+            text = response.content[0].text.strip()
 
             # Strip markdown code fences if the model wrapped the JSON
             if text.startswith("```json"):
@@ -196,27 +207,33 @@ Example shape (do not include this example in your output):
 
         except json.JSONDecodeError as e:
             logger.error(f"JSON parse error on attempt {attempt + 1}: {e}")
-            # If not the last attempt, retry immediately (model may have truncated)
             if attempt < retries - 1:
-                logger.warning("Retrying due to malformed JSON response…")
+                logger.warning("Retrying due to malformed JSON response...")
+                time.sleep(delay)
+                continue
+            return None
+
+        except anthropic.RateLimitError as e:
+            if attempt < retries - 1:
+                wait_time = delay * (2**attempt)  # Exponential backoff: 5s, 10s, 20s
+                logger.warning(
+                    f"Claude rate limit hit. Retrying in {wait_time}s... "
+                    f"(Attempt {attempt + 1}/{retries})"
+                )
+                time.sleep(wait_time)
+                continue
+            logger.error(f"Rate limit exceeded after {retries} attempts: {e}")
+            return None
+
+        except anthropic.APIError as e:
+            logger.error(f"Claude API error on attempt {attempt + 1}: {e}")
+            if attempt < retries - 1:
                 time.sleep(delay)
                 continue
             return None
 
         except Exception as e:
-            error_str = str(e)
-            if (
-                "429" in error_str or "quota" in error_str.lower()
-            ) and attempt < retries - 1:
-                wait_time = delay * (2**attempt)  # Exponential backoff: 5s, 10s, 20s
-                logger.warning(
-                    f"Gemini Rate Limit hit. Retrying in {wait_time}s…. "
-                    f"(Attempt {attempt + 1}/{retries})"
-                )
-                time.sleep(wait_time)
-                continue
-            else:
-                logger.error(f"Error generating website code: {error_str}")
-                return None
+            logger.error(f"Unexpected error generating website code: {e}")
+            return None
 
     return None

@@ -1,5 +1,15 @@
 from rest_framework import serializers
-from .models import User, Website, ClientApplication, ApplicationImage
+from .models import User, Website, ClientApplication, ApplicationImage, Feedback, Attachment
+
+class FeedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feedback
+        fields = ('id', 'section_name', 'comment', 'created_at', 'is_resolved')
+
+class AttachmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Attachment
+        fields = ('id', 'file', 'filename', 'uploaded_at')
 
 class ApplicationImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -8,6 +18,8 @@ class ApplicationImageSerializer(serializers.ModelSerializer):
 
 class ClientApplicationSerializer(serializers.ModelSerializer):
     images = ApplicationImageSerializer(many=True, read_only=True)
+    feedbacks = FeedbackSerializer(many=True, read_only=True)
+    attachments = AttachmentSerializer(many=True, read_only=True)
     uploaded_images = serializers.ListField(
         child=serializers.ImageField(max_length=1000000, allow_empty_file=False, use_url=False),
         write_only=True,
@@ -18,10 +30,11 @@ class ClientApplicationSerializer(serializers.ModelSerializer):
         model = ClientApplication
         fields = (
             'id', 'company_name', 'website_url', 'industry', 'services_list',
-            'city_location', 'testimonials', 'branding_colors', 'created_at',
-            'images', 'uploaded_images'
+            'city_location', 'testimonials', 'branding_colors', 'status', 
+            'progress', 'is_reviewed', 'created_at', 'images', 'uploaded_images',
+            'feedbacks', 'attachments'
         )
-        read_only_fields = ('id', 'created_at', 'images')
+        read_only_fields = ('id', 'created_at', 'images', 'feedbacks', 'attachments')
 
     def create(self, validated_data):
         uploaded_images = validated_data.pop('uploaded_images', [])

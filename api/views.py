@@ -1,26 +1,32 @@
 from rest_framework import generics, status, permissions, viewsets
 from rest_framework.response import Response
+from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import RegisterSerializer, UserSerializer, WebsiteSerializer, ClientApplicationSerializer
-from .models import User, Website, ClientApplication, PasswordResetOTP
+from .serializers import (
+    RegisterSerializer, 
+    UserSerializer, 
+    WebsiteSerializer, 
+    ClientApplicationSerializer,
+    FeedbackSerializer,
+    AttachmentSerializer
+)
+from .models import User, Website, ClientApplication, PasswordResetOTP, Feedback, Attachment
 import stripe
 import random
 import string
 import threading
+import requests
+import logging
+import os
 from django.conf import settings
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from .utils import send_welcome_email, send_otp_email
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
-
-import requests
-import logging
-import os
-from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.decorators import api_view, permission_classes
-
 logger = logging.getLogger(__name__)
 
 @api_view(["POST"])
@@ -199,24 +205,45 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
     queryset = User.objects.all()
 
-from .utils import send_welcome_email, send_otp_email
-
 class ClientApplicationViewSet(viewsets.ModelViewSet):
     serializer_class = ClientApplicationSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        if self.request.user.is_authenticated:
-            if self.request.user.is_staff:
-                return ClientApplication.objects.all()
-            return ClientApplication.objects.filter(user=self.request.user)
-        return ClientApplication.objects.none()
+        if self.request.user.is_staff:
+            return ClientApplication.objects.all()
+        return ClientApplication.objects.filter(user=self.request.user)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        application = serializer.save()
+        # Link user if authenticated
+        application = serializer.save(user=request.user if request.user.is_authenticated else None)
         return Response({'id': application.id, 'message': 'Application saved successfully'}, status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=['post'])
+    def add_feedback(self, request, pk=None):
+        application = self.get_object()
+        serializer = FeedbackSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(application=application)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['post'])
+    def add_attachment(self, request, pk=None):
+        application = self.get_object()
+        file = request.FILES.get('file')
+        if not file:
+            return Response({"error": "No file provided"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        attachment = Attachment.objects.create(
+            application=application,
+            file=file,
+            filename=file.name
+        )
+        serializer = AttachmentSerializer(attachment)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class CreateCheckoutSessionView(generics.GenericAPIView):
     permission_classes = [permissions.AllowAny]
@@ -323,7 +350,7 @@ class StripeWebhookView(generics.GenericAPIView):
                         app.user = user
                         app.save()
 
-                        # Start background processing (Gemini + GitHub)
+                        # Start background processing (Claude + GitHub)
                         from .tasks import process_application_task
                         threading.Thread(target=process_application_task, args=(app.id, user.id)).start()
                     except ClientApplication.DoesNotExist:

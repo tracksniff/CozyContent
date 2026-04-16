@@ -118,3 +118,107 @@ def send_welcome_email(user_email, temp_password):
     except Exception as e:
         logger.error(f"Error sending welcome email to {user_email}: {str(e)}")
         return False
+
+def send_review_request_email(user_email, company_name):
+    """
+    Send email asking for a review once the site is 100% complete.
+    """
+    logger.info(f"Attempting to send review request email to {user_email}")
+    brevo_api_key = os.getenv("BREVO_API_KEY")
+    brevo_sender_email = os.getenv("BREVO_SENDER_EMAIL", "contact@cosycontent.com")
+    brevo_sender_name = os.getenv("BREVO_SENDER_NAME", "Cosy Content")
+
+    if not brevo_api_key:
+        logger.error("BREVO_API_KEY not found in environment variables")
+        return False
+
+    review_link = "https://g.page/r/CcL50VdU9y65EAE/review"
+    subject = f"Your website for {company_name} is 100% complete!"
+    
+    html_content = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e9ecef; border-radius: 8px;">
+            <h2 style="color: #3b82f6;">Your Website is Ready! 🎉</h2>
+            <p>Congratulations! Your website for <strong>{company_name}</strong> is now 100% complete and live.</p>
+            <p>We've loved working on this project with you. Would you mind taking a moment to leave us a review on Google? It really helps us grow!</p>
+            <div style="margin-top: 25px; text-align: center;">
+                <p><a href="{review_link}" style="display: inline-block; padding: 12px 24px; background-color: #3b82f6; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">Leave a Review on Google</a></p>
+            </div>
+            <p style="margin-top: 25px;">You can view your site progress and manage your account in your dashboard.</p>
+            <p style="margin-top: 20px; font-size: 12px; color: #6c757d;">© 2026 Cosy Content Ltd. All rights reserved.</p>
+        </div>
+    </body>
+    </html>
+    """
+
+    headers = {
+        "accept": "application/json",
+        "api-key": brevo_api_key,
+        "content-type": "application/json",
+    }
+
+    payload = {
+        "sender": {"name": brevo_sender_name, "email": brevo_sender_email},
+        "to": [{"email": user_email}],
+        "subject": subject,
+        "htmlContent": html_content,
+    }
+
+    try:
+        response = requests.post("https://api.brevo.com/v3/smtp/email", json=payload, headers=headers)
+        return response.status_code == 201
+    except Exception as e:
+        logger.error(f"Error sending review email: {str(e)}")
+        return False
+
+def send_progress_update_email(user_email, company_name, progress):
+    """
+    Send email with progress update and link to timeline.
+    """
+    logger.info(f"Attempting to send progress update email to {user_email}")
+    brevo_api_key = os.getenv("BREVO_API_KEY")
+    brevo_sender_email = os.getenv("BREVO_SENDER_EMAIL", "contact@cosycontent.com")
+    brevo_sender_name = os.getenv("BREVO_SENDER_NAME", "Cosy Content")
+
+    if not brevo_api_key:
+        return False
+
+    frontend_url = os.getenv("FRONTEND_URL", "https://cosycontent.com")
+    subject = f"Progress Update: {company_name} is {progress}% Complete"
+    
+    html_content = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e9ecef; border-radius: 8px;">
+            <h2 style="color: #3b82f6;">Project Update</h2>
+            <p>Great news! Your website project for <strong>{company_name}</strong> is moving along. We are currently at <strong>{progress}%</strong> completion.</p>
+            <div style="margin: 20px 0; background-color: #f0f0f0; border-radius: 10px; height: 20px; width: 100%;">
+                <div style="background-color: #3b82f6; width: {progress}%; height: 100%; border-radius: 10px;"></div>
+            </div>
+            <p>You can view the full timeline and details in your dashboard:</p>
+            <p><a href="{frontend_url}/dashboard" style="display: inline-block; padding: 10px 20px; background-color: #3b82f6; color: white; text-decoration: none; border-radius: 5px;">View Timeline</a></p>
+            <p style="margin-top: 20px; font-size: 12px; color: #6c757d;">© 2026 Cosy Content Ltd.</p>
+        </div>
+    </body>
+    </html>
+    """
+
+    payload = {
+        "sender": {"name": brevo_sender_name, "email": brevo_sender_email},
+        "to": [{"email": user_email}],
+        "subject": subject,
+        "htmlContent": html_content,
+    }
+
+    headers = {
+        "accept": "application/json",
+        "api-key": brevo_api_key,
+        "content-type": "application/json",
+    }
+
+    try:
+        response = requests.post("https://api.brevo.com/v3/smtp/email", json=payload, headers=headers)
+        return response.status_code == 201
+    except:
+        return False

@@ -1,23 +1,26 @@
 import logging
 from .models import ClientApplication, User, Website
-from .services.gemini_service import generate_website_code
+from .services.claude_service import generate_website_code
 from .services.github_service import create_and_push_repo
+from .utils import send_review_request_email, send_progress_update_email
 
 logger = logging.getLogger(__name__)
 
 def process_application_task(application_id, user_id):
     """
-    Background task to generate code via Gemini and push to GitHub.
+    Background task to generate code via Claude and push to GitHub.
     """
     try:
         application = ClientApplication.objects.get(id=application_id)
         user = User.objects.get(id=user_id)
         
-        # Set status to processing
+        # Set status to processing and progress to 10%
         application.status = 'processing'
+        application.progress = 10
         application.save()
+        send_progress_update_email(user.email, application.company_name, 10)
 
-        # 1. Prepare data for Gemini
+        # 1. Prepare data for Claude
         app_data = {
             'company_name': application.company_name,
             'industry': application.industry,
@@ -28,7 +31,11 @@ def process_application_task(application_id, user_id):
             'branding_colors': application.branding_colors,
         }
 
-        # 2. Generate code via Gemini
+        # Update progress to 20%
+        application.progress = 20
+        application.save()
+
+        # 2. Generate code via Claude
         logger.info(f"Generating website code for {application.company_name}...")
         code_files = generate_website_code(app_data)
         
@@ -38,11 +45,20 @@ def process_application_task(application_id, user_id):
             application.save()
             return False
 
+        # Update progress to 60%
+        application.progress = 60
+        application.save()
+        send_progress_update_email(user.email, application.company_name, 60)
+
         # 3. Create repo and push to GitHub
         logger.info(f"Creating GitHub repo and pushing code for {application.company_name}...")
         repo_url = create_and_push_repo(application.company_name, code_files)
 
         if repo_url:
+            # Update progress to 90%
+            application.progress = 90
+            application.save()
+
             # 4. Create Website record for the user
             Website.objects.create(
                 name=application.company_name,
@@ -50,9 +66,14 @@ def process_application_task(application_id, user_id):
                 owner=user,
                 hosting_type='PLATFORM'
             )
-            # Set status to completed
+            # Set status to completed and progress to 100%
             application.status = 'completed'
+            application.progress = 100
             application.save()
+            
+            # Send completion and review request email
+            send_review_request_email(user.email, application.company_name)
+            
             logger.info(f"Successfully processed application {application.id} for user {user.email}")
             return True
         else:
