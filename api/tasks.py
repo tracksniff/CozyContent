@@ -57,30 +57,30 @@ def process_application_task(application_id, user_id):
             repo_url = create_and_push_repo(application.company_name, code_files)
         except Exception as push_error:
             logger.error(f"GitHub push failed: {str(push_error)}")
-
         if repo_url:
-            # Update progress to 90%
-            application.progress = 90
+            # Update progress to 80%
+            application.progress = 80
             application.save()
 
-            # 4. Create Website record for the user
+            # 4. Create Website record for the user (only for monthly, or wait until complete)
             Website.objects.create(
                 name=application.company_name,
                 url=repo_url,
                 owner=user,
-                hosting_type='PLATFORM'
+                hosting_type="PLATFORM",
             )
-            # Set status to completed and progress to 100%
-            application.status = 'completed'
-            application.progress = 100
-            application.save()
             
-            # Send completion and review request email
-            send_review_request_email(user.email, application.company_name)
+            # Send notification to user that site is ready for review (80%)
+            send_progress_update_email(user.email, application.company_name, 80)
             
-            logger.info(f"Successfully processed application {application.id} for user {user.email}")
+            # For one-time buyers, send the transfer request email
+            if application.plan_type == 'one_time':
+                from .utils import send_github_transfer_email
+                send_github_transfer_email(user.email, application.company_name)
+
+            logger.info(f"Site built to 80% for {application.company_name}. Awaiting admin deployment/review.")
             return True
-        else:
+
             # SAVE BACKUP IF GITHUB FAILS
             import json
             import os

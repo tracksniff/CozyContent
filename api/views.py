@@ -300,7 +300,34 @@ class ClientApplicationViewSet(viewsets.ModelViewSet):
         serializer = AttachmentSerializer(attachment)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=["post"], permission_classes=[permissions.IsAdminUser])
+    @action(detail=True, methods=['post'])
+    def submit_github_username(self, request, pk=None):
+        application = self.get_object()
+        github_username = request.data.get('github_username')
+        if not github_username:
+            return Response({"error": "GitHub username is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        application.github_username_for_transfer = github_username
+        application.save()
+
+        # Notify admin of transfer request
+        subject = f"GitHub Transfer Request: {application.company_name}"
+        html_content = f"User {application.user.email} has requested a GitHub transfer for {application.company_name}. GitHub Username: {github_username}"
+
+        # Use simple mail to admin
+        brevo_api_key = os.getenv("BREVO_API_KEY")
+        if brevo_api_key:
+            payload = {
+                "sender": {"name": "System", "email": "system@cosycontent.com"},
+                "to": [{"email": "contact@cosycontent.com"}],
+                "subject": subject,
+                "htmlContent": html_content,
+            }
+            requests.post("https://api.brevo.com/v3/smtp/email", json=payload, headers={"api-key": brevo_api_key, "content-type": "application/json"})
+
+        return Response({"success": True, "message": "GitHub username submitted successfully!"})
+
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAdminUser])
     def repush_to_github(self, request, pk=None):
         application = self.get_object()
 
@@ -433,6 +460,7 @@ class StripeWebhookView(generics.GenericAPIView):
             metadata = getattr(session, "metadata", {})
             user_id = getattr(metadata, "user_id", None)
             application_id = getattr(metadata, "application_id", None)
+            plan_type = getattr(metadata, "plan_type", None)
 
             customer_details = getattr(session, "customer_details", None)
             email = (
@@ -469,6 +497,8 @@ class StripeWebhookView(generics.GenericAPIView):
                     try:
                         app = ClientApplication.objects.get(id=application_id)
                         app.user = user
+                        if plan_type:
+                            app.plan_type = plan_type
                         app.save()
 
                         # Start background processing (Claude + GitHub)

@@ -54,6 +54,8 @@ class ClientApplication(models.Model):
     testimonials = models.TextField(blank=True, null=True)
     branding_colors = models.CharField(max_length=255)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    plan_type = models.CharField(max_length=20, blank=True, null=True) # 'one_time' or 'monthly'
+    github_username_for_transfer = models.CharField(max_length=255, blank=True, null=True)
     progress = models.IntegerField(default=0)  # 0 to 100
     is_reviewed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

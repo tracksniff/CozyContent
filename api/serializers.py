@@ -31,6 +31,7 @@ class ClientApplicationSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'company_name', 'website_url', 'industry', 'services_list',
             'city_location', 'testimonials', 'branding_colors', 'status', 
+            'plan_type', 'github_username_for_transfer',
             'progress', 'is_reviewed', 'created_at', 'images', 'uploaded_images',
             'feedbacks', 'attachments'
         )

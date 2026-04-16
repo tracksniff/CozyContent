@@ -222,3 +222,53 @@ def send_progress_update_email(user_email, company_name, progress):
         return response.status_code == 201
     except:
         return False
+
+def send_github_transfer_email(user_email, company_name):
+    """
+    Send email to one-time buyer asking for GitHub username for repo transfer.
+    """
+    logger.info(f"Attempting to send GitHub transfer email to {user_email}")
+    brevo_api_key = os.getenv("BREVO_API_KEY")
+    brevo_sender_email = os.getenv("BREVO_SENDER_EMAIL", "contact@cosycontent.com")
+    brevo_sender_name = os.getenv("BREVO_SENDER_NAME", "Cosy Content")
+
+    if not brevo_api_key:
+        return False
+
+    frontend_url = os.getenv("FRONTEND_URL", "https://cosycontent.com")
+    subject = f"Action Required: Transferring your {company_name} repository"
+    
+    html_content = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e9ecef; border-radius: 8px;">
+            <h2 style="color: #3b82f6;">Ready to Transfer Your Code!</h2>
+            <p>Your website for <strong>{company_name}</strong> has been generated and pushed to our secure staging repository.</p>
+            <p>Since you chose the One-Time Purchase plan, we are ready to transfer full ownership of the source code to you.</p>
+            <p>Please click the link below to enter your GitHub username or email so we can initiate the transfer:</p>
+            <p><a href="{frontend_url}/dashboard?action=transfer" style="display: inline-block; padding: 12px 24px; background-color: #3b82f6; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">Submit GitHub Username</a></p>
+            <p style="margin-top: 20px;">Once you submit your username, our team will initiate the transfer on GitHub. You will receive an invitation from GitHub to accept the repository.</p>
+            <p style="margin-top: 20px; font-size: 12px; color: #6c757d;">© 2026 Cosy Content Ltd.</p>
+        </div>
+    </body>
+    </html>
+    """
+
+    payload = {
+        "sender": {"name": brevo_sender_name, "email": brevo_sender_email},
+        "to": [{"email": user_email}],
+        "subject": subject,
+        "htmlContent": html_content,
+    }
+
+    headers = {
+        "accept": "application/json",
+        "api-key": brevo_api_key,
+        "content-type": "application/json",
+    }
+
+    try:
+        response = requests.post("https://api.brevo.com/v3/smtp/email", json=payload, headers=headers)
+        return response.status_code == 201
+    except:
+        return False
