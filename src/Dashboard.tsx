@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { Plus, Trash2, ExternalLink, Globe, Search, Sparkles, Cpu, Palette, Zap, Star, Clock, CheckCircle2, Upload, MessageSquare, Send } from 'lucide-react';
+import { Plus, Trash2, ExternalLink, Globe, Search, Sparkles, Cpu, Palette, Zap, Star, Clock, CheckCircle2, Upload, MessageSquare, Send, RefreshCcw } from 'lucide-react';
 import Sidebar from './Sidebar';
 import toast from 'react-hot-toast';
 
@@ -27,9 +27,27 @@ const Dashboard: React.FC = () => {
   const [newWebsite, setNewWebsite] = useState({ name: '', url: '' });
   const [searchQuery, setSearchQuery] = useState('');
   const [isUploading, setIsUploading] = useState(false);
+  const [isRetrying, setIsRetrying] = useState<{ [key: number]: boolean }>({});
   const [feedback, setFeedback] = useState<{ [key: number]: string }>({});
   const { token, user, loading: authLoading } = useAuth();
   const location = useLocation();
+
+  const handleRetryPush = async (applicationId: number) => {
+    if (!token) return;
+    setIsRetrying({ ...isRetrying, [applicationId]: true });
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/applications/${applicationId}/repush_to_github/`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Successfully pushed to GitHub!');
+      fetchData();
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.response?.data?.error || 'GitHub push failed again.');
+    } finally {
+      setIsRetrying({ ...isRetrying, [applicationId]: false });
+    }
+  };
 
   const handleFileUpload = async (applicationId: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -343,18 +361,37 @@ const Dashboard: React.FC = () => {
           ))}
 
           {/* Admin Feedback Management */}
-          {user?.is_staff && applications.some(app => app.feedbacks?.length > 0 || app.attachments?.length > 0) && (
+          {user?.is_staff && applications.some(app => app.feedbacks?.length > 0 || app.attachments?.length > 0 || app.status === 'failed') && (
             <div className="mb-12">
-              <h2 className="text-2xl font-black text-on-surface tracking-tight mb-6">Customer Requests</h2>
+              <h2 className="text-2xl font-black text-on-surface tracking-tight mb-6">Customer Requests & Failed Builds</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {applications.filter(app => app.feedbacks?.length > 0 || app.attachments?.length > 0).map(app => (
-                  <div key={app.id} className="bg-surface-container-low p-6 rounded-[2rem] border border-outline-variant shadow-sm">
+                {applications.filter(app => app.feedbacks?.length > 0 || app.attachments?.length > 0 || app.status === 'failed').map(app => (
+                  <div key={app.id} className="bg-surface-container-low p-6 rounded-[2rem] border border-outline-variant shadow-sm flex flex-col">
                     <div className="flex justify-between items-start mb-4">
-                      <h3 className="font-bold text-on-surface">{app.company_name}</h3>
+                      <div className="flex flex-col">
+                        <h3 className="font-bold text-on-surface">{app.company_name}</h3>
+                        <span className={`text-[9px] font-black uppercase tracking-widest mt-1 ${app.status === 'failed' ? 'text-red-500' : 'text-primary'}`}>
+                          Status: {app.status}
+                        </span>
+                      </div>
                       <div className="px-2 py-0.5 bg-surface border border-outline-variant rounded text-[10px] font-bold">
                         App ID: {app.id}
                       </div>
                     </div>
+
+                    {app.status === 'failed' && (
+                      <div className="mb-6 p-4 bg-red-500/5 border border-red-500/20 rounded-2xl">
+                        <p className="text-[10px] font-bold text-red-600 mb-3 uppercase tracking-wider">GitHub Push Failed</p>
+                        <button 
+                          onClick={() => handleRetryPush(app.id)}
+                          disabled={isRetrying[app.id]}
+                          className="w-full py-3 bg-on-surface text-surface rounded-xl text-[10px] font-black uppercase tracking-widest hover:brightness-125 transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
+                        >
+                          {isRetrying[app.id] ? <RefreshCcw size={14} className="animate-spin" /> : <RefreshCcw size={14} />}
+                          Retry GitHub Push
+                        </button>
+                      </div>
+                    )}
                     
                     {app.feedbacks?.length > 0 && (
                       <div className="mb-4 space-y-2">
