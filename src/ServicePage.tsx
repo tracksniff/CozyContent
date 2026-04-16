@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Shield, Zap, Clock, ThumbsUp, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Shield, ArrowRight, CheckCircle2 } from 'lucide-react';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
