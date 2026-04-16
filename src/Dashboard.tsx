@@ -29,7 +29,25 @@ const Dashboard: React.FC = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [isRetrying, setIsRetrying] = useState<{ [key: number]: boolean }>({});
   const [feedback, setFeedback] = useState<{ [key: number]: string }>({});
+  const [githubUsernames, setGithubUsernames] = useState<{ [key: number]: string }>({});
   const { token, user, loading: authLoading } = useAuth();
+
+  const handleSubmitGithub = async (applicationId: number) => {
+    if (!githubUsernames[applicationId] || !token) return;
+
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/applications/${applicationId}/submit_github_username/`, {
+        github_username: githubUsernames[applicationId]
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('GitHub username submitted!');
+      fetchData();
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to submit GitHub username.');
+    }
+  };
   const location = useLocation();
 
   const handleRetryPush = async (applicationId: number) => {
@@ -263,9 +281,21 @@ const Dashboard: React.FC = () => {
                   {[
                     { label: 'Application Started', target: 0, desc: 'Your project has been received.' },
                     { label: 'AI Generation', target: 20, desc: 'Claude is building your codebase.' },
-                    { label: 'GitHub Deployment', target: 60, desc: 'Code is being pushed to your repository.' },
-                    { label: 'Live Preview (80%)', target: 80, desc: 'Review your site and provide feedback.' },
-                    { label: 'Final Handover', target: 100, desc: 'Site is 100% complete and live.' }
+                    { label: 'GitHub Deployment', target: 60, desc: 'Code is being pushed to our staging.' },
+                    { 
+                      label: app.plan_type === 'one_time' ? 'Ready for Transfer (80%)' : 'Awaiting Deployment (80%)', 
+                      target: 80, 
+                      desc: app.plan_type === 'one_time' 
+                        ? 'We need your GitHub details to transfer the code.' 
+                        : 'Our team is reviewing and preparing your live environment.' 
+                    },
+                    { 
+                      label: app.plan_type === 'one_time' ? 'Code Transferred' : 'Site Live', 
+                      target: 100, 
+                      desc: app.plan_type === 'one_time' 
+                        ? 'Ownership has been transferred to your GitHub.' 
+                        : 'Your professional website is now 100% complete and live.' 
+                    }
                   ].map((step, idx) => {
                     const isDone = app.progress >= step.target;
                     const isCurrent = app.progress >= step.target && (idx === 4 || app.progress < [0, 20, 60, 80, 100][idx+1]);
@@ -287,6 +317,34 @@ const Dashboard: React.FC = () => {
 
               {/* Review & Feedback Section */}
               <div className="space-y-8">
+                {/* GitHub Transfer Box (One-Time Only) */}
+                {app.plan_type === 'one_time' && app.progress >= 80 && !app.github_username_for_transfer && (
+                  <div className="bg-primary p-8 rounded-[2.5rem] text-white shadow-xl relative overflow-hidden group">
+                     <h3 className="text-xl font-black mb-2">Code Ready for Transfer</h3>
+                     <p className="text-white/80 text-sm mb-6 font-medium">Please enter your GitHub username or email to initiate the code transfer.</p>
+                     <div className="flex gap-2">
+                        <input 
+                          className="flex-grow bg-white/10 border border-white/20 rounded-xl px-4 py-3 outline-none focus:bg-white/20 transition-all text-sm placeholder:text-white/40"
+                          placeholder="GitHub Username"
+                          value={githubUsernames[app.id] || ''}
+                          onChange={e => setGithubUsernames({...githubUsernames, [app.id]: e.target.value})}
+                        />
+                        <button 
+                          onClick={() => handleSubmitGithub(app.id)}
+                          className="bg-white text-primary px-6 py-3 rounded-xl font-black text-sm hover:brightness-110 active:scale-95 transition-all"
+                        >
+                          Submit
+                        </button>
+                     </div>
+                  </div>
+                )}
+                
+                {app.plan_type === 'one_time' && app.github_username_for_transfer && app.progress < 100 && (
+                  <div className="bg-surface-container-low p-8 rounded-[2.5rem] border border-outline-variant shadow-sm">
+                    <h3 className="text-lg font-black text-on-surface mb-2">Transfer in Progress</h3>
+                    <p className="text-sm font-medium text-on-surface-variant">Our team is transferring the repository to <strong>{app.github_username_for_transfer}</strong>. You'll receive an email from GitHub shortly.</p>
+                  </div>
+                )}
                 {/* GMB Review Box */}
                 {app.progress >= 80 && (
                   <div className="bg-primary/5 p-8 rounded-[2.5rem] border border-primary/20 shadow-xl relative overflow-hidden group">
