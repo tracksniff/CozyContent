@@ -249,6 +249,53 @@ class ClientApplicationViewSet(viewsets.ModelViewSet):
         serializer = AttachmentSerializer(attachment)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAdminUser])
+    def repush_to_github(self, request, pk=None):
+        application = self.get_object()
+        
+        # Look for backup file
+        import json
+        import os
+        from django.conf import settings
+        from .services.github_service import create_and_push_repo
+        from .utils import send_review_request_email
+        
+        backup_dir = os.path.join(settings.MEDIA_ROOT, 'website_backups')
+        backup_filename = f"app_{application.id}_{application.company_name.lower().replace(' ', '_')}.json"
+        backup_path = os.path.join(backup_dir, backup_filename)
+        
+        if not os.path.exists(backup_path):
+            return Response({"error": "Backup file not found on server"}, status=status.HTTP_404_NOT_FOUND)
+            
+        try:
+            with open(backup_path, 'r') as f:
+                code_files = json.load(f)
+                
+            logger.info(f"Retrying GitHub push for {application.company_name} from backup...")
+            repo_url = create_and_push_repo(application.company_name, code_files)
+            
+            if repo_url:
+                # Success! Create Website and update status
+                Website.objects.create(
+                    name=application.company_name,
+                    url=repo_url,
+                    owner=application.user,
+                    hosting_type='PLATFORM'
+                )
+                application.status = 'completed'
+                application.progress = 100
+                application.save()
+                
+                # Send email
+                if application.user:
+                    send_review_request_email(application.user.email, application.company_name)
+                    
+                return Response({"success": True, "url": repo_url})
+            else:
+                return Response({"error": "GitHub push failed again. Check organization permissions."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 class CreateCheckoutSessionView(generics.GenericAPIView):
     permission_classes = [permissions.AllowAny]
 
