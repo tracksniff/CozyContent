@@ -52,7 +52,11 @@ def process_application_task(application_id, user_id):
 
         # 3. Create repo and push to GitHub
         logger.info(f"Creating GitHub repo and pushing code for {application.company_name}...")
-        repo_url = create_and_push_repo(application.company_name, code_files)
+        repo_url = None
+        try:
+            repo_url = create_and_push_repo(application.company_name, code_files)
+        except Exception as push_error:
+            logger.error(f"GitHub push failed: {str(push_error)}")
 
         if repo_url:
             # Update progress to 90%
@@ -77,7 +81,21 @@ def process_application_task(application_id, user_id):
             logger.info(f"Successfully processed application {application.id} for user {user.email}")
             return True
         else:
-            logger.error(f"Failed to push code to GitHub for {application.company_name}")
+            # SAVE BACKUP IF GITHUB FAILS
+            import json
+            import os
+            from django.conf import settings
+            
+            backup_dir = os.path.join(settings.MEDIA_ROOT, 'website_backups')
+            os.makedirs(backup_dir, exist_ok=True)
+            
+            backup_filename = f"app_{application.id}_{application.company_name.lower().replace(' ', '_')}.json"
+            backup_path = os.path.join(backup_dir, backup_filename)
+            
+            with open(backup_path, 'w') as f:
+                json.dump(code_files, f)
+            
+            logger.error(f"Failed to push code to GitHub for {application.company_name}. Code saved to {backup_path}")
             application.status = 'failed'
             application.save()
             return False
