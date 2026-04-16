@@ -207,7 +207,11 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class ClientApplicationViewSet(viewsets.ModelViewSet):
     serializer_class = ClientApplicationSerializer
-    permission_classes = [permissions.IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action == 'create':
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
 
     def get_queryset(self):
         if self.request.user.is_staff:
