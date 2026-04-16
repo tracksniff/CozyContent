@@ -5,14 +5,21 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import (
-    RegisterSerializer, 
-    UserSerializer, 
-    WebsiteSerializer, 
+    RegisterSerializer,
+    UserSerializer,
+    WebsiteSerializer,
     ClientApplicationSerializer,
     FeedbackSerializer,
-    AttachmentSerializer
+    AttachmentSerializer,
 )
-from .models import User, Website, ClientApplication, PasswordResetOTP, Feedback, Attachment
+from .models import (
+    User,
+    Website,
+    ClientApplication,
+    PasswordResetOTP,
+    Feedback,
+    Attachment,
+)
 import stripe
 import random
 import string
@@ -29,11 +36,12 @@ from .utils import send_welcome_email, send_otp_email
 stripe.api_key = settings.STRIPE_SECRET_KEY
 logger = logging.getLogger(__name__)
 
+
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def contact_us(request):
     """
-    Send contact us email using Brevo API
+    Send contact us email using Brevo API,
     """
     try:
         # Get data from request
@@ -114,14 +122,24 @@ def contact_us(request):
         response = requests.post(brevo_url, json=payload, headers=headers)
 
         if response.status_code == 201:
-            return Response({"success": True, "message": "Message sent successfully!"}, status=status.HTTP_200_OK)
+            return Response(
+                {"success": True, "message": "Message sent successfully!"},
+                status=status.HTTP_200_OK,
+            )
         else:
             logger.error(f"Brevo API error: {response.status_code} - {response.text}")
-            return Response({"error": "Failed to send email."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                {"error": "Failed to send email."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
     except Exception as e:
         logger.error(f"Unexpected error in contact_us view: {str(e)}")
-        return Response({"error": "An unexpected error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(
+            {"error": "An unexpected error occurred."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
 
 class RequestEditView(APIView):
     permission_classes = [IsAuthenticated]
@@ -132,17 +150,26 @@ class RequestEditView(APIView):
         edit_details = request.data.get("details")
 
         if not all([website_id, edit_details]):
-            return Response({"error": "Website ID and details are required"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Website ID and details are required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         try:
             website = Website.objects.get(id=website_id, owner=user)
         except Website.DoesNotExist:
-            return Response({"error": "Website not found or not owned by you"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Website not found or not owned by you"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         # Send email via Brevo
         brevo_api_key = os.getenv("BREVO_API_KEY")
         if not brevo_api_key:
-            return Response({"error": "Email service not configured"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                {"error": "Email service not configured"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
         subject = f"Edit Request for {website.name} from {user.email}"
         html_content = f"""
@@ -164,18 +191,31 @@ class RequestEditView(APIView):
         }
 
         payload = {
-            "sender": {"name": "Cosy Content System", "email": "system@cosycontent.com"},
-            "to": [{"email": "contact@cosycontent.com", "name": "Cosy Content Support"}],
+            "sender": {
+                "name": "Cosy Content System",
+                "email": "system@cosycontent.com",
+            },
+            "to": [
+                {"email": "contact@cosycontent.com", "name": "Cosy Content Support"}
+            ],
             "subject": subject,
             "htmlContent": html_content,
         }
 
-        response = requests.post("https://api.brevo.com/v3/smtp/email", json=payload, headers=headers)
+        response = requests.post(
+            "https://api.brevo.com/v3/smtp/email", json=payload, headers=headers
+        )
 
         if response.status_code == 201:
-            return Response({"success": True, "message": "Edit request sent successfully!"})
+            return Response(
+                {"success": True, "message": "Edit request sent successfully!"}
+            )
         else:
-            return Response({"error": "Failed to send request"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                {"error": "Failed to send request"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -187,11 +227,15 @@ class RegisterView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         refresh = RefreshToken.for_user(user)
-        return Response({
-            "user": UserSerializer(user).data,
-            "access": str(refresh.access_token),
-            "refresh": str(refresh),
-        }, status=status.HTTP_201_CREATED)
+        return Response(
+            {
+                "user": UserSerializer(user).data,
+                "access": str(refresh.access_token),
+                "refresh": str(refresh),
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
 
 class UserDetailView(generics.RetrieveAPIView):
     permission_classes = (permissions.IsAuthenticated,)
@@ -200,16 +244,18 @@ class UserDetailView(generics.RetrieveAPIView):
     def get_object(self):
         return self.request.user
 
+
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
     queryset = User.objects.all()
 
+
 class ClientApplicationViewSet(viewsets.ModelViewSet):
     serializer_class = ClientApplicationSerializer
 
     def get_permissions(self):
-        if self.action == 'create':
+        if self.action == "create":
             return [permissions.AllowAny()]
         return [permissions.IsAuthenticated()]
 
@@ -222,10 +268,15 @@ class ClientApplicationViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         # Link user if authenticated
-        application = serializer.save(user=request.user if request.user.is_authenticated else None)
-        return Response({'id': application.id, 'message': 'Application saved successfully'}, status=status.HTTP_201_CREATED)
+        application = serializer.save(
+            user=request.user if request.user.is_authenticated else None
+        )
+        return Response(
+            {"id": application.id, "message": "Application saved successfully"},
+            status=status.HTTP_201_CREATED,
+        )
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=["post"])
     def add_feedback(self, request, pk=None):
         application = self.get_object()
         serializer = FeedbackSerializer(data=request.data)
@@ -234,76 +285,91 @@ class ClientApplicationViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=["post"])
     def add_attachment(self, request, pk=None):
         application = self.get_object()
-        file = request.FILES.get('file')
+        file = request.FILES.get("file")
         if not file:
-            return Response({"error": "No file provided"}, status=status.HTTP_400_BAD_REQUEST)
-        
+            return Response(
+                {"error": "No file provided"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
         attachment = Attachment.objects.create(
-            application=application,
-            file=file,
-            filename=file.name
+            application=application, file=file, filename=file.name
         )
         serializer = AttachmentSerializer(attachment)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAdminUser])
+    @action(detail=True, methods=["post"], permission_classes=[permissions.IsAdminUser])
     def repush_to_github(self, request, pk=None):
         application = self.get_object()
-        
+
         # Look for backup file
         import json
         import os
         from django.conf import settings
         from .services.github_service import create_and_push_repo
         from .utils import send_review_request_email
-        
-        backup_dir = os.path.join(settings.MEDIA_ROOT, 'website_backups')
+
+        backup_dir = os.path.join(settings.MEDIA_ROOT, "website_backups")
         backup_filename = f"app_{application.id}_{application.company_name.lower().replace(' ', '_')}.json"
         backup_path = os.path.join(backup_dir, backup_filename)
-        
+
         if not os.path.exists(backup_path):
-            return Response({"error": "Backup file not found on server"}, status=status.HTTP_404_NOT_FOUND)
-            
+            return Response(
+                {"error": "Backup file not found on server"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
         try:
-            with open(backup_path, 'r') as f:
+            with open(backup_path, "r") as f:
                 code_files = json.load(f)
-                
-            logger.info(f"Retrying GitHub push for {application.company_name} from backup...")
+
+            logger.info(
+                f"Retrying GitHub push for {application.company_name} from backup..."
+            )
             repo_url = create_and_push_repo(application.company_name, code_files)
-            
+
             if repo_url:
                 # Success! Create Website and update status
                 Website.objects.create(
                     name=application.company_name,
                     url=repo_url,
                     owner=application.user,
-                    hosting_type='PLATFORM'
+                    hosting_type="PLATFORM",
                 )
-                application.status = 'completed'
+                application.status = "completed"
                 application.progress = 100
                 application.save()
-                
+
                 # Send email
                 if application.user:
-                    send_review_request_email(application.user.email, application.company_name)
-                    
+                    send_review_request_email(
+                        application.user.email, application.company_name
+                    )
+
                 return Response({"success": True, "url": repo_url})
             else:
-                return Response({"error": "GitHub push failed again. Check organization permissions."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                return Response(
+                    {
+                        "error": "GitHub push failed again. Check organization permissions."
+                    },
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
         except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
 
 class CreateCheckoutSessionView(generics.GenericAPIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
-        plan_type = request.data.get('plan_type')
-        application_id = request.data.get('application_id')
-        user_email = request.data.get('email')
-        
+        plan_type = request.data.get("plan_type")
+        application_id = request.data.get("application_id")
+        user_email = request.data.get("email")
+
         try:
             if request.user.is_authenticated:
                 customer_email = request.user.email
@@ -312,44 +378,44 @@ class CreateCheckoutSessionView(generics.GenericAPIView):
                 customer_email = user_email
                 user_id = None
 
-            if plan_type == 'one_time':
+            if plan_type == "one_time":
                 price_id = settings.STRIPE_ONE_TIME_PRICE_ID
-                mode = 'payment'
+                mode = "payment"
             else:
                 price_id = settings.STRIPE_MONTHLY_PRICE_ID
-                mode = 'subscription'
+                mode = "subscription"
 
-            metadata = {
-                'plan_type': plan_type,
-                'application_id': application_id
-            }
+            metadata = {"plan_type": plan_type, "application_id": application_id}
             if user_id:
-                metadata['user_id'] = user_id
-                success_url = settings.FRONTEND_URL + '/dashboard?success=true'
+                metadata["user_id"] = user_id
+                success_url = settings.FRONTEND_URL + "/dashboard?success=true"
             else:
                 # Guest user
-                success_url = settings.FRONTEND_URL + '/login?success=true&new_user=true'
+                success_url = (
+                    settings.FRONTEND_URL + "/login?success=true&new_user=true"
+                )
 
             checkout_session = stripe.checkout.Session.create(
                 customer_email=customer_email,
-                payment_method_types=['card'],
-                line_items=[{'price': price_id, 'quantity': 1}],
+                payment_method_types=["card"],
+                line_items=[{"price": price_id, "quantity": 1}],
                 mode=mode,
                 success_url=success_url,
-                cancel_url=settings.FRONTEND_URL + '/dashboard?canceled=true',
-                metadata=metadata
+                cancel_url=settings.FRONTEND_URL + "/dashboard?canceled=true",
+                metadata=metadata,
             )
-            return Response({'url': checkout_session.url})
+            return Response({"url": checkout_session.url})
         except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-@method_decorator(csrf_exempt, name='dispatch')
+
+@method_decorator(csrf_exempt, name="dispatch")
 class StripeWebhookView(generics.GenericAPIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
         payload = request.body
-        sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+        sig_header = request.META["HTTP_STRIPE_SIGNATURE"]
         event = None
         try:
             event = stripe.Webhook.construct_event(
@@ -360,16 +426,18 @@ class StripeWebhookView(generics.GenericAPIView):
         except stripe.error.SignatureVerificationError as e:
             return HttpResponse(status=400)
 
-        if event.type == 'checkout.session.completed':
+        if event.type == "checkout.session.completed":
             session = event.data.object
-            
+
             # Use attribute access for Stripe v15+
-            metadata = getattr(session, 'metadata', {})
-            user_id = getattr(metadata, 'user_id', None)
-            application_id = getattr(metadata, 'application_id', None)
-            
-            customer_details = getattr(session, 'customer_details', None)
-            email = getattr(customer_details, 'email', None) if customer_details else None
+            metadata = getattr(session, "metadata", {})
+            user_id = getattr(metadata, "user_id", None)
+            application_id = getattr(metadata, "application_id", None)
+
+            customer_details = getattr(session, "customer_details", None)
+            email = (
+                getattr(customer_details, "email", None) if customer_details else None
+            )
 
             if not user_id and email:
                 # User doesn't exist, create account
@@ -378,7 +446,9 @@ class StripeWebhookView(generics.GenericAPIView):
                     logger.info(f"User {email} already exists, skipping creation.")
                 except User.DoesNotExist:
                     logger.info(f"Creating new user account for {email}")
-                    temp_password = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
+                    temp_password = "".join(
+                        random.choices(string.ascii_letters + string.digits, k=12)
+                    )
                     user = User.objects.create_user(email=email, password=temp_password)
                     sent = send_welcome_email(email, temp_password)
                     if sent:
@@ -390,8 +460,8 @@ class StripeWebhookView(generics.GenericAPIView):
             if user_id:
                 user = User.objects.get(id=user_id)
                 user.is_premium = True
-                user.stripe_customer_id = getattr(session, 'customer', None)
-                user.subscription_status = 'active'
+                user.stripe_customer_id = getattr(session, "customer", None)
+                user.subscription_status = "active"
                 user.save()
 
                 if application_id:
@@ -403,11 +473,15 @@ class StripeWebhookView(generics.GenericAPIView):
 
                         # Start background processing (Claude + GitHub)
                         from .tasks import process_application_task
-                        threading.Thread(target=process_application_task, args=(app.id, user.id)).start()
+
+                        threading.Thread(
+                            target=process_application_task, args=(app.id, user.id)
+                        ).start()
                     except ClientApplication.DoesNotExist:
                         pass
 
         return HttpResponse(status=200)
+
 
 class WebsiteViewSet(viewsets.ModelViewSet):
     serializer_class = WebsiteSerializer
@@ -418,81 +492,123 @@ class WebsiteViewSet(viewsets.ModelViewSet):
             return Website.objects.all()
         return Website.objects.filter(owner=self.request.user)
 
+
 class RequestPasswordResetOTPView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        email = request.data.get('email')
+        email = request.data.get("email")
         if not email:
-            return Response({"error": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
-        
+            return Response(
+                {"error": "Email is required"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
             # We return 200 even if user doesn't exist for security (prevent email enumeration)
-            return Response({"message": "If an account with this email exists, an OTP has been sent."}, status=status.HTTP_200_OK)
-        
+            return Response(
+                {
+                    "message": "If an account with this email exists, an OTP has been sent."
+                },
+                status=status.HTTP_200_OK,
+            )
+
         # Generate 6-digit OTP
-        otp_code = ''.join(random.choices(string.digits, k=6))
-        
+        otp_code = "".join(random.choices(string.digits, k=6))
+
         # Save OTP to database
         PasswordResetOTP.objects.create(user=user, otp=otp_code)
-        
+
         # Send OTP via email
         sent = send_otp_email(email, otp_code)
-        
+
         if sent:
-            return Response({"message": "If an account with this email exists, an OTP has been sent."}, status=status.HTTP_200_OK)
+            return Response(
+                {
+                    "message": "If an account with this email exists, an OTP has been sent."
+                },
+                status=status.HTTP_200_OK,
+            )
         else:
-            return Response({"error": "Failed to send email. Please try again later."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                {"error": "Failed to send email. Please try again later."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
 
 class VerifyPasswordResetOTPView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        email = request.data.get('email')
-        otp_code = request.data.get('otp')
-        new_password = request.data.get('new_password')
-        
+        email = request.data.get("email")
+        otp_code = request.data.get("otp")
+        new_password = request.data.get("new_password")
+
         if not all([email, otp_code, new_password]):
-            return Response({"error": "Email, OTP, and new password are required"}, status=status.HTTP_400_BAD_REQUEST)
-        
+            return Response(
+                {"error": "Email, OTP, and new password are required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         try:
             user = User.objects.get(email=email)
             # Get the latest unused OTP for this user
-            otp_obj = PasswordResetOTP.objects.filter(user=user, otp=otp_code, is_used=False).order_by('-created_at').first()
-            
+            otp_obj = (
+                PasswordResetOTP.objects.filter(user=user, otp=otp_code, is_used=False)
+                .order_by("-created_at")
+                .first()
+            )
+
             if not otp_obj:
-                return Response({"error": "Invalid OTP"}, status=status.HTTP_400_BAD_REQUEST)
-            
+                return Response(
+                    {"error": "Invalid OTP"}, status=status.HTTP_400_BAD_REQUEST
+                )
+
             if otp_obj.is_expired():
-                return Response({"error": "OTP has expired"}, status=status.HTTP_400_BAD_REQUEST)
-            
+                return Response(
+                    {"error": "OTP has expired"}, status=status.HTTP_400_BAD_REQUEST
+                )
+
             # Update password and mark OTP as used
             user.set_password(new_password)
             user.save()
             otp_obj.is_used = True
             otp_obj.save()
-            
-            return Response({"success": True, "message": "Password reset successfully!"}, status=status.HTTP_200_OK)
-            
+
+            return Response(
+                {"success": True, "message": "Password reset successfully!"},
+                status=status.HTTP_200_OK,
+            )
+
         except User.DoesNotExist:
-            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "User not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
 
 class ChangePasswordView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        old_password = request.data.get('old_password')
-        new_password = request.data.get('new_password')
-        
+        old_password = request.data.get("old_password")
+        new_password = request.data.get("new_password")
+
         if not all([old_password, new_password]):
-            return Response({"error": "Old and new passwords are required"}, status=status.HTTP_400_BAD_REQUEST)
-        
+            return Response(
+                {"error": "Old and new passwords are required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         user = request.user
         if not user.check_password(old_password):
-            return Response({"error": "Incorrect old password"}, status=status.HTTP_400_BAD_REQUEST)
-        
+            return Response(
+                {"error": "Incorrect old password"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
         user.set_password(new_password)
         user.save()
-        return Response({"success": True, "message": "Password changed successfully!"}, status=status.HTTP_200_OK)
+        return Response(
+            {"success": True, "message": "Password changed successfully!"},
+            status=status.HTTP_200_OK,
+        )
