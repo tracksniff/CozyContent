@@ -21,6 +21,15 @@ def process_application_task(application_id, user_id):
         send_progress_update_email(user.email, application.company_name, 10)
 
         # 1. Prepare data for Claude
+        image_assets = []
+        for img in application.images.all():
+            image_assets.append(f"{settings.BACKEND_URL}{img.image.url}")
+        
+        for attachment in application.attachments.all():
+            # Basic check if it's an image
+            if any(attachment.filename.lower().endswith(ext) for ext in ['.png', '.jpg', '.jpeg', '.svg', '.webp']):
+                image_assets.append(f"{settings.BACKEND_URL}{attachment.file.url}")
+
         app_data = {
             'company_name': application.company_name,
             'industry': application.industry,
@@ -29,6 +38,7 @@ def process_application_task(application_id, user_id):
             'services_list': application.services_list,
             'testimonials': application.testimonials,
             'branding_colors': application.branding_colors,
+            'uploaded_images': image_assets,
         }
 
         # Update progress to 20%
