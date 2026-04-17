@@ -452,16 +452,29 @@ const Dashboard: React.FC = () => {
                     </div>
 
                     {app.status === 'failed' && (
-                      <div className="mb-6 p-4 bg-red-500/5 border border-red-500/20 rounded-2xl">
-                        <p className="text-[10px] font-bold text-red-600 mb-3 uppercase tracking-wider">GitHub Push Failed</p>
-                        <button 
-                          onClick={() => handleRetryPush(app.id)}
-                          disabled={isRetrying[app.id]}
-                          className="w-full py-3 bg-on-surface text-surface rounded-xl text-[10px] font-black uppercase tracking-widest hover:brightness-125 transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
-                        >
-                          {isRetrying[app.id] ? <RefreshCcw size={14} className="animate-spin" /> : <RefreshCcw size={14} />}
-                          Retry GitHub Push
-                        </button>
+                      <div className="mb-6 grid grid-cols-2 gap-4">
+                        <div className="p-4 bg-red-500/5 border border-red-500/20 rounded-2xl">
+                          <p className="text-[10px] font-bold text-red-600 mb-3 uppercase tracking-wider">GitHub Push Failed</p>
+                          <button 
+                            onClick={() => handleRetryPush(app.id)}
+                            disabled={isRetrying[app.id]}
+                            className="w-full py-3 bg-on-surface text-surface rounded-xl text-[10px] font-black uppercase tracking-widest hover:brightness-125 transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
+                          >
+                            {isRetrying[app.id] ? <RefreshCcw size={14} className="animate-spin" /> : <RefreshCcw size={14} />}
+                            Retry GitHub Push
+                          </button>
+                        </div>
+                        <div className="p-4 bg-amber-500/5 border border-amber-500/20 rounded-2xl">
+                          <p className="text-[10px] font-bold text-amber-600 mb-3 uppercase tracking-wider">AI Generation Failed</p>
+                          <button 
+                            onClick={() => handleRegenerate(app.id)}
+                            disabled={isRegenerating[app.id]}
+                            className="w-full py-3 bg-primary text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
+                          >
+                            {isRegenerating[app.id] ? <Sparkles size={14} className="animate-pulse" /> : <Sparkles size={14} />}
+                            Retry AI Generation
+                          </button>
+                        </div>
                       </div>
                     )}
                     
