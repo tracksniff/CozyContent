@@ -17,8 +17,9 @@ def generate_website_code(application_data, retries=3, delay=5):
         logger.error("ANTHROPIC_API_KEY not found")
         return None
 
-    # claude-sonnet-4-6: best balance of intelligence and speed for large code generation tasks.
-    # Swap to "claude-opus-4-6" for maximum reasoning on the most complex projects.
+    # Official identifiers for Claude 3.5 models:
+    # Sonnet: claude-3-5-sonnet-20241022 (recommended)
+    # Opus: claude-3-opus-20240229
     client = anthropic.Anthropic(api_key=api_key)
     MODEL = "claude-sonnet-4-6"
 
@@ -36,7 +37,10 @@ Your code is always:
 
 You ALWAYS respond with a single raw JSON object. Keys are relative file paths;
 values are the complete file contents as strings. No markdown fences, no explanation,
-no preamble, no postamble — ONLY the JSON object.\
+no preamble, no postamble — ONLY the JSON object.
+
+IMPORTANT: Ensure the JSON is compact (minimize whitespace) to maximize the amount of code 
+that can be returned within token limits.\
 """
 
     user_prompt = f"""
