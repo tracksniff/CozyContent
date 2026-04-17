@@ -7,198 +7,73 @@ import time
 logger = logging.getLogger(__name__)
 
 
-def generate_website_code(application_data, retries=3, delay=5):
+def generate_website_code(application_data, retries=2, delay=5):
     """
-    Generate React + Vite codebase based on application data using the Claude API.
-    Includes retry logic for rate limits.
+    High-quality website generation.
+    Combines premium design principles with an efficient file structure to ensure
+    completion within token limits while maintaining stunning UI/UX.
     """
     api_key = os.getenv("ANTHROPIC_API_KEY")
     if not api_key:
         logger.error("ANTHROPIC_API_KEY not found")
         return None
 
-    # Official identifiers for Claude 3.5 models:
-    # Sonnet: claude-3-5-sonnet-20241022 (recommended)
-    # Opus: claude-3-opus-20240229
     client = anthropic.Anthropic(api_key=api_key)
-    MODEL = "claude-sonnet-4-6"
+    MODEL = "claude-3-5-sonnet-20241022"
 
-    system_prompt = """\
-You are a senior full-stack software engineer and UI/UX architect with 10+ years of
-experience building production-grade React applications. You specialise in modern,
-accessible, and visually stunning web interfaces that convert visitors into customers.
+    system_prompt = """You are a world-class UI/UX Architect and Lead React Developer.
+Your goal is to build a high-end, conversion-optimized website that looks like it cost £10k+.
 
-Your code is always:
-- Complete and production-ready — no stubs, no placeholders, no TODOs.
-- Strongly typed (TypeScript interfaces; no `any`).
-- Cleanly structured with single-responsibility components (~120 lines max per file).
-- Accessible: semantic HTML5, ARIA labels, keyboard navigation, contrast >= 4.5:1.
-- Responsive: mobile-first, breakpoints at sm (640 px), md (768 px), lg (1024 px).
+DESIGN PRINCIPLES:
+1. Visual Hierarchy: Strong typography scale (clamp()), whitespace-driven.
+2. Color System: Derive a sophisticated palette (Primary, Accent, Surface, Neutral) from brand colors.
+3. Sophisticated Motion: Use Framer Motion or CSS transitions for subtle, premium entrance effects.
+4. Imagery: Use https://picsum.photos/seed/<unique-seed>/W/H for industry-relevant placeholders.
+5. Icons: Use lucide-react exclusively.
 
-You ALWAYS respond with a single raw JSON object. Keys are relative file paths;
-values are the complete file contents as strings. No markdown fences, no explanation,
-no preamble, no postamble — ONLY the JSON object.
-
-IMPORTANT: Ensure the JSON is compact (minimize whitespace) to maximize the amount of code 
-that can be returned within token limits.\
-"""
+ARCHITECTURE RULES:
+1. Return a single raw JSON object. Keys = relative paths, Values = full content.
+2. Combine all UI components (Navbar, Hero, Services, Testimonials, Contact, Footer) into `src/components/SiteContent.tsx` to maximize token efficiency.
+3. Use Tailwind CSS for all styling. Code must be production-ready and fully typed."""
 
     user_prompt = f"""
-════════════════════════════════════════════════════════
-TASK
-════════════════════════════════════════════════════════
-Generate a complete, production-ready React + Vite + TypeScript + Tailwind CSS website
-for the company described below.
+Generate a premium React + Vite + TypeScript site for:
+Company: {application_data["company_name"]}
+Industry: {application_data["industry"]}
+Location: {application_data["city_location"]}
+Services: {application_data["services_list"]}
+Testimonials: {application_data["testimonials"]}
+Brand Colors: {application_data["branding_colors"]}
 
-════════════════════════════════════════════════════════
-COMPANY DETAILS
-════════════════════════════════════════════════════════
-Company Name : {application_data["company_name"]}
-Industry     : {application_data["industry"]}
-Website URL  : {application_data["website_url"]}
-Location     : {application_data["city_location"]}
-Services     : {application_data["services_list"]}
-Testimonials : {application_data["testimonials"]}
-Brand Colors : {application_data["branding_colors"]}
-
-════════════════════════════════════════════════════════
-DESIGN PRINCIPLES  (follow strictly)
-════════════════════════════════════════════════════════
-1. Visual Hierarchy   — clear H1 -> H2 -> body type scale; whitespace-driven layout.
-2. Color System       — derive a full palette from the brand colors: primary,
-                        primary-dark, accent, neutral-light, neutral-dark, surface, text.
-                        Define them as CSS custom properties in index.css.
-3. Typography         — import a Google Font pair (e.g. display + body). Apply
-                        fluid type sizing with clamp() where appropriate.
-4. Spacing            — use an 8 px base grid; leverage Tailwind spacing tokens.
-5. Motion             — subtle entrance animations (Framer Motion or CSS transitions);
-                        no gratuitous movement. Respect prefers-reduced-motion.
-6. Accessibility      — semantic HTML5, ARIA labels, keyboard-navigable nav, color
-                        contrast >= 4.5:1 for body text, focus-visible rings.
-7. Responsiveness     — mobile-first; breakpoints: sm (640 px), md (768 px), lg (1024 px).
-8. Images             — use https://picsum.photos/seed/<unique-seed>/W/H for every
-                        image placeholder. Choose seeds related to the industry.
-9. Icons              — use lucide-react for all icons; no raw emoji in UI.
-10. Performance       — lazy-load images (loading="lazy"); code-split heavy sections.
-
-════════════════════════════════════════════════════════
-ARCHITECTURE & DESIGN PATTERNS  (follow strictly)
-════════════════════════════════════════════════════════
-- Feature-based folder structure:
-    src/
-      components/     <- shared UI atoms (Button, Card, SectionTitle, ...)
-      sections/       <- page sections (Hero, Services, Testimonials, Contact, ...)
-      hooks/          <- custom hooks (useIntersectionObserver for scroll-reveal, ...)
-      types/          <- TypeScript interfaces / types
-      utils/          <- helpers
-      assets/         <- (empty; images served via URL)
-      App.tsx
-      main.tsx
-      index.css
-- Single-responsibility components: one component per file, max ~120 lines.
-- Props typed with TypeScript interfaces; no `any`.
-- Named exports for all components; default export only for page-level components.
-- Custom hook `useScrollReveal` that adds a fade-up animation when a section
-  enters the viewport using IntersectionObserver.
-- Contact form with controlled inputs, basic validation, and a success toast.
-  (No backend needed — log to console on submit.)
-
-════════════════════════════════════════════════════════
-REQUIRED SECTIONS  (in this order)
-════════════════════════════════════════════════════════
-1. Header / Navbar
-   - Logo (text-based, styled) + navigation links
-   - Sticky with backdrop-blur on scroll
-   - Mobile hamburger menu (no external library)
-
-2. Hero
-   - Full-viewport headline, sub-headline, two CTAs (primary + ghost)
-   - Background: gradient or full-bleed image with overlay
-   - Subtle animated badge or pill label
-
-3. Services / Features
-   - Grid of service cards (icon + title + description)
-   - Hover: card lifts with a shadow transition
-
-4. Social Proof / Stats
-   - Three key metrics with animated counters (IntersectionObserver trigger)
-
-5. Testimonials
-   - Responsive card carousel/grid; real data from the testimonials provided
-   - Star ratings
-
-6. Call-to-Action Banner
-   - Bold centered CTA with gradient background
-
-7. Contact
-   - Form: Name, Email, Phone (optional), Message
-   - Inline validation, character counter on Message
-   - Submit button with loading spinner
-
-8. Footer
-   - Logo, brief tagline, nav links, social icons (Twitter, LinkedIn, Facebook),
-     copyright line with dynamic year
-
-════════════════════════════════════════════════════════
-REQUIRED FILES
-════════════════════════════════════════════════════════
-Produce ALL of the following (and any additional files your architecture requires):
-
-  package.json          <- scripts: dev, build, preview, lint
-  vite.config.ts
-  tsconfig.json
-  tsconfig.node.json
-  index.html
-  tailwind.config.ts    <- extend theme with brand color tokens
-  postcss.config.js
-  .eslintrc.cjs
-  src/main.tsx
-  src/App.tsx
-  src/index.css         <- CSS custom properties + Tailwind base
-  src/types/index.ts
-  src/utils/cn.ts       <- clsx + tailwind-merge helper
-  src/hooks/useScrollReveal.ts
-  src/hooks/useCounter.ts   <- animated counter hook
-  src/components/Button.tsx
-  src/components/Card.tsx
-  src/components/SectionTitle.tsx
-  src/components/NavBar.tsx
-  src/sections/Hero.tsx
-  src/sections/Services.tsx
-  src/sections/Stats.tsx
-  src/sections/Testimonials.tsx
-  src/sections/CtaBanner.tsx
-  src/sections/Contact.tsx
-  src/sections/Footer.tsx
-
-════════════════════════════════════════════════════════
-OUTPUT FORMAT  (critical — follow exactly)
-════════════════════════════════════════════════════════
-Return ONLY a single raw JSON object. Keys are relative file paths; values are the
-complete file contents as strings. No markdown fences, no explanation, no preamble,
-no postamble — ONLY the JSON object.
-
-Example shape (do not include this example in your output):
-{{
-  "package.json": "...",
-  "src/App.tsx": "...",
-  "src/sections/Hero.tsx": "..."
-}}
+REQUIRED FILES:
+- package.json
+- vite.config.ts
+- tsconfig.json
+- tailwind.config.js (Configure the brand color palette here)
+- index.html
+- src/main.tsx
+- src/App.tsx
+- src/index.css (Include Tailwind directives and font imports)
+- src/components/SiteContent.tsx (The entire high-end UI goes here)
+- src/utils/cn.ts (tailwind-merge + clsx)
 """
 
     for attempt in range(retries):
         try:
+            logger.info(
+                f"Starting High-Quality Claude generation (Attempt {attempt + 1})..."
+            )
             response = client.messages.create(
                 model=MODEL,
-                max_tokens=16000,  # Large budget for full multi-file codebases
-                temperature=0.4,  # Low temperature for deterministic, correct code
+                max_tokens=8192,
+                temperature=0.3,  # Slightly higher for more creative UI layouts
                 system=system_prompt,
                 messages=[{"role": "user", "content": user_prompt}],
+                extra_headers={"anthropic-beta": "max-tokens-3-5-sonnet-2024-07-15"},
             )
 
             text = response.content[0].text.strip()
 
-            # Strip markdown code fences if the model wrapped the JSON
             if text.startswith("```json"):
                 text = text[7:]
             elif text.startswith("```"):
@@ -207,37 +82,16 @@ Example shape (do not include this example in your output):
                 text = text[:-3]
             text = text.strip()
 
-            return json.loads(text)
+            code_files = json.loads(text)
+            logger.info(f"Successfully generated {len(code_files)} files.")
+            return code_files
 
         except json.JSONDecodeError as e:
-            logger.error(f"JSON parse error on attempt {attempt + 1}: {e}")
-            if attempt < retries - 1:
-                logger.warning("Retrying due to malformed JSON response...")
-                time.sleep(delay)
-                continue
-            return None
-
-        except anthropic.RateLimitError as e:
-            if attempt < retries - 1:
-                wait_time = delay * (2**attempt)  # Exponential backoff: 5s, 10s, 20s
-                logger.warning(
-                    f"Claude rate limit hit. Retrying in {wait_time}s... "
-                    f"(Attempt {attempt + 1}/{retries})"
-                )
-                time.sleep(wait_time)
-                continue
-            logger.error(f"Rate limit exceeded after {retries} attempts: {e}")
-            return None
-
-        except anthropic.APIError as e:
-            logger.error(f"Claude API error on attempt {attempt + 1}: {e}")
-            if attempt < retries - 1:
-                time.sleep(delay)
-                continue
-            return None
-
+            logger.error(f"JSON error: {e}")
         except Exception as e:
-            logger.error(f"Unexpected error generating website code: {e}")
-            return None
+            logger.error(f"Generation error: {e}")
+
+        if attempt < retries - 1:
+            time.sleep(delay)
 
     return None
