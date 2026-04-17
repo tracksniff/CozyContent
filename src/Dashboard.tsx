@@ -28,7 +28,25 @@ const Dashboard: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [isRetrying, setIsRetrying] = useState<{ [key: number]: boolean }>({});
+  const [isRegenerating, setIsRegenerating] = useState<{ [key: number]: boolean }>({});
   const [feedback, setFeedback] = useState<{ [key: number]: string }>({});
+
+  const handleRegenerate = async (applicationId: number) => {
+    if (!token) return;
+    setIsRegenerating({ ...isRegenerating, [applicationId]: true });
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/applications/${applicationId}/regenerate_code/`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Regeneration started!');
+      fetchData();
+    } catch (err: any) {
+      console.error(err);
+      toast.error('Failed to start regeneration.');
+    } finally {
+      setIsRegenerating({ ...isRegenerating, [applicationId]: false });
+    }
+  };
   const [githubUsernames, setGithubUsernames] = useState<{ [key: number]: string }>({});
   const { token, user, loading: authLoading } = useAuth();
 
@@ -279,22 +297,18 @@ const Dashboard: React.FC = () => {
                   <div className="absolute left-4 top-2 bottom-2 w-0.5 bg-outline-variant/30"></div>
                   
                   {[
-                    { label: 'Application Started', target: 0, desc: 'Your project has been received.' },
-                    { label: 'AI Generation', target: 20, desc: 'Claude is building your codebase.' },
-                    { label: 'GitHub Deployment', target: 60, desc: 'Code is being pushed to our staging.' },
+                    { label: 'Project Confirmed', target: 0, desc: 'We’ve received your details and started your build.' },
+                    { label: 'Design & Build Underway', target: 20, desc: 'Your new website is currently being created.' },
+                    { label: 'Quality Check', target: 60, desc: 'We’re testing speed, mobile performance and user experience.' },
                     { 
-                      label: app.plan_type === 'one_time' ? 'Ready for Transfer (80%)' : 'Awaiting Deployment (80%)', 
+                      label: 'Final Review Stage', 
                       target: 80, 
-                      desc: app.plan_type === 'one_time' 
-                        ? 'We need your GitHub details to transfer the code.' 
-                        : 'Our team is reviewing and preparing your live environment.' 
+                      desc: 'Your website is ready for approval and final tweaks.' 
                     },
                     { 
-                      label: app.plan_type === 'one_time' ? 'Code Transferred' : 'Site Live', 
+                      label: 'Launch Complete', 
                       target: 100, 
-                      desc: app.plan_type === 'one_time' 
-                        ? 'Ownership has been transferred to your GitHub.' 
-                        : 'Your professional website is now 100% complete and live.' 
+                      desc: 'Your website is now live and ready for customers.' 
                     }
                   ].map((step, idx) => {
                     const isDone = app.progress >= step.target;
