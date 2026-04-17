@@ -328,6 +328,21 @@ class ClientApplicationViewSet(viewsets.ModelViewSet):
         return Response({"success": True, "message": "GitHub username submitted successfully!"})
 
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAdminUser])
+    def regenerate_code(self, request, pk=None):
+        application = self.get_object()
+        
+        # Reset status and progress
+        application.status = 'processing'
+        application.progress = 10
+        application.save()
+        
+        # Start the background task again
+        from .tasks import process_application_task
+        threading.Thread(target=process_application_task, args=(application.id, application.user.id)).start()
+        
+        return Response({"success": True, "message": "Regeneration task started."})
+
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAdminUser])
     def repush_to_github(self, request, pk=None):
         application = self.get_object()
 
