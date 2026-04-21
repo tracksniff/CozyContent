@@ -32,11 +32,11 @@ const Dashboard: React.FC = () => {
   const [isRedeploying, setIsRedeploying] = useState<{ [key: number]: boolean }>({});
   const [feedback, setFeedback] = useState<{ [key: number]: string }>({});
 
-  const handleRedeployVercel = async (applicationId: number) => {
+  const handleRedeployVercel = async (websiteId: number) => {
     if (!token) return;
-    setIsRedeploying({ ...isRedeploying, [applicationId]: true });
+    setIsRedeploying({ ...isRedeploying, [websiteId]: true });
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/applications/${applicationId}/redeploy_vercel/`, {}, {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/websites/${websiteId}/redeploy_vercel/`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.success('Vercel redeployment triggered!');
@@ -48,7 +48,7 @@ const Dashboard: React.FC = () => {
       console.error(err);
       toast.error('Vercel redeployment failed.');
     } finally {
-      setIsRedeploying({ ...isRedeploying, [applicationId]: false });
+      setIsRedeploying({ ...isRedeploying, [websiteId]: false });
     }
   };
 
@@ -515,14 +515,6 @@ const Dashboard: React.FC = () => {
                             {isRegenerating[app.id] ? <Sparkles size={14} className="animate-pulse" /> : <Sparkles size={14} />}
                             Retry Generation
                           </button>
-                          <button 
-                            onClick={() => handleRedeployVercel(app.id)}
-                            disabled={isRedeploying[app.id]}
-                            className="w-full py-3 bg-secondary text-on-secondary rounded-xl text-[10px] font-black uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 mt-2"
-                          >
-                            {isRedeploying[app.id] ? <Zap size={14} className="animate-pulse" /> : <Zap size={14} />}
-                            Redeploy on Vercel
-                          </button>
                         </div>
                       </div>
                     )}
@@ -630,16 +622,27 @@ const Dashboard: React.FC = () => {
                           </div>
                         )}
                         
-                        <div className="mt-4">
+                        <div className="mt-4 flex items-center justify-between">
                           <a
                             href={site.url}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-primary hover:gap-3 transition-all"
                           >
-                            Launch Site <ExternalLink size={12} />
+                            View Live <ExternalLink size={14} />
                           </a>
+                          {user?.is_staff && (
+                            <button
+                              onClick={() => handleRedeployVercel(site.id)}
+                              disabled={isRedeploying[site.id]}
+                              title="Redeploy on Vercel"
+                              className="p-2 bg-secondary/10 text-secondary hover:bg-secondary hover:text-white rounded-lg transition-all disabled:opacity-50"
+                            >
+                              {isRedeploying[site.id] ? <Zap size={14} className="animate-pulse" /> : <Zap size={14} />}
+                            </button>
+                          )}
                         </div>
+
                       </div>
                     </div>
                   ))}
