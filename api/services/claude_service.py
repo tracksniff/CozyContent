@@ -43,39 +43,29 @@ def generate_website_code(application_data, retries=2, delay=5):
     system_prompt = """You are a world-class UI/UX Architect and Lead React Developer.
 Your goal is to build a high-end, conversion-optimized website that looks like it cost £10k+.
 
-DESIGN PRINCIPLES:
-1. Visual Hierarchy: Strong typography scale using clamp() for fluid sizing, generous whitespace.
-2. Color System: Derive a sophisticated palette (Primary, Accent, Surface, Neutral) from the brand colors.
-   - Use CSS custom properties in tailwind.config.js for the full palette.
-   - Dark sections should alternate with light to create visual rhythm.
-3. Motion & Polish: Use subtle CSS transitions (translate, opacity, scale) via Tailwind's `transition` utilities.
-   Add hover states on all interactive elements. Use `animate-fade-in` patterns via @keyframes in index.css.
-4. Imagery: Use https://picsum.photos/seed/<unique-seed>/W/H for all images. Pick seeds relevant to the industry.
-5. Icons: Use lucide-react exclusively. Never use emoji as icons.
-6. Layout: Use CSS Grid for page structure, Flexbox for component internals.
-7. Sections required: Navbar (sticky, blur backdrop), Hero (full-height, bold headline + CTA),
-   Services (card grid), About (split layout with image), Testimonials (carousel or grid),
-   Contact (form + map placeholder), Footer (multi-column).
+STRICT ARCHITECTURE RULES:
+1. LANGUAGE: Use ONLY TypeScript (.ts, .tsx). Code must be 100% valid TypeScript.
+2. DEPENDENCIES: You MUST include "clsx" and "tailwind-merge" in your `package.json` as they are used in `cn.ts`.
+3. CONFIGURATION: 
+   - `tsconfig.json` MUST use `"jsx": "react-jsx"`, `"moduleResolution": "bundler"`, and `"skipLibCheck": true`.
+   - `package.json` MUST include `@types/react` and `@types/react-dom` in `devDependencies`.
+4. CODE QUALITY:
+   - Avoid extremely long lines (over 200 characters). 
+   - Use template literals (backticks) for any string containing a single or double quote.
+   - Ensure every component is properly closed. No truncated files.
+5. STRUCTURE: 
+   - Combine ALL UI sections into `src/components/SiteContent.tsx`.
+   - Ensure `src/utils/cn.ts` is exactly:
+     ```typescript
+     import { type ClassValue, clsx } from 'clsx';
+     import { twMerge } from 'tailwind-merge';
+     export function cn(...inputs: ClassValue[]) { return twMerge(clsx(inputs)); }
+     ```
 
-ARCHITECTURE RULES:
-1. Return a SINGLE raw JSON object. Keys = relative file paths. Values = full file content strings.
-2. Do NOT wrap output in markdown code fences. Start your response with `{` and end with `}`.
-3. Combine ALL UI sections into `src/components/SiteContent.tsx` to maximise token efficiency.
-4. Use Tailwind CSS for all styling. Code must be fully typed TypeScript, production-ready.
-5. The Hero headline must use the company name. CTAs must reference real services.
-6. Contact form must have: Name, Email, Phone, Message fields + a styled submit button.
+OUTPUT FORMAT: Return a SINGLE raw JSON object. Keys = relative file paths. Values = content strings. No markdown fences.
+"""
 
-CONCISENESS RULES:
-- Be extremely concise with code. Avoid unnecessary comments or whitespace.
-- Use functional components and short-hand syntax where possible.
-- Ensure the total output is under 12,000 tokens.
-
-COST-SAVING RULES:
-- Avoid repetitive boilerplate; reuse patterns.
-- Keep comments minimal (one-liners only where truly needed).
-- Do not generate placeholder/example data — use the real data provided."""
-
-    user_prompt = f"""Generate a premium React + Vite + TypeScript website for this business:
+    user_prompt = f"""Generate a premium, fully-typed TypeScript React website (Vite + Tailwind) for this business:
 
 Company:      {application_data["company_name"]}
 Location:     {application_data["city_location"]}
@@ -83,19 +73,15 @@ Services:     {application_data["services_list"]}
 Testimonials: {application_data["testimonials"]}
 Brand Colors: {application_data["branding_colors"]}
 
-REQUIRED FILES (all must be present):
-- package.json              (include: react, react-dom, lucide-react, tailwindcss, vite, typescript)
-- vite.config.ts
-- tsconfig.json
-- tailwind.config.js        (extend theme with brand color palette derived from Brand Colors above)
-- index.html                (include Google Fonts import for a premium font pairing)
-- src/main.tsx
-- src/App.tsx
-- src/index.css             (Tailwind directives + @keyframes for entrance animations)
-- src/components/SiteContent.tsx   (ALL sections: Navbar, Hero, Services, About, Testimonials, Contact, Footer)
-- src/utils/cn.ts           (tailwind-merge + clsx helper)
+REQUIRED FILES (The build will fail if any are missing or have syntax errors):
+1. package.json: Must include "clsx", "tailwind-merge", "lucide-react", "react", "react-dom", "tailwindcss", "postcss", "autoprefixer", "vite", "typescript".
+2. tsconfig.json: Ensure "jsx": "react-jsx".
+3. tailwind.config.js: Ensure content: ["./index.html", "./src/**/*.{{js,ts,jsx,tsx}}"].
+4. postcss.config.js: Standard export with tailwindcss and autoprefixer.
+5. src/utils/cn.ts: Must export the `cn` helper using `clsx` and `tailwind-merge`.
+6. src/components/SiteContent.tsx: A single file containing Navbar, Hero, Services, About, Testimonials, Contact, and Footer. Use clean, segmented code.
 
-Remember: respond with ONLY the raw JSON object. No markdown, no explanation."""
+Remember: respond with ONLY the raw JSON object. Ensure 100% syntax correctness for a production build."""
 
     for attempt in range(retries):
         try:
