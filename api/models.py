@@ -42,7 +42,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 class ClientApplication(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending Payment'),
-        ('processing', 'AI Generating...'),
+        ('processing', 'Building...'),
         ('completed', 'Completed'),
         ('failed', 'Failed'),
     ]
