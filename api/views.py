@@ -328,6 +328,33 @@ class ClientApplicationViewSet(viewsets.ModelViewSet):
         return Response({"success": True, "message": "GitHub username submitted successfully!"})
 
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAdminUser])
+    def redeploy_vercel(self, request, pk=None):
+        application = self.get_object()
+        from .services.vercel_service import deploy_to_vercel
+        
+        try:
+            github_org = os.getenv("GITHUB_ORG_NAME")
+            repo_name = application.company_name.lower().replace(" ", "-").replace(".", "")
+            preview_url = deploy_to_vercel(repo_name, github_org, application.company_name)
+            
+            if preview_url:
+                # Update Website record if exists, or create new
+                website, created = Website.objects.get_or_create(
+                    name=application.company_name,
+                    owner=application.user,
+                    defaults={'url': preview_url, 'hosting_type': 'PLATFORM'}
+                )
+                if not created:
+                    website.url = preview_url
+                    website.save()
+                    
+                return Response({"success": True, "url": preview_url})
+            else:
+                return Response({"error": "Vercel redeployment failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAdminUser])
     def regenerate_code(self, request, pk=None):
         application = self.get_object()
         

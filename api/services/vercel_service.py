@@ -7,10 +7,9 @@ logger = logging.getLogger(__name__)
 def deploy_to_vercel(repo_name, github_org, company_name):
     """
     Automate Vercel project creation and deployment via Vercel API.
-    Requires: VERCEL_TOKEN, VERCEL_TEAM_ID (optional)
     """
     token = os.getenv("VERCEL_TOKEN")
-    team_id = os.getenv("VERCEL_TEAM_ID") # Use if deploying under a team
+    team_id = os.getenv("VERCEL_TEAM_ID")
     
     if not token:
         logger.error("VERCEL_TOKEN not found in environment")
@@ -21,11 +20,14 @@ def deploy_to_vercel(repo_name, github_org, company_name):
         "Content-Type": "application/json"
     }
 
-    # 1. Create a new project linked to GitHub
-    project_url = "https://api.vercel.com/v9/projects"
-    if team_id:
-        project_url += f"?teamId={team_id}"
+    # Helper to build URLs with teamId
+    def vercel_url(path):
+        url = f"https://api.vercel.com{path}"
+        if team_id:
+            url += f"?teamId={team_id}"
+        return url
 
+    # 1. Try to create the project
     payload = {
         "name": repo_name,
         "framework": "vite",
@@ -38,46 +40,43 @@ def deploy_to_vercel(repo_name, github_org, company_name):
         "outputDirectory": "dist"
     }
 
-    try:
-        response = requests.post(project_url, headers=headers, json=payload)
-        if response.status_code in [200, 201]:
-            project_data = response.json()
+    project_id = None
+    create_res = requests.post(vercel_url("/v9/projects"), headers=headers, json=payload)
+    
+    if create_res.status_code in [200, 201]:
+        project_data = create_res.json()
+        project_id = project_data.get("id")
+        logger.info(f"Vercel project created: {repo_name}")
+    elif create_res.status_code == 409:
+        # Project exists, fetch it to get the ID
+        logger.info(f"Vercel project {repo_name} already exists. Fetching info...")
+        get_res = requests.get(vercel_url(f"/v9/projects/{repo_name}"), headers=headers)
+        if get_res.status_code == 200:
+            project_data = get_res.json()
             project_id = project_data.get("id")
-            logger.info(f"Vercel project created: {repo_name}")
-            
-            # 2. Trigger a deployment
-            deploy_url = "https://api.vercel.com/v13/deployments"
-            if team_id:
-                deploy_url += f"?teamId={team_id}"
-                
-            deploy_payload = {
-                "name": repo_name,
-                "project": project_id,
-                "gitSource": {
-                    "type": "github",
-                    "repoId": str(project_data.get("link", {}).get("repoId", "")),
-                    "ref": "main"
-                }
-            }
-            
-            deploy_response = requests.post(deploy_url, headers=headers, json=deploy_payload)
-            if deploy_response.status_code in [200, 201]:
-                deploy_data = deploy_response.json()
-                logger.info(f"Vercel deployment triggered for {repo_name}")
-                return f"https://{repo_name}.vercel.app"
-            else:
-                logger.error(f"Failed to trigger Vercel deployment: {deploy_response.text}")
-                # Even if deployment fails to trigger, the project is created and linked
-                return f"https://{repo_name}.vercel.app"
-                
-        elif response.status_code == 409:
-            # Project already exists
-            logger.info(f"Vercel project {repo_name} already exists.")
-            return f"https://{repo_name}.vercel.app"
         else:
-            logger.error(f"Vercel API error: {response.status_code} - {response.text}")
+            logger.error(f"Could not fetch existing Vercel project: {get_res.text}")
             return None
-
-    except Exception as e:
-        logger.error(f"Error deploying to Vercel: {str(e)}")
+    else:
+        logger.error(f"Vercel Project API error: {create_res.status_code} - {create_res.text}")
         return None
+
+    # 2. Trigger deployment
+    deploy_payload = {
+        "name": repo_name,
+        "project": project_id,
+        "gitSource": {
+            "type": "github",
+            "repoId": str(project_data.get("link", {}).get("repoId", "") or project_data.get("gitRepository", {}).get("repoId", "")),
+            "ref": "main"
+        }
+    }
+    
+    deploy_res = requests.post(vercel_url("/v13/deployments"), headers=headers, json=deploy_payload)
+    if deploy_res.status_code in [200, 201]:
+        logger.info(f"Vercel deployment triggered for {repo_name}")
+        return f"https://{repo_name}.vercel.app"
+    else:
+        logger.error(f"Failed to trigger Vercel deployment: {deploy_res.text}")
+        # Return URL anyway as Vercel might auto-deploy on git push if already linked
+        return f"https://{repo_name}.vercel.app"
