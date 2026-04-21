@@ -568,11 +568,17 @@ class WebsiteViewSet(viewsets.ModelViewSet):
     def redeploy_vercel(self, request, pk=None):
         website = self.get_object()
         from .services.vercel_service import deploy_to_vercel
+        from .services.github_service import ensure_repo_public
         
         try:
             github_org = os.getenv("GITHUB_ORG_NAME")
             # Using the website name as the repo name basis
             repo_name = website.name.lower().replace(" ", "-").replace(".", "")
+            
+            # 1. Ensure repo is public for Vercel access
+            ensure_repo_public(repo_name)
+            
+            # 2. Deploy to Vercel
             preview_url = deploy_to_vercel(repo_name, github_org, website.name)
             
             if preview_url:
