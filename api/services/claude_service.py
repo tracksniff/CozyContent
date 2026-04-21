@@ -109,20 +109,75 @@ Remember: respond with ONLY the raw JSON object. Ensure 100% syntax correctness 
             text = text.strip()
 
             try:
+                # Basic cleanup before parsing
                 code_files = json.loads(text)
                 logger.info(f"Successfully generated {len(code_files)} files. Stop reason: {stop_reason}")
                 return code_files
             except json.JSONDecodeError as e:
                 logger.error(f"JSON parse error on attempt {attempt + 1}: {e}")
+                
+                if stop_reason == "max_tokens" or "Unterminated string" in str(e):
+                    logger.warning("Attempting to repair truncated or malformed JSON...")
+                    fixed_text = repair_json_truncation(text)
+                    try:
+                        code_files = json.loads(fixed_text)
+                        logger.info("Successfully repaired JSON truncation.")
+                        return code_files
+                    except Exception as repair_error:
+                        logger.error(f"JSON repair failed: {repair_error}")
+
                 logger.error(f"Stop reason: {stop_reason}")
                 logger.error(f"Text length: {len(text)}")
-                logger.error(f"Text preview (start): {text[:200]}...")
                 logger.error(f"Text preview (end): ...{text[-200:]}")
-                
-                # Try to "fix" a truncated JSON if it looks like it was just cut off
-                if stop_reason == "max_tokens" or "Unterminated string" in str(e):
-                    logger.warning("Attempting to fix truncated JSON...")
-                    # This is a hail mary, better to just fail and let it retry or increase tokens
+
+def repair_json_truncation(json_str):
+    """
+    Hail mary to close a truncated JSON string.
+    Finds open quotes, braces, and brackets and closes them in reverse order.
+    """
+    json_str = json_str.strip()
+    
+    # If it ends with a comma, remove it
+    if json_str.endswith(','):
+        json_str = json_str[:-1]
+        
+    stack = []
+    is_escaped = False
+    in_string = False
+    
+    for char in json_str:
+        if is_escaped:
+            is_escaped = False
+            continue
+        if char == '\\':
+            is_escaped = True
+            continue
+        if char == '"':
+            in_string = not in_string
+            continue
+        if not in_string:
+            if char == '{' or char == '[':
+                stack.append(char)
+            elif char == '}':
+                if stack and stack[-1] == '{':
+                    stack.pop()
+            elif char == ']':
+                if stack and stack[-1] == '[':
+                    stack.pop()
+    
+    # If we are stuck in a string, close it
+    if in_string:
+        json_str += '"'
+        
+    # Close open braces/brackets
+    while stack:
+        opener = stack.pop()
+        if opener == '{':
+            json_str += '}'
+        else:
+            json_str += ']'
+            
+    return json_str
 
         except anthropic.APIStatusError as e:
             logger.error(f"Anthropic API error {e.status_code}: {e.message}")
