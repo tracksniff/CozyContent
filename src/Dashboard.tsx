@@ -306,7 +306,7 @@ const Dashboard: React.FC = () => {
               <div className="bg-surface-container-low p-8 rounded-[2.5rem] border border-outline-variant shadow-sm">
                 <div className="flex items-center justify-between mb-8">
                   <h3 className="text-xl font-black text-on-surface flex items-center gap-2">
-                    <Clock size={20} className="text-primary" /> Project Timeline
+                    <Clock size={20} className="text-primary" /> {app.company_name} Timeline
                   </h3>
                   <div className="px-3 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-black uppercase tracking-widest">
                     {app.progress}% Complete
@@ -450,8 +450,8 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
             </div>
-          ))}
-
+            </div>
+            ))}
           {/* Admin Feedback Management */}
           {user?.is_staff && applications.some(app => app.feedbacks?.length > 0 || app.attachments?.length > 0 || app.status === 'failed') && (
             <div className="mb-12">
