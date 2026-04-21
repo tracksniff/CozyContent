@@ -7,12 +7,12 @@ import Sidebar from './Sidebar';
 import toast from 'react-hot-toast';
 
 const funMessages = [
-  "Consulting the AI Oracles...",
+  "Consulting our system...",
   "Polishing the Pixels...",
   "Brewing Digital Coffee...",
   "Assembling the React Components...",
   "Optimizing for maximum Cozyness...",
-  "Teaching the AI about your brand...",
+  "Building your custom brand...",
   "Constructing the Virtual Foundation...",
   "Sprinkling some CSS Magic...",
   "Synchronizing with the Matrix...",
@@ -139,7 +139,22 @@ const Dashboard: React.FC = () => {
       // Clear the URL parameters without reloading the page
       window.history.replaceState({}, '', location.pathname);
     }
-  }, [location]);
+
+    if (params.get('action') === 'transfer') {
+      if (applications.some(app => app.plan_type === 'one_time' && app.progress >= 80 && !app.github_username_for_transfer)) {
+        toast('Ready for transfer! Please enter your GitHub details below.', {
+          icon: '🚀',
+          duration: 6000,
+        });
+        setTimeout(() => {
+          const element = document.querySelector('[id^="transfer-"]');
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 1000);
+      }
+    }
+  }, [location, applications]);
 
   const fetchData = async () => {
     if (!token) return;
@@ -241,7 +256,7 @@ const Dashboard: React.FC = () => {
             )}
           </header>
 
-          {/* AI Generation Progress Spinner */}
+          {/* System Generation Progress Spinner */}
           {processingApps.length > 0 && (
             <div className="mb-12 relative overflow-hidden bg-primary/5 rounded-[3rem] border border-primary/10 p-8 md:p-12 animate-in fade-in zoom-in-95 duration-700 shadow-xl shadow-primary/5">
                <div className="absolute top-0 right-0 p-8 opacity-10">
@@ -273,7 +288,7 @@ const Dashboard: React.FC = () => {
                  </div>
                  
                  <p className="mt-8 text-on-surface-variant text-xs font-medium max-w-sm">
-                   Our AI is currently building your custom code, setting up your GitHub repo, and launching your brand. It should take about a minute!
+                   Our system is currently building your custom code, setting up your GitHub repo, and launching your brand. It should take about a minute!
                  </p>
                </div>
             </div>
@@ -281,7 +296,12 @@ const Dashboard: React.FC = () => {
 
           {/* Project Progress & Reviews (Customer Only) */}
           {!user?.is_staff && applications.map(app => (
-            <div key={app.id} className="mb-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div key={app.id} className="mb-20">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="h-10 w-1.5 bg-primary rounded-full"></div>
+                <h2 className="text-2xl font-black text-on-surface tracking-tight uppercase">{app.company_name}</h2>
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Progress Timeline */}
               <div className="bg-surface-container-low p-8 rounded-[2.5rem] border border-outline-variant shadow-sm">
                 <div className="flex items-center justify-between mb-8">
@@ -333,7 +353,7 @@ const Dashboard: React.FC = () => {
               <div className="space-y-8">
                 {/* GitHub Transfer Box (One-Time Only) */}
                 {app.plan_type === 'one_time' && app.progress >= 80 && !app.github_username_for_transfer && (
-                  <div className="bg-primary p-8 rounded-[2.5rem] text-white shadow-xl relative overflow-hidden group">
+                  <div id={`transfer-${app.id}`} className="bg-primary p-8 rounded-[2.5rem] text-white shadow-xl relative overflow-hidden group">
                      <h3 className="text-xl font-black mb-2">Code Ready for Transfer</h3>
                      <p className="text-white/80 text-sm mb-6 font-medium">Please enter your GitHub username or email to initiate the code transfer.</p>
                      <div className="flex gap-2">
@@ -465,14 +485,14 @@ const Dashboard: React.FC = () => {
                           </button>
                         </div>
                         <div className="p-4 bg-amber-500/5 border border-amber-500/20 rounded-2xl">
-                          <p className="text-[10px] font-bold text-amber-600 mb-3 uppercase tracking-wider">AI Generation Failed</p>
+                          <p className="text-[10px] font-bold text-amber-600 mb-3 uppercase tracking-wider">System Generation Failed</p>
                           <button 
                             onClick={() => handleRegenerate(app.id)}
                             disabled={isRegenerating[app.id]}
                             className="w-full py-3 bg-primary text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
                           >
                             {isRegenerating[app.id] ? <Sparkles size={14} className="animate-pulse" /> : <Sparkles size={14} />}
-                            Retry AI Generation
+                            Retry Generation
                           </button>
                         </div>
                       </div>

@@ -308,7 +308,7 @@ const Websites: React.FC = () => {
           <div className="mt-20">
             <header className="mb-10">
               <h2 className="text-3xl font-black text-on-surface tracking-tight mb-2">Live Demos</h2>
-              <p className="text-on-surface-variant font-medium">Explore industry-specific designs built by our AI.</p>
+              <p className="text-on-surface-variant font-medium">Explore industry-specific designs built by our team.</p>
             </header>
             
             <div className="space-y-12">

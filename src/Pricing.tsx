@@ -12,7 +12,7 @@ const PricingPage: React.FC = () => {
       period: '/mo',
       desc: 'Perfect for established businesses needing ongoing support.',
       features: [
-        'AI-Powered Custom Website',
+        'Custom Built Website',
         'Fast & Secure Hosting',
         'Unlimited Content Updates',
         'Priority Technical Support',
@@ -28,7 +28,7 @@ const PricingPage: React.FC = () => {
       period: ' Fixed',
       desc: 'Great for businesses who want full ownership from day one.',
       features: [
-        'AI-Powered Custom Website',
+        'Custom Built Website',
         'Full Source Code Handover',
         '24-Hour Delivery',
         'Vite + React + TypeScript',
@@ -49,7 +49,8 @@ const PricingPage: React.FC = () => {
           <div className="text-center mb-16">
             <h1 className="text-5xl md:text-6xl font-black text-on-surface tracking-tight mb-6">Simple, Transparent Pricing</h1>
             <p className="text-xl text-on-surface-variant max-w-2xl mx-auto font-medium">
-              Choose the plan that fits your business goals. No hidden fees, just high-quality AI-built websites.
+              Choose the plan that fits your business goals. No hidden fees, just high-quality custom-built websites.
+
             </p>
           </div>
 

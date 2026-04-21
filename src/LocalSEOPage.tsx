@@ -27,7 +27,8 @@ const LocalSEOPage: React.FC = () => {
                Dominate {nicheTitle} in <span className="text-primary">{cityTitle}</span>
             </h1>
             <p className="text-xl text-on-surface-variant max-w-3xl mx-auto font-medium leading-relaxed mb-12">
-               Looking for the best {nicheTitle} website in {cityTitle}? We specialize in building AI-driven, SEO-optimized websites for local service businesses. Win the local search game and get more customers in {cityTitle}.
+               Looking for the best {nicheTitle} website in {cityTitle}? We specialize in building performance-driven, SEO-optimized websites for local service businesses. Win the local search game and get more customers in {cityTitle}.
+
             </p>
             <Link to="/signup" className="inline-flex items-center gap-3 bg-primary text-white px-10 py-5 rounded-2xl font-black uppercase tracking-widest shadow-2xl shadow-primary/30 hover:scale-105 transition-all">
                Build My {cityTitle} Business <ArrowRight size={20} />
@@ -51,7 +52,8 @@ const LocalSEOPage: React.FC = () => {
                 </div>
                 <h3 className="text-xl font-black mb-4">Industry Precision</h3>
                 <p className="text-on-surface-variant text-sm font-medium leading-relaxed">
-                   Our AI is trained on thousands of successful {nicheTitle} websites, ensuring your brand speaks the language of your customers.
+                   Our system is designed on thousands of successful {nicheTitle} websites, ensuring your brand speaks the language of your customers.
+
                 </p>
              </div>
 

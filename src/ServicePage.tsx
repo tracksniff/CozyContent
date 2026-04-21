@@ -101,7 +101,8 @@ const ServicePage: React.FC = () => {
           <div className="text-center bg-surface-container-low py-20 px-8 rounded-[4rem] border border-outline-variant">
             <h2 className="text-4xl font-black text-on-surface mb-6">Ready to dominate the local market?</h2>
             <p className="text-on-surface-variant max-w-2xl mx-auto mb-10 font-medium leading-relaxed">
-              Our AI understands the {niche} industry. We build websites that don't just look good, but actually rank on Google and convert local leads into loyal customers.
+              Our system understands the {niche} industry. We build websites that don't just look good, but actually rank on Google and convert local leads into loyal customers.
+
             </p>
             <Link to="/signup" className="inline-flex items-center gap-3 bg-on-surface text-surface px-10 py-5 rounded-2xl font-black uppercase tracking-widest hover:gap-6 transition-all">
               Launch My {niche} Site <ArrowRight size={20} />
