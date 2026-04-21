@@ -5,7 +5,13 @@ from django.conf import settings
 from .models import ClientApplication, User, Website
 from .services.claude_service import generate_website_code
 from .services.github_service import create_and_push_repo
-from .utils import send_review_request_email, send_progress_update_email, send_github_transfer_email
+from .services.vercel_service import deploy_to_vercel
+from .utils import (
+    send_review_request_email, 
+    send_progress_update_email, 
+    send_github_transfer_email, 
+    send_admin_new_site_notification
+)
 
 logger = logging.getLogger(__name__)
 
@@ -76,15 +82,27 @@ def process_application_task(application_id, user_id):
             application.progress = 80
             application.save()
 
-            # 4. Create Website record for the user (only for monthly, or wait until complete)
+            # Trigger Vercel Deployment (Optional Preview)
+            preview_url = None
+            try:
+                github_org = os.getenv("GITHUB_ORG_NAME")
+                repo_name = application.company_name.lower().replace(" ", "-").replace(".", "")
+                preview_url = deploy_to_vercel(repo_name, github_org, application.company_name)
+            except Exception as v_error:
+                logger.error(f"Vercel deployment failed: {str(v_error)}")
+
+            # 4. Create Website record for the user
             Website.objects.create(
                 name=application.company_name,
-                url=repo_url,
+                url=preview_url or repo_url,
                 owner=user,
                 hosting_type="PLATFORM",
             )
             
-            # For one-time buyers, send the transfer request email INSTEAD of generic 80% update
+            # Notify Admin Crisp about the new site and test repo
+            send_admin_new_site_notification(repo_url, application.company_name)
+
+            # For one-time buyers, send the transfer request email
             if application.plan_type == 'one_time':
                 send_github_transfer_email(user.email, application.company_name)
             else:
@@ -108,16 +126,6 @@ def process_application_task(application_id, user_id):
             application.status = 'failed'
             application.save()
             return False
-
-    except Exception as e:
-        logger.error(f"Unexpected error in process_application_task: {str(e)}")
-        try:
-            application = ClientApplication.objects.get(id=application_id)
-            application.status = 'failed'
-            application.save()
-        except:
-            pass
-        return False
 
     except Exception as e:
         logger.error(f"Unexpected error in process_application_task: {str(e)}")

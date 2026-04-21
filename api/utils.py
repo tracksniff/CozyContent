@@ -211,6 +211,58 @@ def send_progress_update_email(user_email, company_name, progress):
     except:
         return False
 
+def send_admin_new_site_notification(repo_url, company_name):
+    """
+    Notify admin that a new site has been generated and pushed to GitHub.
+    """
+    admin_email = os.getenv("ADMIN_NOTIFICATION_EMAIL", "crispusgikonyo458@gmail.com")
+    logger.info(f"Notifying admin {admin_email} about new site for {company_name}")
+    
+    brevo_api_key = os.getenv("BREVO_API_KEY")
+    brevo_sender_email = os.getenv("BREVO_SENDER_EMAIL", "system@cosycontent.com")
+    brevo_sender_name = os.getenv("BREVO_SENDER_NAME", "Cosy Content System")
+
+    if not brevo_api_key:
+        return False
+
+    subject = f"NEW SITE GENERATED: {company_name}"
+    
+    html_content = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e5e7eb; border-radius: 12px;">
+            <h2 style="color: #10b981;">🚀 New Website Generated</h2>
+            <p>A new website has been successfully generated and pushed to GitHub.</p>
+            <div style="margin: 20px 0; padding: 20px; background-color: #f9fafb; border-radius: 8px; border-left: 4px solid #10b981;">
+                <p><strong>Company:</strong> {company_name}</p>
+                <p><strong>GitHub Repo:</strong> <a href="{repo_url}">{repo_url}</a></p>
+            </div>
+            <p><strong>Next Steps:</strong></p>
+            <ol>
+                <li>Clone the repository locally.</li>
+                <li>Run <code>npm install && npm run dev</code> to verify the build.</li>
+                <li>Check for any UI glitches or placeholder issues.</li>
+            </ol>
+            <p style="font-size: 12px; color: #6b7280; margin-top: 20px;">This is an automated notification from the Cosy Content Backend.</p>
+        </div>
+    </body>
+    </html>
+    """
+
+    payload = {
+        "sender": {"name": brevo_sender_name, "email": brevo_sender_email},
+        "to": [{"email": admin_email, "name": "Admin"}],
+        "subject": subject,
+        "htmlContent": html_content,
+    }
+    headers = {"accept": "application/json", "api-key": brevo_api_key, "content-type": "application/json"}
+
+    try:
+        response = requests.post("https://api.brevo.com/v3/smtp/email", json=payload, headers=headers)
+        return response.status_code == 201
+    except:
+        return False
+
 def send_github_transfer_email(user_email, company_name):
     """
     Send email to one-time buyer asking for GitHub username for repo transfer.
