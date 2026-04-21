@@ -223,7 +223,7 @@ def send_github_transfer_email(user_email, company_name):
     if not brevo_api_key:
         return False
 
-    frontend_url = os.getenv("FRONTEND_URL", "https://cosycontent.com")
+    frontend_url = settings.FRONTEND_URL
     subject = f"Action Required: Transferring your {company_name} repository"
     
     html_content = f"""
