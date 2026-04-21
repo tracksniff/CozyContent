@@ -29,7 +29,28 @@ const Dashboard: React.FC = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [isRetrying, setIsRetrying] = useState<{ [key: number]: boolean }>({});
   const [isRegenerating, setIsRegenerating] = useState<{ [key: number]: boolean }>({});
+  const [isRedeploying, setIsRedeploying] = useState<{ [key: number]: boolean }>({});
   const [feedback, setFeedback] = useState<{ [key: number]: string }>({});
+
+  const handleRedeployVercel = async (applicationId: number) => {
+    if (!token) return;
+    setIsRedeploying({ ...isRedeploying, [applicationId]: true });
+    try {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/applications/${applicationId}/redeploy_vercel/`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Vercel redeployment triggered!');
+      if (res.data.url) {
+        window.open(res.data.url, '_blank');
+      }
+      fetchData();
+    } catch (err: any) {
+      console.error(err);
+      toast.error('Vercel redeployment failed.');
+    } finally {
+      setIsRedeploying({ ...isRedeploying, [applicationId]: false });
+    }
+  };
 
   const handleRegenerate = async (applicationId: number) => {
     if (!token) return;
@@ -493,6 +514,14 @@ const Dashboard: React.FC = () => {
                           >
                             {isRegenerating[app.id] ? <Sparkles size={14} className="animate-pulse" /> : <Sparkles size={14} />}
                             Retry Generation
+                          </button>
+                          <button 
+                            onClick={() => handleRedeployVercel(app.id)}
+                            disabled={isRedeploying[app.id]}
+                            className="w-full py-3 bg-secondary text-on-secondary rounded-xl text-[10px] font-black uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 mt-2"
+                          >
+                            {isRedeploying[app.id] ? <Zap size={14} className="animate-pulse" /> : <Zap size={14} />}
+                            Redeploy on Vercel
                           </button>
                         </div>
                       </div>
