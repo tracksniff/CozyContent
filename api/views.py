@@ -564,6 +564,26 @@ class WebsiteViewSet(viewsets.ModelViewSet):
             return Website.objects.all()
         return Website.objects.filter(owner=self.request.user)
 
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAdminUser])
+    def redeploy_vercel(self, request, pk=None):
+        website = self.get_object()
+        from .services.vercel_service import deploy_to_vercel
+        
+        try:
+            github_org = os.getenv("GITHUB_ORG_NAME")
+            # Using the website name as the repo name basis
+            repo_name = website.name.lower().replace(" ", "-").replace(".", "")
+            preview_url = deploy_to_vercel(repo_name, github_org, website.name)
+            
+            if preview_url:
+                website.url = preview_url
+                website.save()
+                return Response({"success": True, "url": preview_url})
+            else:
+                return Response({"error": "Vercel redeployment failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class RequestPasswordResetOTPView(APIView):
     permission_classes = [AllowAny]
