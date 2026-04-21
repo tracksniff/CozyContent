@@ -1,43 +1,72 @@
 import anthropic
-
 import os
-
 import logging
-
 import json
-
 import time
-
 
 logger = logging.getLogger(__name__)
 
 
+def repair_json_truncation(json_str):
+    """
+    Hail mary to close a truncated JSON string.
+    Finds open quotes, braces, and brackets and closes them in reverse order.
+    """
+    json_str = json_str.strip()
+
+    # If it ends with a comma, remove it
+    if json_str.endswith(","):
+        json_str = json_str[:-1]
+
+    stack = []
+    is_escaped = False
+    in_string = False
+
+    for char in json_str:
+        if is_escaped:
+            is_escaped = False
+            continue
+        if char == "\\":
+            is_escaped = True
+            continue
+        if char == '"':
+            in_string = not in_string
+            continue
+        if not in_string:
+            if char == "{" or char == "[":
+                stack.append(char)
+            elif char == "}":
+                if stack and stack[-1] == "{":
+                    stack.pop()
+            elif char == "]":
+                if stack and stack[-1] == "[":
+                    stack.pop()
+
+    # If we are stuck in a string, close it
+    if in_string:
+        json_str += '"'
+
+    # Close open braces/brackets
+    while stack:
+        opener = stack.pop()
+        if opener == "{":
+            json_str += "}"
+        else:
+            json_str += "]"
+
+    return json_str
+
+
 def generate_website_code(application_data, retries=2, delay=5):
     """
-
     High-quality website generation using Claude.
-
-    Combines premium design principles with an efficient file structure to ensure
-
-    completion within token limits while maintaining stunning UI/UX.
-
     """
-
     api_key = os.getenv("ANTHROPIC_API_KEY")
-
     if not api_key:
         logger.error("ANTHROPIC_API_KEY not found")
-
         return None
 
     client = anthropic.Anthropic(api_key=api_key)
-
-    # claude-haiku-4-5-20251001 = cheapest + fast for structured JSON output
-
-    # claude-sonnet-4-6          = best quality/cost balance (recommended)
-
-    # claude-opus-4-6            = highest quality, most expensive
-
     MODEL = "claude-sonnet-4-6"
 
     system_prompt = """You are a world-class UI/UX Architect and Lead React Developer.
@@ -91,7 +120,7 @@ Remember: respond with ONLY the raw JSON object. Ensure 100% syntax correctness 
 
             response = client.messages.create(
                 model=MODEL,
-                max_tokens=12000,  # Increased to prevent truncation
+                max_tokens=12000,
                 system=system_prompt,
                 messages=[{"role": "user", "content": user_prompt}],
             )
@@ -99,7 +128,7 @@ Remember: respond with ONLY the raw JSON object. Ensure 100% syntax correctness 
             text = response.content[0].text.strip()
             stop_reason = response.stop_reason
 
-            # Strip any accidental markdown fences the model may still produce
+            # Strip markdown fences
             if text.startswith("```json"):
                 text = text[7:]
             elif text.startswith("```"):
@@ -111,13 +140,17 @@ Remember: respond with ONLY the raw JSON object. Ensure 100% syntax correctness 
             try:
                 # Basic cleanup before parsing
                 code_files = json.loads(text)
-                logger.info(f"Successfully generated {len(code_files)} files. Stop reason: {stop_reason}")
+                logger.info(
+                    f"Successfully generated {len(code_files)} files. Stop reason: {stop_reason}"
+                )
                 return code_files
             except json.JSONDecodeError as e:
                 logger.error(f"JSON parse error on attempt {attempt + 1}: {e}")
-                
+
                 if stop_reason == "max_tokens" or "Unterminated string" in str(e):
-                    logger.warning("Attempting to repair truncated or malformed JSON...")
+                    logger.warning(
+                        "Attempting to repair truncated or malformed JSON..."
+                    )
                     fixed_text = repair_json_truncation(text)
                     try:
                         code_files = json.loads(fixed_text)
@@ -130,70 +163,17 @@ Remember: respond with ONLY the raw JSON object. Ensure 100% syntax correctness 
                 logger.error(f"Text length: {len(text)}")
                 logger.error(f"Text preview (end): ...{text[-200:]}")
 
-def repair_json_truncation(json_str):
-    """
-    Hail mary to close a truncated JSON string.
-    Finds open quotes, braces, and brackets and closes them in reverse order.
-    """
-    json_str = json_str.strip()
-    
-    # If it ends with a comma, remove it
-    if json_str.endswith(','):
-        json_str = json_str[:-1]
-        
-    stack = []
-    is_escaped = False
-    in_string = False
-    
-    for char in json_str:
-        if is_escaped:
-            is_escaped = False
-            continue
-        if char == '\\':
-            is_escaped = True
-            continue
-        if char == '"':
-            in_string = not in_string
-            continue
-        if not in_string:
-            if char == '{' or char == '[':
-                stack.append(char)
-            elif char == '}':
-                if stack and stack[-1] == '{':
-                    stack.pop()
-            elif char == ']':
-                if stack and stack[-1] == '[':
-                    stack.pop()
-    
-    # If we are stuck in a string, close it
-    if in_string:
-        json_str += '"'
-        
-    # Close open braces/brackets
-    while stack:
-        opener = stack.pop()
-        if opener == '{':
-            json_str += '}'
-        else:
-            json_str += ']'
-            
-    return json_str
-
         except anthropic.APIStatusError as e:
             logger.error(f"Anthropic API error {e.status_code}: {e.message}")
-
         except Exception as e:
             logger.error(f"Generation error: {e}")
 
         if attempt < retries - 1:
-            backoff = delay * (2**attempt)  # Exponential backoff: 5s, 10s
-
+            backoff = delay * (2**attempt)
             logger.info(f"Retrying in {backoff}s...")
-
             time.sleep(backoff)
 
     logger.error(
         f"Failed to generate code for {application_data.get('company_name', 'unknown')}"
     )
-
     return None
