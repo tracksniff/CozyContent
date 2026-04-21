@@ -1,8 +1,11 @@
 import logging
+import json
+import os
+from django.conf import settings
 from .models import ClientApplication, User, Website
 from .services.claude_service import generate_website_code
 from .services.github_service import create_and_push_repo
-from .utils import send_review_request_email, send_progress_update_email
+from .utils import send_review_request_email, send_progress_update_email, send_github_transfer_email
 
 logger = logging.getLogger(__name__)
 
@@ -67,6 +70,7 @@ def process_application_task(application_id, user_id):
             repo_url = create_and_push_repo(application.company_name, code_files)
         except Exception as push_error:
             logger.error(f"GitHub push failed: {str(push_error)}")
+
         if repo_url:
             # Update progress to 80%
             application.progress = 80
@@ -80,22 +84,17 @@ def process_application_task(application_id, user_id):
                 hosting_type="PLATFORM",
             )
             
-            # Send notification to user that site is ready for review (80%)
-            send_progress_update_email(user.email, application.company_name, 80)
-            
-            # For one-time buyers, send the transfer request email
+            # For one-time buyers, send the transfer request email INSTEAD of generic 80% update
             if application.plan_type == 'one_time':
-                from .utils import send_github_transfer_email
                 send_github_transfer_email(user.email, application.company_name)
+            else:
+                # Send notification to user that site is ready for review (80%)
+                send_progress_update_email(user.email, application.company_name, 80)
 
             logger.info(f"Site built to 80% for {application.company_name}. Awaiting admin deployment/review.")
             return True
-
+        else:
             # SAVE BACKUP IF GITHUB FAILS
-            import json
-            import os
-            from django.conf import settings
-            
             backup_dir = os.path.join(settings.MEDIA_ROOT, 'website_backups')
             os.makedirs(backup_dir, exist_ok=True)
             
@@ -109,6 +108,16 @@ def process_application_task(application_id, user_id):
             application.status = 'failed'
             application.save()
             return False
+
+    except Exception as e:
+        logger.error(f"Unexpected error in process_application_task: {str(e)}")
+        try:
+            application = ClientApplication.objects.get(id=application_id)
+            application.status = 'failed'
+            application.save()
+        except:
+            pass
+        return False
 
     except Exception as e:
         logger.error(f"Unexpected error in process_application_task: {str(e)}")
