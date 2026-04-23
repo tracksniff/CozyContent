@@ -3,6 +3,7 @@ import os
 import logging
 import json
 import time
+from .build_service import validate_generated_code, get_build_error_fix_prompt
 
 logger = logging.getLogger(__name__)
 
@@ -57,9 +58,9 @@ def repair_json_truncation(json_str):
     return json_str
 
 
-def generate_website_code(application_data, retries=2, delay=5):
+def generate_website_code(application_data, retries=3, delay=5):
     """
-    High-quality website generation using Claude.
+    High-quality website generation using Claude with Build-Fix loop.
     """
     api_key = os.getenv("ANTHROPIC_API_KEY")
     if not api_key:
@@ -112,22 +113,24 @@ REQUIRED FILES (The build will fail if any are missing or have syntax errors):
 
 Remember: respond with ONLY the raw JSON object. Ensure 100% syntax correctness for a production build."""
 
+    messages = [{"role": "user", "content": user_prompt}]
+    last_code_files = None
+
     for attempt in range(retries):
         try:
             logger.info(
-                f"Starting High-Quality Claude generation (Attempt {attempt + 1})..."
+                f"Starting Claude generation (Attempt {attempt + 1})..."
             )
 
             response = client.messages.create(
                 model=MODEL,
                 max_tokens=12000,
                 system=system_prompt,
-                messages=[{"role": "user", "content": user_prompt}],
+                messages=messages,
             )
 
             text = response.content[0].text.strip()
-            stop_reason = response.stop_reason
-
+            
             # Strip markdown fences
             if text.startswith("```json"):
                 text = text[7:]
@@ -138,42 +141,48 @@ Remember: respond with ONLY the raw JSON object. Ensure 100% syntax correctness 
             text = text.strip()
 
             try:
-                # Basic cleanup before parsing
                 code_files = json.loads(text)
-                logger.info(
-                    f"Successfully generated {len(code_files)} files. Stop reason: {stop_reason}"
-                )
-                return code_files
             except json.JSONDecodeError as e:
-                logger.error(f"JSON parse error on attempt {attempt + 1}: {e}")
+                logger.warning("JSON parse error, attempting repair...")
+                fixed_text = repair_json_truncation(text)
+                try:
+                    code_files = json.loads(fixed_text)
+                except Exception as repair_error:
+                    logger.error(f"JSON repair failed: {repair_error}")
+                    if attempt < retries - 1:
+                        messages.append({"role": "assistant", "content": text})
+                        messages.append({"role": "user", "content": "Your JSON was malformed or truncated. Please provide the full valid JSON object again."})
+                        continue
+                    return None
 
-                if stop_reason == "max_tokens" or "Unterminated string" in str(e):
-                    logger.warning(
-                        "Attempting to repair truncated or malformed JSON..."
-                    )
-                    fixed_text = repair_json_truncation(text)
-                    try:
-                        code_files = json.loads(fixed_text)
-                        logger.info("Successfully repaired JSON truncation.")
-                        return code_files
-                    except Exception as repair_error:
-                        logger.error(f"JSON repair failed: {repair_error}")
+            # VALIDATION STEP
+            logger.info("Validating generated code with build check...")
+            success, error_message = validate_generated_code(code_files)
+            
+            if success:
+                logger.info("Code validation passed!")
+                return code_files
+            else:
+                logger.warning(f"Build validation failed on attempt {attempt + 1}")
+                if attempt < retries - 1:
+                    # Feed errors back to Claude
+                    messages.append({"role": "assistant", "content": text})
+                    fix_prompt = get_build_error_fix_prompt(code_files, error_message)
+                    messages.append({"role": "user", "content": fix_prompt})
+                    logger.info("Requesting fix from Claude...")
+                    time.sleep(delay)
+                    continue
+                else:
+                    logger.error("Max retries reached. Validation failed.")
+                    return code_files # Return anyway as a fallback? Or None? 
+                    # Returning the last version even if it fails build might be better than nothing, 
+                    # but usually, we want success.
 
-                logger.error(f"Stop reason: {stop_reason}")
-                logger.error(f"Text length: {len(text)}")
-                logger.error(f"Text preview (end): ...{text[-200:]}")
-
-        except anthropic.APIStatusError as e:
-            logger.error(f"Anthropic API error {e.status_code}: {e.message}")
         except Exception as e:
             logger.error(f"Generation error: {e}")
+            if attempt < retries - 1:
+                time.sleep(delay)
+            else:
+                return None
 
-        if attempt < retries - 1:
-            backoff = delay * (2**attempt)
-            logger.info(f"Retrying in {backoff}s...")
-            time.sleep(backoff)
-
-    logger.error(
-        f"Failed to generate code for {application_data.get('company_name', 'unknown')}"
-    )
     return None
