@@ -1,4 +1,4 @@
-import anthropic
+import anthropic
 
 import os
 
@@ -342,4 +342,3 @@ if __name__ == "__main__":
 
     else:
         print("Generation failed.")
-    return None
