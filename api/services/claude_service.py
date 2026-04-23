@@ -91,8 +91,8 @@ transforms. Floating/pulse on accent elements.
 • DEPTH: Layered backgrounds, gradients, backdrop-blur glassmorphism cards, decorative SVGs.
 • SECTIONS: Navbar, Hero, Services, About, Testimonials, Contact, Footer — all fully designed.
 
-━━━ FILE ARCHITECTURE — THIS IS THE MOST IMPORTANT RULE ━━━
-The output MUST contain exactly these files as separate JSON keys. Each component file \
+━━━ FILE ARCHITECTURE — MOST IMPORTANT RULE ━━━
+Output MUST contain exactly these 17 files as separate JSON keys. Each component file \
 contains ONLY its own section. NEVER merge multiple sections into one file.
 
   package.json
@@ -112,9 +112,8 @@ contains ONLY its own section. NEVER merge multiple sections into one file.
   src/components/Contact.tsx       ← Contact ONLY
   src/components/Footer.tsx        ← Footer ONLY
 
-DO NOT create src/components/SiteContent.tsx or any other combined file. \
-Any file that contains more than one page section WILL cause build failures due to \
-token-limit truncation leaving unclosed JSX tags.
+DO NOT create src/components/SiteContent.tsx or any combined file. Merged files exceed the \
+token budget and truncate mid-JSX, leaving unclosed tags and broken TypeScript.
 
 ━━━ TAILWIND v4 SETUP ━━━
 • devDependencies: tailwindcss (latest), @tailwindcss/vite — NOT postcss or autoprefixer.
@@ -124,20 +123,39 @@ token-limit truncation leaving unclosed JSX tags.
 • Theme tokens go in @theme { } block in src/index.css — NOT in tailwind.config.js.
 • Do NOT generate tailwind.config.js or postcss.config.js.
 
-━━━ JSX STRING SAFETY — BUILD-BREAKING IF IGNORED ━━━
-Raw apostrophes and quotes in JSX text cause TS1002/TS1003 errors. They MUST be escaped.
+━━━ TYPESCRIPT & JSX RULES — BUILD-BREAKING IF IGNORED ━━━
+
+RULE 1 — NO MODULE-LEVEL JSX:
+Never declare arrays or objects containing JSX elements (<Icon />, <div>, etc.) at the \
+module/top level outside a component function. JSX at module level causes TS1005 \
+'}' expected errors. Always define data arrays as plain objects with string or \
+component-type values, then render the icon inside the component's return statement.
+
+  WRONG — module level JSX (causes TS1005):
+    const items = [{{ icon: <MapPin className="w-5 h-5" />, label: 'Location' }}]
+
+  CORRECT — store the component type, render it in JSX:
+    const items = [{{ icon: MapPin, label: 'Location' }}]
+    // then inside the component:
+    {{items.map(item => <item.icon className="w-5 h-5" />)}}
+
+RULE 2 — JSX APOSTROPHE ESCAPING:
+Raw apostrophes and quotes in JSX text cause TS1002/TS1003 errors.
   WRONG:   <p>We don't cut corners</p>
-  CORRECT: <p>We don&apos;t cut corners</p>   ← use HTML entity (preferred)
-  CORRECT: <p>{"We don't cut corners"}</p>    ← or JSX expression
-Check every text node for contractions (don't, we're, it's) and possessives (company's). \
-This is the single most common cause of build failures in generated JSX.
+  CORRECT: <p>We don&apos;t cut corners</p>
+  CORRECT: <p>{{"We don't cut corners"}}</p>
+Check every text node for contractions and possessives.
+
+RULE 3 — ALL FILES MUST BE COMPLETE:
+Never truncate a file. Every JSX open tag must have a matching close tag. \
+Every function must have a closing brace. Every component must be exported.
 
 ━━━ OTHER TECHNICAL RULES ━━━
 • 100% TypeScript. Zero `any`. All props typed with explicit interfaces.
 • tsconfig: jsx react-jsx, moduleResolution bundler, skipLibCheck true, strict true.
-• No lines over 120 chars. Every JSX open tag has a matching close tag.
-• lucide-react for all icons — import only what each file uses.
-• useIntersectionObserver hook returns { ref, isVisible }. Used in every section component.
+• No lines over 120 chars.
+• lucide-react for all icons — import the component type, not JSX, at module level.
+• useIntersectionObserver hook returns {{ ref, isVisible }}. Used in every section component.
 • Contact form: controlled inputs with useState, validation, submitted success state.
 • src/App.tsx imports all 7 components and renders them in order.
 
@@ -161,18 +179,18 @@ Design and build a premium, award-worthy website for this business:
 • How do the brand colors extend into a full palette (primary, accent, neutrals, surfaces)?
 • What layout moments will make this site unforgettable for this specific business?
 
-━━━ STEP 2 — GENERATE THE FOLLOWING FILES IN ORDER ━━━
+━━━ STEP 2 — GENERATE THE FOLLOWING 17 FILES IN ORDER ━━━
 
 REMINDER: Each component file contains ONE section only. No combined files.
+REMINDER: Never put JSX elements (<Icon />) in module-level arrays — store icon types instead.
 
-── Config & Entry ──────────────────────────────────────────────────────────
+── Config & Shared ──────────────────────────────────────────────────────────
 
 "package.json"
   dependencies: react, react-dom, clsx, tailwind-merge, lucide-react
   devDependencies: typescript, vite, @vitejs/plugin-react, tailwindcss,
     @tailwindcss/vite, @types/react, @types/react-dom
-  scripts: dev, build, preview
-  Do NOT include postcss or autoprefixer.
+  scripts: dev, build, preview. No postcss or autoprefixer.
 
 "vite.config.ts"
   import tailwindcss from '@tailwindcss/vite'
@@ -196,14 +214,9 @@ REMINDER: Each component file contains ONE section only. No combined files.
   Then: Google Fonts @import url(...)
   Then: @theme {{ --color-primary: ...; --color-accent: ...; --font-display: ...; --font-body: ...; }}
   Then: @keyframes fadeInUp, slideInLeft, float, shimmer, pulse-glow, spin-slow
-  Then: .reveal {{ opacity: 0; transform: translateY(24px); transition: all 0.6s ease; }}
-        .reveal.visible {{ opacity: 1; transform: translateY(0); }}
-        .reveal-left {{ opacity: 0; transform: translateX(-30px); transition: all 0.7s ease; }}
-        .reveal-left.visible {{ opacity: 1; transform: translateX(0); }}
-        .reveal-right {{ opacity: 0; transform: translateX(30px); transition: all 0.7s ease; }}
-        .reveal-right.visible {{ opacity: 1; transform: translateX(0); }}
-  Then: global styles (scroll-behavior smooth, selection color, scrollbar, body font)
-  Then: any utility classes (.floating, .shimmer-text, .glass-card, .noise-overlay, etc.)
+  Then: .reveal, .reveal.visible, .reveal-left, .reveal-left.visible,
+        .reveal-right, .reveal-right.visible utility classes
+  Then: global styles, scrollbar, utility classes (.floating, .shimmer-text, etc.)
 
 "src/utils/cn.ts"
   import {{ type ClassValue, clsx }} from 'clsx';
@@ -212,88 +225,73 @@ REMINDER: Each component file contains ONE section only. No combined files.
 
 "src/hooks/useIntersectionObserver.ts"
   Returns {{ ref: RefObject<HTMLDivElement>, isVisible: boolean }}
-  Uses IntersectionObserver with threshold 0.15. Unobserves after first trigger.
-  Cleans up on unmount.
+  Uses IntersectionObserver, threshold 0.15, unobserves after first trigger, cleans up.
 
 "src/App.tsx"
-  import Navbar from './components/Navbar'
-  import Hero from './components/Hero'
-  import Services from './components/Services'
-  import About from './components/About'
-  import Testimonials from './components/Testimonials'
-  import Contact from './components/Contact'
-  import Footer from './components/Footer'
-  export default function App() {{ return <><Navbar/><Hero/>...<Footer/></> }}
+  Imports and renders: Navbar, Hero, Services, About, Testimonials, Contact, Footer
 
-── Component Files (ONE section per file, no exceptions) ────────────────────
+── Component Files (ONE section each, no JSX at module level) ───────────────
 
 "src/components/Navbar.tsx"
-  Exports default Navbar component. Contains ONLY navbar code.
-  - Fixed top, z-50, backdrop-blur, transparent → solid bg on scroll (useEffect + useState)
-  - Logo with icon + brand name. Nav links array mapped to anchor tags.
-  - CTA button. Mobile hamburger with useState, animated open/close drawer.
-  - All link text: no raw apostrophes — use &apos; if needed.
+  Exports default Navbar. Fixed top, backdrop-blur, transparent→solid on scroll.
+  Logo, nav links, CTA button, mobile hamburger with animated drawer.
+  Store nav links as array of {{ label, href }} plain objects — no JSX in the array.
 
 "src/components/Hero.tsx"
-  Exports default Hero component. Contains ONLY hero code.
-  - min-h-screen, flex items-center. Rich layered background (gradients + decorative SVG/shapes).
-  - Multi-line headline with company name for impact. Subheadline. Two CTA buttons.
-  - Trust badges row (e.g. certification, years experience, availability).
-  - Entrance animations via inline style animation or CSS class applied on mount.
-  - All JSX text: escape apostrophes with &apos;
+  Exports default Hero. min-h-screen, rich layered background, multi-line headline,
+  subheadline, two CTA buttons, trust badges row, entrance animations.
+  Escape all apostrophes in text with &apos;
 
 "src/components/Services.tsx"
-  Exports default Services component. Contains ONLY services code.
-  - useIntersectionObserver for section reveal.
-  - Section header with eyebrow label + headline.
-  - Grid of service cards (use all services from the business data).
-  - Each card: lucide icon, title, description, hover lift + border transition.
-  - Staggered transitionDelay per card index.
-  - All JSX text: escape apostrophes with &apos;
+  Exports default Services. useIntersectionObserver for reveal.
+  Define services as array of {{ icon: IconType, title: string, description: string }}
+  where icon is the lucide component TYPE (e.g. MapPin), NOT JSX (<MapPin />).
+  Render <service.icon className="..." /> inside the JSX return only.
+  Staggered card animations. Escape all apostrophes with &apos;
 
 "src/components/About.tsx"
-  Exports default About component. Contains ONLY about code.
-  - Two-column layout. Left: decorative CSS visual (overlapping shapes, brand colors, big icon).
-    Include a floating stat badge absolutely positioned on the visual.
-  - Right: eyebrow + headline + 2 paragraphs + stats grid (2x2) + CTA button.
-  - Use separate useRef + IntersectionObserver for left and right columns for split animation.
-  - All JSX text: escape apostrophes with &apos;
+  Exports default About. Two-column: decorative CSS visual left, copy+stats right.
+  Separate IntersectionObserver refs for left and right columns.
+  Stats as plain array of {{ value: string, label: string }} — no JSX in array.
+  Escape all apostrophes with &apos;
 
 "src/components/Testimonials.tsx"
-  Exports default Testimonials component. Contains ONLY testimonials code.
-  - useIntersectionObserver for section reveal.
-  - Section header centered.
-  - Grid of testimonial cards (use the provided testimonials verbatim).
-  - Each card: Quote icon, star rating, quote text wrapped in &ldquo;...&rdquo;,
-    avatar initials circle, name, role/company.
-  - CRITICAL: any apostrophe inside quote text must be &apos; — never a raw '.
-  - Staggered transitionDelay per card.
+  Exports default Testimonials. useIntersectionObserver for reveal.
+  Define testimonials as array of {{ quote, name, role, initials, rating }} plain strings/numbers.
+  Render star ratings with Array.from({{length: rating}}).map(...) inside JSX only.
+  Wrap quote text in &ldquo;...&rdquo; HTML entities.
+  CRITICAL: any apostrophe inside quote strings must be &apos; in JSX text, or the
+  string value itself must not contain apostrophes (rephrase if needed).
 
 "src/components/Contact.tsx"
-  Exports default Contact component. Contains ONLY contact code.
-  - Two-column layout. Left: eyebrow + headline + paragraph + contact info list with icons.
-  - Right: glassmorphism card containing controlled form.
-  - Form fields: name, email, phone (optional), message (textarea).
-  - useState for form values + errors + submitted state.
-  - Validate name (required), email (required + format), message (required).
-  - On success show a thank-you state with CheckCircle icon.
-  - Use separate useRef + IntersectionObserver for left/right columns.
-  - All JSX text: escape apostrophes with &apos;
+  Exports default Contact. Two-column: info left, form right.
+  CRITICAL PATTERN — define contact info like this (icon TYPE not JSX):
+    const contactItems = [
+      {{ icon: MapPin, label: 'Location', value: '...' }},
+      {{ icon: Phone, label: 'Phone', value: '...' }},
+    ]
+  Then render inside JSX: {{contactItems.map(item => <item.icon className="w-5 h-5" />)}}
+  Controlled form with useState for values + errors + submitted.
+  Validate name, email (format), message. Show success state with CheckCircle.
+  Separate IntersectionObserver refs for left and right columns.
+  Escape all apostrophes in JSX text with &apos;
 
 "src/components/Footer.tsx"
-  Exports default Footer component. Contains ONLY footer code.
-  - Multi-column grid: brand column (logo + tagline + socials), quick links,
-    services list, contact details.
-  - Bottom bar: copyright line with current year via {{new Date().getFullYear()}}.
-  - All JSX text: escape apostrophes with &apos;
+  Exports default Footer. Multi-column grid: brand, links, services, contact.
+  Copyright with {{new Date().getFullYear()}}.
+  Store all link arrays as plain {{ label, href }} objects — no JSX in arrays.
+  Escape all apostrophes with &apos;
 
-━━━ FINAL CHECKLIST BEFORE OUTPUTTING ━━━
-✓ 17 files total — every file listed above is present in the JSON
-✓ No src/components/SiteContent.tsx or any other merged file exists
-✓ Every JSX text node with ' or " uses &apos;/&quot; or a JSX expression
+━━━ FINAL SELF-CHECK BEFORE OUTPUTTING ━━━
+Before closing the JSON, verify:
+✓ All 17 files are present
+✓ No SiteContent.tsx or any merged component file exists
+✓ No JSX elements (<X />, <div>) appear outside a component function (module-level)
+✓ All icon data arrays use the component TYPE (MapPin), never JSX (<MapPin />)
+✓ Every JSX text node with apostrophes uses &apos; or a JSX expression
 ✓ Every JSX open tag has a matching close tag
-✓ No file is truncated — every component is complete
-✓ src/index.css starts with @import "tailwindcss"; not @tailwind directives
+✓ Every file ends with a complete export default statement
+✓ src/index.css starts with @import "tailwindcss";
 ✓ No postcss.config.js or tailwind.config.js in the output
 
 Return ONLY the raw JSON object. No markdown. No explanations.\
