@@ -56,9 +56,9 @@ def process_application_task(application_id, user_id):
 
         # 2. Generate code via Claude
         logger.info(f"Generating website code for {application.company_name}...")
-        code_files = generate_website_code(app_data)
+        project_dir = generate_website_code(app_data)
         
-        if not code_files:
+        if not project_dir:
             logger.error(f"Failed to generate code for {application.company_name}")
             application.status = 'failed'
             application.save()
@@ -73,7 +73,7 @@ def process_application_task(application_id, user_id):
         logger.info(f"Creating GitHub repo and pushing code for {application.company_name}...")
         repo_url = None
         try:
-            repo_url = create_and_push_repo(application.company_name, code_files)
+            repo_url = create_and_push_repo(application.company_name, project_dir)
         except Exception as push_error:
             logger.error(f"GitHub push failed: {str(push_error)}")
 
@@ -120,9 +120,9 @@ def process_application_task(application_id, user_id):
             backup_path = os.path.join(backup_dir, backup_filename)
             
             with open(backup_path, 'w') as f:
-                json.dump(code_files, f)
+                json.dump({"project_dir": project_dir}, f)
             
-            logger.error(f"Failed to push code to GitHub for {application.company_name}. Code saved to {backup_path}")
+            logger.error(f"Failed to push code to GitHub for {application.company_name}. Path saved to {backup_path}")
             application.status = 'failed'
             application.save()
             return False

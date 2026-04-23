@@ -1,7 +1,8 @@
 from github import Github
 import os
 import logging
-import base64
+import subprocess
+import shutil
 
 logger = logging.getLogger(__name__)
 
@@ -26,15 +27,19 @@ def ensure_repo_public(repo_name):
         logger.error(f"Error ensuring repo visibility: {str(e)}")
         return False
 
-def create_and_push_repo(company_name, code_files):
+def create_and_push_repo(company_name, project_dir):
     """
-    Create a new repository under the GitHub organization and push generated code.
+    Create a new repository under the GitHub organization and push the generated project directory.
     """
     token = os.getenv("GITHUB_TOKEN")
     org_name = os.getenv("GITHUB_ORG_NAME")
 
     if not all([token, org_name]):
         logger.error("GITHUB_TOKEN or GITHUB_ORG_NAME not found")
+        return None
+
+    if not os.path.isdir(project_dir):
+        logger.error(f"Project directory not found: {project_dir}")
         return None
 
     try:
@@ -57,19 +62,36 @@ def create_and_push_repo(company_name, code_files):
                     repo.edit(private=False)
                     logger.info(f"Existing GitHub repo {repo_name} set to public.")
             else:
+                logger.error(f"GitHub API error creating repo: {str(e)}")
                 raise e
 
-        # Push files
-        for file_path, content in code_files.items():
-            # Check if file exists to update or create
-            try:
-                contents = repo.get_contents(file_path)
-                repo.update_file(contents.path, f"Updating {file_path}", content, contents.sha)
-            except:
-                repo.create_file(file_path, f"Initial commit for {file_path}", content)
-        
-        return repo.html_url
+        # Push files using Git CLI with provided credentials
+        try:
+            # Initialize git in project_dir
+            subprocess.run(["git", "init"], cwd=project_dir, check=True, capture_output=True)
+            subprocess.run(["git", "config", "user.email", "therealkabzz@gmail.com"], cwd=project_dir, check=True)
+            subprocess.run(["git", "config", "user.name", "tracksniff"], cwd=project_dir, check=True)
+            
+            subprocess.run(["git", "add", "."], cwd=project_dir, check=True, capture_output=True)
+            subprocess.run(["git", "commit", "-m", "Initial commit from Cosy Content"], cwd=project_dir, check=True, capture_output=True)
+            subprocess.run(["git", "branch", "-M", "main"], cwd=project_dir, check=True, capture_output=True)
+            
+            # Use the token from ENV for authentication
+            remote_url = f"https://x-access-token:{token}@github.com/{org_name}/{repo_name}.git"
+            
+            subprocess.run(["git", "remote", "add", "origin", remote_url], cwd=project_dir, check=True, capture_output=True)
+            
+            # Push to main branch
+            subprocess.run(["git", "push", "-u", "origin", "main", "--force"], cwd=project_dir, check=True, capture_output=True)
+            
+            logger.info(f"Project pushed to GitHub: {repo.html_url}")
+            return repo.html_url
 
+        except subprocess.CalledProcessError as git_err:
+            stderr = git_err.stderr.decode() if git_err.stderr else "No stderr"
+            logger.error(f"Git push failed: {stderr}")
+            return None
+        
     except Exception as e:
         logger.error(f"Error creating/pushing to GitHub: {str(e)}")
         return None
