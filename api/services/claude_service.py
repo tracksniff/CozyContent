@@ -16,7 +16,7 @@ import tempfile
 logger = logging.getLogger(__name__)
 
 
-TEMPLATE_REPO = "git@github.com:Cosy-Content-LTD/soho-plumbers-modern-makeover.git"
+TEMPLATE_REPO = "https://github.com/Cosy-Content-LTD/soho-plumbers-modern-makeover.git"
 
 
 # Files Claude is allowed to edit — config/asset files are left untouched
