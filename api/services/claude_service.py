@@ -6,79 +6,101 @@ import logging
 
 import json
 
-import time
+import subprocess
+
+import shutil
+
+import tempfile
 
 
 logger = logging.getLogger(__name__)
 
 
-def repair_json_truncation(json_str):
-    """
+TEMPLATE_REPO = "git@github.com:Cosy-Content-LTD/soho-plumbers-modern-makeover.git"
 
-    Hail mary to close a truncated JSON string.
 
-    Finds open quotes, braces, and brackets and closes them in reverse order.
+# Files Claude is allowed to edit — config/asset files are left untouched
 
-    """
+# so the build always works. Claude only changes content/copy/colors.
 
-    json_str = json_str.strip()
+EDITABLE_FILES = [
+    "src/App.tsx",
+    "src/components/Navbar.tsx",
+    "src/components/Hero.tsx",
+    "src/components/Services.tsx",
+    "src/components/About.tsx",
+    "src/components/Testimonials.tsx",
+    "src/components/Contact.tsx",
+    "src/components/Footer.tsx",
+    "src/index.css",
+    "index.html",
+]
 
-    if json_str.endswith(","):
-        json_str = json_str[:-1]
 
-    stack = []
+def clone_template(dest_dir: str) -> bool:
+    """Clone the template repo into dest_dir. Returns True on success."""
 
-    is_escaped = False
+    try:
+        result = subprocess.run(
+            ["git", "clone", "--depth=1", TEMPLATE_REPO, dest_dir],
+            capture_output=True,
+            text=True,
+            timeout=60,
+        )
 
-    in_string = False
+        if result.returncode != 0:
+            logger.error(f"Git clone failed: {result.stderr}")
 
-    for char in json_str:
-        if is_escaped:
-            is_escaped = False
+            return False
 
-            continue
+        logger.info("Template cloned successfully.")
 
-        if char == "\\":
-            is_escaped = True
+        return True
 
-            continue
+    except Exception as e:
+        logger.error(f"Clone error: {e}")
 
-        if char == '"':
-            in_string = not in_string
+        return False
 
-            continue
 
-        if not in_string:
-            if char == "{" or char == "[":
-                stack.append(char)
+def read_template_files(project_dir: str) -> dict:
+    """Read all editable template files into a dict keyed by relative path."""
 
-            elif char == "}":
-                if stack and stack[-1] == "{":
-                    stack.pop()
+    files = {}
 
-            elif char == "]":
-                if stack and stack[-1] == "[":
-                    stack.pop()
+    for rel_path in EDITABLE_FILES:
+        abs_path = os.path.join(project_dir, rel_path)
 
-    if in_string:
-        json_str += '"'
-
-    while stack:
-        opener = stack.pop()
-
-        if opener == "{":
-            json_str += "}"
+        if os.path.exists(abs_path):
+            with open(abs_path, "r", encoding="utf-8") as f:
+                files[rel_path] = f.read()
 
         else:
-            json_str += "]"
+            logger.warning(f"Template file not found, skipping: {rel_path}")
 
-    return json_str
+    return files
 
 
-def generate_website_code(application_data, retries=2, delay=5):
+def write_edited_files(project_dir: str, edited_files: dict):
+    """Write Claude's edited files back into the project directory."""
+
+    for rel_path, content in edited_files.items():
+        abs_path = os.path.join(project_dir, rel_path)
+
+        os.makedirs(os.path.dirname(abs_path), exist_ok=True)
+
+        with open(abs_path, "w", encoding="utf-8") as f:
+            f.write(content)
+
+    logger.info(f"Wrote {len(edited_files)} edited files.")
+
+
+def edit_files_with_claude(template_files: dict, application_data: dict) -> dict | None:
     """
 
-    Generates a website using individual component files with strict syntax rules.
+    Send the template files to Claude and ask it to edit content
+
+    to match the new business. Returns a dict of edited file contents.
 
     """
 
@@ -91,92 +113,50 @@ def generate_website_code(application_data, retries=2, delay=5):
 
     client = anthropic.Anthropic(api_key=api_key)
 
-    MODEL = "claude-sonnet-4-6"
+    # Build the template snapshot to send to Claude
 
-    system_prompt = """You are an elite Lead React Developer. 
+    template_snapshot = ""
 
-Your goal is to build a high-end, award-worthy website using TypeScript and Tailwind CSS.
+    for rel_path, content in template_files.items():
+        template_snapshot += f"\n\n### FILE: {rel_path}\n```\n{content}\n```"
 
+    system_prompt = """You are an expert React/TypeScript developer.
 
+You will receive a set of working website source files (a template) and a new business brief.
 
-━━━ STAGE 1: ARCHITECTURE ━━━
-
-Generate exactly 14 files. Each component must be in its own file.
-
-
-
-CONFIG: package.json, vite.config.ts, tsconfig.json, index.html, src/main.tsx, src/index.css, src/utils/cn.ts, src/App.tsx
-
-COMPONENTS: src/components/Navbar.tsx, src/components/Hero.tsx, src/components/Services.tsx, src/components/About.tsx, src/components/Testimonials.tsx, src/components/Contact.tsx, src/components/Footer.tsx
+Your job is to edit ONLY the content, copy, colors, and branding to match the new business.
 
 
 
-━━━ STAGE 2: CRITICAL SYNTAX RULES (NO EXCEPTIONS) ━━━
+━━━ STRICT RULES ━━━
 
-1. APOSTROPHES: Never use raw apostrophes (') or quotes (") in JSX text. Use &apos; or &quot;. 
+1. DO NOT change any import paths, file structure, or component names.
 
-   Example: <p>We don&apos;t settle</p>
+2. DO NOT add or remove any imports.
 
+3. DO NOT change vite.config.ts, tsconfig.json, package.json, or src/main.tsx — these are not provided and must not be touched.
 
+4. ONLY edit: text copy, company name, service names, colors, testimonials, contact details, and metadata in index.html.
 
-2. MODULE-LEVEL JSX: Never put JSX tags (<Icon />) inside data arrays outside a component. 
+5. Keep ALL existing JSX structure, className patterns, and animation logic intact.
 
-   WRONG: const items = [{ icon: <MapPin /> }];
+6. Replace placeholder/template colors in index.css or Tailwind @theme with the new brand colors provided.
 
-   RIGHT: const items = [{ icon: MapPin }]; // Store type, render as <item.icon /> in JSX.
+7. Apostrophes in JSX must use &apos; — never raw '.
 
+8. Return a SINGLE raw JSON object where:
 
+   - Keys = the exact same relative file paths provided to you
 
-3. TAILWIND v4 + VITE CONFIG: Use @import "tailwindcss"; in index.css. Use @theme { } for custom colors.
+   - Values = the complete updated file content
 
-   vite.config.ts MUST include BOTH @vitejs/plugin-react AND @tailwindcss/vite. Use this exact structure:
-
-
-
-   import { defineConfig } from 'vite'
-
-   import react from '@vitejs/plugin-react'
-
-   import tailwindcss from '@tailwindcss/vite'
-
-
-     plugins: [react(), tailwindcss()],
-
-   })
-
-
-
-4. PACKAGE.JSON RULES:
-
-   - Put ALL of the following in "dependencies" (NOT devDependencies) so Vercel installs them:
-
-     vite, @vitejs/plugin-react, @tailwindcss/vite, typescript, @types/react, @types/react-dom
-
-   - Also include in "dependencies": react, react-dom, framer-motion, lucide-react, tailwind-merge, clsx
-
-   - The "scripts" must include: "build": "vite build", "dev": "vite", "preview": "vite preview"
-
-
-
-5. COMPLETENESS: Every file must be a complete, valid TypeScript file. No truncation.
-
-
-
-━━━ STAGE 3: DESIGN ━━━
-
-Use premium typography (Google Fonts), fluid animations (framer-motion), and Lucide-react icons. 
-
-Focus on high-contrast, modern layouts with glassmorphism and deep gradients.
-
-
-
-OUTPUT: Return a SINGLE raw JSON object. Keys = relative file paths. Values = complete content strings.
+   No markdown, no backticks, no explanation — only the JSON object.
 
 """
 
-    user_prompt = f"""Generate a premium website for:
+    user_prompt = f"""New business details:
 
-Company: {application_data["company_name"]}
+Company Name: {application_data["company_name"]}
 
 Location: {application_data["city_location"]}
 
@@ -184,105 +164,182 @@ Services: {application_data["services_list"]}
 
 Testimonials: {application_data["testimonials"]}
 
-Colors: {application_data["branding_colors"]}
+Brand Colors: {application_data["branding_colors"]}
 
 
 
-FILES TO GENERATE:
+Here are the template files to edit:
 
-1. package.json — "dependencies" must include ALL of: react, react-dom, framer-motion,
-
-   lucide-react, tailwind-merge, clsx, vite, @vitejs/plugin-react, @tailwindcss/vite,
-
-   typescript, @types/react, @types/react-dom. No devDependencies.
-
-2. vite.config.ts — MUST import and use BOTH react() from @vitejs/plugin-react AND
-
-   tailwindcss() from @tailwindcss/vite in the plugins array.
-
-3. tsconfig.json (react-jsx)
-
-4. index.html (Google Fonts)
-
-5. src/main.tsx
-
-6. src/index.css (Tailwind v4 with @import "tailwindcss";)
-
-7. src/utils/cn.ts
-
-8. src/App.tsx (Renders all components)
-
-9. src/components/Navbar.tsx
-
-10. src/components/Hero.tsx
-
-11. src/components/Services.tsx
-
-12. src/components/About.tsx
-
-13. src/components/Testimonials.tsx
-
-14. src/components/Contact.tsx (Include a functional form with state)
-
-15. src/components/Footer.tsx
+{template_snapshot}
 
 
 
-Ensure 100% build-ready code. Escape all apostrophes. No truncated JSON."""
+Return the edited files as a raw JSON object with the same keys as above.
 
-    for attempt in range(retries):
-        try:
-            logger.info(f"Starting Multi-File Generation (Attempt {attempt + 1})...")
+Every value must be the COMPLETE file content — not a diff, not a snippet."""
 
-            response = client.messages.create(
-                model=MODEL,
-                max_tokens=16000,
-                system=system_prompt,
-                messages=[{"role": "user", "content": user_prompt}],
-            )
+    try:
+        response = client.messages.create(
+            model="claude-sonnet-4-6",
+            max_tokens=16000,
+            system=system_prompt,
+            messages=[{"role": "user", "content": user_prompt}],
+        )
 
-            text = response.content[0].text.strip()
+        text = response.content[0].text.strip()
 
-            stop_reason = response.stop_reason
+        stop_reason = response.stop_reason
 
-            if text.startswith("```json"):
-                text = text[7:]
+        logger.info(f"Claude responded. Stop reason: {stop_reason}")
 
-            elif text.startswith("```"):
-                text = text[3:]
+        # Strip markdown fences if present
 
-            if text.endswith("```"):
-                text = text[:-3]
+        if text.startswith("```json"):
+            text = text[7:]
 
-            text = text.strip()
+        elif text.startswith("```"):
+            text = text[3:]
 
-            try:
-                code_files = json.loads(text)
+        if text.endswith("```"):
+            text = text[:-3]
 
-                logger.info(
-                    f"Generated {len(code_files)} files. Stop reason: {stop_reason}"
-                )
+        text = text.strip()
 
-                return code_files
+        edited = json.loads(text)
 
-            except json.JSONDecodeError as e:
-                logger.error(f"JSON parse error: {e}")
+        # Safety check: only keep keys that were in the original template
 
-                if stop_reason == "max_tokens" or "Unterminated string" in str(e):
-                    fixed_text = repair_json_truncation(text)
+        valid_keys = set(template_files.keys())
 
-                    try:
-                        code_files = json.loads(fixed_text)
+        filtered = {k: v for k, v in edited.items() if k in valid_keys}
 
-                        return code_files
+        if len(filtered) < len(template_files):
+            missing = valid_keys - set(filtered.keys())
 
-                    except:
-                        pass
+            logger.warning(f"Claude omitted these files (keeping originals): {missing}")
 
-        except Exception as e:
-            logger.error(f"Generation error: {e}")
+            # Fall back to original for any missing files
 
-        if attempt < retries - 1:
-            time.sleep(delay)
+            for k in missing:
+                filtered[k] = template_files[k]
 
+        return filtered
+
+    except json.JSONDecodeError as e:
+        logger.error(f"JSON parse error in Claude response: {e}")
+
+        return None
+
+    except Exception as e:
+        logger.error(f"Claude API error: {e}")
+
+        return None
+
+
+def generate_website_code(
+    application_data: dict, output_dir: str | None = None
+) -> str | None:
+    """
+
+    Main entry point. Clones the template, edits it with Claude,
+
+    and returns the path to the ready-to-deploy project directory.
+
+
+
+    Args:
+
+        application_data: dict with keys:
+
+            company_name, city_location, services_list,
+
+            testimonials, branding_colors
+
+        output_dir: where to place the final project folder.
+
+                    Defaults to a temp directory.
+
+
+
+    Returns:
+
+        Path to the project directory, or None on failure.
+
+    """
+
+    if output_dir is None:
+        output_dir = tempfile.mkdtemp(prefix="website_")
+
+    project_dir = os.path.join(output_dir, "project")
+
+    # Step 1: Clone the template
+
+    logger.info(f"Cloning template into {project_dir}...")
+
+    if not clone_template(project_dir):
+        return None
+
+    # Remove the .git folder so the output is a clean project
+
+    git_dir = os.path.join(project_dir, ".git")
+
+    if os.path.exists(git_dir):
+        shutil.rmtree(git_dir)
+
+    # Step 2: Read editable template files
+
+    template_files = read_template_files(project_dir)
+
+    if not template_files:
+        logger.error("No template files could be read.")
+
+        return None
+
+    logger.info(f"Read {len(template_files)} template files.")
+
+    # Step 3: Edit with Claude
+
+    edited_files = edit_files_with_claude(template_files, application_data)
+
+    if not edited_files:
+        logger.error("Claude editing failed.")
+
+        return None
+
+    # Step 4: Write edited files back into the project
+
+    write_edited_files(project_dir, edited_files)
+
+    logger.info(f"Website ready at: {project_dir}")
+
+    return project_dir
+
+
+# ── Example usage ──────────────────────────────────────────────────────────
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
+
+    data = {
+        "company_name": "Bright Spark Electricians",
+        "city_location": "Manchester, UK",
+        "services_list": "Rewiring, Fuse Board Upgrades, EV Charger Installation, Lighting Design",
+        "testimonials": [
+            {"name": "Sarah T.", "text": "Fantastic service, very professional."},
+            {"name": "James R.", "text": "Fixed our issue same day. Highly recommend."},
+        ],
+        "branding_colors": {
+            "primary": "#F59E0B",
+            "secondary": "#1E3A5F",
+            "accent": "#FFFFFF",
+        },
+    }
+
+    path = generate_website_code(data)
+
+    if path:
+        print(f"Project generated at: {path}")
+
+    else:
+        print("Generation failed.")
     return None
