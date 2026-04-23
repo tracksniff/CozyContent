@@ -66,182 +66,238 @@ def generate_website_code(application_data, retries=2, delay=5):
     client = anthropic.Anthropic(api_key=api_key)
     MODEL = "claude-sonnet-4-6"
 
-    system_prompt = """You are an elite UI/UX architect and senior React/TypeScript engineer who builds\
- websites that win design awards. You have deep expertise in Tailwind CSS v4, motion design, and\
- conversion-rate optimization. Every site you build is visually distinctive, technically flawless,\
- and feels like it was crafted by a top-tier agency.
+    system_prompt = """\
+You are an elite UI/UX architect and senior React/TypeScript engineer who builds websites that \
+win design awards. You have deep expertise in Tailwind CSS v4, motion design, and \
+conversion-rate optimization. Every site you build is visually distinctive, technically \
+flawless, and feels like it was crafted by a top-tier agency.
 
 ━━━ DESIGN PHILOSOPHY ━━━
-Before writing a single line of code, you commit to a bold, specific aesthetic direction tailored\
- to the business — luxury/refined, editorial/magazine, brutalist/raw, warm/artisan, futuristic/tech,\
- organic/natural, etc. You NEVER produce generic "template" aesthetics. The design must feel\
- handcrafted for this exact business and city.
+Before writing a single line of code, commit to a bold aesthetic direction tailored to the \
+business — luxury/refined, editorial/magazine, brutalist/raw, warm/artisan, futuristic/tech, \
+organic/natural, etc. NEVER produce generic template aesthetics. The design must feel \
+handcrafted for this exact business and city.
 
-Visual excellence checklist (every site must have ALL of these):
-• TYPOGRAPHY: Choose a distinctive Google Font pairing — a characterful display font for headings\
- (e.g. Playfair Display, Syne, DM Serif Display, Cormorant, Fraunces, Cabinet Grotesk) paired\
- with a refined body font. Import via @import in the CSS. NEVER use system fonts or Inter/Roboto/Arial.
-• COLOR: A deliberate palette derived from the brand colors. Use CSS custom properties (defined in\
- `src/index.css` via `@theme`). One dominant color, one accent, rich neutrals. Dark and light\
- sections for contrast rhythm.
-• LAYOUT: Asymmetric, grid-breaking compositions. Overlapping elements. Full-bleed hero. Large\
- typographic moments. Generous whitespace in some sections, controlled density in others.
-• MOTION: Smooth CSS transitions and keyframe animations. Fade-in-up on scroll (use\
- IntersectionObserver in a useEffect). Hover states with transforms. Parallax-style hero. Subtle\
- floating/pulse animations on accent elements.
-• DEPTH: Layered backgrounds — gradients, subtle noise texture via SVG filter or CSS, backdrop-blur\
- glassmorphism cards, long box-shadows, decorative geometric SVG shapes.
-• SECTIONS: Navbar (sticky, blur on scroll), Hero (full-viewport, bold headline, CTA), Services\
- (icon cards with hover lift), About (split layout with visual), Testimonials (styled quote cards),\
- Contact (form + info), Footer (rich, multi-column).
+Visual excellence checklist (ALL of these must be present):
+• TYPOGRAPHY: Distinctive Google Font pairing — characterful display font for headings \
+(e.g. Playfair Display, Syne, DM Serif Display, Cormorant, Fraunces, Cabinet Grotesk) \
+paired with a refined body font. NEVER use system fonts or Inter/Roboto/Arial.
+• COLOR: Deliberate palette from brand colors. CSS custom properties via @theme in index.css. \
+One dominant, one accent, rich neutrals. Alternating dark/light sections.
+• LAYOUT: Asymmetric, grid-breaking compositions. Full-bleed hero. Large typographic moments. \
+Generous whitespace mixed with controlled density.
+• MOTION: CSS keyframe animations. Fade-in-up on scroll via IntersectionObserver. Hover \
+transforms. Floating/pulse on accent elements.
+• DEPTH: Layered backgrounds, gradients, backdrop-blur glassmorphism cards, decorative SVGs.
+• SECTIONS: Navbar, Hero, Services, About, Testimonials, Contact, Footer — all fully designed.
 
-━━━ STRICT TECHNICAL RULES ━━━
-1. LANGUAGE: 100% TypeScript (.ts / .tsx). Zero `any` types. All props have explicit interfaces.
-2. TAILWIND v4 SETUP — CRITICAL, DO NOT USE THE OLD APPROACH:
-   • Install `tailwindcss@next` and `@tailwindcss/vite` — NOT postcss or autoprefixer.
-   • In `vite.config.ts`, import and add `tailwindcss` from `@tailwindcss/vite` to the plugins array.
-   • In `src/index.css`, use `@import "tailwindcss";` as the ONLY Tailwind directive.
-     Do NOT use `@tailwind base/components/utilities` — those are v3 syntax and will break.
-   • Define all theme customizations (colors, fonts, animations) in `src/index.css` using
-     `@theme {{ --color-primary: ...; --font-display: ...; }}` blocks — NOT in a config file.
-   • There is NO `tailwind.config.js` or `postcss.config.js`. Do not generate these files.
-3. DEPENDENCIES: package.json MUST include:
-   - dependencies: react, react-dom, clsx, tailwind-merge, lucide-react
-   - devDependencies: typescript, vite, @vitejs/plugin-react, tailwindcss (latest/next),\
-     @tailwindcss/vite, @types/react, @types/react-dom
-   - Do NOT include: postcss, autoprefixer, tailwind.config.js related packages
-4. TSCONFIG: `"jsx": "react-jsx"`, `"moduleResolution": "bundler"`, `"skipLibCheck": true`,\
- `"strict": true`.
-5. CN UTILITY: `src/utils/cn.ts` must be exactly:
-   import {{ type ClassValue, clsx }} from 'clsx';
-   import {{ twMerge }} from 'tailwind-merge';
-   export function cn(...inputs: ClassValue[]) {{ return twMerge(clsx(inputs)); }}
-6. STRUCTURE: ALL visual sections live in `src/components/SiteContent.tsx`. Each section is its\
- own named sub-component within that file. `src/App.tsx` simply renders `<SiteContent />`.
-7. CODE QUALITY: No lines over 120 chars. Use template literals for strings containing quotes.\
- Every JSX element properly closed. No truncated files. Functional components only.
-8. ICONS: Use lucide-react for all icons. Import only what you use.
-9. SCROLL ANIMATIONS: Implement a reusable `useIntersectionObserver` hook in\
- `src/hooks/useIntersectionObserver.ts` that returns isVisible and a ref. Use it across sections\
- for staggered fade-in-up reveals driven by CSS classes toggled in `src/index.css`.
-10. FORMS: Contact form must have controlled inputs with useState and basic validation feedback.
+━━━ FILE ARCHITECTURE — THIS IS THE MOST IMPORTANT RULE ━━━
+The output MUST contain exactly these files as separate JSON keys. Each component file \
+contains ONLY its own section. NEVER merge multiple sections into one file.
+
+  package.json
+  vite.config.ts
+  tsconfig.json
+  index.html
+  src/main.tsx
+  src/App.tsx
+  src/index.css
+  src/utils/cn.ts
+  src/hooks/useIntersectionObserver.ts
+  src/components/Navbar.tsx        ← Navbar ONLY
+  src/components/Hero.tsx          ← Hero ONLY
+  src/components/Services.tsx      ← Services ONLY
+  src/components/About.tsx         ← About ONLY
+  src/components/Testimonials.tsx  ← Testimonials ONLY
+  src/components/Contact.tsx       ← Contact ONLY
+  src/components/Footer.tsx        ← Footer ONLY
+
+DO NOT create src/components/SiteContent.tsx or any other combined file. \
+Any file that contains more than one page section WILL cause build failures due to \
+token-limit truncation leaving unclosed JSX tags.
+
+━━━ TAILWIND v4 SETUP ━━━
+• devDependencies: tailwindcss (latest), @tailwindcss/vite — NOT postcss or autoprefixer.
+• vite.config.ts: import tailwindcss from '@tailwindcss/vite', add to plugins array.
+• src/index.css first line: @import "tailwindcss";
+  Do NOT use @tailwind base/components/utilities — that is v3 syntax and will break.
+• Theme tokens go in @theme { } block in src/index.css — NOT in tailwind.config.js.
+• Do NOT generate tailwind.config.js or postcss.config.js.
+
+━━━ JSX STRING SAFETY — BUILD-BREAKING IF IGNORED ━━━
+Raw apostrophes and quotes in JSX text cause TS1002/TS1003 errors. They MUST be escaped.
+  WRONG:   <p>We don't cut corners</p>
+  CORRECT: <p>We don&apos;t cut corners</p>   ← use HTML entity (preferred)
+  CORRECT: <p>{"We don't cut corners"}</p>    ← or JSX expression
+Check every text node for contractions (don't, we're, it's) and possessives (company's). \
+This is the single most common cause of build failures in generated JSX.
+
+━━━ OTHER TECHNICAL RULES ━━━
+• 100% TypeScript. Zero `any`. All props typed with explicit interfaces.
+• tsconfig: jsx react-jsx, moduleResolution bundler, skipLibCheck true, strict true.
+• No lines over 120 chars. Every JSX open tag has a matching close tag.
+• lucide-react for all icons — import only what each file uses.
+• useIntersectionObserver hook returns { ref, isVisible }. Used in every section component.
+• Contact form: controlled inputs with useState, validation, submitted success state.
+• src/App.tsx imports all 7 components and renders them in order.
 
 ━━━ OUTPUT FORMAT ━━━
-Return a SINGLE raw JSON object. Keys are relative file paths (e.g. "src/App.tsx"). Values are\
- the complete file content as strings. No markdown fences. No commentary. No truncation."""
+Return a SINGLE raw JSON object. Keys = relative file paths. Values = complete file content \
+as strings. No markdown fences. No commentary. No truncation. Every file complete.\
+"""
 
-    user_prompt = f"""Design and build a premium, award-worthy website for this business:
+    user_prompt = f"""\
+Design and build a premium, award-worthy website for this business:
 
-┌─────────────────────────────────────────┐
-│  Company:      {application_data["company_name"]}
-│  Location:     {application_data["city_location"]}
-│  Services:     {application_data["services_list"]}
-│  Testimonials: {application_data["testimonials"]}
-│  Brand Colors: {application_data["branding_colors"]}
-└─────────────────────────────────────────┘
+  Company:      {application_data["company_name"]}
+  Location:     {application_data["city_location"]}
+  Services:     {application_data["services_list"]}
+  Testimonials: {application_data["testimonials"]}
+  Brand Colors: {application_data["branding_colors"]}
 
-STEP 1 — DESIGN DIRECTION (reason through this before coding):
-• What is the personality of this business? What aesthetic fits perfectly?
-• What Google Font pairing captures that personality?
-• How should the brand colors be extended into a full palette?
-• What layout moments will make this site unforgettable?
+━━━ STEP 1 — DESIGN DIRECTION (think through before coding) ━━━
+• What personality does this business have? What aesthetic fits it exactly?
+• Which Google Font pairing captures that personality?
+• How do the brand colors extend into a full palette (primary, accent, neutrals, surfaces)?
+• What layout moments will make this site unforgettable for this specific business?
 
-STEP 2 — GENERATE ALL FILES:
+━━━ STEP 2 — GENERATE THE FOLLOWING FILES IN ORDER ━━━
 
-Required files (build fails if any are missing or have errors):
+REMINDER: Each component file contains ONE section only. No combined files.
 
-NOTE: This project uses Tailwind CSS v4. Do NOT generate tailwind.config.js or postcss.config.js.
-Tailwind v4 is configured entirely through src/index.css and the Vite plugin.
+── Config & Entry ──────────────────────────────────────────────────────────
 
 "package.json"
-  - name: kebab-case company name
-  - scripts: dev, build, preview
-  - dependencies: react, react-dom, clsx, tailwind-merge, lucide-react
-  - devDependencies: typescript, vite, @vitejs/plugin-react, tailwindcss@next,
+  dependencies: react, react-dom, clsx, tailwind-merge, lucide-react
+  devDependencies: typescript, vite, @vitejs/plugin-react, tailwindcss,
     @tailwindcss/vite, @types/react, @types/react-dom
-  - Do NOT include postcss or autoprefixer — they are not needed in v4
-  - versions: react 18, vite 5, tailwindcss latest/next
+  scripts: dev, build, preview
+  Do NOT include postcss or autoprefixer.
 
 "vite.config.ts"
-  - Import tailwindcss from '@tailwindcss/vite'
-  - plugins: [tailwindcss(), react()]
-  - Example:
-      import tailwindcss from '@tailwindcss/vite'
-      import react from '@vitejs/plugin-react'
-      import {{ defineConfig }} from 'vite'
-      export default defineConfig({{ plugins: [tailwindcss(), react()] }})
+  import tailwindcss from '@tailwindcss/vite'
+  import react from '@vitejs/plugin-react'
+  import {{ defineConfig }} from 'vite'
+  export default defineConfig({{ plugins: [tailwindcss(), react()] }})
 
 "tsconfig.json"
-  - compilerOptions: target ES2020, lib [ES2020, DOM, DOM.Iterable],
-    module ESNext, skipLibCheck true, moduleResolution bundler,
-    allowImportingTsExtensions true, resolveJsonModule true,
-    isolatedModules true, noEmit true, jsx react-jsx, strict true,
-    baseUrl ".", paths {{"@/*": ["./src/*"]}}
-  - include: ["src"]
+  target ES2020, module ESNext, jsx react-jsx, moduleResolution bundler,
+  skipLibCheck true, strict true, noEmit true, allowImportingTsExtensions true
 
 "index.html"
-  - Google Fonts <link> tag for the chosen font pairing
-  - Proper title and meta description for the business
-  - Root div, script src="/src/main.tsx" with type="module"
+  Google Fonts <link> for chosen pairing. Business title + meta description.
+  <div id="root"></div> and <script type="module" src="/src/main.tsx"></script>
 
 "src/main.tsx"
-  - Standard React 18 createRoot render, imports './index.css'
-
-"src/App.tsx"
-  - Imports and renders <SiteContent />
+  React 18 createRoot. Imports ./index.css.
 
 "src/index.css"
-  - FIRST LINE must be: @import "tailwindcss";
-    (This replaces all three @tailwind directives from v3. Do not use those.)
-  - Google Fonts @import (e.g. @import url('https://fonts.googleapis.com/css2?...'))
-  - @theme block to register custom design tokens:
-      @theme {{
-        --color-primary: ...;
-        --color-accent: ...;
-        --color-surface: ...;
-        --font-display: 'YourDisplayFont', serif;
-        --font-body: 'YourBodyFont', sans-serif;
-      }}
-  - @keyframes for fadeInUp, slideInLeft, float, shimmer, pulse-glow
-  - CSS classes for scroll reveal: .reveal (initial hidden state) and
-    .reveal.visible (final visible state with transition)
-  - Global styles: html scroll-behavior smooth, ::selection color,
-    custom scrollbar, body font-family var(--font-body)
+  Line 1: @import "tailwindcss";
+  Then: Google Fonts @import url(...)
+  Then: @theme {{ --color-primary: ...; --color-accent: ...; --font-display: ...; --font-body: ...; }}
+  Then: @keyframes fadeInUp, slideInLeft, float, shimmer, pulse-glow, spin-slow
+  Then: .reveal {{ opacity: 0; transform: translateY(24px); transition: all 0.6s ease; }}
+        .reveal.visible {{ opacity: 1; transform: translateY(0); }}
+        .reveal-left {{ opacity: 0; transform: translateX(-30px); transition: all 0.7s ease; }}
+        .reveal-left.visible {{ opacity: 1; transform: translateX(0); }}
+        .reveal-right {{ opacity: 0; transform: translateX(30px); transition: all 0.7s ease; }}
+        .reveal-right.visible {{ opacity: 1; transform: translateX(0); }}
+  Then: global styles (scroll-behavior smooth, selection color, scrollbar, body font)
+  Then: any utility classes (.floating, .shimmer-text, .glass-card, .noise-overlay, etc.)
 
 "src/utils/cn.ts"
-  - Exact cn helper (see rules above)
+  import {{ type ClassValue, clsx }} from 'clsx';
+  import {{ twMerge }} from 'tailwind-merge';
+  export function cn(...inputs: ClassValue[]) {{ return twMerge(clsx(inputs)); }}
 
 "src/hooks/useIntersectionObserver.ts"
-  - Custom hook that takes a ref and options, returns isVisible boolean
-  - Uses IntersectionObserver API with cleanup on unmount
+  Returns {{ ref: RefObject<HTMLDivElement>, isVisible: boolean }}
+  Uses IntersectionObserver with threshold 0.15. Unobserves after first trigger.
+  Cleans up on unmount.
 
-"src/components/SiteContent.tsx"
-  - ALL sections in one file: Navbar, Hero, Services, About,
-    Testimonials, Contact, Footer
-  - Each is a named const component, exported as default from bottom
-  - Navbar: sticky, backdrop-blur, transparent→solid on scroll,
-    smooth-scroll nav links, mobile hamburger menu with useState
-  - Hero: full-viewport height, dramatic headline with the company name
-    broken across lines for impact, subheadline, two CTAs, decorative
-    background element (geometric SVG shape or gradient orb)
-  - Services: grid of cards, each with lucide icon, title, description,
-    hover lift + border-color transition, staggered animation delay
-  - About: two-column split — decorative visual left (CSS art or styled
-    div with brand colors + overlapping shapes), copy right with stats
-  - Testimonials: quote cards with avatar initials, star rating,
-    name + location, subtle background pattern
-  - Contact: split layout — left has contact info with icons, right has
-    controlled form (name, email, phone, message) with styled inputs
-    and submit button with hover animation
-  - Footer: multi-column (brand, links, services, contact info),
-    bottom bar with copyright
+"src/App.tsx"
+  import Navbar from './components/Navbar'
+  import Hero from './components/Hero'
+  import Services from './components/Services'
+  import About from './components/About'
+  import Testimonials from './components/Testimonials'
+  import Contact from './components/Contact'
+  import Footer from './components/Footer'
+  export default function App() {{ return <><Navbar/><Hero/>...<Footer/></> }}
 
-CRITICAL REMINDERS:
-• Every section uses useIntersectionObserver for reveal animations
-• All hardcoded content must reflect the actual business data provided
-• Testimonials content must use the provided testimonials verbatim
-• The design must feel UNIQUE to this specific business — not generic
-• Return ONLY the raw JSON object. No markdown. No explanations."""
+── Component Files (ONE section per file, no exceptions) ────────────────────
+
+"src/components/Navbar.tsx"
+  Exports default Navbar component. Contains ONLY navbar code.
+  - Fixed top, z-50, backdrop-blur, transparent → solid bg on scroll (useEffect + useState)
+  - Logo with icon + brand name. Nav links array mapped to anchor tags.
+  - CTA button. Mobile hamburger with useState, animated open/close drawer.
+  - All link text: no raw apostrophes — use &apos; if needed.
+
+"src/components/Hero.tsx"
+  Exports default Hero component. Contains ONLY hero code.
+  - min-h-screen, flex items-center. Rich layered background (gradients + decorative SVG/shapes).
+  - Multi-line headline with company name for impact. Subheadline. Two CTA buttons.
+  - Trust badges row (e.g. certification, years experience, availability).
+  - Entrance animations via inline style animation or CSS class applied on mount.
+  - All JSX text: escape apostrophes with &apos;
+
+"src/components/Services.tsx"
+  Exports default Services component. Contains ONLY services code.
+  - useIntersectionObserver for section reveal.
+  - Section header with eyebrow label + headline.
+  - Grid of service cards (use all services from the business data).
+  - Each card: lucide icon, title, description, hover lift + border transition.
+  - Staggered transitionDelay per card index.
+  - All JSX text: escape apostrophes with &apos;
+
+"src/components/About.tsx"
+  Exports default About component. Contains ONLY about code.
+  - Two-column layout. Left: decorative CSS visual (overlapping shapes, brand colors, big icon).
+    Include a floating stat badge absolutely positioned on the visual.
+  - Right: eyebrow + headline + 2 paragraphs + stats grid (2x2) + CTA button.
+  - Use separate useRef + IntersectionObserver for left and right columns for split animation.
+  - All JSX text: escape apostrophes with &apos;
+
+"src/components/Testimonials.tsx"
+  Exports default Testimonials component. Contains ONLY testimonials code.
+  - useIntersectionObserver for section reveal.
+  - Section header centered.
+  - Grid of testimonial cards (use the provided testimonials verbatim).
+  - Each card: Quote icon, star rating, quote text wrapped in &ldquo;...&rdquo;,
+    avatar initials circle, name, role/company.
+  - CRITICAL: any apostrophe inside quote text must be &apos; — never a raw '.
+  - Staggered transitionDelay per card.
+
+"src/components/Contact.tsx"
+  Exports default Contact component. Contains ONLY contact code.
+  - Two-column layout. Left: eyebrow + headline + paragraph + contact info list with icons.
+  - Right: glassmorphism card containing controlled form.
+  - Form fields: name, email, phone (optional), message (textarea).
+  - useState for form values + errors + submitted state.
+  - Validate name (required), email (required + format), message (required).
+  - On success show a thank-you state with CheckCircle icon.
+  - Use separate useRef + IntersectionObserver for left/right columns.
+  - All JSX text: escape apostrophes with &apos;
+
+"src/components/Footer.tsx"
+  Exports default Footer component. Contains ONLY footer code.
+  - Multi-column grid: brand column (logo + tagline + socials), quick links,
+    services list, contact details.
+  - Bottom bar: copyright line with current year via {{new Date().getFullYear()}}.
+  - All JSX text: escape apostrophes with &apos;
+
+━━━ FINAL CHECKLIST BEFORE OUTPUTTING ━━━
+✓ 17 files total — every file listed above is present in the JSON
+✓ No src/components/SiteContent.tsx or any other merged file exists
+✓ Every JSX text node with ' or " uses &apos;/&quot; or a JSX expression
+✓ Every JSX open tag has a matching close tag
+✓ No file is truncated — every component is complete
+✓ src/index.css starts with @import "tailwindcss"; not @tailwind directives
+✓ No postcss.config.js or tailwind.config.js in the output
+
+Return ONLY the raw JSON object. No markdown. No explanations.\
+"""
 
     for attempt in range(retries):
         try:
@@ -274,6 +330,14 @@ CRITICAL REMINDERS:
                     f"Successfully generated {len(code_files)} files. "
                     f"Stop reason: {stop_reason}"
                 )
+
+                # Warn if the model still produced a combined file
+                if "src/components/SiteContent.tsx" in code_files:
+                    logger.warning(
+                        "Model generated SiteContent.tsx despite instructions. "
+                        "Consider splitting manually or re-running."
+                    )
+
                 return code_files
             except json.JSONDecodeError as e:
                 logger.error(f"JSON parse error on attempt {attempt + 1}: {e}")
