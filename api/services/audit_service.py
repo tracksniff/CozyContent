@@ -96,9 +96,27 @@ def send_audit_email(report, pdf_content):
 
 def create_beautiful_html(report):
     data = report.report_data
-    findings_html = "".join([f"<li style='margin-bottom: 10px; color: #e11d48;'>{f['text']}</li>" for f in data['findings']])
-    wins_html = "".join([f"<li style='margin-bottom: 10px; color: #059669;'>{w['text']}</li>" for w in data['quick_wins']])
     
+    # Map findings and quick_wins correctly
+    # Claude provides "issue" or "action" instead of "text"
+    findings_html = ""
+    for f in data.get('findings', []):
+        text = f.get('issue') or f.get('text') or "Finding"
+        findings_html += f"<li style='margin-bottom: 10px; color: #e11d48;'>{text}</li>"
+        
+    wins_html = ""
+    for w in data.get('quick_wins', []):
+        text = w.get('action') or w.get('text') or "Quick Win"
+        wins_html += f"<li style='margin-bottom: 10px; color: #059669;'>{text}</li>"
+    
+    # Map scores safely
+    scores = data.get('scores', {})
+    design_score = scores.get('design') or scores.get('ux') or 0
+    mobile_score = scores.get('mobile_ux') or scores.get('accessibility') or 0
+    conv_score = scores.get('lead_conversion') or scores.get('conversion') or 0
+    seo_score = scores.get('seo_basics') or scores.get('seo') or 0
+    trust_score = scores.get('trust_signals') or scores.get('performance') or 0
+
     return f"""
     <html>
     <head>
@@ -128,18 +146,18 @@ def create_beautiful_html(report):
         </div>
 
         <div class="score-circle">
-            <div class="score-num">{data['overall_score']}</div>
+            <div class="score-num">{data.get('overall_score', 0)}</div>
             <div class="score-label">Overall Score</div>
         </div>
 
         <div class="section">
             <div class="section-title">Category Breakdown</div>
             <div class="grid">
-                <div class="card"><strong>{data['scores']['design']}/20</strong><br/><small>Design</small></div>
-                <div class="card"><strong>{data['scores']['mobile_ux']}/20</strong><br/><small>Mobile UX</small></div>
-                <div class="card"><strong>{data['scores']['lead_conversion']}/20</strong><br/><small>Conversion</small></div>
-                <div class="card"><strong>{data['scores']['seo_basics']}/20</strong><br/><small>SEO</small></div>
-                <div class="card"><strong>{data['scores']['trust_signals']}/20</strong><br/><small>Trust</small></div>
+                <div class="card"><strong>{design_score}/20</strong><br/><small>Design</small></div>
+                <div class="card"><strong>{mobile_score}/20</strong><br/><small>Mobile UX</small></div>
+                <div class="card"><strong>{conv_score}/20</strong><br/><small>Conversion</small></div>
+                <div class="card"><strong>{seo_score}/20</strong><br/><small>SEO</small></div>
+                <div class="card"><strong>{trust_score}/20</strong><br/><small>Trust/Perf</small></div>
             </div>
         </div>
 
