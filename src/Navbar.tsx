@@ -74,9 +74,13 @@ const Navbar = () => {
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center space-x-8">
           {!isAuthenticated && (
-            <div className="relative">
+            <div 
+              className="relative py-2"
+              onMouseEnter={() => setShowDemosMenu(true)}
+              onMouseLeave={() => setShowDemosMenu(false)}
+            >
               <button
-                onMouseEnter={() => setShowDemosMenu(true)}
+                onClick={() => setShowDemosMenu(!showDemosMenu)}
                 className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary ${location.pathname.startsWith('/services/') ? 'text-primary' : 'text-on-surface-variant'}`}
               >
                 Demos <ChevronDown size={14} className={`transition-transform duration-200 ${showDemosMenu ? 'rotate-180' : ''}`} />
@@ -84,28 +88,23 @@ const Navbar = () => {
               
               <AnimatePresence>
                 {showDemosMenu && (
-                  <>
-                    <div className="fixed inset-0 z-10" onMouseEnter={() => setShowDemosMenu(false)}></div>
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                      animate={{ opacity: 1, scale: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                      onMouseEnter={() => setShowDemosMenu(true)}
-                      onMouseLeave={() => setShowDemosMenu(false)}
-                      className="absolute left-0 mt-2 w-48 rounded-2xl bg-surface border border-outline-variant/20 shadow-xl z-20 overflow-hidden backdrop-blur-md"
-                    >
-                      {demoItems.map((item) => (
-                        <Link
-                          key={item.label}
-                          to={item.href}
-                          onClick={handleNavClick}
-                          className={`w-full flex items-center gap-3 px-5 py-3 text-sm font-medium transition-colors hover:bg-surface-container-high ${location.pathname === item.href ? 'text-primary bg-primary/5' : 'text-on-surface-variant'}`}
-                        >
-                          {item.label}
-                        </Link>
-                      ))}
-                    </motion.div>
-                  </>
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                    className="absolute left-0 mt-2 w-48 rounded-2xl bg-surface border border-outline-variant/20 shadow-xl z-20 overflow-hidden backdrop-blur-md"
+                  >
+                    {demoItems.map((item) => (
+                      <Link
+                        key={item.label}
+                        to={item.href}
+                        onClick={handleNavClick}
+                        className={`w-full flex items-center gap-3 px-5 py-3 text-sm font-medium transition-colors hover:bg-surface-container-high ${location.pathname === item.href ? 'text-primary bg-primary/5' : 'text-on-surface-variant'}`}
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </motion.div>
                 )}
               </AnimatePresence>
             </div>
