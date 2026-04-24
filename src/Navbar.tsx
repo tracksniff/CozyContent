@@ -164,10 +164,6 @@ const Navbar = () => {
             </AnimatePresence>
           </div>
 
-          <a href="https://cosycontent.com/blog/" target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors">
-            Blog
-          </a>
-
           <Link to="/our-brands" className={`text-sm font-medium transition-colors hover:text-primary ${location.pathname === '/our-brands' ? 'text-primary' : 'text-on-surface-variant'}`}>
             About
           </Link>
@@ -322,10 +318,6 @@ const Navbar = () => {
                   )}
                 </AnimatePresence>
               </div>
-
-              <a href="https://cosycontent.com/blog/" target="_blank" rel="noopener noreferrer" className="text-lg font-bold text-on-surface-variant py-2 border-t border-outline-variant/5 pt-2">
-                Blog
-              </a>
 
               <Link to="/our-brands" onClick={handleNavClick} className="text-lg font-bold text-on-surface-variant py-2 border-t border-outline-variant/5 pt-2">
                 About

@@ -64,6 +64,7 @@ const Footer = () => {
               <li><Link to="/#pricing" className="hover:text-primary transition-colors">Pricing</Link></li>
               <li><Link to="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
               <li><Link to="/our-brands" className="hover:text-primary transition-colors">Our Brands</Link></li>
+              <li><a href="https://cosycontent.com/blog/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Blog</a></li>
             </ul>
           </div>
           <div>
