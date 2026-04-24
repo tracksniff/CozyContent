@@ -650,7 +650,7 @@ def perform_audit(audit_id):
 
         client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
         ai_resp = client.messages.create(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-6",
             max_tokens=4000,
             system=(
                 "You are a conversion rate optimisation expert. "
