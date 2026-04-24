@@ -213,8 +213,24 @@ def perform_audit(audit_id):
             messages=[{"role": "user", "content": f"URL: {url}, Industry: {report.industry}, Meta: {report.meta_title}. Generate audit JSON."}],
         )
         
-        report.report_data = json.loads(response.content[0].text.strip())
-        report.save()
+        raw_text = response.content[0].text.strip()
+        logger.info(f"Claude raw response: {raw_text}")
+        
+        # Clean up markdown fences if present
+        if raw_text.startswith("```json"):
+            raw_text = raw_text[7:]
+        elif raw_text.startswith("```"):
+            raw_text = raw_text[3:]
+        if raw_text.endswith("```"):
+            raw_text = raw_text[:-3]
+        raw_text = raw_text.strip()
+        
+        try:
+            report.report_data = json.loads(raw_text)
+            report.save()
+        except json.JSONDecodeError as je:
+            logger.error(f"Failed to parse Claude JSON: {je}. Raw text: {raw_text}")
+            raise
 
         # 3. PDF Generation & Email
         html_report = create_beautiful_html(report)
