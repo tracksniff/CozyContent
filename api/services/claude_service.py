@@ -803,6 +803,60 @@ def write_edited_files(project_dir: str, edited_files: dict):
 # Claude content + design editing
 # ─────────────────────────────────────────────────────────
 
+# Universal frontend excellence rules injected into every generation
+FRONTEND_EXCELLENCE_GUIDE = """
+━━━ UNIVERSAL MODERN FRONTEND STANDARDS (apply to EVERY component) ━━━
+
+LAYOUT & SPACING
+• Sections must breathe — use py-20 to py-32, never py-8 or less
+• Content width: max-w-7xl mx-auto with px-6 sm:px-8 side padding
+• All grids: start grid-cols-1, expand md:grid-cols-2, lg:grid-cols-3 (mobile-first)
+
+TYPOGRAPHY HIERARCHY
+• One display size per section: text-4xl–text-7xl font-black for hero/section headings
+• Subheadings: text-xl–text-2xl font-bold
+• Body: text-base–text-lg font-medium leading-relaxed
+• Labels/captions: text-sm font-medium text-muted-foreground
+
+CARDS & SURFACES
+• Cards: rounded-2xl or rounded-3xl, shadow-sm hover:shadow-xl transition-all duration-300
+• Subtle borders: border border-border/50
+• Card hover: hover:-translate-y-1 hover:shadow-xl transition-all duration-300
+
+BUTTONS & CTAs
+• Primary CTA: large, rounded-full or rounded-xl, py-4 px-8, shadow-lg hover:shadow-xl
+• Secondary: ghost or outline variant, same size
+• ALWAYS include hover:scale-105 or hover:brightness-110 on buttons
+• Hero must have at least 2 CTA buttons above the fold
+
+IMAGES
+• Always use object-cover with explicit aspect ratios (aspect-video, aspect-square, etc.)
+• Hero background: use background-image with bg-center bg-cover bg-no-repeat
+• Add a gradient overlay on background images for text readability
+
+VISUAL RHYTHM
+• Sections must alternate visually: light → slightly-off-white → dark → light
+• Never have 3 consecutive sections with the same background colour
+• The hero MUST use a background image or strong gradient — never plain white/light
+
+MICRO-INTERACTIONS
+• All interactive elements: transition-all duration-200
+• Icon containers: hover:scale-110 or hover:rotate-12 with transition
+• Links: hover:underline or hover:text-primary with transition
+
+STATS & SOCIAL PROOF
+• Stats numbers: text-4xl–text-6xl font-black — make them BIG and bold
+• Stars: show ★★★★★ in yellow/amber, never just text
+• Testimonial cards: large opening quotation mark, author name + location
+
+FOOTER
+• Always dark background (bg-gray-900 or bg-slate-900)
+• 3–4 column grid on desktop, stacked on mobile
+• Company name + description in first column
+• Links in subsequent columns
+• Copyright bar at bottom with thin border separator
+"""
+
 
 CONTENT_GUIDE = """
 NAVBAR:         company name (2-line logo), phone number
@@ -888,6 +942,8 @@ Transform every component to match the DESIGN PERSONALITY below. The output must
 For background images use: style={{{{ backgroundImage: `url('IMAGE_URL')` }}}}
 For <img> tags use: src="IMAGE_URL"
 Distribute images across components — hero gets Image 1, team/about gets Image 2, services can use Images 3+.
+
+{FRONTEND_EXCELLENCE_GUIDE}
 
 ━━━ CONTENT TO UPDATE IN EACH FILE ━━━
 {CONTENT_GUIDE}

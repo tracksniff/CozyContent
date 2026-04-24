@@ -29,11 +29,12 @@ class ClientApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClientApplication
         fields = (
-            'id', 'company_name', 'website_url', 'industry', 'services_list',
-            'city_location', 'testimonials', 'branding_colors', 'status', 
-            'plan_type', 'github_username_for_transfer',
+            'id', 'company_name', 'phone_number', 'website_url', 'industry',
+            'tagline', 'services_list', 'city_location', 'years_experience',
+            'trust_badges', 'service_areas', 'testimonials', 'branding_colors',
+            'company_logo', 'status', 'plan_type', 'github_username_for_transfer',
             'progress', 'is_reviewed', 'created_at', 'images', 'uploaded_images',
-            'feedbacks', 'attachments'
+            'feedbacks', 'attachments',
         )
         read_only_fields = ('id', 'created_at', 'images', 'feedbacks', 'attachments')
 

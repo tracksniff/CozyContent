@@ -31,35 +31,44 @@ def process_application_task(application_id, user_id):
 
         # 1. Prepare data for Claude
         image_assets = []
+
+        # Company logo first so it's used as the primary brand image
+        if application.company_logo:
+            image_assets.append(f"{settings.BACKEND_URL}{application.company_logo.url}")
+
         for img in application.images.all():
             image_assets.append(f"{settings.BACKEND_URL}{img.image.url}")
-        
+
         for attachment in application.attachments.all():
-            # Basic check if it's an image
             if any(attachment.filename.lower().endswith(ext) for ext in ['.png', '.jpg', '.jpeg', '.svg', '.webp']):
                 image_assets.append(f"{settings.BACKEND_URL}{attachment.file.url}")
 
-        # Prepare branding colors and testimonials (handle JSON strings from model)
+        # Normalise branding_colors — always a dict
         branding_colors = application.branding_colors
         if isinstance(branding_colors, str):
             try:
                 branding_colors = json.loads(branding_colors)
-            except:
+            except Exception:
                 branding_colors = {}
-        
+
         testimonials = application.testimonials
         if isinstance(testimonials, str):
             try:
                 testimonials = json.loads(testimonials)
-            except:
+            except Exception:
                 testimonials = []
 
         app_data = {
             'company_name': application.company_name,
+            'phone_number': application.phone_number or '',
             'industry': application.industry,
-            'website_url': application.website_url,
+            'tagline': application.tagline or '',
+            'website_url': application.website_url or '',
             'city_location': application.city_location,
             'services_list': application.services_list,
+            'years_experience': application.years_experience or '10+',
+            'trust_badges': application.trust_badges or 'Fully insured, certified professionals',
+            'service_areas': application.service_areas or application.city_location,
             'testimonials': testimonials,
             'branding_colors': branding_colors,
             'uploaded_images': image_assets,

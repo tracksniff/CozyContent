@@ -47,12 +47,18 @@ class ClientApplication(models.Model):
         ('failed', 'Failed'),
     ]
     company_name = models.CharField(max_length=255)
+    phone_number = models.CharField(max_length=50, blank=True, null=True)
     website_url = models.URLField(blank=True, null=True)
     industry = models.CharField(max_length=100)
+    tagline = models.CharField(max_length=255, blank=True, null=True)
     services_list = models.TextField()
     city_location = models.CharField(max_length=255)
+    years_experience = models.CharField(max_length=50, blank=True, null=True)
+    trust_badges = models.CharField(max_length=500, blank=True, null=True)
+    service_areas = models.TextField(blank=True, null=True)
     testimonials = models.TextField(blank=True, null=True)
     branding_colors = models.CharField(max_length=255)
+    company_logo = models.ImageField(upload_to='company_logos/', blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     plan_type = models.CharField(max_length=20, blank=True, null=True) # 'one_time' or 'monthly'
     github_username_for_transfer = models.CharField(max_length=255, blank=True, null=True)
