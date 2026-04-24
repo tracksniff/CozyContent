@@ -694,6 +694,99 @@ def restore_imports(edited_files: dict, locked_imports: dict) -> dict:
     return restored
 
 
+# Full set of lucide-react icons Claude might introduce during redesign
+_LUCIDE_ICONS = {
+    "Activity", "AlertCircle", "AlertTriangle", "AlarmClock", "Anchor", "Archive",
+    "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp", "AtSign", "Award",
+    "BadgeCheck", "BarChart", "BarChart2", "Battery", "Bell", "BellRing",
+    "Bike", "Bluetooth", "Bolt", "Book", "BookOpen", "Bookmark", "Box",
+    "Briefcase", "Brush", "Building", "Building2",
+    "Calendar", "Camera", "Car", "CheckCircle", "CheckCheck", "CheckSquare",
+    "ChefHat", "ChevronDown", "ChevronLeft", "ChevronRight", "ChevronUp",
+    "Circle", "Clipboard", "ClipboardCheck", "ClipboardList", "Clock",
+    "Cloud", "CloudRain", "CloudSnow", "CloudSun", "Cog", "Coins",
+    "Compass", "Construction", "CookingPot", "Copy", "CreditCard", "Crown",
+    "Delete", "Diamond", "DollarSign", "Download", "Droplets", "Dumbbell",
+    "Edit", "Edit2", "Edit3", "ExternalLink", "Eye", "EyeOff",
+    "File", "FileText", "Fingerprint", "Flag", "Flame", "Folder",
+    "Gauge", "Gift", "Globe", "GraduationCap", "Grid",
+    "Hammer", "Hand", "HandCoins", "Handshake", "HardHat", "Hash",
+    "Headphones", "Heart", "HeartHandshake", "HelpCircle", "Home",
+    "Hourglass", "Image", "Inbox", "Info",
+    "Key", "Laptop", "Leaf", "Library", "Link", "List", "Lock",
+    "Loader", "Loader2", "Mail", "Map", "MapPin", "Medal", "Menu",
+    "MessageCircle", "MessageSquare", "Mic", "Microscope", "Minus",
+    "Monitor", "Moon", "MoreHorizontal", "MoreVertical", "Mountain",
+    "Move", "Navigation", "Package", "PaintRoller", "Paintbrush",
+    "Palette", "Pen", "PenTool", "Pencil", "Percent", "Phone",
+    "PieChart", "PiggyBank", "Pill", "Pizza", "Play",
+    "Plus", "RefreshCw", "Ribbon", "Rocket", "RotateCw",
+    "Route", "Ruler", "Running", "Salad", "Satellite", "Scale",
+    "School", "Scissors", "Search", "Send", "Settings", "Share",
+    "Shield", "ShieldCheck", "ShoppingBag", "ShoppingCart",
+    "Shovel", "Signal", "Smartphone", "Smile", "Speaker",
+    "Sparkles", "Square", "Star", "StarHalf", "Stars",
+    "Stethoscope", "Sun", "Syringe", "Tablet", "Tag",
+    "Target", "Telescope", "Thermometer", "ThumbsUp", "Timer",
+    "Tool", "Trash", "Trash2", "TrendingDown", "TrendingUp",
+    "Triangle", "Trophy", "Truck", "Umbrella", "Unlock", "Upload",
+    "UserCheck", "UserPlus", "Users", "User", "Utensils", "UtensilsCrossed",
+    "Video", "Volume2", "Wallet", "Wand", "Wand2", "Watch", "Waves",
+    "Wifi", "Wind", "Wrench", "X", "XCircle", "Zap", "ZoomIn", "ZoomOut",
+}
+
+
+def fix_missing_lucide_imports(restored_files: dict) -> dict:
+    """
+    Scan every TSX file for Lucide icon JSX usage and patch the
+    lucide-react import line so no icon is referenced but undefined.
+    """
+    import re
+
+    jsx_tag_re = re.compile(r"<([A-Z][a-zA-Z0-9]+)[\s/>]")
+    lucide_import_re = re.compile(
+        r"(import\s*\{)([^}]+)(\}\s*from\s*['\"]lucide-react['\"];?)"
+    )
+
+    fixed = {}
+    for rel_path, content in restored_files.items():
+        if not rel_path.endswith(".tsx"):
+            fixed[rel_path] = content
+            continue
+
+        # Find all capitalised JSX tags that match a known Lucide icon
+        used = {m.group(1) for m in jsx_tag_re.finditer(content) if m.group(1) in _LUCIDE_ICONS}
+
+        if not used:
+            fixed[rel_path] = content
+            continue
+
+        match = lucide_import_re.search(content)
+        if match:
+            existing = {s.strip() for s in match.group(2).split(",") if s.strip()}
+            merged = existing | used
+            new_line = f"{match.group(1)} {', '.join(sorted(merged))} {match.group(3)}"
+            content = lucide_import_re.sub(new_line, content, count=1)
+            added = merged - existing
+            if added:
+                logger.info(f"{rel_path}: injected Lucide icons {added}")
+        else:
+            # No lucide-react import yet — insert one after the last import line
+            lines = content.split("\n")
+            last_import = 0
+            for i, line in enumerate(lines):
+                if line.strip().startswith("import "):
+                    last_import = i
+            new_import = f"import {{ {', '.join(sorted(used))} }} from 'lucide-react';"
+            lines.insert(last_import + 1, new_import)
+            content = "\n".join(lines)
+            logger.info(f"{rel_path}: added lucide-react import for {used}")
+
+        fixed[rel_path] = content
+
+    return fixed
+
+
 def write_edited_files(project_dir: str, edited_files: dict):
     for rel_path, content in edited_files.items():
         abs_path = os.path.join(project_dir, rel_path)
@@ -808,6 +901,7 @@ Distribute images across components — hero gets Image 1, team/about gets Image
 6. Do NOT include src/index.css in your response — it is handled separately.
 7. Every file value must be the COMPLETE file content — never a diff or snippet.
 8. Return valid TSX — no syntax errors, no unclosed tags.
+9. Icons: you may ONLY use icon names that already appear in the original file's JSX. Do NOT introduce new icon component names — if an icon isn't in the original file, don't use it.
 
 ━━━ OUTPUT FORMAT ━━━
 Return a SINGLE raw JSON object. Keys = file paths. Values = complete file content.
@@ -877,9 +971,11 @@ Return ALL files as a single raw JSON object. Do NOT include src/index.css."""
 
             filtered[k] = template_files[k]
 
-        # Restore locked imports
+        # Restore locked imports, then patch any new Lucide icons Claude introduced
 
         restored = restore_imports(filtered, locked_imports)
+
+        restored = fix_missing_lucide_imports(restored)
 
         return restored
 
