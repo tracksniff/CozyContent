@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sun, Moon, Monitor, Menu, X } from 'lucide-react';
+import { Sun, Moon, Monitor, Menu, X, ChevronDown } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from './ThemeContext';
@@ -10,6 +10,7 @@ import logoDark from './assets/Logo JPG/Cosy_Content_Ltd_-_Horizontal-removebg-p
 const Navbar = () => {
   const { theme, setTheme } = useTheme();
   const [showThemeMenu, setShowThemeMenu] = useState(false);
+  const [showDemosMenu, setShowDemosMenu] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [systemTheme, setSystemTheme] = useState<'light' | 'dark'>(
     window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
@@ -43,8 +44,18 @@ const Navbar = () => {
     { label: 'Contact', href: '/contact' }
   ];
 
+  const demoItems = [
+    { label: 'Plumbing', href: '/services/plumbing' },
+    { label: 'Roofing', href: '/services/roofing' },
+    { label: 'Electrical', href: '/services/electrical' },
+    { label: 'Cleaning', href: '/services/cleaning' },
+    { label: 'Removals', href: '/services/removals' },
+    { label: 'Locksmiths', href: '/services/locksmiths' }
+  ];
+
   const handleNavClick = () => {
     setIsMobileMenuOpen(false);
+    setShowDemosMenu(false);
   };
 
   return (
@@ -62,6 +73,44 @@ const Navbar = () => {
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center space-x-8">
+          {!isAuthenticated && (
+            <div className="relative">
+              <button
+                onMouseEnter={() => setShowDemosMenu(true)}
+                className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary ${location.pathname.startsWith('/services/') ? 'text-primary' : 'text-on-surface-variant'}`}
+              >
+                Demos <ChevronDown size={14} className={`transition-transform duration-200 ${showDemosMenu ? 'rotate-180' : ''}`} />
+              </button>
+              
+              <AnimatePresence>
+                {showDemosMenu && (
+                  <>
+                    <div className="fixed inset-0 z-10" onMouseEnter={() => setShowDemosMenu(false)}></div>
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                      onMouseEnter={() => setShowDemosMenu(true)}
+                      onMouseLeave={() => setShowDemosMenu(false)}
+                      className="absolute left-0 mt-2 w-48 rounded-2xl bg-surface border border-outline-variant/20 shadow-xl z-20 overflow-hidden backdrop-blur-md"
+                    >
+                      {demoItems.map((item) => (
+                        <Link
+                          key={item.label}
+                          to={item.href}
+                          onClick={handleNavClick}
+                          className={`w-full flex items-center gap-3 px-5 py-3 text-sm font-medium transition-colors hover:bg-surface-container-high ${location.pathname === item.href ? 'text-primary bg-primary/5' : 'text-on-surface-variant'}`}
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
+
           {navItems.map((item) => (
             item.href.startsWith('/#') ? (
               <a
@@ -165,19 +214,41 @@ const Navbar = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="md:hidden absolute top-24 left-4 right-4 bg-surface rounded-[2rem] border border-outline-variant/20 shadow-2xl p-8 z-40 backdrop-blur-xl"
+            className="md:hidden absolute top-24 left-4 right-4 bg-surface rounded-[2rem] border border-outline-variant/20 shadow-2xl p-8 z-40 backdrop-blur-xl max-h-[80vh] overflow-y-auto"
           >
             <div className="flex flex-col gap-6">
-              {navItems.map((item) => (
-                <Link
-                  key={item.label}
-                  to={item.href}
-                  onClick={handleNavClick}
-                  className="text-lg font-bold text-on-surface-variant hover:text-primary transition-colors"
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {!isAuthenticated && (
+                <div className="flex flex-col gap-4">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-primary/60">Demos</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    {demoItems.map((item) => (
+                      <Link
+                        key={item.label}
+                        to={item.href}
+                        onClick={handleNavClick}
+                        className="text-base font-bold text-on-surface-variant hover:text-primary transition-colors py-1"
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="flex flex-col gap-4 pt-4 border-t border-outline-variant/10">
+                <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">Menu</p>
+                {navItems.map((item) => (
+                  <Link
+                    key={item.label}
+                    to={item.href}
+                    onClick={handleNavClick}
+                    className="text-lg font-bold text-on-surface-variant hover:text-primary transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+
               <div className="pt-6 border-t border-outline-variant/10 flex flex-col gap-4">
                 {isAuthenticated ? (
                   <Link to="/dashboard" onClick={handleNavClick} className="w-full bg-primary text-white py-4 rounded-2xl text-center font-black">
