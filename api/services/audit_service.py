@@ -6,23 +6,536 @@ import json
 import logging
 import stripe
 from django.conf import settings
-from xhtml2pdf import pisa
 from io import BytesIO
+
+# ── ReportLab imports ──────────────────────────────────────────────────────────
+from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
+from reportlab.lib.units import mm
+from reportlab.platypus import (
+    SimpleDocTemplate,
+    Spacer,
+    KeepTogether,
+    PageBreak,
+    Flowable,
+)
+from reportlab.pdfgen import canvas as rl_canvas
 
 logger = logging.getLogger(__name__)
 
+# ── Brand palette ──────────────────────────────────────────────────────────────
+DARK = colors.HexColor("#0D0D0D")
+OFF_WHITE = colors.HexColor("#F7F5F0")
+ACCENT = colors.HexColor("#C8F04A")  # lime green
+ACCENT2 = colors.HexColor("#E8F5A3")  # pale lime
+MID_GREY = colors.HexColor("#6B6B6B")
+RED = colors.HexColor("#E84040")
+ORANGE = colors.HexColor("#F5A623")
+YELLOW = colors.HexColor("#F5D623")
+GREEN = colors.HexColor("#4CAF50")
 
-def generate_pdf_from_html(html_content, filename):
+W, H = A4
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Helper: word-wrap text onto a canvas
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+def _draw_wrapped(c, text, x, y, max_width, line_height=4.5):
+    """Draw word-wrapped text; returns final y position."""
+    words = str(text).split()
+    line, lines = "", []
+    # rough char-width estimate for Helvetica at current font size
+    char_w = c._fontsize * 0.55
+    max_chars = max(1, int(max_width / char_w))
+    for word in words:
+        if len(line) + len(word) + 1 <= max_chars:
+            line = (line + " " + word).strip()
+        else:
+            lines.append(line)
+            line = word
+    if line:
+        lines.append(line)
+    for ln in lines:
+        c.drawString(x, y, ln)
+        y -= line_height * mm
+    return y
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Flowable: Cover / Hero page
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+class _CoverPage(Flowable):
+    def __init__(self, business_name, website_url, overall_score, scores):
+        super().__init__()
+        self.business_name = business_name
+        self.website_url = website_url
+        self.overall_score = overall_score
+        self.scores = scores  # dict: label -> value (0-100)
+
+    def wrap(self, *args):
+        return W, H
+
+    def draw(self):
+        c = self.canv
+        # ── dark background + grid ──
+        c.setFillColor(DARK)
+        c.rect(0, 0, W, H, fill=1, stroke=0)
+        c.setStrokeColor(colors.HexColor("#1A1A1A"))
+        c.setLineWidth(0.5)
+        for x in range(0, int(W) + 1, 40):
+            c.line(x, 0, x, H)
+        for y in range(0, int(H) + 1, 40):
+            c.line(0, y, W, y)
+
+        # ── top lime bar ──
+        c.setFillColor(ACCENT)
+        c.rect(0, H - 6 * mm, W, 6 * mm, fill=1, stroke=0)
+
+        # ── "PERFORMANCE AUDIT" pill ──
+        c.setFillColor(colors.HexColor("#1C1C1C"))
+        c.roundRect(20 * mm, H - 28 * mm, 72 * mm, 10 * mm, 5 * mm, fill=1, stroke=0)
+        c.setFillColor(ACCENT)
+        c.setFont("Helvetica-Bold", 8)
+        c.drawString(25 * mm, H - 23 * mm, "PERFORMANCE AUDIT  \u2022  APRIL 2026")
+
+        # ── score circle ──
+        cx, cy, r = W / 2, H / 2 + 30 * mm, 38 * mm
+        c.setFillColor(colors.HexColor("#141414"))
+        c.circle(cx, cy, r, fill=1, stroke=0)
+        c.setStrokeColor(ACCENT)
+        c.setLineWidth(3)
+        c.circle(cx, cy, r, fill=0, stroke=1)
+        c.setFillColor(ACCENT)
+        c.setFont("Helvetica-Bold", 42)
+        c.drawCentredString(cx, cy + 6 * mm, str(self.overall_score))
+        c.setFillColor(OFF_WHITE)
+        c.setFont("Helvetica", 10)
+        c.drawCentredString(cx, cy - 10 * mm, "OVERALL SCORE")
+
+        # ── business name + url ──
+        c.setFillColor(colors.white)
+        c.setFont("Helvetica-Bold", 36)
+        c.drawCentredString(W / 2, H / 2 - 12 * mm, self.business_name)
+        c.setFillColor(ACCENT)
+        c.setFont("Helvetica", 13)
+        c.drawCentredString(W / 2, H / 2 - 24 * mm, self.website_url)
+
+        # ── score bars ──
+        score_items = list(self.scores.items())  # [(label, value), ...]
+        bar_x = 25 * mm
+        bar_w = W - 50 * mm
+        label_w = 36 * mm
+        bar_area = bar_w - label_w - 20 * mm
+        bar_y = H / 2 - 50 * mm
+
+        c.setFillColor(colors.HexColor("#1A1A1A"))
+        c.roundRect(
+            bar_x - 4 * mm,
+            bar_y - 6 * mm,
+            bar_w + 8 * mm,
+            len(score_items) * 10 * mm + 8 * mm,
+            4 * mm,
+            fill=1,
+            stroke=0,
+        )
+
+        def _bar_color(v):
+            if v < 40:
+                return RED
+            if v < 60:
+                return ORANGE
+            return GREEN
+
+        for i, (label, value) in enumerate(score_items):
+            y = bar_y + (len(score_items) - 1 - i) * 10 * mm
+            c.setFillColor(OFF_WHITE)
+            c.setFont("Helvetica", 9)
+            c.drawString(bar_x, y + 1 * mm, label)
+            # track
+            c.setFillColor(colors.HexColor("#2A2A2A"))
+            c.roundRect(
+                bar_x + label_w, y, bar_area, 5 * mm, 2.5 * mm, fill=1, stroke=0
+            )
+            # fill
+            fill_w = bar_area * int(value) / 100
+            c.setFillColor(_bar_color(int(value)))
+            c.roundRect(bar_x + label_w, y, fill_w, 5 * mm, 2.5 * mm, fill=1, stroke=0)
+            # value
+            c.setFillColor(colors.white)
+            c.setFont("Helvetica-Bold", 9)
+            c.drawRightString(bar_x + bar_w, y + 1 * mm, f"{value}%")
+
+        # ── footer ──
+        c.setFillColor(MID_GREY)
+        c.setFont("Helvetica", 8)
+        c.drawString(
+            20 * mm, 14 * mm, "\u00a9 2026 Cosy Content Ltd  \u2022  Confidential"
+        )
+        c.drawRightString(W - 20 * mm, 14 * mm, "cosycontent.com")
+        c.setFillColor(ACCENT)
+        c.rect(0, 0, W, 4 * mm, fill=1, stroke=0)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Flowable: Section header band
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+class _SectionHeader(Flowable):
+    def __init__(self, title, subtitle=""):
+        super().__init__()
+        self._title = title
+        self._subtitle = subtitle
+
+    def wrap(self, avW, avH):
+        self._w = avW
+        return avW, 18 * mm
+
+    def draw(self):
+        c = self.canv
+        c.setFillColor(DARK)
+        c.roundRect(0, 0, self._w, 16 * mm, 3 * mm, fill=1, stroke=0)
+        c.setFillColor(ACCENT)
+        c.rect(0, 0, 3 * mm, 16 * mm, fill=1, stroke=0)
+        c.setFillColor(colors.white)
+        c.setFont("Helvetica-Bold", 14)
+        c.drawString(8 * mm, 9 * mm, self._title)
+        if self._subtitle:
+            c.setFillColor(ACCENT2)
+            c.setFont("Helvetica", 8)
+            c.drawString(8 * mm, 3.5 * mm, self._subtitle)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Flowable: Finding card
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+class _FindingCard(Flowable):
+    _PRI = {
+        "CRITICAL": (RED, colors.HexColor("#FFF0F0")),
+        "HIGH": (ORANGE, colors.HexColor("#FFF8F0")),
+        "MEDIUM": (YELLOW, colors.HexColor("#FFFCF0")),
+        "LOW": (GREEN, colors.HexColor("#F0FFF4")),
+    }
+
+    def __init__(self, priority, title, body):
+        super().__init__()
+        self._priority = str(priority).upper()
+        self._title = title
+        self._body = body
+
+    def _card_height(self, w):
+        lines = max(2, len(self._body) // 90 + 1)
+        return (22 + lines * 13) * mm / 3.78 + 12 * mm
+
+    def wrap(self, avW, avH):
+        self._w = avW
+        self._h = self._card_height(avW)
+        return avW, self._h
+
+    def draw(self):
+        c = self.canv
+        w, h = self._w, self._h
+        badge_col, bg_col = self._PRI.get(
+            self._priority, (MID_GREY, colors.HexColor("#F9F9F9"))
+        )
+
+        c.setFillColor(bg_col)
+        c.roundRect(0, 0, w, h, 3 * mm, fill=1, stroke=0)
+        c.setStrokeColor(badge_col)
+        c.setLineWidth(1)
+        c.roundRect(0, 0, w, h, 3 * mm, fill=0, stroke=1)
+
+        # left stripe
+        c.setFillColor(badge_col)
+        c.roundRect(0, 0, 3 * mm, h, 3 * mm, fill=1, stroke=0)
+        c.rect(1.5 * mm, 0, 1.5 * mm, h, fill=1, stroke=0)
+
+        # priority badge
+        badge_w = len(self._priority) * 5.5 + 8
+        c.setFillColor(badge_col)
+        c.roundRect(8 * mm, h - 8.5 * mm, badge_w, 6 * mm, 3 * mm, fill=1, stroke=0)
+        c.setFillColor(colors.white if self._priority == "CRITICAL" else DARK)
+        c.setFont("Helvetica-Bold", 7)
+        c.drawString(8 * mm + 4, h - 5.5 * mm, self._priority)
+
+        # title
+        c.setFillColor(DARK)
+        c.setFont("Helvetica-Bold", 11)
+        c.drawString(8 * mm, h - 14 * mm, self._title)
+
+        # body
+        c.setFont("Helvetica", 9)
+        c.setFillColor(MID_GREY)
+        _draw_wrapped(c, self._body, 8 * mm, h - 20 * mm, w - 14 * mm)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Flowable: Quick win card
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+class _QuickWinCard(Flowable):
+    def __init__(self, number, title, body):
+        super().__init__()
+        self._number = number
+        self._title = title
+        self._body = body
+
+    def wrap(self, avW, avH):
+        self._w = avW
+        lines = max(2, len(self._body) // 90 + 1)
+        self._h = 14 * mm + lines * 4.5 * mm + 4 * mm
+        return avW, self._h
+
+    def draw(self):
+        c = self.canv
+        w, h = self._w, self._h
+
+        c.setFillColor(colors.HexColor("#F0FFF4"))
+        c.roundRect(0, 0, w, h, 3 * mm, fill=1, stroke=0)
+        c.setStrokeColor(GREEN)
+        c.setLineWidth(1)
+        c.roundRect(0, 0, w, h, 3 * mm, fill=0, stroke=1)
+
+        # number circle
+        c.setFillColor(GREEN)
+        c.circle(8 * mm, h - 8 * mm, 5 * mm, fill=1, stroke=0)
+        c.setFillColor(colors.white)
+        c.setFont("Helvetica-Bold", 9)
+        c.drawCentredString(8 * mm, h - 9.5 * mm, str(self._number))
+
+        # title
+        c.setFillColor(DARK)
+        c.setFont("Helvetica-Bold", 10)
+        c.drawString(16 * mm, h - 9.5 * mm, self._title)
+
+        # body
+        c.setFont("Helvetica", 9)
+        c.setFillColor(MID_GREY)
+        _draw_wrapped(c, self._body, 16 * mm, h - 14.5 * mm, w - 18 * mm)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Flowable: CTA banner
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+class _CtaBanner(Flowable):
+    def __init__(self, location="Nairobi"):
+        super().__init__()
+        self._location = location
+        self._h = 48 * mm
+
+    def wrap(self, avW, avH):
+        self._w = avW
+        return avW, self._h
+
+    def draw(self):
+        c = self.canv
+        w, h = self._w, self._h
+
+        c.setFillColor(DARK)
+        c.roundRect(0, 0, w, h, 4 * mm, fill=1, stroke=0)
+
+        c.setFillColor(ACCENT)
+        c.setFont("Helvetica-Bold", 15)
+        c.drawCentredString(
+            w / 2, h - 10 * mm, "Don\u2019t let your website hold you back."
+        )
+
+        c.setFillColor(OFF_WHITE)
+        c.setFont("Helvetica", 9.5)
+        line = f"We specialise in transforming businesses in {self._location} by building websites that actually work."
+        c.drawCentredString(w / 2, h - 17 * mm, line)
+
+        # stats
+        stats = [
+            ("7 Days", "Turnaround"),
+            ("\u00a359/mo", "Zero Upfront"),
+            ("Managed", "Hosting & Support"),
+        ]
+        col_w = w / 3
+        for i, (val, label) in enumerate(stats):
+            cx = col_w * i + col_w / 2
+            c.setFillColor(ACCENT)
+            c.setFont("Helvetica-Bold", 13)
+            c.drawCentredString(cx, h - 28 * mm, val)
+            c.setFillColor(MID_GREY)
+            c.setFont("Helvetica", 8)
+            c.drawCentredString(cx, h - 33 * mm, label)
+
+        # dividers between stats
+        c.setStrokeColor(colors.HexColor("#2A2A2A"))
+        c.setLineWidth(0.5)
+        c.line(col_w, h - 22 * mm, col_w, h - 38 * mm)
+        c.line(col_w * 2, h - 22 * mm, col_w * 2, h - 38 * mm)
+
+        c.setFillColor(ACCENT)
+        c.setFont("Helvetica-Bold", 9)
+        c.drawCentredString(w / 2, 4.5 * mm, "Claim your new website: cosycontent.com")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Page callbacks (header / footer on interior pages)
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+def _make_cover_callback(cover_flowable):
+    """Returns an onFirstPage callback that draws the cover."""
+
+    def _cb(canvas, doc):
+        canvas.saveState()
+        cover_flowable.canv = canvas
+        cover_flowable.draw()
+        canvas.restoreState()
+
+    return _cb
+
+
+def _make_interior_callback(business_name):
+    def _cb(canvas, doc):
+        canvas.saveState()
+        # header
+        canvas.setFillColor(DARK)
+        canvas.rect(0, H - 14 * mm, W, 14 * mm, fill=1, stroke=0)
+        canvas.setFillColor(ACCENT)
+        canvas.rect(0, H - 14 * mm, 3 * mm, 14 * mm, fill=1, stroke=0)
+        canvas.setFillColor(colors.white)
+        canvas.setFont("Helvetica-Bold", 9)
+        canvas.drawString(
+            10 * mm, H - 9 * mm, f"{business_name} \u2022 Website Performance Audit"
+        )
+        canvas.setFillColor(MID_GREY)
+        canvas.setFont("Helvetica", 8)
+        canvas.drawRightString(
+            W - 10 * mm, H - 9 * mm, "Cosy Content Ltd  \u2022  April 2026"
+        )
+        # footer
+        canvas.setFillColor(DARK)
+        canvas.rect(0, 0, W, 10 * mm, fill=1, stroke=0)
+        canvas.setFillColor(ACCENT)
+        canvas.rect(0, 0, W, 2 * mm, fill=1, stroke=0)
+        canvas.setFillColor(MID_GREY)
+        canvas.setFont("Helvetica", 7.5)
+        canvas.drawString(
+            10 * mm, 3.5 * mm, "\u00a9 2026 Cosy Content Ltd  \u2022  Confidential"
+        )
+        canvas.setFillColor(colors.white)
+        canvas.drawRightString(W - 10 * mm, 3.5 * mm, f"Page {doc.page}")
+        canvas.restoreState()
+
+    return _cb
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Public API: generate_beautiful_pdf
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+def generate_beautiful_pdf(report):
     """
-    Converts HTML to PDF locally using xhtml2pdf.
+    Generate a beautiful, branded PDF audit report using ReportLab.
+    Returns raw PDF bytes, or None on failure.
+
+    Replaces both the old `create_beautiful_html` + `generate_pdf_from_html` pair.
     """
-    result = BytesIO()
-    pdf = pisa.pisaDocument(BytesIO(html_content.encode("utf-8")), result)
-    if not pdf.err:
-        return result.getvalue()
-    else:
-        logger.error(f"xhtml2pdf Error: {pdf.err}")
+    try:
+        data = report.report_data
+        scores = data.get("scores", {})
+
+        def _norm(v):
+            try:
+                v = int(v)
+                return v if v > 20 else v * 5
+            except Exception:
+                return 0
+
+        score_map = {
+            "Design": _norm(scores.get("design") or scores.get("ux") or 0),
+            "Mobile UX": _norm(
+                scores.get("mobile_ux") or scores.get("accessibility") or 0
+            ),
+            "Conversion": _norm(
+                scores.get("lead_conversion") or scores.get("conversion") or 0
+            ),
+            "SEO": _norm(scores.get("seo_basics") or scores.get("seo") or 0),
+            "Performance": _norm(
+                scores.get("performance") or scores.get("trust_signals") or 0
+            ),
+        }
+        overall = _norm(data.get("overall_score", 0))
+
+        buf = BytesIO()
+        doc = SimpleDocTemplate(
+            buf,
+            pagesize=A4,
+            leftMargin=20 * mm,
+            rightMargin=20 * mm,
+            topMargin=20 * mm,
+            bottomMargin=15 * mm,
+        )
+
+        cover = _CoverPage(report.business_name, report.website_url, overall, score_map)
+
+        story = [PageBreak()]  # page 1 is drawn by the onFirstPage callback
+
+        # ── Critical Findings ──────────────────────────────────────────────
+        story.append(
+            _SectionHeader(
+                "Critical Findings", "Priority issues requiring immediate attention"
+            )
+        )
+        story.append(Spacer(1, 3 * mm))
+
+        for f in data.get("findings", []):
+            priority = f.get("severity") or f.get("priority") or "medium"
+            title = f.get("issue") or f.get("text") or "Finding"
+            body = f.get("detail") or f.get("description") or ""
+            card = _FindingCard(priority, title, body)
+            story.append(KeepTogether([card, Spacer(1, 3 * mm)]))
+
+        story.append(Spacer(1, 4 * mm))
+
+        # ── Quick Wins ─────────────────────────────────────────────────────
+        story.append(
+            _SectionHeader(
+                "Strategic Quick Wins", "High-impact actions you can take this week"
+            )
+        )
+        story.append(Spacer(1, 3 * mm))
+
+        for i, w in enumerate(data.get("quick_wins", []), 1):
+            title = w.get("action") or w.get("text") or "Quick Win"
+            body = w.get("detail") or w.get("description") or ""
+            card = _QuickWinCard(i, title, body)
+            story.append(KeepTogether([card, Spacer(1, 3 * mm)]))
+
+        story.append(Spacer(1, 6 * mm))
+
+        # ── CTA Banner ─────────────────────────────────────────────────────
+        story.append(_CtaBanner(location=getattr(report, "location", "Nairobi")))
+
+        doc.build(
+            story,
+            onFirstPage=_make_cover_callback(cover),
+            onLaterPages=_make_interior_callback(report.business_name),
+        )
+
+        return buf.getvalue()
+
+    except Exception as e:
+        logger.error(f"generate_beautiful_pdf failed: {e}")
         return None
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Email helper (unchanged logic, kept for completeness)
+# ─────────────────────────────────────────────────────────────────────────────
 
 
 def send_audit_email(report, pdf_content):
@@ -35,29 +548,35 @@ def send_audit_email(report, pdf_content):
     payload = {
         "sender": {"name": "Cosy Content", "email": "contact@cosycontent.com"},
         "to": [{"email": report.email, "name": report.name}],
-        "subject": f"Your Website Audit for {report.business_name} 📊",
+        "subject": f"Your Website Audit for {report.business_name} \U0001f4ca",
         "htmlContent": f"""
             <html>
             <body style="font-family: sans-serif; color: #333; line-height: 1.6;">
-                <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; rounded: 10px;">
-                    <h1 style="color: #2563eb;">Hi {report.name}!</h1>
+                <div style="max-width: 600px; margin: 0 auto; padding: 20px;
+                            border: 1px solid #eee; border-radius: 10px;">
+                    <h1 style="color: #0D0D0D;">Hi {report.name}!</h1>
                     <p>Thanks for requesting an audit for <strong>{report.business_name}</strong>.</p>
-                    <p>We've analyzed your site at <code>{report.website_url}</code> and generated a detailed performance scorecard for you.</p>
-                    
-                    <div style="background: #f8fafc; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0;">
-                        <span style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; color: #64748b;">Overall Score</span><br/>
-                        <span style="font-size: 48px; font-weight: 900; color: #2563eb;">{report.report_data["overall_score"]}/100</span>
+                    <p>We've analysed your site at <code>{report.website_url}</code> and
+                       generated a detailed performance scorecard for you.</p>
+                    <div style="background:#f8fafc; padding:20px; border-radius:8px;
+                                text-align:center; margin:20px 0;">
+                        <span style="font-size:14px; text-transform:uppercase;
+                                     letter-spacing:1px; font-weight:bold;
+                                     color:#64748b;">Overall Score</span><br/>
+                        <span style="font-size:48px; font-weight:900;
+                                     color:#C8F04A;">{report.report_data.get("overall_score", "–")}/100</span>
                     </div>
-
-                    <p><strong>Your PDF report is attached to this email.</strong> It includes critical findings and quick wins to help you get more leads.</p>
-                    
-                    <p style="margin-top: 30px;"><strong>Ready to fix these issues?</strong></p>
-                    <p>We can rebuild your website into a modern, high-converting machine in just 7 days — for as little as £59/month with no upfront cost.</p>
-                    
-                    <a href="https://cosycontent.com/signup" style="display: inline-block; background: #2563eb; color: white; padding: 15px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; margin-top: 10px;">Get My New Website</a>
-                    
-                    <p style="margin-top: 40px; font-size: 12px; color: #94a3b8;">
-                        © Cosy Content Ltd. All rights reserved.
+                    <p><strong>Your PDF report is attached.</strong> It includes critical
+                       findings and quick wins to help you get more leads.</p>
+                    <p style="margin-top:30px;"><strong>Ready to fix these issues?</strong></p>
+                    <p>We can rebuild your website in just 7 days — for as little as
+                       £59/month with no upfront cost.</p>
+                    <a href="https://cosycontent.com/signup"
+                       style="display:inline-block; background:#C8F04A; color:#0D0D0D;
+                              padding:15px 25px; text-decoration:none; border-radius:8px;
+                              font-weight:bold; margin-top:10px;">Get My New Website</a>
+                    <p style="margin-top:40px; font-size:12px; color:#94a3b8;">
+                        &copy; Cosy Content Ltd. All rights reserved.
                     </p>
                 </div>
             </body>
@@ -80,294 +599,18 @@ def send_audit_email(report, pdf_content):
     }
 
     try:
-        response = requests.post(
+        resp = requests.post(
             "https://api.brevo.com/v3/smtp/email", json=payload, headers=headers
         )
-        return response.status_code == 201
+        return resp.status_code == 201
     except Exception as e:
         logger.error(f"Failed to send email: {e}")
         return False
 
 
-def create_beautiful_html(report):
-    data = report.report_data
-
-    # Severity color mapping
-    severity_colors = {
-        "critical": "#be123c",  # Red-700
-        "high": "#e11d48",  # Red-500
-        "medium": "#d97706",  # Amber-600
-        "low": "#059669",  # Green-600
-    }
-
-    findings_html = ""
-    for f in data.get("findings", []):
-        sev = f.get("severity", "medium").lower()
-        color = severity_colors.get(sev, "#4b5563")
-        issue = f.get("issue") or f.get("text") or "Finding"
-        detail = f.get("detail", "")
-        findings_html += f"""
-            <div style="margin-bottom: 15px; border-left: 4px solid {color}; padding-left: 15px;">
-                <div style="font-weight: bold; color: {color}; text-transform: uppercase; font-size: 10px;">{sev} Priority</div>
-                <div style="font-weight: bold; font-size: 14px; margin: 2px 0;">{issue}</div>
-                <div style="font-size: 11px; color: #475569;">{detail}</div>
-            </div>
-        """
-
-    wins_html = ""
-    for w in data.get("quick_wins", []):
-        action = w.get("action") or w.get("text") or "Quick Win"
-        detail = w.get("detail", "")
-        wins_html += f"""
-            <div style="margin-bottom: 10px; border-left: 4px solid #059669; padding-left: 15px; background-color: #f0fdf4; padding: 10px;">
-                <div style="font-weight: bold; font-size: 13px; color: #065f46;">{action}</div>
-                <div style="font-size: 11px; color: #166534;">{detail}</div>
-            </div>
-        """
-
-    scores = data.get("scores", {})
-
-    # Ensure scores are displayed out of 100 as the user expected
-    def normalize(val):
-        try:
-            v = int(val)
-            return v if v > 20 else v * 5  # Fallback if Claude still gives /20
-        except:
-            return 0
-
-    design_score = normalize(scores.get("design") or scores.get("ux") or 0)
-    mobile_score = normalize(
-        scores.get("mobile_ux") or scores.get("accessibility") or 0
-    )
-    conv_score = normalize(
-        scores.get("lead_conversion") or scores.get("conversion") or 0
-    )
-    seo_score = normalize(scores.get("seo_basics") or scores.get("seo") or 0)
-    perf_score = normalize(
-        scores.get("performance") or scores.get("trust_signals") or 0
-    )
-
-    overall_score = normalize(data.get("overall_score", 0))
-
-    return f"""
-    <html>
-    <head>
-        <style>
-            @page {{
-                size: a4 portrait;
-                margin: 0;
-                @frame footer_frame {{
-                    -pdf-frame-content: footer_content;
-                    left: 40pt; width: 512pt; top: 790pt; height: 30pt;
-                }}
-            }}
-            body {{
-                font-family: Helvetica, Arial, sans-serif;
-                color: #1e293b;
-                line-height: 1.5;
-                padding: 0;
-                margin: 0;
-                background-color: #ffffff;
-            }}
-            .header {{
-                background-color: #0f172a;
-                color: #ffffff;
-                padding: 60px 40px;
-                text-align: left;
-            }}
-            .logo {{
-                font-size: 24px;
-                font-weight: bold;
-                color: #3b82f6;
-                letter-spacing: 1px;
-            }}
-            .title {{
-                font-size: 36px;
-                font-weight: 900;
-                margin-top: 10px;
-                letter-spacing: -1px;
-            }}
-            .meta {{
-                font-size: 12px;
-                opacity: 0.7;
-                margin-top: 10px;
-            }}
-            
-            .content {{ padding: 40px; }}
-            
-            .score-section {{
-                background-color: #f8fafc;
-                border-radius: 20px;
-                padding: 40px;
-                margin-top: -80px;
-                border: 1px solid #e2e8f0;
-                text-align: center;
-            }}
-            
-            .score-big {{
-                font-size: 84px;
-                font-weight: 900;
-                color: #2563eb;
-                line-height: 1;
-            }}
-            .score-label {{
-                font-size: 14px;
-                font-weight: bold;
-                color: #64748b;
-                text-transform: uppercase;
-                letter-spacing: 2px;
-                margin-top: 10px;
-            }}
-            
-            .grid-table {{ width: 100%; margin-top: 30px; border-collapse: separate; border-spacing: 10px; }}
-            .metric-card {{
-                background-color: #ffffff;
-                border: 1px solid #f1f5f9;
-                padding: 15px;
-                text-align: center;
-                border-radius: 12px;
-            }}
-            .metric-value {{ font-size: 20px; font-weight: bold; color: #1e293b; }}
-            .metric-label {{ font-size: 9px; color: #64748b; text-transform: uppercase; font-weight: bold; }}
-
-            .section-header {{
-                font-size: 18px;
-                font-weight: 900;
-                color: #0f172a;
-                margin: 40px 0 20px 0;
-                border-bottom: 2px solid #3b82f6;
-                display: inline-block;
-                padding-bottom: 5px;
-            }}
-
-            .cta-box {{
-                background-color: #2563eb;
-                color: #ffffff;
-                padding: 40px;
-                border-radius: 24px;
-                text-align: center;
-                margin-top: 50px;
-            }}
-            
-            #footer_content {{
-                text-align: center;
-                font-size: 10px;
-                color: #94a3b8;
-                border-top: 1px solid #f1f5f9;
-                padding-top: 10px;
-            }}
-            
-            .badge {{
-                display: inline-block;
-                padding: 4px 12px;
-                border-radius: 100px;
-                font-size: 10px;
-                font-weight: bold;
-                text-transform: uppercase;
-                margin-bottom: 10px;
-            }}
-        </style>
-    </head>
-    <body>
-        <div class="header">
-            <div class="logo">COSY CONTENT</div>
-            <div class="title">Website Performance<br/>Audit Report</div>
-            <div class="meta">
-                <strong>FOR:</strong> {report.business_name} &bull; 
-                <strong>URL:</strong> {report.website_url} &bull;
-                <strong>DATE:</strong> April 2026
-            </div>
-        </div>
-
-        <div class="content">
-            <div class="score-section">
-                <div class="score-big">{overall_score}</div>
-                <div class="score-label">Overall Conversion Score</div>
-                
-                <table class="grid-table">
-                    <tr>
-                        <td width="20%">
-                            <div class="metric-card">
-                                <div class="metric-value">{design_score}%</div>
-                                <div class="metric-label">Design</div>
-                            </div>
-                        </td>
-                        <td width="20%">
-                            <div class="metric-card">
-                                <div class="metric-value">{mobile_score}%</div>
-                                <div class="metric-label">Mobile UX</div>
-                            </div>
-                        </td>
-                        <td width="20%">
-                            <div class="metric-card">
-                                <div class="metric-value">{conv_score}%</div>
-                                <div class="metric-label">Conversion</div>
-                            </div>
-                        </td>
-                        <td width="20%">
-                            <div class="metric-card">
-                                <div class="metric-value">{seo_score}%</div>
-                                <div class="metric-label">SEO</div>
-                            </div>
-                        </td>
-                        <td width="20%">
-                            <div class="metric-card">
-                                <div class="metric-value">{perf_score}%</div>
-                                <div class="metric-label">Performance</div>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="section-header">Critical Findings</div>
-            <div style="margin-top: 10px;">
-                {findings_html}
-            </div>
-
-            <div class="section-header">Strategic Quick Wins</div>
-            <div style="margin-top: 10px;">
-                {wins_html}
-            </div>
-
-            <pdf:nextpage />
-
-            <div class="cta-box">
-                <div style="font-size: 28px; font-weight: 900; margin-bottom: 10px;">Don&apos;t let your website hold you back.</div>
-                <div style="font-size: 16px; opacity: 0.9; margin-bottom: 30px;">
-                    We specialize in transforming businesses in {report.location} by building 
-                    websites that actually work. No fluff, just results.
-                </div>
-                
-                <table width="100%" cellpadding="10">
-                    <tr>
-                        <td width="33%">
-                            <div style="font-weight: bold; font-size: 18px;">7 Days</div>
-                            <div style="font-size: 10px; text-transform: uppercase; opacity: 0.8;">Turnaround</div>
-                        </td>
-                        <td width="33%" style="border-left: 1px solid rgba(255,255,255,0.2); border-right: 1px solid rgba(255,255,255,0.2);">
-                            <div style="font-weight: bold; font-size: 18px;">£59/mo</div>
-                            <div style="font-size: 10px; text-transform: uppercase; opacity: 0.8;">Zero Upfront</div>
-                        </td>
-                        <td width="33%">
-                            <div style="font-weight: bold; font-size: 18px;">Managed</div>
-                            <div style="font-size: 10px; text-transform: uppercase; opacity: 0.8;">Hosting & Support</div>
-                        </td>
-                    </tr>
-                </table>
-                
-                <div style="margin-top: 30px; background-color: #ffffff; color: #2563eb; display: inline-block; padding: 15px 40px; border-radius: 100px; font-weight: bold; font-size: 16px;">
-                    Claim Your New Website: cosycontent.com
-                </div>
-            </div>
-        </div>
-
-        <div id="footer_content">
-            &copy; 2026 Cosy Content Ltd &bull; <strong>Performance Audit</strong> &bull; Confidential &bull; Page <pdf:pagenumber>
-        </div>
-    </body>
-    </html>
-    """
+# ─────────────────────────────────────────────────────────────────────────────
+# Main task
+# ─────────────────────────────────────────────────────────────────────────────
 
 
 def perform_audit(audit_id):
@@ -379,7 +622,7 @@ def perform_audit(audit_id):
         if not url.startswith("http"):
             url = "https://" + url
 
-        # 1. Stripe Customer Creation
+        # 1. Stripe customer creation ──────────────────────────────────────
         try:
             stripe.api_key = settings.STRIPE_SECRET_KEY
             customer = stripe.Customer.create(
@@ -398,68 +641,63 @@ def perform_audit(audit_id):
         except Exception as e:
             logger.error(f"Stripe Customer creation failed: {e}")
 
-        # 2. Scrape & AI Analysis
+        # 2. Scrape & AI analysis ──────────────────────────────────────────
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
         response = requests.get(url, headers=headers, timeout=10)
         soup = BeautifulSoup(response.text, "html.parser")
         report.meta_title = soup.title.string if soup.title else ""
-
-        has_h1 = bool(soup.find("h1"))
-        has_cta = any(
-            word in response.text.lower()
-            for word in ["book", "call", "contact", "quote"]
-        )
-        has_testimonials = any(
-            word in response.text.lower() for word in ["testimonial", "reviews"]
-        )
-        has_mobile_meta = bool(soup.find("meta", attrs={"name": "viewport"}))
-        report.load_speed_score = 55  # Mock
+        report.load_speed_score = 55  # placeholder until real CWV integration
 
         client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
-        prompt = f"Expert audit for {report.business_name} in {report.industry} at {url}. Provide scorecard JSON."
-        # (Using a compressed version of the previous prompt for brevity in this tool call)
-
-        response = client.messages.create(
-            model="claude-sonnet-4-6",
+        ai_resp = client.messages.create(
+            model="claude-sonnet-4-20250514",
             max_tokens=4000,
-            system="You are a conversion expert. Return only JSON matching the requested structure: overall_score, scores, findings, quick_wins, summary.",
+            system=(
+                "You are a conversion rate optimisation expert. "
+                "Return ONLY valid JSON with these keys: "
+                "overall_score (int 0-100), "
+                "scores (object: design, mobile_ux, lead_conversion, seo_basics, performance — each 0-100), "
+                "findings (array of {severity, issue, detail}), "
+                "quick_wins (array of {action, detail}), "
+                "summary (string). "
+                "No markdown, no explanation, just the JSON object."
+            ),
             messages=[
                 {
                     "role": "user",
-                    "content": f"URL: {url}, Industry: {report.industry}, Meta: {report.meta_title}. Generate audit JSON.",
+                    "content": (
+                        f"Audit this website for conversion performance.\n"
+                        f"URL: {url}\n"
+                        f"Business: {report.business_name}\n"
+                        f"Industry: {report.industry}\n"
+                        f"Meta title: {report.meta_title}\n"
+                        f"Location: {report.location}"
+                    ),
                 }
             ],
         )
 
-        raw_text = response.content[0].text.strip()
-        logger.info(f"Claude raw response: {raw_text}")
+        raw = ai_resp.content[0].text.strip()
+        logger.info(f"Claude raw response: {raw}")
 
-        # Clean up markdown fences if present
-        if raw_text.startswith("```json"):
-            raw_text = raw_text[7:]
-        elif raw_text.startswith("```"):
-            raw_text = raw_text[3:]
-        if raw_text.endswith("```"):
-            raw_text = raw_text[:-3]
-        raw_text = raw_text.strip()
+        # strip markdown fences if present
+        if raw.startswith("```json"):
+            raw = raw[7:]
+        elif raw.startswith("```"):
+            raw = raw[3:]
+        if raw.endswith("```"):
+            raw = raw[:-3]
+        raw = raw.strip()
 
-        try:
-            report.report_data = json.loads(raw_text)
-            report.save()
-        except json.JSONDecodeError as je:
-            logger.error(f"Failed to parse Claude JSON: {je}. Raw text: {raw_text}")
-            raise
+        report.report_data = json.loads(raw)
+        report.save()
 
-        # 3. PDF Generation & Email
-        html_report = create_beautiful_html(report)
-        pdf_content = generate_pdf_from_html(
-            html_report, f"{report.business_name}_Audit.pdf"
-        )
-
-        send_audit_email(report, pdf_content)
+        # 3. PDF generation & email ────────────────────────────────────────
+        pdf_bytes = generate_beautiful_pdf(report)
+        send_audit_email(report, pdf_bytes)
 
         return report.report_data
 
     except Exception as e:
-        logger.error(f"Audit failed for {audit_id}: {str(e)}")
+        logger.error(f"Audit failed for {audit_id}: {e}")
         return None
