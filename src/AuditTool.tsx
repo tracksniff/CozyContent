@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Zap, Target, ShieldCheck, Monitor, BarChart3, ArrowRight, Loader2, CheckCircle2, XCircle, ChevronRight } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { BarChart3, ArrowRight, Loader2, CheckCircle2, XCircle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 
