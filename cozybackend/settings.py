@@ -177,6 +177,7 @@ STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', 'sk_test_placeholder')
 STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET', 'whsec_placeholder')
 STRIPE_ONE_TIME_PRICE_ID = os.getenv('STRIPE_ONE_TIME_PRICE_ID', 'price_placeholder')
 STRIPE_MONTHLY_PRICE_ID = os.getenv('STRIPE_MONTHLY_PRICE_ID', 'price_placeholder')
+STRIPE_ANNUAL_PRICE_ID = os.getenv('STRIPE_ANNUAL_PRICE_ID', 'price_placeholder_annual')
 FRONTEND_URL = os.getenv('FRONTEND_URL', 'https://cosycontent.com').rstrip('/')
 BACKEND_URL = os.getenv('BACKEND_URL', 'https://api.cosycontent.com').rstrip('/')
 

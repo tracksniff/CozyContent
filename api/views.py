@@ -452,6 +452,9 @@ class CreateCheckoutSessionView(generics.GenericAPIView):
             if plan_type == "one_time":
                 price_id = settings.STRIPE_ONE_TIME_PRICE_ID
                 mode = "payment"
+            elif plan_type == "annual":
+                price_id = settings.STRIPE_ANNUAL_PRICE_ID
+                mode = "subscription"
             else:
                 price_id = settings.STRIPE_MONTHLY_PRICE_ID
                 mode = "subscription"
