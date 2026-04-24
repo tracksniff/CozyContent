@@ -9,7 +9,7 @@ class FeedbackSerializer(serializers.ModelSerializer):
 class AttachmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Attachment
-        fields = ('id', 'file', 'filename', 'uploaded_at')
+        fields = ('id', 'file', 'filename', 'category', 'uploaded_at')
 
 class ApplicationImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,10 +20,18 @@ class ClientApplicationSerializer(serializers.ModelSerializer):
     images = ApplicationImageSerializer(many=True, read_only=True)
     feedbacks = FeedbackSerializer(many=True, read_only=True)
     attachments = AttachmentSerializer(many=True, read_only=True)
+
     uploaded_images = serializers.ListField(
         child=serializers.ImageField(max_length=1000000, allow_empty_file=False, use_url=False),
-        write_only=True,
-        required=False
+        write_only=True, required=False,
+    )
+    trust_badge_files = serializers.ListField(
+        child=serializers.FileField(max_length=1000000, allow_empty_file=False, use_url=False),
+        write_only=True, required=False,
+    )
+    testimonial_files = serializers.ListField(
+        child=serializers.FileField(max_length=1000000, allow_empty_file=False, use_url=False),
+        write_only=True, required=False,
     )
 
     class Meta:
@@ -31,18 +39,36 @@ class ClientApplicationSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'company_name', 'phone_number', 'website_url', 'industry',
             'tagline', 'services_list', 'city_location', 'years_experience',
-            'trust_badges', 'service_areas', 'testimonials', 'branding_colors',
+            'trust_badges', 'trust_badge_links', 'service_areas',
+            'testimonials', 'testimonial_links', 'branding_colors',
             'company_logo', 'status', 'plan_type', 'github_username_for_transfer',
-            'progress', 'is_reviewed', 'created_at', 'images', 'uploaded_images',
+            'progress', 'is_reviewed', 'created_at',
+            'images', 'uploaded_images',
+            'trust_badge_files', 'testimonial_files',
             'feedbacks', 'attachments',
         )
         read_only_fields = ('id', 'created_at', 'images', 'feedbacks', 'attachments')
 
     def create(self, validated_data):
-        uploaded_images = validated_data.pop('uploaded_images', [])
+        uploaded_images   = validated_data.pop('uploaded_images', [])
+        trust_badge_files = validated_data.pop('trust_badge_files', [])
+        testimonial_files = validated_data.pop('testimonial_files', [])
+
         application = ClientApplication.objects.create(**validated_data)
+
         for image in uploaded_images:
             ApplicationImage.objects.create(application=application, image=image)
+
+        for f in trust_badge_files:
+            Attachment.objects.create(
+                application=application, file=f, filename=f.name, category='certification',
+            )
+
+        for f in testimonial_files:
+            Attachment.objects.create(
+                application=application, file=f, filename=f.name, category='testimonial',
+            )
+
         return application
 
 class UserSerializer(serializers.ModelSerializer):

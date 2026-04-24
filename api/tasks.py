@@ -39,7 +39,8 @@ def process_application_task(application_id, user_id):
         for img in application.images.all():
             image_assets.append(f"{settings.BACKEND_URL}{img.image.url}")
 
-        for attachment in application.attachments.all():
+        # General attachments → images only; categorised ones handled separately
+        for attachment in application.attachments.filter(category='general'):
             if any(attachment.filename.lower().endswith(ext) for ext in ['.png', '.jpg', '.jpeg', '.svg', '.webp']):
                 image_assets.append(f"{settings.BACKEND_URL}{attachment.file.url}")
 
@@ -58,6 +59,27 @@ def process_application_task(application_id, user_id):
             except Exception:
                 testimonials = []
 
+        # Resolve trust badge links (stored as JSON string)
+        trust_badge_links = []
+        if application.trust_badge_links:
+            try:
+                trust_badge_links = json.loads(application.trust_badge_links)
+            except Exception:
+                pass
+
+        # Resolve testimonial links (stored as JSON string)
+        testimonial_links = []
+        if application.testimonial_links:
+            try:
+                testimonial_links = json.loads(application.testimonial_links)
+            except Exception:
+                pass
+
+        # Build enriched trust_badges context for Claude
+        trust_badges_text = application.trust_badges or 'Fully insured, certified professionals'
+        if trust_badge_links:
+            trust_badges_text += ' | Accreditation pages: ' + ', '.join(trust_badge_links)
+
         app_data = {
             'company_name': application.company_name,
             'phone_number': application.phone_number or '',
@@ -67,9 +89,10 @@ def process_application_task(application_id, user_id):
             'city_location': application.city_location,
             'services_list': application.services_list,
             'years_experience': application.years_experience or '10+',
-            'trust_badges': application.trust_badges or 'Fully insured, certified professionals',
+            'trust_badges': trust_badges_text,
             'service_areas': application.service_areas or application.city_location,
             'testimonials': testimonials,
+            'testimonial_links': testimonial_links,
             'branding_colors': branding_colors,
             'uploaded_images': image_assets,
         }

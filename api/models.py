@@ -59,6 +59,8 @@ class ClientApplication(models.Model):
     testimonials = models.TextField(blank=True, null=True)
     branding_colors = models.CharField(max_length=255)
     company_logo = models.ImageField(upload_to='company_logos/', blank=True, null=True)
+    trust_badge_links = models.TextField(blank=True, null=True)   # JSON array of URLs
+    testimonial_links = models.TextField(blank=True, null=True)   # JSON array of URLs
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     plan_type = models.CharField(max_length=20, blank=True, null=True) # 'one_time' or 'monthly'
     github_username_for_transfer = models.CharField(max_length=255, blank=True, null=True)
@@ -81,9 +83,15 @@ class Feedback(models.Model):
         return f"Feedback for {self.application.company_name} - {self.section_name}"
 
 class Attachment(models.Model):
+    CATEGORY_CHOICES = [
+        ('general',       'General'),
+        ('certification', 'Certification / Trust Badge'),
+        ('testimonial',   'Testimonial Evidence'),
+    ]
     application = models.ForeignKey(ClientApplication, on_delete=models.CASCADE, related_name='attachments')
     file = models.FileField(upload_to='application_attachments/')
     filename = models.CharField(max_length=255)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='general')
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
