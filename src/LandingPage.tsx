@@ -10,6 +10,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import PricingToggle from './PricingToggle';
 
 const MousePerspective = ({ children, className }: { children: React.ReactNode, className?: string }) => {
   const x = useMotionValue(0);
@@ -129,6 +130,7 @@ const PortfolioSlider = () => {
 };
 
 const LandingPage = () => {
+  const [isAnnual, setIsAnnual] = useState(true);
   const fadeInUp = {
     initial: { opacity: 0, y: 20 },
     whileInView: { opacity: 1, y: 0 },
@@ -370,10 +372,12 @@ const LandingPage = () => {
                   </p>
                 </div>
 
-                <div className="flex items-baseline gap-2 mb-8">
-                  <span className="text-5xl font-black text-on-surface">£59</span>
-                  <span className="text-on-surface-variant font-bold text-sm uppercase tracking-widest">/mo</span>
+                <div className="flex items-baseline gap-2 mb-2">
+                  <span className="text-5xl font-black text-on-surface">{isAnnual ? '£47' : '£59'}</span>
+                  <span className="text-on-surface-variant font-bold text-sm uppercase tracking-widest">/month</span>
                 </div>
+                
+                <PricingToggle isAnnual={isAnnual} onChange={setIsAnnual} isPopular={true} />
                 <div className="text-primary font-black text-xs uppercase mb-6 italic">£0 Upfront</div>
 
                 <div className="space-y-4 mb-10 flex-grow">
@@ -416,10 +420,12 @@ const LandingPage = () => {
                   </p>
                 </div>
 
-                <div className="flex items-baseline gap-2 mb-8">
+                <div className="flex items-baseline gap-2 mb-2">
                   <span className="text-5xl font-black text-on-surface">£349</span>
                   <span className="text-on-surface-variant font-bold text-sm uppercase tracking-widest">Fixed</span>
                 </div>
+
+                <div className="h-[2px] w-full bg-outline-variant/10 mt-2 mb-8"></div>
 
                 <div className="space-y-4 mb-10 flex-grow">
                   {[

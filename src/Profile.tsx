@@ -4,11 +4,14 @@ import Sidebar from './Sidebar';
 import { User, Shield, CreditCard, CheckCircle2 } from 'lucide-react';
 import axios from 'axios';
 
+import PricingToggle from './PricingToggle';
+
 const Profile: React.FC = () => {
   const { user, token } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [isAnnual, setIsAnnual] = useState(true);
 
-  const handleCheckout = async (planType: 'one_time' | 'monthly') => {
+  const handleCheckout = async (planType: 'one_time' | 'monthly' | 'annual') => {
     setLoading(true);
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/create-checkout-session/`, 
@@ -83,17 +86,19 @@ const Profile: React.FC = () => {
                         >
                           <div className="text-primary font-black text-xs uppercase tracking-widest mb-1">One-Time Asset</div>
                           <div className="text-xl font-black mb-2">The Lifetime Owner</div>
-                          <div className="text-2xl font-black text-primary mb-4">£349</div>
+                          <div className="text-2xl font-black text-primary mb-2">£349</div>
+                          <div className="h-[1px] w-full bg-outline-variant/10 mt-2 mb-4"></div>
                           <div className="text-xs font-bold text-on-surface-variant group-hover:text-primary transition-colors">Select Plan</div>
                         </button>
                         <button 
-                          onClick={() => handleCheckout('monthly')}
+                          onClick={() => handleCheckout(isAnnual ? 'annual' : 'monthly')}
                           disabled={loading}
                           className="p-6 rounded-2xl border-2 border-secondary text-left hover:bg-secondary/5 transition-all group"
                         >
                           <div className="text-secondary font-black text-xs uppercase tracking-widest mb-1">Monthly Concierge</div>
                           <div className="text-xl font-black mb-2">Monthly Concierge</div>
-                          <div className="text-2xl font-black text-secondary mb-4">£59<span className="text-sm font-bold">/mo</span></div>
+                          <div className="text-2xl font-black text-secondary mb-2">{isAnnual ? '£47' : '£59'}<span className="text-sm font-bold">/month</span></div>
+                          <PricingToggle isAnnual={isAnnual} onChange={setIsAnnual} isPopular={false} />
                           <div className="text-xs font-bold text-on-surface-variant group-hover:text-secondary transition-colors">Select Plan</div>
                         </button>
                       </div>

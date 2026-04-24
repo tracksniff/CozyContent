@@ -1,15 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import PricingToggle from './PricingToggle';
 
 const PricingPage: React.FC = () => {
+  const [isAnnual, setIsAnnual] = useState(true);
+
   const plans = [
     {
       name: 'Monthly Growth',
-      price: '£59',
-      period: '/mo',
+      monthlyPrice: '£59',
+      annualPrice: '£47',
+      period: '/month',
       desc: 'Perfect for established businesses needing ongoing support.',
       features: [
         'Hosting',
@@ -19,11 +24,13 @@ const PricingPage: React.FC = () => {
         'Upto 5 small updates per month (eg text changes, image swaps, contact info updates)'
       ],
       cta: 'Get Started',
-      popular: true
+      popular: true,
+      hasToggle: true
     },
     {
       name: 'One-Time Launch',
-      price: '£349',
+      monthlyPrice: '£349',
+      annualPrice: '£349',
       period: ' Fixed',
       desc: 'Great for businesses who want full ownership from day one.',
       features: [
@@ -35,7 +42,8 @@ const PricingPage: React.FC = () => {
         'Self-Hosting Support'
       ],
       cta: 'Claim Ownership',
-      popular: false
+      popular: false,
+      hasToggle: false
     }
   ];
 
@@ -67,10 +75,16 @@ const PricingPage: React.FC = () => {
                 <h3 className="text-2xl font-black mb-2">{plan.name}</h3>
                 <p className={`text-sm mb-8 font-medium ${plan.popular ? 'text-white/80' : 'text-on-surface-variant'}`}>{plan.desc}</p>
                 
-                <div className="flex items-baseline gap-1 mb-10">
-                  <span className="text-6xl font-black">{plan.price}</span>
+                <div className="flex items-baseline gap-1 mb-2">
+                  <span className="text-6xl font-black">{isAnnual ? plan.annualPrice : plan.monthlyPrice}</span>
                   <span className={`text-sm font-black uppercase tracking-widest ${plan.popular ? 'text-white/60' : 'text-on-surface-variant'}`}>{plan.period}</span>
                 </div>
+
+                {plan.hasToggle ? (
+                  <PricingToggle isAnnual={isAnnual} onChange={setIsAnnual} isPopular={plan.popular} />
+                ) : (
+                  <div className="h-[2px] w-full bg-outline-variant/10 mt-4 mb-8"></div>
+                )}
 
                 <div className="space-y-4 mb-10 flex-grow">
                   {plan.features.map((feature, fIdx) => (

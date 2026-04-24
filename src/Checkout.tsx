@@ -4,10 +4,13 @@ import axios from 'axios';
 import { Check, ArrowLeft, Loader2 } from 'lucide-react';
 import logo from './assets/PNG/Cosy Content Ltd -05.png';
 
+import PricingToggle from './PricingToggle';
+
 const Pricing: React.FC = () => {
   const location = useLocation();
   const { applicationId, email, first_name, last_name } = location.state || {};
   const [isLoading, setIsLoading] = useState<string | null>(null);
+  const [isAnnual, setIsAnnual] = useState(true);
 
   if (!applicationId) {
     return (
@@ -20,7 +23,7 @@ const Pricing: React.FC = () => {
     );
   }
 
-  const handleSelectPlan = async (planType: 'monthly' | 'one_time') => {
+  const handleSelectPlan = async (planType: 'monthly' | 'one_time' | 'annual') => {
     setIsLoading(planType);
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/create-checkout-session/`, {
@@ -64,14 +67,16 @@ const Pricing: React.FC = () => {
               <div className="mb-8">
                 <h3 className="text-xl font-bold mb-3">Monthly Subscription</h3>
                 <p className="text-on-surface-variant font-medium text-sm leading-relaxed">
-                  £59/month for hosting, SSL, security and performance optimizations.
+                  {isAnnual ? '£47' : '£59'}/month for hosting, SSL, security and performance optimizations.
                 </p>
               </div>
 
-              <div className="flex items-baseline gap-2 mb-8">
-                <span className="text-5xl font-black text-on-surface">£59</span>
-                <span className="text-on-surface-variant font-bold text-sm uppercase tracking-widest">/mo</span>
+              <div className="flex items-baseline gap-2 mb-2">
+                <span className="text-5xl font-black text-on-surface">{isAnnual ? '£47' : '£59'}</span>
+                <span className="text-on-surface-variant font-bold text-sm uppercase tracking-widest">/month</span>
               </div>
+              
+              <PricingToggle isAnnual={isAnnual} onChange={setIsAnnual} isPopular={true} />
 
               <div className="space-y-4 mb-10 flex-grow">
                 {[
@@ -91,11 +96,11 @@ const Pricing: React.FC = () => {
               </div>
 
               <button
-                onClick={() => handleSelectPlan('monthly')}
+                onClick={() => handleSelectPlan(isAnnual ? 'annual' : 'monthly')}
                 disabled={isLoading !== null}
                 className="w-full py-4 rounded-xl bg-primary text-white font-black shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all text-base flex items-center justify-center gap-2"
               >
-                {isLoading === 'monthly' ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Subscribe Now'}
+                {(isLoading === 'monthly' || isLoading === 'annual') ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Subscribe Now'}
               </button>
             </div>
           </div>
@@ -109,10 +114,12 @@ const Pricing: React.FC = () => {
               </p>
             </div>
 
-            <div className="flex items-baseline gap-2 mb-8">
+            <div className="flex items-baseline gap-2 mb-2">
               <span className="text-5xl font-black text-on-surface">£349</span>
               <span className="text-on-surface-variant font-bold text-sm uppercase tracking-widest">Fixed</span>
             </div>
+            
+            <div className="h-[2px] w-full bg-outline-variant/10 mt-2 mb-8"></div>
 
             <div className="space-y-4 mb-10 flex-grow">
               {[
