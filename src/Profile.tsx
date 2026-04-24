@@ -83,7 +83,7 @@ const Profile: React.FC = () => {
                         >
                           <div className="text-primary font-black text-xs uppercase tracking-widest mb-1">One-Time Asset</div>
                           <div className="text-xl font-black mb-2">The Lifetime Owner</div>
-                          <div className="text-2xl font-black text-primary mb-4">£249</div>
+                          <div className="text-2xl font-black text-primary mb-4">£349</div>
                           <div className="text-xs font-bold text-on-surface-variant group-hover:text-primary transition-colors">Select Plan &rarr;</div>
                         </button>
                         <button 

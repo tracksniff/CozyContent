@@ -379,9 +379,11 @@ const LandingPage = () => {
 
                 <div className="space-y-4 mb-10 flex-grow">
                   {[
-                    'Security & Backups',
-                    '1 small edit/month',
-                    'Performance optimization'
+                    'Hosting',
+                    'SSL',
+                    'Security',
+                    'Performance optimization',
+                    'Upto 5 small updates per month (eg text changes, image swaps, contact info updates)'
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-3">
                       <div className="mt-1 flex-shrink-0 w-4 h-4 rounded-full bg-secondary/10 flex items-center justify-center">
@@ -411,12 +413,12 @@ const LandingPage = () => {
                 <div className="mb-8">
                   <h3 className="text-xl font-bold mb-3">One-Time Payment</h3>
                   <p className="text-on-surface-variant font-medium leading-relaxed text-sm">
-                    £249 for your fully built website. Delivered ready to use.
+                    £349 for your fully built website. Delivered ready to use.
                   </p>
                 </div>
 
                 <div className="flex items-baseline gap-2 mb-8">
-                  <span className="text-5xl font-black text-on-surface">£249</span>
+                  <span className="text-5xl font-black text-on-surface">£349</span>
                   <span className="text-on-surface-variant font-bold text-sm uppercase tracking-widest">Fixed</span>
                 </div>
 

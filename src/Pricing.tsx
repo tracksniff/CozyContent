@@ -12,19 +12,18 @@ const PricingPage: React.FC = () => {
       period: '/mo',
       desc: 'Perfect for established businesses needing ongoing support.',
       features: [
-        'Custom Built Website',
-        'Fast & Secure Hosting',
-        'Unlimited Content Updates',
-        'Priority Technical Support',
-        'Monthly Performance Reports',
-        'Daily Backups'
+        'Hosting',
+        'SSL',
+        'Security',
+        'Performance optimization',
+        'Upto 5 small updates per month (eg text changes, image swaps, contact info updates)'
       ],
       cta: 'Get Started',
       popular: true
     },
     {
       name: 'One-Time Launch',
-      price: '£249',
+      price: '£349',
       period: ' Fixed',
       desc: 'Great for businesses who want full ownership from day one.',
       features: [
