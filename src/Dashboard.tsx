@@ -254,6 +254,8 @@ const Dashboard: React.FC = () => {
     (site.owner_email && site.owner_email.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
+  const displayName = user?.first_name || (user?.email ? user.email.split('@')[0] : 'User');
+
   return (
     <div className="min-h-screen bg-surface flex transition-colors duration-300">
       <Sidebar />
@@ -264,7 +266,7 @@ const Dashboard: React.FC = () => {
           <header className="mb-10 lg:mb-12 flex flex-col md:flex-row justify-between items-start gap-4">
             <div>
               <h1 className="text-3xl lg:text-4xl font-black font-headline text-on-surface tracking-tight mb-2">
-                {user?.is_staff ? 'Admin Dashboard' : `Welcome Back, ${user?.first_name || 'User'}`}
+                {user?.is_staff ? 'Admin Dashboard' : `Welcome Back, ${displayName}`}
               </h1>
               <p className="text-on-surface-variant font-medium text-sm lg:text-base">
                 {user?.is_staff ? 'Manage all websites across the platform.' : 'Manage and monitor your digital ecosystem.'}

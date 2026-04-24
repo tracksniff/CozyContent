@@ -6,7 +6,7 @@ import logo from './assets/PNG/Cosy Content Ltd -05.png';
 
 const Pricing: React.FC = () => {
   const location = useLocation();
-  const { applicationId, email } = location.state || {};
+  const { applicationId, email, first_name, last_name } = location.state || {};
   const [isLoading, setIsLoading] = useState<string | null>(null);
 
   if (!applicationId) {
@@ -26,7 +26,9 @@ const Pricing: React.FC = () => {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/create-checkout-session/`, {
         plan_type: planType,
         application_id: applicationId,
-        email: email
+        email: email,
+        first_name: first_name,
+        last_name: last_name
       });
       if (response.data.url) {
         window.location.href = response.data.url;

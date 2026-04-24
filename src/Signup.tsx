@@ -59,6 +59,7 @@ const Signup: React.FC = () => {
 
   // ── core form fields ────────────────────────────────────
   const [formData, setFormData] = useState({
+    first_name: '', last_name: '',
     company_name: '', phone_number: '', email: '', website_url: '',
     industry: '', tagline: '', services_list: '', city_location: '',
     years_experience: '', trust_badges: '', service_areas: '', testimonials: '',
@@ -185,7 +186,12 @@ const Signup: React.FC = () => {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/applications/`, data, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      if (res.data.id) navigate('/checkout', { state: { applicationId: res.data.id, email: formData.email } });
+      if (res.data.id) navigate('/checkout', { state: { 
+        applicationId: res.data.id, 
+        email: formData.email,
+        first_name: formData.first_name,
+        last_name: formData.last_name
+      } });
     } catch {
       setError('Failed to submit. Please check all required fields and try again.');
     } finally {
@@ -431,6 +437,17 @@ const Signup: React.FC = () => {
               <div className="space-y-5 animate-in fade-in slide-in-from-right-4 duration-300">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
+                    <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">First Name *</label>
+                    <input name="first_name" required placeholder="John" className={inputCls} value={formData.first_name} onChange={handleInput} />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">Last Name *</label>
+                    <input name="last_name" required placeholder="Doe" className={inputCls} value={formData.last_name} onChange={handleInput} />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div>
                     <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">Company Name *</label>
                     <input name="company_name" required placeholder="e.g. Acme Plumbing" className={inputCls} value={formData.company_name} onChange={handleInput} />
                   </div>
@@ -467,7 +484,7 @@ const Signup: React.FC = () => {
                 <p className="text-[10px] text-on-surface-variant flex items-center gap-1 ml-1 font-medium -mt-2">
                   <Info size={12} className="text-primary shrink-0" /> Your email is used for account setup and secure payment.
                 </p>
-                <NavButtons canNext={!!(formData.company_name && formData.phone_number && formData.industry && formData.email)} onNext={() => setStep(2)} />
+                <NavButtons canNext={!!(formData.first_name && formData.last_name && formData.company_name && formData.phone_number && formData.industry && formData.email)} onNext={() => setStep(2)} />
               </div>
             )}
 
