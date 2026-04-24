@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeft, ArrowRight, Upload, X, Check, Loader2, Info, MapPin, Search, Palette } from 'lucide-react';
+import {
+  ArrowLeft, ArrowRight, Upload, X, Check, Loader2, Info,
+  MapPin, Search, Palette, Plus, FileText, Link2,
+} from 'lucide-react';
 import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -22,12 +25,11 @@ const industries = [
 ];
 
 const colorRoles = [
-  { key: 'primary' as const,   label: 'Primary',   hint: 'Headings & main CTAs' },
+  { key: 'primary'   as const, label: 'Primary',   hint: 'Headings & main CTAs' },
   { key: 'secondary' as const, label: 'Secondary', hint: 'Navbar & dark sections' },
-  { key: 'accent' as const,    label: 'Accent',    hint: 'Buttons & highlights' },
+  { key: 'accent'    as const, label: 'Accent',    hint: 'Buttons & highlights' },
 ];
 
-/** Returns true if the hex colour is perceptually light */
 const isLight = (hex: string): boolean => {
   const r = parseInt(hex.slice(1, 3), 16);
   const g = parseInt(hex.slice(3, 5), 16);
@@ -35,67 +37,128 @@ const isLight = (hex: string): boolean => {
   return (r * 299 + g * 587 + b * 114) / 1000 > 128;
 };
 
+const isValidHex = (h: string) => /^[0-9A-Fa-f]{6}$/.test(h);
+
 const inputCls =
   'w-full px-5 py-4 bg-surface border border-outline-variant rounded-2xl focus:border-primary outline-none transition-all text-on-surface font-medium';
+
+const smInputCls =
+  'flex-1 px-4 py-3 bg-surface border border-outline-variant rounded-xl focus:border-primary outline-none transition-all text-on-surface text-sm font-medium';
+
+interface FilePreview { name: string; url: string; isImage: boolean; }
 
 const TOTAL_STEPS = 4;
 
 const Signup: React.FC = () => {
-  const [step, setStep] = useState(1);
-  const [showMap, setShowMap] = useState(false);
+  const [step, setStep]               = useState(1);
+  const [showMap, setShowMap]         = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
-  const [mapCenter, setMapCenter] = useState<[number, number]>([51.505, -0.09]);
+  const [mapCenter, setMapCenter]     = useState<[number, number]>([51.505, -0.09]);
 
+  // ── core form fields ────────────────────────────────────
   const [formData, setFormData] = useState({
-    company_name: '',
-    phone_number: '',
-    email: '',
-    website_url: '',
-    industry: '',
-    tagline: '',
-    services_list: '',
-    city_location: '',
-    years_experience: '',
-    trust_badges: '',
-    service_areas: '',
-    testimonials: '',
+    company_name: '', phone_number: '', email: '', website_url: '',
+    industry: '', tagline: '', services_list: '', city_location: '',
+    years_experience: '', trust_badges: '', service_areas: '', testimonials: '',
   });
 
-  const [brandColors, setBrandColors] = useState({
-    primary: '#2563EB',
-    secondary: '#1E3A5F',
-    accent: '#10B981',
-  });
+  // ── brand colours ────────────────────────────────────────
+  const [brandColors, setBrandColors] = useState({ primary: '#2563EB', secondary: '#1E3A5F', accent: '#10B981' });
+  // raw hex text for the input boxes (without #)
+  const [hexDraft, setHexDraft] = useState({ primary: '2563EB', secondary: '1E3A5F', accent: '10B981' });
 
-  const [companyLogo, setCompanyLogo] = useState<File | null>(null);
-  const [logoPreview, setLogoPreview] = useState('');
-  const [images, setImages] = useState<File[]>([]);
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  // ── trust badge files & links ────────────────────────────
+  const [certFiles, setCertFiles]           = useState<File[]>([]);
+  const [certPreviews, setCertPreviews]     = useState<FilePreview[]>([]);
+  const [certLinks, setCertLinks]           = useState<string[]>(['']);
+
+  // ── testimonial files & links ────────────────────────────
+  const [testiFiles, setTestiFiles]         = useState<File[]>([]);
+  const [testiPreviews, setTestiPreviews]   = useState<FilePreview[]>([]);
+  const [testiLinks, setTestiLinks]         = useState<string[]>(['']);
+
+  // ── logo & general images ────────────────────────────────
+  const [companyLogo, setCompanyLogo]       = useState<File | null>(null);
+  const [logoPreview, setLogoPreview]       = useState('');
+  const [images, setImages]                 = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews]   = useState<string[]>([]);
+
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError]         = useState('');
   const navigate = useNavigate();
 
+  // ── helpers ──────────────────────────────────────────────
   const handleInput = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
-  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) { setCompanyLogo(file); setLogoPreview(URL.createObjectURL(file)); }
+  const makeFilePreviews = (files: File[]): FilePreview[] =>
+    files.map(f => ({
+      name: f.name,
+      url: URL.createObjectURL(f),
+      isImage: f.type.startsWith('image/'),
+    }));
+
+  // cert files
+  const handleCertFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    const newFiles = Array.from(e.target.files);
+    setCertFiles(prev => [...prev, ...newFiles]);
+    setCertPreviews(prev => [...prev, ...makeFilePreviews(newFiles)]);
+    e.target.value = '';
+  };
+  const removeCertFile = (i: number) => {
+    setCertFiles(prev => prev.filter((_, idx) => idx !== i));
+    setCertPreviews(prev => prev.filter((_, idx) => idx !== i));
+  };
+  const updateCertLink  = (i: number, v: string) => setCertLinks(l => l.map((x, idx) => idx === i ? v : x));
+  const addCertLink     = () => setCertLinks(l => [...l, '']);
+  const removeCertLink  = (i: number) => setCertLinks(l => l.length === 1 ? [''] : l.filter((_, idx) => idx !== i));
+
+  // testimonial files
+  const handleTestiFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    const newFiles = Array.from(e.target.files);
+    setTestiFiles(prev => [...prev, ...newFiles]);
+    setTestiPreviews(prev => [...prev, ...makeFilePreviews(newFiles)]);
+    e.target.value = '';
+  };
+  const removeTestiFile = (i: number) => {
+    setTestiFiles(prev => prev.filter((_, idx) => idx !== i));
+    setTestiPreviews(prev => prev.filter((_, idx) => idx !== i));
+  };
+  const updateTestiLink  = (i: number, v: string) => setTestiLinks(l => l.map((x, idx) => idx === i ? v : x));
+  const addTestiLink     = () => setTestiLinks(l => [...l, '']);
+  const removeTestiLink  = (i: number) => setTestiLinks(l => l.length === 1 ? [''] : l.filter((_, idx) => idx !== i));
+
+  // colour picker + hex input (synced bidirectionally)
+  const handleColorSwatch = (key: keyof typeof brandColors, hex: string) => {
+    setBrandColors(c => ({ ...c, [key]: hex }));
+    setHexDraft(d => ({ ...d, [key]: hex.slice(1).toUpperCase() }));
+  };
+  const handleHexDraft = (key: keyof typeof brandColors, raw: string) => {
+    const clean = raw.replace(/[^0-9A-Fa-f]/g, '').toUpperCase().slice(0, 6);
+    setHexDraft(d => ({ ...d, [key]: clean }));
+    if (isValidHex(clean)) setBrandColors(c => ({ ...c, [key]: `#${clean}` }));
   };
 
+  // logo + general images
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (f) { setCompanyLogo(f); setLogoPreview(URL.createObjectURL(f)); }
+  };
   const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const newFiles = Array.from(e.target.files);
     setImages(prev => [...prev, ...newFiles]);
     setImagePreviews(prev => [...prev, ...newFiles.map(f => URL.createObjectURL(f))]);
   };
-
   const removeImage = (i: number) => {
     setImages(prev => prev.filter((_, idx) => idx !== i));
     setImagePreviews(prev => prev.filter((_, idx) => idx !== i));
   };
 
+  // submit
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.website_url && !formData.website_url.startsWith('https://')) {
@@ -104,10 +167,16 @@ const Signup: React.FC = () => {
     }
     setIsLoading(true);
     setError('');
-
     const data = new FormData();
     Object.entries(formData).forEach(([k, v]) => data.append(k, v));
     data.append('branding_colors', JSON.stringify(brandColors));
+    // certification evidence
+    certFiles.forEach(f => data.append('trust_badge_files', f));
+    data.append('trust_badge_links', JSON.stringify(certLinks.filter(l => l.trim())));
+    // testimonial evidence
+    testiFiles.forEach(f => data.append('testimonial_files', f));
+    data.append('testimonial_links', JSON.stringify(testiLinks.filter(l => l.trim())));
+    // media
     if (companyLogo) data.append('company_logo', companyLogo);
     images.forEach(img => data.append('uploaded_images', img));
 
@@ -123,45 +192,39 @@ const Signup: React.FC = () => {
     }
   };
 
-  // ── Map helpers ──────────────────────────────────────────
+  // ── map helpers ──────────────────────────────────────────
   const MapEvents = () => {
     useMapEvents({
-      click: async (e: L.LeafletMouseEvent) => {
-        const { lat, lng } = e.latlng;
+      click: async (ev: L.LeafletMouseEvent) => {
+        const { lat, lng } = ev.latlng;
         setMapCenter([lat, lng]);
         try {
-          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
-          const json = await res.json();
-          if (json.display_name) setFormData(prev => ({ ...prev, city_location: json.display_name }));
+          const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+          const j = await r.json();
+          if (j.display_name) setFormData(p => ({ ...p, city_location: j.display_name }));
         } catch {}
       },
     });
     return null;
   };
-
   const ChangeView = ({ center }: { center: L.LatLngExpression }) => {
-    const map = useMap();
-    map.setView(center, 13);
-    return null;
+    const map = useMap(); map.setView(center, 13); return null;
   };
-
-  const handleSearchLocation = async () => {
+  const searchLocation = async () => {
     if (!searchQuery) return;
     setIsSearching(true);
     try {
-      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}`);
-      const json = await res.json();
-      if (json?.[0]) {
-        const { lat, lon, display_name } = json[0];
+      const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}`);
+      const j = await r.json();
+      if (j?.[0]) {
+        const { lat, lon, display_name } = j[0];
         setMapCenter([parseFloat(lat), parseFloat(lon)]);
-        setFormData(prev => ({ ...prev, city_location: display_name }));
+        setFormData(p => ({ ...p, city_location: display_name }));
       }
-    } catch {} finally {
-      setIsSearching(false);
-    }
+    } catch {} finally { setIsSearching(false); }
   };
 
-  // ── Shared nav buttons ───────────────────────────────────
+  // ── reusable nav buttons ─────────────────────────────────
   const NavButtons = ({ canNext, onNext, isSubmit }: { canNext?: boolean; onNext?: () => void; isSubmit?: boolean }) => (
     <div className="flex justify-between pt-4">
       {step > 1 ? (
@@ -184,10 +247,87 @@ const Signup: React.FC = () => {
     </div>
   );
 
+  // ── file chip row (shared by certs + testimonials) ───────
+  const FileChips = ({ previews, onRemove }: { previews: FilePreview[]; onRemove: (i: number) => void }) => (
+    <div className="flex flex-wrap gap-2 mt-2">
+      {previews.map((p, i) => (
+        <div key={i} className="group relative flex items-center gap-1.5 px-3 py-2 bg-surface border border-outline-variant rounded-xl shadow-sm">
+          {p.isImage
+            ? <img src={p.url} className="w-5 h-5 rounded object-cover" />
+            : <FileText size={14} className="text-primary shrink-0" />}
+          <span className="text-xs font-medium text-on-surface max-w-[120px] truncate">{p.name}</span>
+          <button type="button" onClick={() => onRemove(i)}
+            className="ml-1 text-on-surface-variant hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100">
+            <X size={12} />
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+
+  // ── link list rows (shared by certs + testimonials) ──────
+  const LinkRows = ({
+    links, onUpdate, onAdd, onRemove, placeholder,
+  }: { links: string[]; onUpdate: (i: number, v: string) => void; onAdd: () => void; onRemove: (i: number) => void; placeholder: string }) => (
+    <div className="space-y-2">
+      {links.map((link, i) => (
+        <div key={i} className="flex items-center gap-2">
+          <Link2 size={15} className="text-on-surface-variant shrink-0" />
+          <input type="url" value={link} onChange={e => onUpdate(i, e.target.value)}
+            placeholder={placeholder} className={smInputCls} />
+          <button type="button" onClick={() => onRemove(i)}
+            className="p-2 rounded-xl text-on-surface-variant hover:text-red-500 hover:bg-red-50 transition-all">
+            <X size={15} />
+          </button>
+        </div>
+      ))}
+      <button type="button" onClick={onAdd}
+        className="flex items-center gap-1.5 text-xs font-bold text-primary hover:underline mt-1">
+        <Plus size={13} /> Add another link
+      </button>
+    </div>
+  );
+
+  // ── evidence block (file upload + links) ─────────────────
+  const EvidenceBlock = ({
+    label, files, previews, links, onFiles, onRemoveFile, onUpdateLink, onAddLink, onRemoveLink, filePlaceholder, linkPlaceholder,
+  }: {
+    label: string; files: File[]; previews: FilePreview[]; links: string[];
+    onFiles: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onRemoveFile: (i: number) => void;
+    onUpdateLink: (i: number, v: string) => void;
+    onAddLink: () => void;
+    onRemoveLink: (i: number) => void;
+    filePlaceholder?: string;
+    linkPlaceholder: string;
+  }) => (
+    <div className="mt-3 rounded-2xl border border-outline-variant overflow-hidden">
+      {/* upload row */}
+      <div className="px-4 py-3 bg-surface-container-low border-b border-outline-variant flex items-center gap-3">
+        <label className="flex items-center gap-2 px-4 py-2 rounded-xl border border-outline-variant bg-surface hover:border-primary hover:bg-primary/5 transition-all cursor-pointer text-xs font-black uppercase tracking-widest text-on-surface-variant hover:text-primary">
+          <Upload size={14} /> Upload files
+          <input type="file" multiple accept="image/*,.pdf,.doc,.docx" className="hidden" onChange={onFiles} />
+        </label>
+        <span className="text-[10px] text-on-surface-variant font-medium">Images, PDFs or documents</span>
+      </div>
+      {previews.length > 0 && (
+        <div className="px-4 py-3 border-b border-outline-variant bg-surface">
+          <FileChips previews={previews} onRemove={onRemoveFile} />
+        </div>
+      )}
+      {/* links row */}
+      <div className="px-4 py-3 bg-surface">
+        <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-2">{label}</p>
+        <LinkRows links={links} onUpdate={onUpdateLink} onAdd={onAddLink} onRemove={onRemoveLink} placeholder={linkPlaceholder} />
+      </div>
+    </div>
+  );
+
+  // ════════════════════════════════════════════════════════
   return (
     <div className="min-h-screen flex items-center justify-center bg-surface transition-colors duration-300 p-6">
 
-      {/* ── Map Modal ────────────────────────────────────── */}
+      {/* ── Map modal ──────────────────────────────────────── */}
       {showMap && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
           <div className="bg-surface w-full max-w-4xl rounded-[2.5rem] border border-outline-variant shadow-2xl overflow-hidden flex flex-col h-[80vh]">
@@ -201,9 +341,9 @@ const Signup: React.FC = () => {
                 <input type="text" placeholder="Search city, town, or postcode…"
                   className="w-full pl-11 pr-5 py-3 bg-surface border border-outline-variant rounded-xl focus:border-primary outline-none transition-all font-medium"
                   value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && handleSearchLocation()} />
+                  onKeyDown={e => e.key === 'Enter' && searchLocation()} />
               </div>
-              <button onClick={handleSearchLocation} disabled={isSearching}
+              <button onClick={searchLocation} disabled={isSearching}
                 className="px-6 py-3 bg-primary text-white font-bold rounded-xl hover:brightness-110 transition-all flex items-center gap-2">
                 {isSearching ? <Loader2 size={18} className="animate-spin" /> : 'Search'}
               </button>
@@ -226,10 +366,7 @@ const Signup: React.FC = () => {
                 <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1">Selected Location</p>
                 <p className="font-bold text-on-surface truncate">{formData.city_location || 'No location selected'}</p>
               </div>
-              <button onClick={() => setShowMap(false)}
-                className="px-10 py-4 bg-primary text-white font-black rounded-2xl hover:brightness-110 transition-all shadow-md">
-                Confirm Location
-              </button>
+              <button onClick={() => setShowMap(false)} className="px-10 py-4 bg-primary text-white font-black rounded-2xl hover:brightness-110 transition-all shadow-md">Confirm Location</button>
             </div>
           </div>
         </div>
@@ -247,7 +384,7 @@ const Signup: React.FC = () => {
         </div>
 
         <div className="p-8 md:p-12 pt-12 bg-surface-container-low rounded-[2.5rem] border border-outline-variant shadow-lg">
-          {/* Header */}
+          {/* Progress header */}
           <div className="text-center mb-10">
             <h2 className="text-3xl font-black font-headline text-on-surface tracking-tight">Your New Website</h2>
             <p className="mt-2 text-on-surface-variant font-medium text-sm">Tell us about your business</p>
@@ -264,7 +401,7 @@ const Signup: React.FC = () => {
               <div className="text-red-500 text-xs font-bold text-center bg-red-500/5 p-3 rounded-xl border border-red-500/20">{error}</div>
             )}
 
-            {/* ══ STEP 1 — Business Identity ══════════════════════ */}
+            {/* ══ STEP 1 — Business Identity ══════════════════════════ */}
             {step === 1 && (
               <div className="space-y-5 animate-in fade-in slide-in-from-right-4 duration-300">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -277,7 +414,6 @@ const Signup: React.FC = () => {
                     <input name="phone_number" type="tel" required placeholder="e.g. 0161 123 4567" className={inputCls} value={formData.phone_number} onChange={handleInput} />
                   </div>
                 </div>
-
                 <div>
                   <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">Industry *</label>
                   <select name="industry" required className={`${inputCls} appearance-none`} value={formData.industry} onChange={handleInput}>
@@ -285,14 +421,12 @@ const Signup: React.FC = () => {
                     {industries.map(ind => <option key={ind} value={ind}>{ind}</option>)}
                   </select>
                 </div>
-
                 <div>
                   <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
                     Tagline / USP <span className="normal-case font-normal">(Optional)</span>
                   </label>
                   <input name="tagline" placeholder="e.g. Manchester's most trusted emergency plumbers" className={inputCls} value={formData.tagline} onChange={handleInput} />
                 </div>
-
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">Email Address *</label>
@@ -308,15 +442,11 @@ const Signup: React.FC = () => {
                 <p className="text-[10px] text-on-surface-variant flex items-center gap-1 ml-1 font-medium -mt-2">
                   <Info size={12} className="text-primary shrink-0" /> Your email is used for account setup and secure payment.
                 </p>
-
-                <NavButtons
-                  canNext={!!(formData.company_name && formData.phone_number && formData.industry && formData.email)}
-                  onNext={() => setStep(2)}
-                />
+                <NavButtons canNext={!!(formData.company_name && formData.phone_number && formData.industry && formData.email)} onNext={() => setStep(2)} />
               </div>
             )}
 
-            {/* ══ STEP 2 — Services & Details ═════════════════════ */}
+            {/* ══ STEP 2 — Services & Details ═════════════════════════ */}
             {step === 2 && (
               <div className="space-y-5 animate-in fade-in slide-in-from-right-4 duration-300">
                 <div>
@@ -346,11 +476,19 @@ const Signup: React.FC = () => {
                   </div>
                 </div>
 
+                {/* ── Certifications & Trust Badges ── */}
                 <div>
                   <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
                     Certifications &amp; Trust Badges <span className="normal-case font-normal">(Optional)</span>
                   </label>
                   <input name="trust_badges" placeholder="e.g. Gas Safe Registered, NICEIC Approved, Fully Insured" className={inputCls} value={formData.trust_badges} onChange={handleInput} />
+                  <EvidenceBlock
+                    label="Or paste links to your accreditation / registration pages"
+                    files={certFiles} previews={certPreviews} links={certLinks}
+                    onFiles={handleCertFiles} onRemoveFile={removeCertFile}
+                    onUpdateLink={updateCertLink} onAddLink={addCertLink} onRemoveLink={removeCertLink}
+                    linkPlaceholder="https://www.gassaferegister.co.uk/find-an-engineer/…"
+                  />
                 </div>
 
                 <div>
@@ -360,6 +498,7 @@ const Signup: React.FC = () => {
                   <input name="service_areas" placeholder="e.g. Manchester, Salford, Trafford, Oldham, Bury" className={inputCls} value={formData.service_areas} onChange={handleInput} />
                 </div>
 
+                {/* ── Customer Testimonials ── */}
                 <div>
                   <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
                     Customer Testimonials <span className="normal-case font-normal">(Optional)</span>
@@ -367,55 +506,78 @@ const Signup: React.FC = () => {
                   <textarea name="testimonials" rows={3}
                     placeholder={'e.g. "Amazing service, very professional" – Sarah T., Manchester'}
                     className={inputCls} value={formData.testimonials} onChange={handleInput} />
+                  <EvidenceBlock
+                    label="Or paste links to your reviews (Google, Trustpilot, Facebook…)"
+                    files={testiFiles} previews={testiPreviews} links={testiLinks}
+                    onFiles={handleTestiFiles} onRemoveFile={removeTestiFile}
+                    onUpdateLink={updateTestiLink} onAddLink={addTestiLink} onRemoveLink={removeTestiLink}
+                    linkPlaceholder="https://g.page/r/your-google-review-link"
+                  />
                 </div>
 
-                <NavButtons
-                  canNext={!!(formData.services_list && formData.city_location)}
-                  onNext={() => setStep(3)}
-                />
+                <NavButtons canNext={!!(formData.services_list && formData.city_location)} onNext={() => setStep(3)} />
               </div>
             )}
 
-            {/* ══ STEP 3 — Brand Colours ═══════════════════════════ */}
+            {/* ══ STEP 3 — Brand Colours ══════════════════════════════ */}
             {step === 3 && (
               <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
                 <div>
                   <p className="text-xs font-black uppercase tracking-widest text-on-surface-variant mb-1 ml-1">Brand Colours</p>
                   <p className="text-[11px] text-on-surface-variant font-medium mb-4 ml-1">
-                    Click any colour swatch to change it — the preview updates live.
+                    Click any swatch to open the colour picker, or type a hex code directly. The preview updates live.
                   </p>
 
-                  {/* Colour swatches */}
+                  {/* Colour swatches + hex inputs */}
                   <div className="grid grid-cols-3 gap-3 mb-5">
-                    {colorRoles.map(({ key, label, hint }) => (
-                      <label key={key} className="cursor-pointer group" title={hint}>
-                        <input type="color" className="sr-only" value={brandColors[key]}
-                          onChange={e => setBrandColors(c => ({ ...c, [key]: e.target.value }))} />
-                        <div className="rounded-2xl p-4 flex flex-col gap-2 transition-all duration-200 group-hover:scale-[1.03] group-hover:shadow-xl"
-                          style={{ backgroundColor: brandColors[key] }}>
-                          <div className="flex items-center justify-between">
-                            <span className="text-[9px] font-black uppercase tracking-widest"
-                              style={{ color: isLight(brandColors[key]) ? 'rgba(0,0,0,0.65)' : 'rgba(255,255,255,0.75)' }}>
-                              {label}
-                            </span>
-                            <div className="w-3.5 h-3.5 rounded-full border-2 border-white/40 bg-white/20 group-hover:bg-white/40 transition-all" />
+                    {colorRoles.map(({ key, label, hint }) => {
+                      const hexVal = hexDraft[key];
+                      const hexValid = isValidHex(hexVal);
+                      return (
+                        <div key={key} className="flex flex-col gap-2">
+                          {/* swatch (click → native picker) */}
+                          <label className="cursor-pointer group" title={hint}>
+                            <input type="color" className="sr-only" value={brandColors[key]}
+                              onChange={e => handleColorSwatch(key, e.target.value)} />
+                            <div className="rounded-2xl p-4 flex flex-col gap-2 transition-all duration-200 group-hover:scale-[1.03] group-hover:shadow-xl"
+                              style={{ backgroundColor: brandColors[key] }}>
+                              <div className="flex items-center justify-between">
+                                <span className="text-[9px] font-black uppercase tracking-widest"
+                                  style={{ color: isLight(brandColors[key]) ? 'rgba(0,0,0,0.65)' : 'rgba(255,255,255,0.75)' }}>
+                                  {label}
+                                </span>
+                                <div className="w-3.5 h-3.5 rounded-full border-2 border-white/40 bg-white/20 group-hover:bg-white/40 transition-all" />
+                              </div>
+                              <span className="text-[8px] leading-tight"
+                                style={{ color: isLight(brandColors[key]) ? 'rgba(0,0,0,0.45)' : 'rgba(255,255,255,0.5)' }}>
+                                {hint}
+                              </span>
+                            </div>
+                          </label>
+                          {/* hex text input */}
+                          <div className={`flex items-center gap-1.5 px-3 py-2 bg-surface border rounded-xl transition-all ${hexValid ? 'border-outline-variant focus-within:border-primary' : 'border-red-400'}`}>
+                            <span className="text-xs font-black text-on-surface-variant font-mono">#</span>
+                            <input
+                              type="text"
+                              maxLength={6}
+                              value={hexVal}
+                              onChange={e => handleHexDraft(key, e.target.value)}
+                              className="flex-1 bg-transparent outline-none font-mono text-xs font-bold uppercase text-on-surface tracking-wider w-0 min-w-0"
+                              placeholder="2563EB"
+                            />
+                            {hexValid && (
+                              <div className="w-4 h-4 rounded-full border border-outline-variant shrink-0"
+                                style={{ backgroundColor: brandColors[key] }} />
+                            )}
                           </div>
-                          <span className="font-mono text-xs font-bold tracking-wider"
-                            style={{ color: isLight(brandColors[key]) ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.92)' }}>
-                            {brandColors[key].toUpperCase()}
-                          </span>
-                          <span className="text-[8px] leading-tight"
-                            style={{ color: isLight(brandColors[key]) ? 'rgba(0,0,0,0.45)' : 'rgba(255,255,255,0.5)' }}>
-                            {hint}
-                          </span>
                         </div>
-                      </label>
-                    ))}
+                      );
+                    })}
                   </div>
 
-                  {/* ── Live mini-site preview ── */}
+                  {/* Live mini-site preview */}
                   <div className="rounded-2xl overflow-hidden border border-outline-variant shadow-md select-none" aria-hidden="true">
-                    {/* Window chrome */}
+                    {/* window chrome */}
                     <div className="px-3 py-2 bg-surface-container-low border-b border-outline-variant flex items-center gap-2">
                       <div className="flex gap-1.5">
                         <div className="w-2.5 h-2.5 rounded-full bg-red-400/70" />
@@ -429,8 +591,7 @@ const Signup: React.FC = () => {
                       </div>
                       <span className="text-[8px] text-on-surface-variant font-black uppercase tracking-widest opacity-50">Live Preview</span>
                     </div>
-
-                    {/* Navbar */}
+                    {/* navbar */}
                     <div className="px-4 py-2.5 flex items-center justify-between" style={{ backgroundColor: brandColors.secondary }}>
                       <div className="flex items-center gap-2">
                         <div className="w-5 h-5 rounded bg-white/30" />
@@ -449,8 +610,7 @@ const Signup: React.FC = () => {
                         </div>
                       </div>
                     </div>
-
-                    {/* Hero */}
+                    {/* hero */}
                     <div className="px-5 py-8 flex flex-col gap-2.5"
                       style={{ background: `linear-gradient(135deg, ${brandColors.primary}f2 0%, ${brandColors.secondary}e8 100%)` }}>
                       <div className="flex items-center gap-1.5">
@@ -478,8 +638,7 @@ const Signup: React.FC = () => {
                         ))}
                       </div>
                     </div>
-
-                    {/* Services row */}
+                    {/* services row */}
                     <div className="px-4 py-4 bg-white grid grid-cols-3 gap-2">
                       {[1, 2, 3].map(i => (
                         <div key={i} className="rounded-xl p-2.5 flex flex-col gap-1.5 border border-gray-100 shadow-sm">
@@ -492,10 +651,8 @@ const Signup: React.FC = () => {
                         </div>
                       ))}
                     </div>
-
-                    {/* Footer strip */}
-                    <div className="px-4 py-3 flex items-center justify-between"
-                      style={{ backgroundColor: brandColors.secondary }}>
+                    {/* footer strip */}
+                    <div className="px-4 py-3 flex items-center justify-between" style={{ backgroundColor: brandColors.secondary }}>
                       <div className="h-1.5 w-20 rounded-full bg-white/30" />
                       <div className="h-1.5 w-16 rounded-full bg-white/20" />
                     </div>
@@ -503,7 +660,7 @@ const Signup: React.FC = () => {
 
                   <p className="mt-2.5 text-[10px] text-on-surface-variant font-medium ml-1 flex items-center gap-1">
                     <Palette size={11} className="text-primary shrink-0" />
-                    This is a live preview of how your brand colours will look on your website
+                    Live preview — click any swatch or type a hex code above to update it
                   </p>
                 </div>
 
@@ -511,10 +668,10 @@ const Signup: React.FC = () => {
               </div>
             )}
 
-            {/* ══ STEP 4 — Media ══════════════════════════════════ */}
+            {/* ══ STEP 4 — Media ══════════════════════════════════════ */}
             {step === 4 && (
               <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-                {/* Company Logo */}
+                {/* Logo */}
                 <div>
                   <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-3 ml-1">
                     Company Logo <span className="normal-case font-normal">(Optional)</span>
@@ -522,7 +679,7 @@ const Signup: React.FC = () => {
                   <div className="flex items-start gap-4">
                     {logoPreview ? (
                       <div className="relative w-20 h-20 flex-shrink-0 rounded-2xl overflow-hidden border border-outline-variant bg-surface">
-                        <img src={logoPreview} alt="Logo preview" className="w-full h-full object-contain p-2" />
+                        <img src={logoPreview} alt="Logo" className="w-full h-full object-contain p-2" />
                         <button type="button" onClick={() => { setCompanyLogo(null); setLogoPreview(''); }}
                           className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full shadow">
                           <X size={10} />
@@ -536,7 +693,7 @@ const Signup: React.FC = () => {
                       </label>
                     )}
                     <p className="text-xs text-on-surface-variant font-medium leading-relaxed pt-1">
-                      Upload your company logo — it'll appear in the navbar and footer. PNG or SVG with a transparent background works best.
+                      Upload your company logo — it&apos;ll appear in the navbar and footer. PNG or SVG with a transparent background works best.
                     </p>
                   </div>
                 </div>
@@ -568,7 +725,7 @@ const Signup: React.FC = () => {
                 <div className="bg-surface p-4 rounded-2xl border border-outline-variant flex items-start gap-3">
                   <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                   <p className="text-[11px] text-on-surface-variant leading-relaxed font-medium">
-                    Almost done! After submitting you'll be taken to our secure checkout to choose your plan and launch your project.
+                    Almost done! After submitting you&apos;ll be taken to our secure checkout to choose your plan and launch your project.
                   </p>
                 </div>
 
