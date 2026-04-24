@@ -52,6 +52,7 @@ const TOTAL_STEPS = 4;
 const Signup: React.FC = () => {
   const [step, setStep]               = useState(1);
   const [showMap, setShowMap]         = useState(false);
+  const [mapTarget, setMapTarget]     = useState<'city_location' | 'service_areas'>('city_location');
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [mapCenter, setMapCenter]     = useState<[number, number]>([51.505, -0.09]);
@@ -201,7 +202,17 @@ const Signup: React.FC = () => {
         try {
           const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
           const j = await r.json();
-          if (j.display_name) setFormData(p => ({ ...p, city_location: j.display_name }));
+          if (j.display_name) {
+            if (mapTarget === 'city_location') {
+              setFormData(p => ({ ...p, city_location: j.display_name }));
+            } else {
+              const name = j.address?.city || j.address?.town || j.address?.village || j.display_name.split(',')[0];
+              setFormData(p => ({
+                ...p,
+                service_areas: p.service_areas ? `${p.service_areas}, ${name}` : name
+              }));
+            }
+          }
         } catch {}
       },
     });
@@ -219,7 +230,15 @@ const Signup: React.FC = () => {
       if (j?.[0]) {
         const { lat, lon, display_name } = j[0];
         setMapCenter([parseFloat(lat), parseFloat(lon)]);
-        setFormData(p => ({ ...p, city_location: display_name }));
+        if (mapTarget === 'city_location') {
+          setFormData(p => ({ ...p, city_location: display_name }));
+        } else {
+          const name = display_name.split(',')[0];
+          setFormData(p => ({
+            ...p,
+            service_areas: p.service_areas ? `${p.service_areas}, ${name}` : name
+          }));
+        }
       }
     } catch {} finally { setIsSearching(false); }
   };
@@ -290,15 +309,14 @@ const Signup: React.FC = () => {
 
   // ── evidence block (file upload + links) ─────────────────
   const EvidenceBlock = ({
-    label, files, previews, links, onFiles, onRemoveFile, onUpdateLink, onAddLink, onRemoveLink, filePlaceholder, linkPlaceholder,
+    label, previews, links, onFiles, onRemoveFile, onUpdateLink, onAddLink, onRemoveLink, linkPlaceholder,
   }: {
-    label: string; files: File[]; previews: FilePreview[]; links: string[];
+    label: string; previews: FilePreview[]; links: string[];
     onFiles: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onRemoveFile: (i: number) => void;
     onUpdateLink: (i: number, v: string) => void;
     onAddLink: () => void;
     onRemoveLink: (i: number) => void;
-    filePlaceholder?: string;
     linkPlaceholder: string;
   }) => (
     <div className="mt-3 rounded-2xl border border-outline-variant overflow-hidden">
@@ -332,13 +350,16 @@ const Signup: React.FC = () => {
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
           <div className="bg-surface w-full max-w-4xl rounded-[2.5rem] border border-outline-variant shadow-2xl overflow-hidden flex flex-col h-[80vh]">
             <div className="p-6 border-b border-outline-variant flex items-center justify-between bg-surface-container-low">
-              <h3 className="text-xl font-bold flex items-center gap-2"><MapPin className="text-primary" /> Select Your Location</h3>
+              <h3 className="text-xl font-bold flex items-center gap-2">
+                <MapPin className="text-primary" /> 
+                {mapTarget === 'city_location' ? 'Select Your Main Location' : 'Pick Service Areas'}
+              </h3>
               <button onClick={() => setShowMap(false)} className="p-2 hover:bg-surface-container rounded-full transition-colors"><X size={20} /></button>
             </div>
             <div className="p-6 bg-surface-container-low flex gap-3 border-b border-outline-variant">
               <div className="relative flex-grow">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant" size={18} />
-                <input type="text" placeholder="Search city, town, or postcode…"
+                <input type="text" placeholder={mapTarget === 'city_location' ? "Search city, town, or postcode…" : "Search areas to serve…"}
                   className="w-full pl-11 pr-5 py-3 bg-surface border border-outline-variant rounded-xl focus:border-primary outline-none transition-all font-medium"
                   value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && searchLocation()} />
@@ -357,16 +378,20 @@ const Signup: React.FC = () => {
                 <MapEvents />
                 <ChangeView center={mapCenter} />
               </MapContainer>
-              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1000] bg-surface/90 backdrop-blur px-6 py-3 rounded-full border border-outline-variant shadow-lg text-sm font-bold text-on-surface-variant">
-                Click anywhere on the map to pick your spot
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1000] bg-surface/90 backdrop-blur px-6 py-3 rounded-full border border-outline-variant shadow-lg text-sm font-bold text-on-surface-variant text-center min-w-[300px]">
+                {mapTarget === 'city_location' ? 'Click to pick your spot' : 'Click to add an area to your list'}
               </div>
             </div>
             <div className="p-6 bg-surface border-t border-outline-variant flex items-center justify-between">
               <div className="flex-grow mr-4 truncate">
-                <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1">Selected Location</p>
-                <p className="font-bold text-on-surface truncate">{formData.city_location || 'No location selected'}</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1">
+                  {mapTarget === 'city_location' ? 'Selected Location' : 'Areas List'}
+                </p>
+                <p className="font-bold text-on-surface truncate">
+                  {mapTarget === 'city_location' ? (formData.city_location || 'No location selected') : (formData.service_areas || 'No areas added yet')}
+                </p>
               </div>
-              <button onClick={() => setShowMap(false)} className="px-10 py-4 bg-primary text-white font-black rounded-2xl hover:brightness-110 transition-all shadow-md">Confirm Location</button>
+              <button onClick={() => setShowMap(false)} className="px-10 py-4 bg-primary text-white font-black rounded-2xl hover:brightness-110 transition-all shadow-md">Confirm</button>
             </div>
           </div>
         </div>
@@ -462,7 +487,7 @@ const Signup: React.FC = () => {
                     <div className="relative">
                       <input name="city_location" required placeholder="Search or pick on map…"
                         className={`${inputCls} pr-12 truncate`} value={formData.city_location} onChange={handleInput} />
-                      <button type="button" onClick={() => setShowMap(true)}
+                      <button type="button" onClick={() => { setMapTarget('city_location'); setShowMap(true); }}
                         className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-primary/10 text-primary rounded-xl hover:bg-primary hover:text-white transition-all">
                         <MapPin size={20} />
                       </button>
@@ -484,7 +509,7 @@ const Signup: React.FC = () => {
                   <input name="trust_badges" placeholder="e.g. Gas Safe Registered, NICEIC Approved, Fully Insured" className={inputCls} value={formData.trust_badges} onChange={handleInput} />
                   <EvidenceBlock
                     label="Or paste links to your accreditation / registration pages"
-                    files={certFiles} previews={certPreviews} links={certLinks}
+                    previews={certPreviews} links={certLinks}
                     onFiles={handleCertFiles} onRemoveFile={removeCertFile}
                     onUpdateLink={updateCertLink} onAddLink={addCertLink} onRemoveLink={removeCertLink}
                     linkPlaceholder="https://www.gassaferegister.co.uk/find-an-engineer/…"
@@ -495,7 +520,14 @@ const Signup: React.FC = () => {
                   <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
                     Service Areas <span className="normal-case font-normal">(Optional)</span>
                   </label>
-                  <input name="service_areas" placeholder="e.g. Manchester, Salford, Trafford, Oldham, Bury" className={inputCls} value={formData.service_areas} onChange={handleInput} />
+                  <div className="relative">
+                    <input name="service_areas" placeholder="e.g. Manchester, Salford, Trafford, Oldham, Bury" 
+                      className={`${inputCls} pr-12`} value={formData.service_areas} onChange={handleInput} />
+                    <button type="button" onClick={() => { setMapTarget('service_areas'); setShowMap(true); }}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-primary/10 text-primary rounded-xl hover:bg-primary hover:text-white transition-all">
+                      <MapPin size={20} />
+                    </button>
+                  </div>
                 </div>
 
                 {/* ── Customer Testimonials ── */}
@@ -508,7 +540,7 @@ const Signup: React.FC = () => {
                     className={inputCls} value={formData.testimonials} onChange={handleInput} />
                   <EvidenceBlock
                     label="Or paste links to your reviews (Google, Trustpilot, Facebook…)"
-                    files={testiFiles} previews={testiPreviews} links={testiLinks}
+                    previews={testiPreviews} links={testiLinks}
                     onFiles={handleTestiFiles} onRemoveFile={removeTestiFile}
                     onUpdateLink={updateTestiLink} onAddLink={addTestiLink} onRemoveLink={removeTestiLink}
                     linkPlaceholder="https://g.page/r/your-google-review-link"
