@@ -1,5 +1,11 @@
 from rest_framework import serializers
-from .models import User, Website, ClientApplication, ApplicationImage, Feedback, Attachment
+from .models import User, Website, ClientApplication, ApplicationImage, Feedback, Attachment, AuditReport
+
+class AuditReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AuditReport
+        fields = '__all__'
+        read_only_fields = ('id', 'created_at', 'report_data', 'meta_title', 'meta_description', 'load_speed_score')
 
 class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:

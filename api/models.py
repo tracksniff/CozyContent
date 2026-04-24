@@ -132,3 +132,31 @@ class PasswordResetOTP(models.Model):
 
     def __str__(self):
         return f"OTP for {self.user.email}"
+
+class AuditReport(models.Model):
+    # User Inputs
+    name = models.CharField(max_length=255)
+    business_name = models.CharField(max_length=255)
+    website_url = models.URLField()
+    industry = models.CharField(max_length=100)
+    location = models.CharField(max_length=255)
+
+    # Scraped / Metadata
+    meta_title = models.TextField(blank=True, null=True)
+    meta_description = models.TextField(blank=True, null=True)
+    load_speed_score = models.IntegerField(blank=True, null=True) # 0-100
+
+    # AI Generated Results (JSON)
+    # Expected structure: 
+    # { 
+    #   "overall_score": 58, 
+    #   "scores": {"design": 20, "mobile_ux": 15, ...},
+    #   "findings": ["Outdated design", ...],
+    #   "quick_wins": ["Add CTA", ...]
+    # }
+    report_data = models.JSONField(blank=True, null=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Audit for {self.business_name} ({self.website_url})"

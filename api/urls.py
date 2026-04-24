@@ -12,7 +12,8 @@ from .views import (
     RequestEditView,
     RequestPasswordResetOTPView,
     VerifyPasswordResetOTPView,
-    ChangePasswordView
+    ChangePasswordView,
+    AuditViewSet,
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -23,6 +24,7 @@ router = DefaultRouter()
 router.register(r"websites", WebsiteViewSet, basename="website")
 router.register(r"users", UserViewSet, basename="user")
 router.register(r"applications", ClientApplicationViewSet, basename="application")
+router.register(r"audits", AuditViewSet, basename="audit")
 
 urlpatterns = [
     path("register/", RegisterView.as_view(), name="auth_register"),

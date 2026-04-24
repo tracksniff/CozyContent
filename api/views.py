@@ -11,6 +11,7 @@ from .serializers import (
     ClientApplicationSerializer,
     FeedbackSerializer,
     AttachmentSerializer,
+    AuditReportSerializer,
 )
 from .models import (
     User,
@@ -19,6 +20,7 @@ from .models import (
     PasswordResetOTP,
     Feedback,
     Attachment,
+    AuditReport,
 )
 import stripe
 import random
@@ -727,3 +729,28 @@ class ChangePasswordView(APIView):
             {"success": True, "message": "Password changed successfully!"},
             status=status.HTTP_200_OK,
         )
+
+class AuditViewSet(viewsets.ModelViewSet):
+    queryset = AuditReport.objects.all()
+    serializer_class = AuditReportSerializer
+    permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        audit = serializer.save()
+        
+        # Run audit synchronously for now to provide "instant" results
+        from .services.audit_service import perform_audit
+        report_data = perform_audit(audit.id)
+        
+        if report_data:
+            return Response({
+                "id": audit.id,
+                "report_data": report_data
+            }, status=status.HTTP_201_CREATED)
+        else:
+            return Response(
+                {"error": "Failed to generate audit report"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
