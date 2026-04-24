@@ -85,22 +85,54 @@ def send_audit_email(report, pdf_content):
 def create_beautiful_html(report):
     data = report.report_data
     
+    # Severity color mapping
+    severity_colors = {
+        'critical': '#be123c', # Red-700
+        'high': '#e11d48',     # Red-500
+        'medium': '#d97706',   # Amber-600
+        'low': '#059669'       # Green-600
+    }
+
     findings_html = ""
     for f in data.get('findings', []):
-        text = f.get('issue') or f.get('text') or "Finding"
-        findings_html += f"<li>{text}</li>"
+        sev = f.get('severity', 'medium').lower()
+        color = severity_colors.get(sev, '#4b5563')
+        issue = f.get('issue') or f.get('text') or "Finding"
+        detail = f.get('detail', "")
+        findings_html += f"""
+            <div style="margin-bottom: 15px; border-left: 4px solid {color}; padding-left: 15px;">
+                <div style="font-weight: bold; color: {color}; text-transform: uppercase; font-size: 10px;">{sev} Priority</div>
+                <div style="font-weight: bold; font-size: 14px; margin: 2px 0;">{issue}</div>
+                <div style="font-size: 11px; color: #475569;">{detail}</div>
+            </div>
+        """
         
     wins_html = ""
     for w in data.get('quick_wins', []):
-        text = w.get('action') or w.get('text') or "Quick Win"
-        wins_html += f"<li>{text}</li>"
+        action = w.get('action') or w.get('text') or "Quick Win"
+        detail = w.get('detail', "")
+        wins_html += f"""
+            <div style="margin-bottom: 10px; border-left: 4px solid #059669; padding-left: 15px; background-color: #f0fdf4; padding: 10px;">
+                <div style="font-weight: bold; font-size: 13px; color: #065f46;">{action}</div>
+                <div style="font-size: 11px; color: #166534;">{detail}</div>
+            </div>
+        """
     
     scores = data.get('scores', {})
-    design_score = scores.get('design') or scores.get('ux') or 0
-    mobile_score = scores.get('mobile_ux') or scores.get('accessibility') or 0
-    conv_score = scores.get('lead_conversion') or scores.get('conversion') or 0
-    seo_score = scores.get('seo_basics') or scores.get('seo') or 0
-    trust_score = scores.get('trust_signals') or scores.get('performance') or 0
+    # Ensure scores are displayed out of 100 as the user expected
+    def normalize(val):
+        try:
+            v = int(val)
+            return v if v > 20 else v * 5 # Fallback if Claude still gives /20
+        except: return 0
+
+    design_score = normalize(scores.get('design') or scores.get('ux') or 0)
+    mobile_score = normalize(scores.get('mobile_ux') or scores.get('accessibility') or 0)
+    conv_score = normalize(scores.get('lead_conversion') or scores.get('conversion') or 0)
+    seo_score = normalize(scores.get('seo_basics') or scores.get('seo') or 0)
+    perf_score = normalize(scores.get('performance') or scores.get('trust_signals') or 0)
+
+    overall_score = normalize(data.get('overall_score', 0))
 
     return f"""
     <html>
@@ -108,155 +140,219 @@ def create_beautiful_html(report):
         <style>
             @page {{
                 size: a4 portrait;
+                margin: 0;
                 @frame footer_frame {{
                     -pdf-frame-content: footer_content;
-                    left: 50pt; width: 512pt; top: 772pt; height: 20pt;
+                    left: 40pt; width: 512pt; top: 790pt; height: 30pt;
                 }}
             }}
             body {{
                 font-family: Helvetica, Arial, sans-serif;
                 color: #1e293b;
-                line-height: 1.4;
+                line-height: 1.5;
                 padding: 0;
                 margin: 0;
+                background-color: #ffffff;
             }}
-            .container {{ padding: 40px; }}
             .header {{
-                background-color: #2563eb;
-                color: white;
-                padding: 40px;
-                text-align: center;
-                border-bottom: 5px solid #1e40af;
+                background-color: #0f172a;
+                color: #ffffff;
+                padding: 60px 40px;
+                text-align: left;
             }}
-            .logo {{ font-size: 28px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; }}
-            .title {{ font-size: 32px; margin-top: 10px; font-weight: 900; }}
-            
-            .score-hero {{
-                margin-top: -30px;
-                background: white;
-                padding: 30px;
-                border-radius: 20px;
-                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-                text-align: center;
-                border: 1px solid #e2e8f0;
-            }}
-            .score-circle {{
-                width: 120px;
-                height: 120px;
-                border: 8px solid #2563eb;
-                border-radius: 60px;
-                margin: 0 auto;
-                display: block;
-                padding-top: 25px;
-            }}
-            .score-num {{ font-size: 42px; font-weight: 900; color: #2563eb; }}
-            .score-label {{ font-size: 10px; color: #64748b; font-weight: bold; text-transform: uppercase; }}
-
-            .section {{ margin-top: 30px; }}
-            .section-title {{
-                font-size: 18px;
+            .logo {{
+                font-size: 24px;
                 font-weight: bold;
-                color: #0f172a;
-                border-left: 4px solid #2563eb;
-                padding-left: 10px;
-                margin-bottom: 15px;
-                text-transform: uppercase;
+                color: #3b82f6;
+                letter-spacing: 1px;
             }}
-
-            .grid {{ width: 100%; }}
-            .card {{
-                background: #f8fafc;
-                padding: 15px;
-                border-radius: 10px;
-                text-align: center;
-                border: 1px solid #f1f5f9;
+            .title {{
+                font-size: 36px;
+                font-weight: 900;
+                margin-top: 10px;
+                letter-spacing: -1px;
             }}
-            .card-score {{ font-size: 24px; font-weight: bold; color: #2563eb; }}
-            .card-label {{ font-size: 10px; color: #64748b; text-transform: uppercase; }}
-
-            .findings-list {{ list-style-type: none; padding: 0; }}
-            .findings-list li {{
-                background: #fff1f2;
-                border-left: 4px solid #e11d48;
-                padding: 10px 15px;
-                margin-bottom: 8px;
-                color: #9f1239;
+            .meta {{
                 font-size: 12px;
+                opacity: 0.7;
+                margin-top: 10px;
             }}
-            .wins-list {{ list-style-type: none; padding: 0; }}
-            .wins-list li {{
-                background: #f0fdf4;
-                border-left: 4px solid #059669;
-                padding: 10px 15px;
-                margin-bottom: 8px;
-                color: #065f46;
-                font-size: 12px;
-            }}
-
-            .cta {{
-                background: #0f172a;
-                color: white;
-                padding: 30px;
-                border-radius: 15px;
-                text-align: center;
-                margin-top: 40px;
-            }}
-            .cta h2 {{ color: #3b82f6; margin: 0; font-size: 20px; }}
-            .cta p {{ font-size: 14px; margin: 10px 0; }}
             
-            #footer_content {{ text-align: center; font-size: 9px; color: #94a3b8; }}
+            .content {{ padding: 40px; }}
+            
+            .score-section {{
+                background-color: #f8fafc;
+                border-radius: 20px;
+                padding: 40px;
+                margin-top: -80px;
+                border: 1px solid #e2e8f0;
+                text-align: center;
+            }}
+            
+            .score-big {{
+                font-size: 84px;
+                font-weight: 900;
+                color: #2563eb;
+                line-height: 1;
+            }}
+            .score-label {{
+                font-size: 14px;
+                font-weight: bold;
+                color: #64748b;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                margin-top: 10px;
+            }}
+            
+            .grid-table {{ width: 100%; margin-top: 30px; border-collapse: separate; border-spacing: 10px; }}
+            .metric-card {{
+                background-color: #ffffff;
+                border: 1px solid #f1f5f9;
+                padding: 15px;
+                text-align: center;
+                border-radius: 12px;
+            }}
+            .metric-value {{ font-size: 20px; font-weight: bold; color: #1e293b; }}
+            .metric-label {{ font-size: 9px; color: #64748b; text-transform: uppercase; font-weight: bold; }}
+
+            .section-header {{
+                font-size: 18px;
+                font-weight: 900;
+                color: #0f172a;
+                margin: 40px 0 20px 0;
+                border-bottom: 2px solid #3b82f6;
+                display: inline-block;
+                padding-bottom: 5px;
+            }}
+
+            .cta-box {{
+                background-color: #2563eb;
+                color: #ffffff;
+                padding: 40px;
+                border-radius: 24px;
+                text-align: center;
+                margin-top: 50px;
+            }}
+            
+            #footer_content {{
+                text-align: center;
+                font-size: 10px;
+                color: #94a3b8;
+                border-top: 1px solid #f1f5f9;
+                padding-top: 10px;
+            }}
+            
+            .badge {{
+                display: inline-block;
+                padding: 4px 12px;
+                border-radius: 100px;
+                font-size: 10px;
+                font-weight: bold;
+                text-transform: uppercase;
+                margin-bottom: 10px;
+            }}
         </style>
     </head>
     <body>
         <div class="header">
-            <div class="logo">Cosy Content</div>
-            <div class="title">Website Performance Audit</div>
-            <p style="margin: 5px 0 0 0; opacity: 0.8;">{report.business_name} | {report.website_url}</p>
+            <div class="logo">COSY CONTENT</div>
+            <div class="title">Website Performance<br/>Audit Report</div>
+            <div class="meta">
+                <strong>FOR:</strong> {report.business_name} &bull; 
+                <strong>URL:</strong> {report.website_url} &bull;
+                <strong>DATE:</strong> April 2026
+            </div>
         </div>
 
-        <div class="container">
-            <div class="score-hero">
-                <div class="score-circle">
-                    <div class="score-num">{data.get('overall_score', 0)}</div>
-                    <div class="score-label">Overall Score</div>
-                </div>
-                <p style="color: #64748b; margin-top: 15px; font-style: italic;">We analyzed over 50 data points to calculate your conversion readiness.</p>
-            </div>
-
-            <div class="section">
-                <div class="section-title">Metric Breakdown</div>
-                <table width="100%" cellpadding="5">
+        <div class="content">
+            <div class="score-section">
+                <div class="score-big">{overall_score}</div>
+                <div class="score-label">Overall Conversion Score</div>
+                
+                <table class="grid-table">
                     <tr>
-                        <td width="20%"><div class="card"><div class="card-score">{design_score}</div><div class="card-label">Design</div></div></td>
-                        <td width="20%"><div class="card"><div class="card-score">{mobile_score}</div><div class="card-label">Mobile UX</div></div></td>
-                        <td width="20%"><div class="card"><div class="card-score">{conv_score}</div><div class="card-label">Conversion</div></div></td>
-                        <td width="20%"><div class="card"><div class="card-score">{seo_score}</div><div class="card-label">SEO</div></div></td>
-                        <td width="20%"><div class="card"><div class="card-score">{trust_score}</div><div class="card-label">Trust</div></div></td>
+                        <td width="20%">
+                            <div class="metric-card">
+                                <div class="metric-value">{design_score}%</div>
+                                <div class="metric-label">Design</div>
+                            </div>
+                        </td>
+                        <td width="20%">
+                            <div class="metric-card">
+                                <div class="metric-value">{mobile_score}%</div>
+                                <div class="metric-label">Mobile UX</div>
+                            </div>
+                        </td>
+                        <td width="20%">
+                            <div class="metric-card">
+                                <div class="metric-value">{conv_score}%</div>
+                                <div class="metric-label">Conversion</div>
+                            </div>
+                        </td>
+                        <td width="20%">
+                            <div class="metric-card">
+                                <div class="metric-value">{seo_score}%</div>
+                                <div class="metric-label">SEO</div>
+                            </div>
+                        </td>
+                        <td width="20%">
+                            <div class="metric-card">
+                                <div class="metric-value">{perf_score}%</div>
+                                <div class="metric-label">Performance</div>
+                            </div>
+                        </td>
                     </tr>
                 </table>
             </div>
 
-            <div class="section">
-                <div class="section-title">Critical Issues Detected</div>
-                <ul class="findings-list">
-                    {findings_html}
-                </ul>
+            <div class="section-header">Critical Findings</div>
+            <div style="margin-top: 10px;">
+                {findings_html}
             </div>
 
-            <div class="section">
-                <div class="section-title">Recommended Quick Wins</div>
-                <ul class="wins-list">
-                    {wins_html}
-                </ul>
+            <div class="section-header">Strategic Quick Wins</div>
+            <div style="margin-top: 10px;">
+                {wins_html}
             </div>
 
-            <div class="cta">
-                <h2>Ready to turn your website into a lead machine?</h2>
-                <p>We rebuild sites for businesses in {report.location} in just 7 days.</p>
-                <p><strong>Fixed Price: £59/month. Zero upfront. Managed hosting included.</strong></p>
-                <div style="margin-top: 15px; font-weight: bold; color: #3b82f6;">Visit cosycontent.com to get started.</div>
+            <pdf:nextpage />
+
+            <div class="cta-box">
+                <div style="font-size: 28px; font-weight: 900; margin-bottom: 10px;">Don&apos;t let your website hold you back.</div>
+                <div style="font-size: 16px; opacity: 0.9; margin-bottom: 30px;">
+                    We specialize in transforming businesses in {report.location} by building 
+                    websites that actually work. No fluff, just results.
+                </div>
+                
+                <table width="100%" cellpadding="10">
+                    <tr>
+                        <td width="33%">
+                            <div style="font-weight: bold; font-size: 18px;">7 Days</div>
+                            <div style="font-size: 10px; text-transform: uppercase; opacity: 0.8;">Turnaround</div>
+                        </td>
+                        <td width="33%" style="border-left: 1px solid rgba(255,255,255,0.2); border-right: 1px solid rgba(255,255,255,0.2);">
+                            <div style="font-weight: bold; font-size: 18px;">£59/mo</div>
+                            <div style="font-size: 10px; text-transform: uppercase; opacity: 0.8;">Zero Upfront</div>
+                        </td>
+                        <td width="33%">
+                            <div style="font-weight: bold; font-size: 18px;">Managed</div>
+                            <div style="font-size: 10px; text-transform: uppercase; opacity: 0.8;">Hosting & Support</div>
+                        </td>
+                    </tr>
+                </table>
+                
+                <div style="margin-top: 30px; background-color: #ffffff; color: #2563eb; display: inline-block; padding: 15px 40px; border-radius: 100px; font-weight: bold; font-size: 16px;">
+                    Claim Your New Website: cosycontent.com
+                </div>
             </div>
         </div>
+
+        <div id="footer_content">
+            &copy; 2026 Cosy Content Ltd &bull; <strong>Performance Audit</strong> &bull; Confidential &bull; Page <pdf:pagenumber>
+        </div>
+    </body>
+    </html>
+    """
 
         <div id="footer_content">
             © 2026 Cosy Content Ltd. | Performance Report | Confidential
