@@ -331,9 +331,9 @@ const LandingPage = () => {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-32 bg-surface-container-low transition-colors duration-300 overflow-hidden relative">
+      <section id="pricing" className="py-32 bg-surface transition-colors duration-300 overflow-hidden relative">
         <div className="max-w-7xl mx-auto px-8 relative z-10">
-          <div className="text-center mb-24">
+          <div className="text-center mb-16">
             <motion.span
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
@@ -343,10 +343,10 @@ const LandingPage = () => {
             </motion.span>
             <motion.h2
               {...fadeInUp}
-              className="text-5xl md:text-6xl font-black tracking-tighter mb-8"
+              className="text-5xl md:text-6xl font-black tracking-tighter mb-12"
             >
               No hidden fees. <br />
-              <span className="text-on-surface-variant/50">No contracts. Cancel anytime.</span>
+              <span className="text-on-surface-variant/50 text-4xl md:text-5xl">No contracts. Cancel anytime.</span>
             </motion.h2>
           </div>
 
@@ -358,28 +358,30 @@ const LandingPage = () => {
               viewport={{ once: true }}
               className="relative group h-full"
             >
-              <div className="absolute inset-0 bg-surface rounded-[2.5rem] border-2 border-primary shadow-xl transition-all duration-500 group-hover:scale-[1.01]"></div>
+              <div className="absolute inset-0 bg-surface-container-low rounded-[2.5rem] border-2 border-primary shadow-xl shadow-primary/5 transition-all duration-500 group-hover:scale-[1.01]"></div>
               
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 z-10 border border-white/20">
-                Most Popular
+              <div className="absolute -top-4 left-10 bg-primary text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 z-10 border border-white/20 flex items-center gap-2">
+                <Check className="w-3 h-3" strokeWidth={4} /> Most Popular
               </div>
 
               <div className="relative p-10 flex flex-col h-full">
                 <div className="mb-8">
-                  <h3 className="text-xl font-bold mb-3">Monthly Plan</h3>
+                  <h3 className="text-2xl font-black mb-3">Monthly Subscription</h3>
                   <p className="text-on-surface-variant font-medium leading-relaxed text-sm">
                     Website included with hosting & maintenance.
                   </p>
                 </div>
 
-                <div className="flex items-baseline gap-2 mb-2">
-                  <span className="text-5xl font-black text-on-surface">{isAnnual ? '£47' : '£59'}</span>
-                  <span className="text-on-surface-variant font-bold text-sm uppercase tracking-widest">/month</span>
+                <div className="flex flex-col gap-1 mb-8 p-6 rounded-3xl bg-surface/50 border border-outline-variant/10">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-6xl font-black text-on-surface">{isAnnual ? '£47' : '£59'}</span>
+                    <span className="text-on-surface-variant font-bold text-sm uppercase tracking-widest">/month</span>
+                  </div>
+                  <div className="mt-4 pt-4 border-t border-outline-variant/10">
+                    <PricingToggle isAnnual={isAnnual} onChange={setIsAnnual} isPopular={false} />
+                  </div>
                 </div>
                 
-                <PricingToggle isAnnual={isAnnual} onChange={setIsAnnual} isPopular={true} />
-                <div className="text-primary font-black text-xs uppercase mb-6 italic">£0 Upfront</div>
-
                 <div className="space-y-4 mb-10 flex-grow">
                   {[
                     'Hosting',
@@ -389,17 +391,17 @@ const LandingPage = () => {
                     'Upto 5 small updates per month (eg text changes, image swaps, contact info updates)'
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-3">
-                      <div className="mt-1 flex-shrink-0 w-4 h-4 rounded-full bg-secondary/10 flex items-center justify-center">
-                        <Check className="w-2.5 h-2.5 text-secondary" strokeWidth={3} />
+                      <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Check className="w-3 h-3 text-primary" strokeWidth={4} />
                       </div>
-                      <span className="text-on-surface-variant font-bold text-xs">{item}</span>
+                      <span className="text-on-surface font-bold text-sm">{item}</span>
                     </div>
                   ))}
                 </div>
 
-                <button className="w-full py-4 rounded-xl bg-primary text-white font-black shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all text-base flex items-center justify-center gap-2">
+                <Link to="/signup" className="w-full py-4 rounded-xl bg-primary text-white font-black shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all text-base flex items-center justify-center gap-2 active:scale-95">
                   Select Monthly
-                </button>
+                </Link>
               </div>
             </motion.div>
 
@@ -408,24 +410,22 @@ const LandingPage = () => {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="relative group"
+              className="relative group h-full"
             >
-              <div className="absolute inset-0 bg-surface rounded-[2.5rem] border border-outline-variant/20 shadow-lg transition-all duration-500 group-hover:shadow-xl"></div>
+              <div className="absolute inset-0 bg-surface-container-low rounded-[2.5rem] border border-outline-variant/30 shadow-lg transition-all duration-500 group-hover:shadow-xl group-hover:scale-[1.01]"></div>
 
               <div className="relative p-10 flex flex-col h-full">
                 <div className="mb-8">
-                  <h3 className="text-xl font-bold mb-3">One-Time Payment</h3>
+                  <h3 className="text-2xl font-black mb-3">One-Time Payment</h3>
                   <p className="text-on-surface-variant font-medium leading-relaxed text-sm">
                     £349 for your fully built website. Delivered ready to use.
                   </p>
                 </div>
 
-                <div className="flex items-baseline gap-2 mb-2">
-                  <span className="text-5xl font-black text-on-surface">£349</span>
+                <div className="flex items-baseline gap-2 mb-8 p-6 rounded-3xl bg-surface/50 border border-outline-variant/10">
+                  <span className="text-6xl font-black text-on-surface">£349</span>
                   <span className="text-on-surface-variant font-bold text-sm uppercase tracking-widest">Fixed</span>
                 </div>
-
-                <div className="h-[2px] w-full bg-outline-variant/10 mt-2 mb-8"></div>
 
                 <div className="space-y-4 mb-10 flex-grow">
                   {[
@@ -436,17 +436,17 @@ const LandingPage = () => {
                     'Ready to use'
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-3">
-                      <div className="mt-1 flex-shrink-0 w-4 h-4 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Check className="w-2.5 h-2.5 text-primary" strokeWidth={3} />
+                      <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-surface-container-high flex items-center justify-center">
+                        <Check className="w-3 h-3 text-on-surface-variant" strokeWidth={4} />
                       </div>
-                      <span className="text-on-surface-variant font-bold text-xs">{item}</span>
+                      <span className="text-on-surface font-bold text-sm">{item}</span>
                     </div>
                   ))}
                 </div>
 
-                <button className="w-full py-4 rounded-xl border-2 border-primary text-primary font-black hover:bg-primary hover:text-white transition-all text-base group-hover:shadow-lg group-hover:shadow-primary/10">
+                <Link to="/signup" className="w-full py-4 rounded-xl bg-on-surface text-surface font-black hover:bg-on-surface-variant transition-all text-base flex items-center justify-center gap-2 active:scale-95">
                   Claim Ownership
-                </button>
+                </Link>
               </div>
             </motion.div>
           </div>

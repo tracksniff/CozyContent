@@ -76,31 +76,56 @@ const Profile: React.FC = () => {
                   </div>
                 ) : (
                   <div className="space-y-8">
-                    <div className="p-6 bg-surface border border-outline-variant rounded-2xl">
-                      <p className="text-on-surface-variant font-medium mb-4">You are currently on the free plan. Upgrade to launch your website.</p>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <button 
-                          onClick={() => handleCheckout('one_time')}
-                          disabled={loading}
-                          className="p-6 rounded-2xl border-2 border-primary text-left hover:bg-primary/5 transition-all group"
-                        >
-                          <div className="text-primary font-black text-xs uppercase tracking-widest mb-1">One-Time Asset</div>
-                          <div className="text-xl font-black mb-2">The Lifetime Owner</div>
-                          <div className="text-2xl font-black text-primary mb-2">£349</div>
-                          <div className="h-[1px] w-full bg-outline-variant/10 mt-2 mb-4"></div>
-                          <div className="text-xs font-bold text-on-surface-variant group-hover:text-primary transition-colors">Select Plan</div>
-                        </button>
-                        <button 
-                          onClick={() => handleCheckout(isAnnual ? 'annual' : 'monthly')}
-                          disabled={loading}
-                          className="p-6 rounded-2xl border-2 border-secondary text-left hover:bg-secondary/5 transition-all group"
-                        >
-                          <div className="text-secondary font-black text-xs uppercase tracking-widest mb-1">Monthly Concierge</div>
-                          <div className="text-xl font-black mb-2">Monthly Concierge</div>
-                          <div className="text-2xl font-black text-secondary mb-2">{isAnnual ? '£47' : '£59'}<span className="text-sm font-bold">/month</span></div>
-                          <PricingToggle isAnnual={isAnnual} onChange={setIsAnnual} isPopular={false} />
-                          <div className="text-xs font-bold text-on-surface-variant group-hover:text-secondary transition-colors">Select Plan</div>
-                        </button>
+                    <div className="p-8 bg-surface border border-outline-variant/30 rounded-[2.5rem] shadow-sm">
+                      <p className="text-on-surface-variant font-medium mb-10 text-center">You are currently on the free plan. Upgrade to launch your website.</p>
+                      
+                      <div className="grid md:grid-cols-2 gap-6">
+                        {/* Monthly Plan */}
+                        <div className="relative group">
+                          <div className="absolute inset-0 bg-surface-container-low rounded-3xl border-2 border-primary shadow-lg shadow-primary/5 transition-all group-hover:scale-[1.01]"></div>
+                          <div className="relative p-6 flex flex-col h-full">
+                            <div className="mb-4">
+                              <h4 className="text-lg font-black text-on-surface">Monthly Concierge</h4>
+                              <p className="text-xs font-medium text-on-surface-variant">Best for ongoing support</p>
+                            </div>
+                            <div className="flex flex-col gap-1 mb-6 p-4 rounded-2xl bg-surface/50 border border-outline-variant/10">
+                              <div className="text-3xl font-black text-on-surface">
+                                {isAnnual ? '£47' : '£59'}<span className="text-sm font-bold">/month</span>
+                              </div>
+                              <div className="mt-2 pt-2 border-t border-outline-variant/5">
+                                <PricingToggle isAnnual={isAnnual} onChange={setIsAnnual} isPopular={false} />
+                              </div>
+                            </div>
+                            <button 
+                              onClick={() => handleCheckout(isAnnual ? 'annual' : 'monthly')}
+                              disabled={loading}
+                              className="w-full py-3 rounded-xl bg-primary text-white font-black hover:brightness-110 transition-all text-sm active:scale-95"
+                            >
+                              Select Monthly
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* One-Time Plan */}
+                        <div className="relative group">
+                          <div className="absolute inset-0 bg-surface-container-low rounded-3xl border border-outline-variant/30 shadow-md transition-all group-hover:scale-[1.01]"></div>
+                          <div className="relative p-6 flex flex-col h-full">
+                            <div className="mb-4">
+                              <h4 className="text-lg font-black text-on-surface">Lifetime Owner</h4>
+                              <p className="text-xs font-medium text-on-surface-variant">One-time payment</p>
+                            </div>
+                            <div className="text-3xl font-black text-on-surface mb-6 p-4 rounded-2xl bg-surface/50 border border-outline-variant/10">
+                              £349<span className="text-sm font-bold"> Fixed</span>
+                            </div>
+                            <button 
+                              onClick={() => handleCheckout('one_time')}
+                              disabled={loading}
+                              className="w-full py-3 rounded-xl bg-on-surface text-surface font-black hover:bg-on-surface-variant transition-all text-sm active:scale-95"
+                            >
+                              Select One-Time
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
