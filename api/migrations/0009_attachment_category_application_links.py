@@ -4,7 +4,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0008_clientapplication_new_fields'),
+        ('api', '0007_clientapplication_is_reviewed_and_more'),
     ]
 
     operations = [
