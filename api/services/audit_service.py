@@ -207,7 +207,7 @@ def perform_audit(audit_id):
         # (Using a compressed version of the previous prompt for brevity in this tool call)
         
         response = client.messages.create(
-            model="claude-3-5-sonnet-20240620",
+            model="claude-sonnet-4-6",
             max_tokens=2000,
             system="You are a conversion expert. Return only JSON matching the requested structure: overall_score, scores, findings, quick_wins, summary.",
             messages=[{"role": "user", "content": f"URL: {url}, Industry: {report.industry}, Meta: {report.meta_title}. Generate audit JSON."}],
