@@ -11,6 +11,7 @@ from io import BytesIO
 
 logger = logging.getLogger(__name__)
 
+
 def generate_pdf_from_html(html_content, filename):
     """
     Converts HTML to PDF locally using xhtml2pdf.
@@ -23,13 +24,14 @@ def generate_pdf_from_html(html_content, filename):
         logger.error(f"xhtml2pdf Error: {pdf.err}")
         return None
 
+
 def send_audit_email(report, pdf_content):
     brevo_api_key = os.getenv("BREVO_API_KEY")
     if not brevo_api_key:
         return False
 
     import base64
-    
+
     payload = {
         "sender": {"name": "Cosy Content", "email": "contact@cosycontent.com"},
         "to": [{"email": report.email, "name": report.name}],
@@ -44,7 +46,7 @@ def send_audit_email(report, pdf_content):
                     
                     <div style="background: #f8fafc; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0;">
                         <span style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; color: #64748b;">Overall Score</span><br/>
-                        <span style="font-size: 48px; font-weight: 900; color: #2563eb;">{report.report_data['overall_score']}/100</span>
+                        <span style="font-size: 48px; font-weight: 900; color: #2563eb;">{report.report_data["overall_score"]}/100</span>
                     </div>
 
                     <p><strong>Your PDF report is attached to this email.</strong> It includes critical findings and quick wins to help you get more leads.</p>
@@ -60,14 +62,16 @@ def send_audit_email(report, pdf_content):
                 </div>
             </body>
             </html>
-        """
+        """,
     }
 
     if pdf_content:
-        payload["attachment"] = [{
-            "content": base64.b64encode(pdf_content).decode('utf-8'),
-            "name": f"{report.business_name}_Audit.pdf"
-        }]
+        payload["attachment"] = [
+            {
+                "content": base64.b64encode(pdf_content).decode("utf-8"),
+                "name": f"{report.business_name}_Audit.pdf",
+            }
+        ]
 
     headers = {
         "accept": "application/json",
@@ -76,29 +80,32 @@ def send_audit_email(report, pdf_content):
     }
 
     try:
-        response = requests.post("https://api.brevo.com/v3/smtp/email", json=payload, headers=headers)
+        response = requests.post(
+            "https://api.brevo.com/v3/smtp/email", json=payload, headers=headers
+        )
         return response.status_code == 201
     except Exception as e:
         logger.error(f"Failed to send email: {e}")
         return False
 
+
 def create_beautiful_html(report):
     data = report.report_data
-    
+
     # Severity color mapping
     severity_colors = {
-        'critical': '#be123c', # Red-700
-        'high': '#e11d48',     # Red-500
-        'medium': '#d97706',   # Amber-600
-        'low': '#059669'       # Green-600
+        "critical": "#be123c",  # Red-700
+        "high": "#e11d48",  # Red-500
+        "medium": "#d97706",  # Amber-600
+        "low": "#059669",  # Green-600
     }
 
     findings_html = ""
-    for f in data.get('findings', []):
-        sev = f.get('severity', 'medium').lower()
-        color = severity_colors.get(sev, '#4b5563')
-        issue = f.get('issue') or f.get('text') or "Finding"
-        detail = f.get('detail', "")
+    for f in data.get("findings", []):
+        sev = f.get("severity", "medium").lower()
+        color = severity_colors.get(sev, "#4b5563")
+        issue = f.get("issue") or f.get("text") or "Finding"
+        detail = f.get("detail", "")
         findings_html += f"""
             <div style="margin-bottom: 15px; border-left: 4px solid {color}; padding-left: 15px;">
                 <div style="font-weight: bold; color: {color}; text-transform: uppercase; font-size: 10px;">{sev} Priority</div>
@@ -106,33 +113,41 @@ def create_beautiful_html(report):
                 <div style="font-size: 11px; color: #475569;">{detail}</div>
             </div>
         """
-        
+
     wins_html = ""
-    for w in data.get('quick_wins', []):
-        action = w.get('action') or w.get('text') or "Quick Win"
-        detail = w.get('detail', "")
+    for w in data.get("quick_wins", []):
+        action = w.get("action") or w.get("text") or "Quick Win"
+        detail = w.get("detail", "")
         wins_html += f"""
             <div style="margin-bottom: 10px; border-left: 4px solid #059669; padding-left: 15px; background-color: #f0fdf4; padding: 10px;">
                 <div style="font-weight: bold; font-size: 13px; color: #065f46;">{action}</div>
                 <div style="font-size: 11px; color: #166534;">{detail}</div>
             </div>
         """
-    
-    scores = data.get('scores', {})
+
+    scores = data.get("scores", {})
+
     # Ensure scores are displayed out of 100 as the user expected
     def normalize(val):
         try:
             v = int(val)
-            return v if v > 20 else v * 5 # Fallback if Claude still gives /20
-        except: return 0
+            return v if v > 20 else v * 5  # Fallback if Claude still gives /20
+        except:
+            return 0
 
-    design_score = normalize(scores.get('design') or scores.get('ux') or 0)
-    mobile_score = normalize(scores.get('mobile_ux') or scores.get('accessibility') or 0)
-    conv_score = normalize(scores.get('lead_conversion') or scores.get('conversion') or 0)
-    seo_score = normalize(scores.get('seo_basics') or scores.get('seo') or 0)
-    perf_score = normalize(scores.get('performance') or scores.get('trust_signals') or 0)
+    design_score = normalize(scores.get("design") or scores.get("ux") or 0)
+    mobile_score = normalize(
+        scores.get("mobile_ux") or scores.get("accessibility") or 0
+    )
+    conv_score = normalize(
+        scores.get("lead_conversion") or scores.get("conversion") or 0
+    )
+    seo_score = normalize(scores.get("seo_basics") or scores.get("seo") or 0)
+    perf_score = normalize(
+        scores.get("performance") or scores.get("trust_signals") or 0
+    )
 
-    overall_score = normalize(data.get('overall_score', 0))
+    overall_score = normalize(data.get("overall_score", 0))
 
     return f"""
     <html>
@@ -354,22 +369,16 @@ def create_beautiful_html(report):
     </html>
     """
 
-        <div id="footer_content">
-            © 2026 Cosy Content Ltd. | Performance Report | Confidential
-        </div>
-    </body>
-    </html>
-    """
 
 def perform_audit(audit_id):
     from ..models import AuditReport
-    
+
     try:
         report = AuditReport.objects.get(id=audit_id)
         url = report.website_url
-        if not url.startswith('http'):
-            url = 'https://' + url
-            
+        if not url.startswith("http"):
+            url = "https://" + url
+
         # 1. Stripe Customer Creation
         try:
             stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -381,8 +390,8 @@ def perform_audit(audit_id):
                     "business_name": report.business_name,
                     "industry": report.industry,
                     "location": report.location,
-                    "website_url": report.website_url
-                }
+                    "website_url": report.website_url,
+                },
             )
             report.stripe_customer_id = customer.id
             report.save()
@@ -390,31 +399,41 @@ def perform_audit(audit_id):
             logger.error(f"Stripe Customer creation failed: {e}")
 
         # 2. Scrape & AI Analysis
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
         response = requests.get(url, headers=headers, timeout=10)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.text, "html.parser")
         report.meta_title = soup.title.string if soup.title else ""
-        
-        has_h1 = bool(soup.find('h1'))
-        has_cta = any(word in response.text.lower() for word in ['book', 'call', 'contact', 'quote'])
-        has_testimonials = any(word in response.text.lower() for word in ['testimonial', 'reviews'])
-        has_mobile_meta = bool(soup.find('meta', attrs={'name': 'viewport'}))
-        report.load_speed_score = 55 # Mock
-        
+
+        has_h1 = bool(soup.find("h1"))
+        has_cta = any(
+            word in response.text.lower()
+            for word in ["book", "call", "contact", "quote"]
+        )
+        has_testimonials = any(
+            word in response.text.lower() for word in ["testimonial", "reviews"]
+        )
+        has_mobile_meta = bool(soup.find("meta", attrs={"name": "viewport"}))
+        report.load_speed_score = 55  # Mock
+
         client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
         prompt = f"Expert audit for {report.business_name} in {report.industry} at {url}. Provide scorecard JSON."
         # (Using a compressed version of the previous prompt for brevity in this tool call)
-        
+
         response = client.messages.create(
             model="claude-sonnet-4-6",
             max_tokens=4000,
             system="You are a conversion expert. Return only JSON matching the requested structure: overall_score, scores, findings, quick_wins, summary.",
-            messages=[{"role": "user", "content": f"URL: {url}, Industry: {report.industry}, Meta: {report.meta_title}. Generate audit JSON."}],
+            messages=[
+                {
+                    "role": "user",
+                    "content": f"URL: {url}, Industry: {report.industry}, Meta: {report.meta_title}. Generate audit JSON.",
+                }
+            ],
         )
-        
+
         raw_text = response.content[0].text.strip()
         logger.info(f"Claude raw response: {raw_text}")
-        
+
         # Clean up markdown fences if present
         if raw_text.startswith("```json"):
             raw_text = raw_text[7:]
@@ -423,7 +442,7 @@ def perform_audit(audit_id):
         if raw_text.endswith("```"):
             raw_text = raw_text[:-3]
         raw_text = raw_text.strip()
-        
+
         try:
             report.report_data = json.loads(raw_text)
             report.save()
@@ -433,12 +452,14 @@ def perform_audit(audit_id):
 
         # 3. PDF Generation & Email
         html_report = create_beautiful_html(report)
-        pdf_content = generate_pdf_from_html(html_report, f"{report.business_name}_Audit.pdf")
-        
+        pdf_content = generate_pdf_from_html(
+            html_report, f"{report.business_name}_Audit.pdf"
+        )
+
         send_audit_email(report, pdf_content)
-        
+
         return report.report_data
-        
+
     except Exception as e:
         logger.error(f"Audit failed for {audit_id}: {str(e)}")
         return None
