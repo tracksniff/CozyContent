@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import PricingToggle from './PricingToggle';
