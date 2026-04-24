@@ -135,12 +135,12 @@ class PasswordResetOTP(models.Model):
 
 class AuditReport(models.Model):
     # User Inputs
-    name = models.CharField(max_length=255)
-    email = models.EmailField()
-    business_name = models.CharField(max_length=255)
-    website_url = models.URLField()
-    industry = models.CharField(max_length=100)
-    location = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    business_name = models.CharField(max_length=255, blank=True, null=True)
+    website_url = models.URLField(blank=True, null=True)
+    industry = models.CharField(max_length=100, blank=True, null=True)
+    location = models.CharField(max_length=255, blank=True, null=True)
     stripe_customer_id = models.CharField(max_length=255, blank=True, null=True)
 
     # Scraped / Metadata
