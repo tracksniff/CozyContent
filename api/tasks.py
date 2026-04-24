@@ -39,14 +39,29 @@ def process_application_task(application_id, user_id):
             if any(attachment.filename.lower().endswith(ext) for ext in ['.png', '.jpg', '.jpeg', '.svg', '.webp']):
                 image_assets.append(f"{settings.BACKEND_URL}{attachment.file.url}")
 
+        # Prepare branding colors and testimonials (handle JSON strings from model)
+        branding_colors = application.branding_colors
+        if isinstance(branding_colors, str):
+            try:
+                branding_colors = json.loads(branding_colors)
+            except:
+                branding_colors = {}
+        
+        testimonials = application.testimonials
+        if isinstance(testimonials, str):
+            try:
+                testimonials = json.loads(testimonials)
+            except:
+                testimonials = []
+
         app_data = {
             'company_name': application.company_name,
             'industry': application.industry,
             'website_url': application.website_url,
             'city_location': application.city_location,
             'services_list': application.services_list,
-            'testimonials': application.testimonials,
-            'branding_colors': application.branding_colors,
+            'testimonials': testimonials,
+            'branding_colors': branding_colors,
             'uploaded_images': image_assets,
         }
 

@@ -1,4 +1,4 @@
-import anthropic
+import anthropic
 
 import os
 
@@ -394,6 +394,8 @@ def extract_imports(content: str) -> tuple:
 def strip_imports_for_claude(template_files: dict) -> tuple:
     """Remove import blocks before sending to Claude so it can't break paths."""
 
+    files_for_claude = {}
+
     locked_imports = {}
 
     for rel_path, content in template_files.items():
@@ -688,6 +690,14 @@ def generate_website_code(
         tagline             — (optional) short USP
 
     """
+
+    if isinstance(application_data, str):
+        try:
+            application_data = json.loads(application_data)
+        except:
+            logger.error("application_data is a string but not valid JSON")
+
+            return None
 
     if output_dir is None:
         output_dir = tempfile.mkdtemp(prefix="website_")
