@@ -11,6 +11,7 @@ const Navbar = () => {
   const { theme, setTheme } = useTheme();
   const [showThemeMenu, setShowThemeMenu] = useState(false);
   const [showDemosMenu, setShowDemosMenu] = useState(false);
+  const [showMobileDemos, setShowMobileDemos] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [systemTheme, setSystemTheme] = useState<'light' | 'dark'>(
     window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
@@ -216,35 +217,63 @@ const Navbar = () => {
             className="md:hidden absolute top-24 left-4 right-4 bg-surface rounded-[2rem] border border-outline-variant/20 shadow-2xl p-8 z-40 backdrop-blur-xl max-h-[80vh] overflow-y-auto"
           >
             <div className="flex flex-col gap-6">
-              {!isAuthenticated && (
-                <div className="flex flex-col gap-4">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-primary/60">Demos</p>
-                  <div className="grid grid-cols-2 gap-3">
-                    {demoItems.map((item) => (
-                      <Link
-                        key={item.label}
-                        to={item.href}
-                        onClick={handleNavClick}
-                        className="text-base font-bold text-on-surface-variant hover:text-primary transition-colors py-1"
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
+              <div className="flex flex-col gap-4">
+                {!isAuthenticated && (
+                  <div className="flex flex-col">
+                    <button 
+                      onClick={() => setShowMobileDemos(!showMobileDemos)}
+                      className="flex items-center justify-between text-lg font-bold text-on-surface-variant hover:text-primary transition-colors py-2"
+                    >
+                      Demos
+                      <ChevronDown size={20} className={`transition-transform duration-300 ${showMobileDemos ? 'rotate-180' : ''}`} />
+                    </button>
+                    
+                    <AnimatePresence>
+                      {showMobileDemos && (
+                        <motion.div 
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="overflow-hidden bg-surface-container-low rounded-2xl mt-2"
+                        >
+                          <div className="grid grid-cols-1 gap-1 p-2">
+                            {demoItems.map((item) => (
+                              <Link
+                                key={item.label}
+                                to={item.href}
+                                onClick={handleNavClick}
+                                className="text-sm font-bold text-on-surface-variant hover:text-primary transition-colors p-3 hover:bg-surface-container rounded-xl"
+                              >
+                                {item.label}
+                              </Link>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
-                </div>
-              )}
+                )}
 
-              <div className="flex flex-col gap-4 pt-4 border-t border-outline-variant/10">
-                <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">Menu</p>
                 {navItems.map((item) => (
-                  <Link
-                    key={item.label}
-                    to={item.href}
-                    onClick={handleNavClick}
-                    className="text-lg font-bold text-on-surface-variant hover:text-primary transition-colors"
-                  >
-                    {item.label}
-                  </Link>
+                  item.href.startsWith('/#') ? (
+                    <a
+                      key={item.label}
+                      href={item.href}
+                      onClick={handleNavClick}
+                      className="text-lg font-bold text-on-surface-variant hover:text-primary transition-colors py-2"
+                    >
+                      {item.label}
+                    </a>
+                  ) : (
+                    <Link
+                      key={item.label}
+                      to={item.href}
+                      onClick={handleNavClick}
+                      className="text-lg font-bold text-on-surface-variant hover:text-primary transition-colors py-2"
+                    >
+                      {item.label}
+                    </Link>
+                  )
                 ))}
               </div>
 
