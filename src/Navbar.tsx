@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sun, Moon, Monitor, Menu, X, ChevronDown } from 'lucide-react';
+import { Sun, Moon, Monitor, Menu, X, ChevronDown, MapPin } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from './ThemeContext';
@@ -10,8 +10,10 @@ import logoDark from './assets/Logo JPG/Cosy_Content_Ltd_-_Horizontal-removebg-p
 const Navbar = () => {
   const { theme, setTheme } = useTheme();
   const [showThemeMenu, setShowThemeMenu] = useState(false);
-  const [showDemosMenu, setShowDemosMenu] = useState(false);
-  const [showMobileDemos, setShowMobileDemos] = useState(false);
+  const [showServicesMenu, setShowServicesMenu] = useState(false);
+  const [showAreasMenu, setShowAreasMenu] = useState(false);
+  const [showMobileServices, setShowMobileServices] = useState(false);
+  const [showMobileAreas, setShowMobileAreas] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [systemTheme, setSystemTheme] = useState<'light' | 'dark'>(
     window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
@@ -38,25 +40,30 @@ const Navbar = () => {
     return <Monitor className="w-4 h-4" />;
   };
 
-  const navItems = [
-    { label: 'Services', href: '/#services' },
-    { label: 'Pricing', href: '/#pricing' },
-    { label: 'Our Brands', href: '/our-brands' },
-    { label: 'Contact', href: '/contact' }
+  const serviceItems = [
+    { label: 'Websites for Plumbers', href: '/services/plumbing' },
+    { label: 'Websites for Electricians', href: '/services/electrical' },
+    { label: 'Websites for Roofers', href: '/services/roofing' },
+    { label: 'Websites for Locksmiths', href: '/services/locksmiths' },
+    { label: 'Websites for Cleaners', href: '/services/cleaning' },
+    { label: 'Websites for Removal Companies', href: '/services/removals' }
   ];
 
-  const demoItems = [
-    { label: 'Plumbing', href: '/services/plumbing' },
-    { label: 'Roofing', href: '/services/roofing' },
-    { label: 'Electrical', href: '/services/electrical' },
-    { label: 'Cleaning', href: '/services/cleaning' },
-    { label: 'Removals', href: '/services/removals' },
-    { label: 'Locksmiths', href: '/services/locksmiths' }
+  const areaItems = [
+    { label: 'Luton', href: '/services/plumbing/luton' },
+    { label: 'Bedford', href: '/services/plumbing/bedford' },
+    { label: 'Milton Keynes', href: '/services/plumbing/milton-keynes' },
+    { label: 'St Albans', href: '/services/plumbing/st-albans' },
+    { label: 'Watford', href: '/services/plumbing/watford' },
+    { label: 'London', href: '/services/plumbing/london' }
   ];
 
   const handleNavClick = () => {
     setIsMobileMenuOpen(false);
-    setShowDemosMenu(false);
+    setShowServicesMenu(false);
+    setShowAreasMenu(false);
+    setShowMobileServices(false);
+    setShowMobileAreas(false);
   };
 
   return (
@@ -73,65 +80,97 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop Nav */}
-        <div className="hidden md:flex items-center space-x-8">
-          {!isAuthenticated && (
-            <div 
-              className="relative py-2"
-              onMouseEnter={() => setShowDemosMenu(true)}
-              onMouseLeave={() => setShowDemosMenu(false)}
-            >
-              <button
-                onClick={() => setShowDemosMenu(!showDemosMenu)}
-                className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary ${location.pathname.startsWith('/services/') ? 'text-primary' : 'text-on-surface-variant'}`}
-              >
-                Demos <ChevronDown size={14} className={`transition-transform duration-200 ${showDemosMenu ? 'rotate-180' : ''}`} />
-              </button>
-              
-              <AnimatePresence>
-                {showDemosMenu && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                    className="absolute left-0 mt-2 w-48 rounded-2xl bg-surface border border-outline-variant/20 shadow-xl z-20 overflow-hidden backdrop-blur-md"
-                  >
-                    {demoItems.map((item) => (
-                      <Link
-                        key={item.label}
-                        to={item.href}
-                        onClick={handleNavClick}
-                        className={`w-full flex items-center gap-3 px-5 py-3 text-sm font-medium transition-colors hover:bg-surface-container-high ${location.pathname === item.href ? 'text-primary bg-primary/5' : 'text-on-surface-variant'}`}
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          )}
+        <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
+          <Link to="/" className={`text-sm font-medium transition-colors hover:text-primary ${location.pathname === '/' ? 'text-primary' : 'text-on-surface-variant'}`}>
+            Home
+          </Link>
 
-          {navItems.map((item) => (
-            item.href.startsWith('/#') ? (
-              <a
-                key={item.label}
-                href={item.href}
-                className="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors relative group"
-              >
-                {item.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full"></span>
-              </a>
-            ) : (
-              <Link
-                key={item.label}
-                to={item.href}
-                className="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors relative group"
-              >
-                {item.label}
-                <span className={`absolute -bottom-1 left-0 h-0.5 bg-primary transition-all group-hover:w-full ${location.pathname === item.href ? 'w-full' : 'w-0'}`}></span>
-              </Link>
-            )
-          ))}
+          {/* Services Dropdown */}
+          <div 
+            className="relative py-2"
+            onMouseEnter={() => setShowServicesMenu(true)}
+            onMouseLeave={() => setShowServicesMenu(false)}
+          >
+            <button
+              onClick={() => setShowServicesMenu(!showServicesMenu)}
+              className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary ${location.pathname.startsWith('/services/') && !areaItems.some(a => location.pathname.endsWith(a.label.toLowerCase().replace(' ', '-'))) ? 'text-primary' : 'text-on-surface-variant'}`}
+            >
+              Services <ChevronDown size={14} className={`transition-transform duration-200 ${showServicesMenu ? 'rotate-180' : ''}`} />
+            </button>
+            
+            <AnimatePresence>
+              {showServicesMenu && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                  className="absolute left-0 mt-2 w-64 rounded-2xl bg-surface border border-outline-variant/20 shadow-xl z-20 overflow-hidden backdrop-blur-md"
+                >
+                  {serviceItems.map((item) => (
+                    <Link
+                      key={item.label}
+                      to={item.href}
+                      onClick={handleNavClick}
+                      className={`w-full flex items-center gap-3 px-5 py-3 text-sm font-medium transition-colors hover:bg-surface-container-high ${location.pathname === item.href ? 'text-primary bg-primary/5' : 'text-on-surface-variant'}`}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <Link to="/pricing" className={`text-sm font-medium transition-colors hover:text-primary ${location.pathname === '/pricing' ? 'text-primary' : 'text-on-surface-variant'}`}>
+            Pricing
+          </Link>
+
+          {/* Areas Dropdown */}
+          <div 
+            className="relative py-2"
+            onMouseEnter={() => setShowAreasMenu(true)}
+            onMouseLeave={() => setShowAreasMenu(false)}
+          >
+            <button
+              onClick={() => setShowAreasMenu(!showAreasMenu)}
+              className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary ${areaItems.some(a => location.pathname.endsWith(a.label.toLowerCase().replace(' ', '-'))) ? 'text-primary' : 'text-on-surface-variant'}`}
+            >
+              Areas <ChevronDown size={14} className={`transition-transform duration-200 ${showAreasMenu ? 'rotate-180' : ''}`} />
+            </button>
+            
+            <AnimatePresence>
+              {showAreasMenu && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                  className="absolute left-0 mt-2 w-56 rounded-2xl bg-surface border border-outline-variant/20 shadow-xl z-20 overflow-hidden backdrop-blur-md"
+                >
+                  <div className="px-5 py-2 text-[10px] font-black uppercase tracking-widest text-primary/60 border-b border-outline-variant/10">
+                    📍 Areas We Serve
+                  </div>
+                  {areaItems.map((item) => (
+                    <Link
+                      key={item.label}
+                      to={item.href}
+                      onClick={handleNavClick}
+                      className={`w-full flex items-center gap-3 px-5 py-3 text-sm font-medium transition-colors hover:bg-surface-container-high ${location.pathname === item.href ? 'text-primary bg-primary/5' : 'text-on-surface-variant'}`}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <Link to="/our-brands" className={`text-sm font-medium transition-colors hover:text-primary ${location.pathname === '/our-brands' ? 'text-primary' : 'text-on-surface-variant'}`}>
+            About
+          </Link>
+
+          <Link to="/contact" className={`text-sm font-medium transition-colors hover:text-primary ${location.pathname === '/contact' ? 'text-primary' : 'text-on-surface-variant'}`}>
+            Contact
+          </Link>
         </div>
 
         <div className="flex items-center gap-2 md:gap-3">
@@ -187,11 +226,8 @@ const Navbar = () => {
               </Link>
             ) : (
               <>
-                <Link to="/login" className="text-on-surface-variant px-4 py-2 text-sm font-bold hover:text-primary transition-colors">
-                  Login
-                </Link>
                 <Link to="/signup" className="bg-on-surface text-surface px-5 py-2.5 rounded-xl text-sm font-bold hover:shadow-lg transition-all shadow-md active:scale-95">
-                  Sign Up
+                  Get Started
                 </Link>
               </>
             )}
@@ -216,66 +252,80 @@ const Navbar = () => {
             exit={{ opacity: 0, y: -20 }}
             className="md:hidden absolute top-24 left-4 right-4 bg-surface rounded-[2rem] border border-outline-variant/20 shadow-2xl p-8 z-40 backdrop-blur-xl max-h-[80vh] overflow-y-auto"
           >
-            <div className="flex flex-col gap-6">
-              <div className="flex flex-col gap-4">
-                {!isAuthenticated && (
-                  <div className="flex flex-col">
-                    <button 
-                      onClick={() => setShowMobileDemos(!showMobileDemos)}
-                      className="flex items-center justify-between text-lg font-bold text-on-surface-variant hover:text-primary transition-colors py-2"
-                    >
-                      Demos
-                      <ChevronDown size={20} className={`transition-transform duration-300 ${showMobileDemos ? 'rotate-180' : ''}`} />
-                    </button>
-                    
-                    <AnimatePresence>
-                      {showMobileDemos && (
-                        <motion.div 
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          className="overflow-hidden bg-surface-container-low rounded-2xl mt-2"
-                        >
-                          <div className="grid grid-cols-1 gap-1 p-2">
-                            {demoItems.map((item) => (
-                              <Link
-                                key={item.label}
-                                to={item.href}
-                                onClick={handleNavClick}
-                                className="text-sm font-bold text-on-surface-variant hover:text-primary transition-colors p-3 hover:bg-surface-container rounded-xl"
-                              >
-                                {item.label}
-                              </Link>
-                            ))}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                )}
+            <div className="flex flex-col gap-4">
+              <Link to="/" onClick={handleNavClick} className="text-lg font-bold text-on-surface-variant py-2">
+                Home
+              </Link>
 
-                {navItems.map((item) => (
-                  item.href.startsWith('/#') ? (
-                    <a
-                      key={item.label}
-                      href={item.href}
-                      onClick={handleNavClick}
-                      className="text-lg font-bold text-on-surface-variant hover:text-primary transition-colors py-2"
+              {/* Mobile Services */}
+              <div className="flex flex-col border-t border-outline-variant/5 pt-2">
+                <button 
+                  onClick={() => setShowMobileServices(!showMobileServices)}
+                  className="flex items-center justify-between text-lg font-bold text-on-surface-variant py-2"
+                >
+                  Services
+                  <ChevronDown size={20} className={`transition-transform duration-300 ${showMobileServices ? 'rotate-180' : ''}`} />
+                </button>
+                <AnimatePresence>
+                  {showMobileServices && (
+                    <motion.div 
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden bg-surface-container-low rounded-2xl"
                     >
-                      {item.label}
-                    </a>
-                  ) : (
-                    <Link
-                      key={item.label}
-                      to={item.href}
-                      onClick={handleNavClick}
-                      className="text-lg font-bold text-on-surface-variant hover:text-primary transition-colors py-2"
-                    >
-                      {item.label}
-                    </Link>
-                  )
-                ))}
+                      <div className="flex flex-col p-2">
+                        {serviceItems.map((item) => (
+                          <Link key={item.label} to={item.href} onClick={handleNavClick} className="text-sm font-bold text-on-surface-variant p-3 hover:bg-surface-container rounded-xl">
+                            {item.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
+
+              <Link to="/pricing" onClick={handleNavClick} className="text-lg font-bold text-on-surface-variant py-2 border-t border-outline-variant/5 pt-2">
+                Pricing
+              </Link>
+
+              {/* Mobile Areas */}
+              <div className="flex flex-col border-t border-outline-variant/5 pt-2">
+                <button 
+                  onClick={() => setShowMobileAreas(!showMobileAreas)}
+                  className="flex items-center justify-between text-lg font-bold text-on-surface-variant py-2"
+                >
+                  Areas We Serve
+                  <ChevronDown size={20} className={`transition-transform duration-300 ${showMobileAreas ? 'rotate-180' : ''}`} />
+                </button>
+                <AnimatePresence>
+                  {showMobileAreas && (
+                    <motion.div 
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden bg-surface-container-low rounded-2xl"
+                    >
+                      <div className="flex flex-col p-2">
+                        {areaItems.map((item) => (
+                          <Link key={item.label} to={item.href} onClick={handleNavClick} className="text-sm font-bold text-on-surface-variant p-3 hover:bg-surface-container rounded-xl flex items-center gap-2">
+                            <MapPin size={14} className="text-primary/60" /> {item.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              <Link to="/our-brands" onClick={handleNavClick} className="text-lg font-bold text-on-surface-variant py-2 border-t border-outline-variant/5 pt-2">
+                About
+              </Link>
+
+              <Link to="/contact" onClick={handleNavClick} className="text-lg font-bold text-on-surface-variant py-2 border-t border-outline-variant/5 pt-2">
+                Contact
+              </Link>
 
               <div className="pt-6 border-t border-outline-variant/10 flex flex-col gap-4">
                 {isAuthenticated ? (
@@ -283,14 +333,9 @@ const Navbar = () => {
                     Dashboard
                   </Link>
                 ) : (
-                  <>
-                    <Link to="/login" onClick={handleNavClick} className="w-full py-4 rounded-2xl text-center font-bold text-on-surface-variant border border-outline-variant/20">
-                      Login
-                    </Link>
-                    <Link to="/signup" onClick={handleNavClick} className="w-full bg-on-surface text-surface py-4 rounded-2xl text-center font-black">
-                      Sign Up
-                    </Link>
-                  </>
+                  <Link to="/signup" onClick={handleNavClick} className="w-full bg-on-surface text-surface py-4 rounded-2xl text-center font-black">
+                    Get Started
+                  </Link>
                 )}
               </div>
             </div>

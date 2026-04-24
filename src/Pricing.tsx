@@ -1,5 +1,5 @@
 import React from 'react';
-import { Check, ArrowRight } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
@@ -29,7 +29,7 @@ const PricingPage: React.FC = () => {
       features: [
         'Custom Built Website',
         'Full Source Code Handover',
-        '24-Hour Delivery',
+        '7-Day Delivery',
         'Vite + React + TypeScript',
         'Tailwind CSS Ready',
         'Self-Hosting Support'
@@ -87,7 +87,7 @@ const PricingPage: React.FC = () => {
                   to="/signup" 
                   className={`py-4 rounded-2xl font-black text-center transition-all flex items-center justify-center gap-2 ${plan.popular ? 'bg-white text-primary hover:brightness-110' : 'bg-primary text-white hover:shadow-lg hover:shadow-primary/20'}`}
                 >
-                  {plan.cta} <ArrowRight size={18} />
+                  {plan.cta}
                 </Link>
               </div>
             ))}
@@ -96,8 +96,8 @@ const PricingPage: React.FC = () => {
           <div className="mt-20 text-center bg-surface-container-low p-12 rounded-[4rem] border border-outline-variant border-dashed">
             <h3 className="text-3xl font-black text-on-surface mb-4">Need a custom enterprise solution?</h3>
             <p className="text-on-surface-variant font-medium mb-8">We offer bulk discounts for agencies and multiple brand management.</p>
-            <Link to="/contact" className="inline-flex items-center gap-2 text-primary font-black uppercase tracking-widest hover:gap-4 transition-all">
-              Contact Sales <ArrowRight size={16} />
+            <Link to="/contact" className="inline-flex items-center gap-2 text-primary font-black uppercase tracking-widest hover:brightness-110 transition-all">
+              Contact Sales
             </Link>
           </div>
         </div>

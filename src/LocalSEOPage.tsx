@@ -63,8 +63,7 @@ const LocalSEOPage: React.FC = () => {
                 </div>
                 <h3 className="text-xl font-black mb-4">Fastest Delivery</h3>
                 <p className="text-on-surface-variant text-sm font-medium leading-relaxed">
-                   Get your professional website for your {cityTitle} business live in under 24 hours. No more waiting weeks for developers.
-                </p>
+                   Get your professional website for your {cityTitle} business live in under 7 days. No more waiting weeks for developers.                </p>
              </div>
           </div>
 

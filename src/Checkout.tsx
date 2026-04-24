@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import axios from 'axios';
-import { Check, ArrowLeft, Loader2, ArrowRight } from 'lucide-react';
+import { Check, ArrowLeft, Loader2 } from 'lucide-react';
 import logo from './assets/PNG/Cosy Content Ltd -05.png';
 
 const Pricing: React.FC = () => {
@@ -119,10 +119,9 @@ const Pricing: React.FC = () => {
                 'Fully built website',
                 'No ongoing commitment',
                 'Full source files available',
-                'Handover within 24 hours',
+                'Handover within 7 days',
                 'Ready to use'
-              ].map((item, i) => (
-                <div key={i} className="flex items-start gap-3">
+              ].map((item, i) => (                <div key={i} className="flex items-start gap-3">
                   <div className="mt-1 flex-shrink-0 w-4 h-4 rounded-full bg-primary/10 flex items-center justify-center">
                     <Check className="w-2.5 h-2.5 text-primary" strokeWidth={3} />
                   </div>
@@ -135,8 +134,8 @@ const Pricing: React.FC = () => {
               onClick={() => handleSelectPlan('one_time')}
               disabled={isLoading !== null}
               className="w-full py-4 rounded-xl bg-surface border-2 border-primary text-primary font-black hover:bg-primary/5 transition-all text-base flex items-center justify-center gap-2"
-            >
-              {isLoading === 'one_time' ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Claim Ownership <ArrowRight className="w-4 h-4" /></>}
+              >
+              {isLoading === 'one_time' ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Claim Ownership'}
             </button>
           </div>
         </div>

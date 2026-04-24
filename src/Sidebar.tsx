@@ -104,7 +104,7 @@ const Sidebar: React.FC = () => {
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      alert('Edit request sent! We will process it within 24 hours.');
+      alert('Edit request sent! We will process it within 7 days.');
       setShowEditModal(false);
     } catch (err) {
       alert('Failed to send request.');

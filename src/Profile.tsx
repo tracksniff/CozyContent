@@ -84,7 +84,7 @@ const Profile: React.FC = () => {
                           <div className="text-primary font-black text-xs uppercase tracking-widest mb-1">One-Time Asset</div>
                           <div className="text-xl font-black mb-2">The Lifetime Owner</div>
                           <div className="text-2xl font-black text-primary mb-4">£349</div>
-                          <div className="text-xs font-bold text-on-surface-variant group-hover:text-primary transition-colors">Select Plan &rarr;</div>
+                          <div className="text-xs font-bold text-on-surface-variant group-hover:text-primary transition-colors">Select Plan</div>
                         </button>
                         <button 
                           onClick={() => handleCheckout('monthly')}
@@ -94,7 +94,7 @@ const Profile: React.FC = () => {
                           <div className="text-secondary font-black text-xs uppercase tracking-widest mb-1">Monthly Concierge</div>
                           <div className="text-xl font-black mb-2">Monthly Concierge</div>
                           <div className="text-2xl font-black text-secondary mb-4">£59<span className="text-sm font-bold">/mo</span></div>
-                          <div className="text-xs font-bold text-on-surface-variant group-hover:text-secondary transition-colors">Select Plan &rarr;</div>
+                          <div className="text-xs font-bold text-on-surface-variant group-hover:text-secondary transition-colors">Select Plan</div>
                         </button>
                       </div>
                     </div>

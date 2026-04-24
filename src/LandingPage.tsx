@@ -1,6 +1,5 @@
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import {
-  ArrowRight,
   CheckCircle2,
   ShieldCheck,
   Zap,
@@ -162,7 +161,7 @@ const LandingPage = () => {
             >
               <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse"></span>
               <span className="text-[11px] font-extrabold uppercase tracking-widest text-on-surface-variant">
-                Modern Websites in 24 Hours
+                Modern Websites in 7 Days
               </span>
             </motion.div>
 
@@ -182,7 +181,7 @@ const LandingPage = () => {
               transition={{ duration: 0.7, delay: 0.2 }}
               className="text-xl text-on-surface-variant leading-relaxed mb-12 max-w-2xl mx-auto font-medium"
             >
-              We build or redesign your business website in 24 hours — no calls, no meetings, no stress. See your new website before you pay.
+              We build or redesign your business website in 7 days — no calls, no meetings, no stress.
             </motion.p>
 
             <motion.div
@@ -355,9 +354,9 @@ const LandingPage = () => {
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="relative group"
+              className="relative group h-full"
             >
-              <div className="absolute inset-0 bg-surface rounded-[2.5rem] border border-outline-variant/20 shadow-lg transition-all duration-500 group-hover:shadow-xl"></div>
+              <div className="absolute inset-0 bg-surface rounded-[2.5rem] border-2 border-primary shadow-xl transition-all duration-500 group-hover:scale-[1.01]"></div>
               
               <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 z-10 border border-white/20">
                 Most Popular
@@ -394,7 +393,7 @@ const LandingPage = () => {
                   ))}
                 </div>
 
-                <button className="w-full py-4 rounded-xl border-2 border-primary text-primary font-black hover:bg-primary hover:text-white transition-all text-base group-hover:shadow-lg group-hover:shadow-primary/10">
+                <button className="w-full py-4 rounded-xl bg-primary text-white font-black shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all text-base flex items-center justify-center gap-2">
                   Select Monthly
                 </button>
               </div>
@@ -405,9 +404,9 @@ const LandingPage = () => {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="relative group h-full"
+              className="relative group"
             >
-              <div className="absolute inset-0 bg-surface rounded-[2.5rem] border-2 border-primary shadow-xl transition-all duration-500 group-hover:scale-[1.01]"></div>
+              <div className="absolute inset-0 bg-surface rounded-[2.5rem] border border-outline-variant/20 shadow-lg transition-all duration-500 group-hover:shadow-xl"></div>
 
               <div className="relative p-10 flex flex-col h-full">
                 <div className="mb-8">
@@ -427,7 +426,7 @@ const LandingPage = () => {
                     'Fully built website',
                     'No ongoing commitment',
                     'Full source files available',
-                    'Handover within 24 hours',
+                    'Handover within 7 days',
                     'Ready to use'
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-3">
@@ -439,8 +438,8 @@ const LandingPage = () => {
                   ))}
                 </div>
 
-                <button className="w-full py-4 rounded-xl bg-primary text-white font-black shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all text-base flex items-center justify-center gap-2">
-                  Claim Ownership <ArrowRight className="w-4 h-4" />
+                <button className="w-full py-4 rounded-xl border-2 border-primary text-primary font-black hover:bg-primary hover:text-white transition-all text-base group-hover:shadow-lg group-hover:shadow-primary/10">
+                  Claim Ownership
                 </button>
               </div>
             </motion.div>
@@ -477,8 +476,8 @@ const LandingPage = () => {
             {[
               { q: 'Do I own the website?', a: 'Yes — once you purchase, the website is yours.' },
               { q: 'Can I host it myself?', a: 'Yes, or you can stay on our monthly plan and we handle everything.' },
-              { q: 'How fast is delivery?', a: 'Typically within 24 hours.' },
-              { q: 'Do I need to provide anything?', a: 'No — we handle everything. You just review and decide.' }
+              { q: 'How fast is delivery?', a: 'Typically within 7 days.' },
+              { q: 'Do I need to provide anything?', a: 'No — we handle everything.' }
             ].map((item, i) => (
               <div key={i} className="bg-surface p-6 rounded-2xl border border-outline-variant/10">
                 <h3 className="font-bold mb-2">{item.q}</h3>

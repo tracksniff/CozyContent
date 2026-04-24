@@ -38,7 +38,7 @@ const Footer = () => {
             />
           </div>
           <p className="text-on-surface-variant font-medium leading-relaxed text-sm md:text-base mb-8">
-            Modern websites in 24 hours. No stress, just results.
+            Modern websites in 7 days. No stress, just results.
           </p>
           <div className="flex items-center gap-4">
             <a href="#" className="hover:scale-110 transition-transform">
