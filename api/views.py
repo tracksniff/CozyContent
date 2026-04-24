@@ -438,6 +438,8 @@ class CreateCheckoutSessionView(generics.GenericAPIView):
         plan_type = request.data.get("plan_type")
         application_id = request.data.get("application_id")
         user_email = request.data.get("email")
+        first_name = request.data.get("first_name", "")
+        last_name = request.data.get("last_name", "")
 
         try:
             if request.user.is_authenticated:
@@ -454,7 +456,12 @@ class CreateCheckoutSessionView(generics.GenericAPIView):
                 price_id = settings.STRIPE_MONTHLY_PRICE_ID
                 mode = "subscription"
 
-            metadata = {"plan_type": plan_type, "application_id": application_id}
+            metadata = {
+                "plan_type": plan_type, 
+                "application_id": application_id,
+                "first_name": first_name,
+                "last_name": last_name
+            }
             if user_id:
                 metadata["user_id"] = user_id
                 success_url = settings.FRONTEND_URL + "/dashboard?success=true"
@@ -503,6 +510,8 @@ class StripeWebhookView(generics.GenericAPIView):
             user_id = getattr(metadata, "user_id", None)
             application_id = getattr(metadata, "application_id", None)
             plan_type = getattr(metadata, "plan_type", None)
+            first_name = getattr(metadata, "first_name", "")
+            last_name = getattr(metadata, "last_name", "")
 
             customer_details = getattr(session, "customer_details", None)
             email = (
@@ -519,7 +528,12 @@ class StripeWebhookView(generics.GenericAPIView):
                     temp_password = "".join(
                         random.choices(string.ascii_letters + string.digits, k=12)
                     )
-                    user = User.objects.create_user(email=email, password=temp_password)
+                    user = User.objects.create_user(
+                        email=email, 
+                        password=temp_password,
+                        first_name=first_name,
+                        last_name=last_name
+                    )
                     sent = send_welcome_email(email, temp_password)
                     if sent:
                         logger.info(f"Welcome email sent to {email}")
