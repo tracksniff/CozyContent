@@ -387,7 +387,7 @@ class _CtaBanner(Flowable):
         c.setFillColor(DARK)
         c.setFont("Helvetica-Bold", 9)
         c.drawCentredString(p_bx + btn_w / 2, p_by + 3 * mm, "VIEW PLANS & PRICING")
-        c.linkURL("https://cosycontent.com/pricing", (p_bx, p_by, p_bx + btn_w, p_by + btn_h), relative=0)
+        c.linkURL("https://cosycontent.com/pricing", (p_bx, p_by, p_bx + btn_w, p_by + btn_h), relative=1)
 
         # Signup Button
         s_bx = (w / 2) + 2 * mm
@@ -397,7 +397,7 @@ class _CtaBanner(Flowable):
         c.setFillColor(DARK)
         c.setFont("Helvetica-Bold", 9)
         c.drawCentredString(s_bx + btn_w / 2, s_by + 3 * mm, "GET MY NEW WEBSITE")
-        c.linkURL("https://cosycontent.com/signup", (s_bx, s_by, s_bx + btn_w, s_by + btn_h), relative=0)
+        c.linkURL("https://cosycontent.com/signup", (s_bx, s_by, s_bx + btn_w, s_by + btn_h), relative=1)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
