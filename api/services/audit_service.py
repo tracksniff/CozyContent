@@ -329,7 +329,7 @@ class _CtaBanner(Flowable):
     def __init__(self, location="Nairobi"):
         super().__init__()
         self._location = location
-        self._h = 48 * mm
+        self._h = 52 * mm
 
     def wrap(self, avW, avH):
         self._w = avW
@@ -377,7 +377,8 @@ class _CtaBanner(Flowable):
 
         c.setFillColor(ACCENT)
         c.setFont("Helvetica-Bold", 9)
-        c.drawCentredString(w / 2, 4.5 * mm, "Claim your new website: cosycontent.com")
+        c.drawCentredString(w / 2, 8 * mm, "View our plans and pricing: cosycontent.com/pricing")
+        c.drawCentredString(w / 2, 4 * mm, "Claim your new website: cosycontent.com/signup")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
