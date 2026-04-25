@@ -51,7 +51,7 @@ const TOTAL_STEPS = 4;
 
 const Signup: React.FC = () => {
   const location = useLocation();
-  const { planId, planType, billing } = location.state || {};
+  const { planId, billing } = location.state || {};
   const hasPreSelectedPlan = !!planId;
 
   const [step, setStep]               = useState(1);
