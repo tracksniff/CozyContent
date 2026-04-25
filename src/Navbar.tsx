@@ -11,8 +11,10 @@ const Navbar = () => {
   const { theme, setTheme } = useTheme();
   const [showThemeMenu, setShowThemeMenu] = useState(false);
   const [showServicesMenu, setShowServicesMenu] = useState(false);
+  const [showAuditMenu, setShowAuditMenu] = useState(false);
   const [showAreasMenu, setShowAreasMenu] = useState(false);
   const [showMobileServices, setShowMobileServices] = useState(false);
+  const [showMobileAudit, setShowMobileAudit] = useState(false);
   const [showMobileAreas, setShowMobileAreas] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [systemTheme, setSystemTheme] = useState<'light' | 'dark'>(
@@ -49,6 +51,16 @@ const Navbar = () => {
     { label: 'Websites for Removal Companies', href: '/services/removals' }
   ];
 
+  const auditItems = [
+    { label: 'Free Website Audit', href: '/audit' },
+    { label: 'Free Plumber Website Audit', href: '/audit/plumber' },
+    { label: 'Free Roofer Website Audit', href: '/audit/roofer' },
+    { label: 'Free Locksmith Website Audit', href: '/audit/locksmith' },
+    { label: 'Free Electrician Website Audit', href: '/audit/electrician' },
+    { label: 'Free Cleaning Website Audit', href: '/audit/cleaning' },
+    { label: 'Free Removals Website Audit', href: '/audit/removals' }
+  ];
+
   const areaItems = [
     { label: 'Luton', href: '/services/plumbing/luton' },
     { label: 'Bedford', href: '/services/plumbing/bedford' },
@@ -61,8 +73,10 @@ const Navbar = () => {
   const handleNavClick = () => {
     setIsMobileMenuOpen(false);
     setShowServicesMenu(false);
+    setShowAuditMenu(false);
     setShowAreasMenu(false);
     setShowMobileServices(false);
+    setShowMobileAudit(false);
     setShowMobileAreas(false);
   };
 
@@ -107,6 +121,42 @@ const Navbar = () => {
                   className="absolute left-0 mt-2 w-64 rounded-2xl bg-surface border border-outline-variant/20 shadow-xl z-20 overflow-hidden backdrop-blur-md"
                 >
                   {serviceItems.map((item) => (
+                    <Link
+                      key={item.label}
+                      to={item.href}
+                      onClick={handleNavClick}
+                      className={`w-full flex items-center gap-3 px-5 py-3 text-sm font-medium transition-colors hover:bg-surface-container-high ${location.pathname === item.href ? 'text-primary bg-primary/5' : 'text-on-surface-variant'}`}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Audit Dropdown */}
+          <div 
+            className="relative py-2"
+            onMouseEnter={() => setShowAuditMenu(true)}
+            onMouseLeave={() => setShowAuditMenu(false)}
+          >
+            <button
+              onClick={() => setShowAuditMenu(!showAuditMenu)}
+              className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary ${location.pathname.startsWith('/audit') ? 'text-primary' : 'text-on-surface-variant'}`}
+            >
+              Audit <ChevronDown size={14} className={`transition-transform duration-200 ${showAuditMenu ? 'rotate-180' : ''}`} />
+            </button>
+            
+            <AnimatePresence>
+              {showAuditMenu && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                  className="absolute left-0 mt-2 w-64 rounded-2xl bg-surface border border-outline-variant/20 shadow-xl z-20 overflow-hidden backdrop-blur-md"
+                >
+                  {auditItems.map((item) => (
                     <Link
                       key={item.label}
                       to={item.href}
@@ -276,6 +326,35 @@ const Navbar = () => {
                     >
                       <div className="flex flex-col p-2">
                         {serviceItems.map((item) => (
+                          <Link key={item.label} to={item.href} onClick={handleNavClick} className="text-sm font-bold text-on-surface-variant p-3 hover:bg-surface-container rounded-xl">
+                            {item.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Mobile Audit */}
+              <div className="flex flex-col border-t border-outline-variant/5 pt-2">
+                <button 
+                  onClick={() => setShowMobileAudit(!showMobileAudit)}
+                  className="flex items-center justify-between text-lg font-bold text-on-surface-variant py-2"
+                >
+                  Audit
+                  <ChevronDown size={20} className={`transition-transform duration-300 ${showMobileAudit ? 'rotate-180' : ''}`} />
+                </button>
+                <AnimatePresence>
+                  {showMobileAudit && (
+                    <motion.div 
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden bg-surface-container-low rounded-2xl"
+                    >
+                      <div className="flex flex-col p-2">
+                        {auditItems.map((item) => (
                           <Link key={item.label} to={item.href} onClick={handleNavClick} className="text-sm font-bold text-on-surface-variant p-3 hover:bg-surface-container rounded-xl">
                             {item.label}
                           </Link>

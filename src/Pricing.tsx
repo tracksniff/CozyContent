@@ -10,6 +10,8 @@ const PricingPage: React.FC = () => {
 
   const plans = [
     {
+      id: 'monthly_growth',
+      type: 'monthly',
       name: 'Monthly Growth',
       monthlyPrice: '£59',
       annualPrice: '£47',
@@ -27,6 +29,8 @@ const PricingPage: React.FC = () => {
       hasToggle: true
     },
     {
+      id: 'one_time_launch',
+      type: 'one_time',
       name: 'One-Time Launch',
       monthlyPrice: '£349',
       annualPrice: '£349',
@@ -101,6 +105,7 @@ const PricingPage: React.FC = () => {
 
                 <Link 
                   to="/signup" 
+                  state={{ planId: plan.id, planType: plan.type, billing: plan.hasToggle ? (isAnnual ? 'annual' : 'monthly') : 'one_time' }}
                   className={`py-4 md:py-5 rounded-2xl font-black text-center transition-all flex items-center justify-center gap-2 text-lg ${plan.popular ? 'bg-primary text-white hover:brightness-110 shadow-lg shadow-primary/20 active:scale-95' : 'bg-on-surface text-surface hover:bg-on-surface-variant active:scale-95'}`}
                 >
                   {plan.cta}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import {
   ArrowLeft, ArrowRight, Upload, X, Check, Loader2, Info,
@@ -50,6 +50,10 @@ interface FilePreview { name: string; url: string; isImage: boolean; }
 const TOTAL_STEPS = 4;
 
 const Signup: React.FC = () => {
+  const location = useLocation();
+  const { planId, planType, billing } = location.state || {};
+  const hasPreSelectedPlan = !!planId;
+
   const [step, setStep]               = useState(1);
   const [showMap, setShowMap]         = useState(false);
   const [mapTarget, setMapTarget]     = useState<'city_location' | 'service_areas'>('city_location');
@@ -59,10 +63,20 @@ const Signup: React.FC = () => {
 
   // ── core form fields ────────────────────────────────────
   const [formData, setFormData] = useState({
-    first_name: '', last_name: '',
-    company_name: '', phone_number: '', email: '', website_url: '',
-    industry: '', tagline: '', services_list: '', city_location: '',
-    years_experience: '', trust_badges: '', service_areas: '', testimonials: '',
+    first_name: (localStorage.getItem('audit_name') || '').split(' ')[0], 
+    last_name: (localStorage.getItem('audit_name') || '').split(' ').slice(1).join(' '),
+    company_name: localStorage.getItem('audit_business_name') || '', 
+    phone_number: '', 
+    email: localStorage.getItem('audit_email') || '', 
+    website_url: localStorage.getItem('audit_website_url') || '',
+    industry: localStorage.getItem('audit_industry') || '', 
+    tagline: '', 
+    services_list: '', 
+    city_location: localStorage.getItem('audit_location') || '',
+    years_experience: '', 
+    trust_badges: '', 
+    service_areas: '', 
+    testimonials: '',
   });
 
   // ── brand colours ────────────────────────────────────────
@@ -172,6 +186,12 @@ const Signup: React.FC = () => {
     const data = new FormData();
     Object.entries(formData).forEach(([k, v]) => data.append(k, v));
     data.append('branding_colors', JSON.stringify(brandColors));
+
+    // plan selection if pre-selected
+    if (hasPreSelectedPlan) {
+      data.append('plan_type', billing);
+    }
+
     // certification evidence
     certFiles.forEach(f => data.append('trust_badge_files', f));
     data.append('trust_badge_links', JSON.stringify(certLinks.filter(l => l.trim())));
@@ -186,12 +206,40 @@ const Signup: React.FC = () => {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/applications/`, data, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      if (res.data.id) navigate('/checkout', { state: { 
-        applicationId: res.data.id, 
-        email: formData.email,
-        first_name: formData.first_name,
-        last_name: formData.last_name
-      } });
+      if (res.data.id) {
+        if (hasPreSelectedPlan) {
+          // Direct to Stripe
+          try {
+            const stripeRes = await axios.post(`${import.meta.env.VITE_API_URL}/api/create-checkout-session/`, {
+              plan_type: billing,
+              application_id: res.data.id,
+              email: formData.email,
+              first_name: formData.first_name,
+              last_name: formData.last_name
+            });
+            if (stripeRes.data.url) {
+              window.location.href = stripeRes.data.url;
+              return;
+            }
+          } catch (stripeErr) {
+            console.error('Error creating direct checkout session:', stripeErr);
+            // Fallback to pricing page if stripe fails
+            navigate('/checkout', { state: { 
+              applicationId: res.data.id, 
+              email: formData.email,
+              first_name: formData.first_name,
+              last_name: formData.last_name
+            } });
+          }
+        } else {
+          navigate('/checkout', { state: { 
+            applicationId: res.data.id, 
+            email: formData.email,
+            first_name: formData.first_name,
+            last_name: formData.last_name
+          } });
+        }
+      }
     } catch {
       setError('Failed to submit. Please check all required fields and try again.');
     } finally {

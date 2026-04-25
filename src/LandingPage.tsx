@@ -11,7 +11,6 @@ import { Link } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import PricingToggle from './PricingToggle';
-import AuditTool from './AuditTool';
 
 const MousePerspective = ({ children, className }: { children: React.ReactNode, className?: string }) => {
   const x = useMotionValue(0);
@@ -267,12 +266,6 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Audit Tool Section */}
-      <section className="py-32 bg-surface transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-8">
-          <AuditTool />
-        </div>
-      </section>
 
       {/* Before & After Section */}
       <section className="py-32 bg-surface relative overflow-hidden transition-colors duration-300">

@@ -17,6 +17,7 @@ import PrivacyPolicy from './PrivacyPolicy';
 import TermsConditions from './TermsConditions';
 import CookiePolicy from './CookiePolicy';
 import Contact from './Contact';
+import AuditPage from './AuditPage';
 import FloatingThemeToggle from './FloatingThemeToggle';
 import { ThemeProvider } from './ThemeContext';
 import { AuthProvider, useAuth } from './AuthContext';
@@ -50,6 +51,13 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<LandingPage />} />
+            <Route path="/audit" element={<AuditPage />} />
+            <Route path="/audit/plumber" element={<AuditPage title="Free Plumber Website Audit" industry="Plumbing" />} />
+            <Route path="/audit/roofer" element={<AuditPage title="Free Roofer Website Audit" industry="Roofing" />} />
+            <Route path="/audit/locksmith" element={<AuditPage title="Free Locksmith Website Audit" industry="Locksmith" />} />
+            <Route path="/audit/electrician" element={<AuditPage title="Free Electrician Website Audit" industry="Electrical" />} />
+            <Route path="/audit/cleaning" element={<AuditPage title="Free Cleaning Website Audit" industry="Cleaning" />} />
+            <Route path="/audit/removals" element={<AuditPage title="Free Removals Website Audit" industry="Removals" />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />

@@ -11,10 +11,10 @@ interface AuditResult {
     mobile_ux: number;
     lead_conversion: number;
     seo_basics: number;
-    trust_signals: number;
+    performance: number;
   };
-  findings: Array<{ type: string, text: string }>;
-  quick_wins: Array<{ type: string, text: string }>;
+  findings: Array<{ severity: string, issue: string, detail: string }>;
+  quick_wins: Array<{ action: string, detail: string }>;
   summary: string;
 }
 
@@ -22,17 +22,25 @@ const AuditTool: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AuditResult | null>(null);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    business_name: '',
-    website_url: '',
-    industry: '',
-    location: ''
+    name: localStorage.getItem('audit_name') || '',
+    email: localStorage.getItem('audit_email') || '',
+    business_name: localStorage.getItem('audit_business_name') || '',
+    website_url: localStorage.getItem('audit_website_url') || '',
+    industry: localStorage.getItem('audit_industry') || '',
+    location: localStorage.getItem('audit_location') || ''
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
+    // Cache the data
+    localStorage.setItem('audit_name', formData.name);
+    localStorage.setItem('audit_email', formData.email);
+    localStorage.setItem('audit_business_name', formData.business_name);
+    localStorage.setItem('audit_website_url', formData.website_url);
+    localStorage.setItem('audit_industry', formData.industry);
+    localStorage.setItem('audit_location', formData.location);
     
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/audits/`, {
@@ -47,7 +55,7 @@ const AuditTool: React.FC = () => {
 
       const data = await response.json();
       setResult(data.report_data);
-      toast.success('Audit complete!');
+      toast.success('Audit complete! Please check your email for the full report.');
     } catch (error) {
       console.error(error);
       toast.error('Something went wrong. Please try again.');
@@ -67,10 +75,15 @@ const AuditTool: React.FC = () => {
           <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2"></div>
           
           <div className="relative z-10">
+            <div className="bg-primary/10 border border-primary/20 rounded-2xl p-6 mb-12 text-center">
+              <h3 className="text-xl font-black text-primary mb-2">Check Your Email!</h3>
+              <p className="text-on-surface-variant font-medium">We've sent a detailed PDF copy of this report to <strong>{formData.email}</strong></p>
+            </div>
+
             <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
               <div>
                 <h2 className="text-3xl font-black mb-2">{formData.business_name} Audit Report</h2>
-                <p className="text-on-surface-variant font-medium">We've sent a detailed PDF copy to <strong>{formData.email}</strong></p>
+                <p className="text-on-surface-variant font-medium">Instant Performance Scorecard</p>
               </div>
               <div className="relative flex-shrink-0">
                 <svg className="w-32 h-32 transform -rotate-90">
@@ -103,7 +116,7 @@ const AuditTool: React.FC = () => {
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-12">
               {Object.entries(result.scores).map(([key, score], idx) => (
                 <div key={idx} className="bg-surface-container-low p-4 rounded-2xl border border-outline-variant/10 text-center">
-                  <div className="text-xl font-black mb-1">{score}/20</div>
+                  <div className="text-xl font-black mb-1">{score}/100</div>
                   <div className="text-[10px] font-black uppercase tracking-wider text-on-surface-variant leading-tight">
                     {key.replace('_', ' ')}
                   </div>
@@ -118,20 +131,23 @@ const AuditTool: React.FC = () => {
                 </h3>
                 <div className="space-y-3">
                   {result.findings.map((f, i) => (
-                    <div key={i} className="flex gap-3 text-sm font-medium text-on-surface-variant bg-red-500/5 p-3 rounded-xl border border-red-500/10">
-                      {f.text}
+                    <div key={i} className="flex flex-col gap-1 text-sm font-medium text-on-surface-variant bg-red-500/5 p-4 rounded-xl border border-red-500/10">
+                      <div className="font-black text-red-600 uppercase text-[10px]">{f.severity}</div>
+                      <div className="font-bold text-on-surface">{f.issue}</div>
+                      <div className="text-xs opacity-80">{f.detail}</div>
                     </div>
                   ))}
                 </div>
               </div>
               <div className="space-y-4">
                 <h3 className="text-lg font-black flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-green-500" /> Quick Wins
+                  <CheckCircle2 className="w-5 h-5 text-green-500" /> Strategic Quick Wins
                 </h3>
                 <div className="space-y-3">
                   {result.quick_wins.map((w, i) => (
-                    <div key={i} className="flex gap-3 text-sm font-medium text-on-surface-variant bg-green-500/5 p-3 rounded-xl border border-green-500/10">
-                      {w.text}
+                    <div key={i} className="flex flex-col gap-1 text-sm font-medium text-on-surface-variant bg-green-500/5 p-4 rounded-xl border border-green-500/10">
+                      <div className="font-bold text-on-surface">{w.action}</div>
+                      <div className="text-xs opacity-80">{w.detail}</div>
                     </div>
                   ))}
                 </div>
@@ -175,7 +191,7 @@ const AuditTool: React.FC = () => {
             </motion.div>
             <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-4">Is your website losing you leads?</h2>
             <p className="text-on-surface-variant font-medium max-w-xl mx-auto leading-relaxed">
-              Get an instant AI-powered audit of your website's design, SEO, and conversion potential.
+              Get an instant audit of your website's design, SEO, and conversion potential.
             </p>
           </div>
 
@@ -264,7 +280,7 @@ const AuditTool: React.FC = () => {
                 </>
               ) : (
                 <>
-                  Generate My Free Audit <ArrowRight className="w-6 h-6" />
+                  Get My Free Audit <ArrowRight className="w-6 h-6" />
                 </>
               )}
             </button>
