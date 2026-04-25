@@ -4,7 +4,7 @@ import { BarChart3, ArrowRight, Loader2, CheckCircle2, XCircle } from 'lucide-re
 import { toast } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 
-interface AuditResult {
+export interface AuditResult {
   overall_score: number;
   scores: {
     design: number;
@@ -18,9 +18,18 @@ interface AuditResult {
   summary: string;
 }
 
-const AuditTool: React.FC = () => {
+interface AuditToolProps {
+  onResult?: (result: AuditResult | null) => void;
+}
+
+const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<AuditResult | null>(null);
+  const [result, setResultState] = useState<AuditResult | null>(null);
+
+  const setResult = (res: AuditResult | null) => {
+    setResultState(res);
+    if (onResult) onResult(res);
+  };
   const [formData, setFormData] = useState({
     name: localStorage.getItem('audit_name') || '',
     email: localStorage.getItem('audit_email') || '',

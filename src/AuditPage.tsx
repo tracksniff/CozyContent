@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from './Navbar';
 import Footer from './Footer';
-import AuditTool from './AuditTool';
-import { motion } from 'framer-motion';
+import AuditTool, { AuditResult } from './AuditTool';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface AuditPageProps {
   title?: string;
@@ -10,6 +10,8 @@ interface AuditPageProps {
 }
 
 const AuditPage: React.FC<AuditPageProps> = ({ title, industry }) => {
+  const [result, setResult] = useState<AuditResult | null>(null);
+
   useEffect(() => {
     window.scrollTo(0, 0);
     if (industry) {
@@ -23,20 +25,25 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry }) => {
       
       <main className="pt-32 pb-20">
         <div className="max-w-7xl mx-auto px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-16"
-          >
-            <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6">
-              {title || 'Free Website Audit'}
-            </h1>
-            <p className="text-xl text-on-surface-variant font-medium max-w-2xl mx-auto">
-              Stop leaving money on the table. Get a detailed report on how to turn your website into a high-converting lead machine.
-            </p>
-          </motion.div>
+          <AnimatePresence>
+            {!result && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="text-center mb-16"
+              >
+                <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6">
+                  {title || 'Free Website Audit'}
+                </h1>
+                <p className="text-xl text-on-surface-variant font-medium max-w-2xl mx-auto">
+                  Stop leaving money on the table. Get a detailed report on how to turn your website into a high-converting lead machine.
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-          <AuditTool />
+          <AuditTool onResult={setResult} />
         </div>
       </main>
 
