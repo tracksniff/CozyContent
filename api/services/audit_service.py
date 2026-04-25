@@ -329,7 +329,7 @@ class _CtaBanner(Flowable):
     def __init__(self, location="Nairobi"):
         super().__init__()
         self._location = location
-        self._h = 52 * mm
+        self._h = 65 * mm
 
     def wrap(self, avW, avH):
         self._w = avW
@@ -375,10 +375,29 @@ class _CtaBanner(Flowable):
         c.line(col_w, h - 22 * mm, col_w, h - 38 * mm)
         c.line(col_w * 2, h - 22 * mm, col_w * 2, h - 38 * mm)
 
+        # Buttons
+        btn_w = 60 * mm
+        btn_h = 9 * mm
+        
+        # Pricing Button
+        p_bx = (w / 2) - btn_w - 2 * mm
+        p_by = 6 * mm
         c.setFillColor(ACCENT)
+        c.roundRect(p_bx, p_by, btn_w, btn_h, 2 * mm, fill=1, stroke=0)
+        c.setFillColor(DARK)
         c.setFont("Helvetica-Bold", 9)
-        c.drawCentredString(w / 2, 8 * mm, "View our plans and pricing: cosycontent.com/pricing")
-        c.drawCentredString(w / 2, 4 * mm, "Claim your new website: cosycontent.com/signup")
+        c.drawCentredString(p_bx + btn_w / 2, p_by + 3 * mm, "VIEW PLANS & PRICING")
+        c.linkURL("https://cosycontent.com/pricing", (p_bx, p_by, p_bx + btn_w, p_by + btn_h), relative=0)
+
+        # Signup Button
+        s_bx = (w / 2) + 2 * mm
+        s_by = 6 * mm
+        c.setFillColor(OFF_WHITE)
+        c.roundRect(s_bx, s_by, btn_w, btn_h, 2 * mm, fill=1, stroke=0)
+        c.setFillColor(DARK)
+        c.setFont("Helvetica-Bold", 9)
+        c.drawCentredString(s_bx + btn_w / 2, s_by + 3 * mm, "GET MY NEW WEBSITE")
+        c.linkURL("https://cosycontent.com/signup", (s_bx, s_by, s_bx + btn_w, s_by + btn_h), relative=0)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
