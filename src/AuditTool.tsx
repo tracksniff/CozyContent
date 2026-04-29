@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
@@ -66,49 +66,13 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
       if (!response.ok) throw new Error('Failed');
       const data = await response.json();
       setResult(data.report_data);
-      toast.success('Audit complete.');
+      toast.success('Thanks — your request has been received.');
     } catch {
       toast.error('Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }
   };
-
-  const field = (
-    id: keyof typeof formData,
-    label: string,
-    type = 'text',
-    placeholder = '',
-    colSpan = false
-  ) => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', gridColumn: colSpan ? '1 / -1' : undefined }}>
-      <label style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#57534e' }}>
-        {label}
-      </label>
-      <input
-        required
-        type={type}
-        placeholder={placeholder}
-        value={formData[id]}
-        onChange={(e) => setFormData({ ...formData, [id]: e.target.value })}
-        style={{
-          background: '#111111',
-          border: '1px solid rgba(255,255,255,0.08)',
-          borderRadius: '6px',
-          padding: '14px 18px',
-          color: '#f0ede8',
-          fontSize: '15px',
-          fontFamily: "'DM Sans', sans-serif",
-          fontWeight: 400,
-          outline: 'none',
-          transition: 'border-color 0.15s',
-          width: '100%',
-        }}
-        onFocus={(e) => (e.target.style.borderColor = 'rgba(255,255,255,0.28)')}
-        onBlur={(e) => (e.target.style.borderColor = 'rgba(255,255,255,0.08)')}
-      />
-    </div>
-  );
 
   if (result) {
     const circumference = 2 * Math.PI * 54;
@@ -142,9 +106,9 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
         }}>
           <span style={{ fontSize: '20px' }}>✓</span>
           <div>
-            <div style={{ fontSize: '14px', fontWeight: 600, color: '#4ade80', marginBottom: '2px' }}>Request received</div>
+            <div style={{ fontSize: '14px', fontWeight: 600, color: '#4ade80', marginBottom: '2px' }}>Thanks — your request has been received.</div>
             <div style={{ fontSize: '14px', color: '#78716c' }}>
-              A detailed audit will be sent to <span style={{ color: '#a8a29e' }}>{formData.email}</span>
+              We’ll review your website and send your personalised audit shortly to <span style={{ color: '#a8a29e' }}>{formData.email}</span>
             </div>
           </div>
         </div>
