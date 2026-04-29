@@ -53,12 +53,12 @@ const Navbar = () => {
 
   const auditItems = [
     { label: 'Free Website Audit', href: '/audit' },
-    { label: 'Free Plumber Website Audit', href: '/audit/plumber' },
-    { label: 'Free Roofer Website Audit', href: '/audit/roofer' },
-    { label: 'Free Locksmith Website Audit', href: '/audit/locksmith' },
-    { label: 'Free Electrician Website Audit', href: '/audit/electrician' },
-    { label: 'Free Cleaning Website Audit', href: '/audit/cleaning' },
-    { label: 'Free Removals Website Audit', href: '/audit/removals' }
+    { label: 'Free Plumber Website Audit', href: '/free-plumbing-website-audit' },
+    { label: 'Free Roofer Website Audit', href: '/free-roofer-website-audit' },
+    { label: 'Free Locksmith Website Audit', href: '/free-locksmith-website-audit' },
+    { label: 'Free Electrician Website Audit', href: '/free-electrician-website-audit' },
+    { label: 'Free Cleaning Website Audit', href: '/free-cleaning-website-audit' },
+    { label: 'Free Removals Website Audit', href: '/free-removals-website-audit' }
   ];
 
   const areaItems = [
@@ -85,10 +85,10 @@ const Navbar = () => {
       <div className="max-w-6xl mx-auto flex justify-between items-center px-4 md:px-6 py-3 rounded-2xl bg-surface/60 dark:bg-surface-container-high/40 backdrop-blur-xl border border-outline-variant/30 dark:border-primary/20 shadow-lg shadow-black/5 transition-all">
         <Link to="/" className="flex items-center" onClick={handleNavClick}>
           <div className="h-12 md:h-16 flex items-center justify-center">
-            <img 
-              src={currentLogo} 
-              alt="Cosy Content Logo" 
-              className="h-full w-auto object-contain" 
+            <img
+              src={currentLogo}
+              alt="Cosy Content Logo"
+              className="h-full w-auto object-contain"
             />
           </div>
         </Link>
@@ -100,7 +100,7 @@ const Navbar = () => {
           </Link>
 
           {/* Services Dropdown */}
-          <div 
+          <div
             className="relative py-2"
             onMouseEnter={() => setShowServicesMenu(true)}
             onMouseLeave={() => setShowServicesMenu(false)}
@@ -111,7 +111,7 @@ const Navbar = () => {
             >
               Services <ChevronDown size={14} className={`transition-transform duration-200 ${showServicesMenu ? 'rotate-180' : ''}`} />
             </button>
-            
+
             <AnimatePresence>
               {showServicesMenu && (
                 <motion.div
@@ -136,18 +136,18 @@ const Navbar = () => {
           </div>
 
           {/* Audit Dropdown */}
-          <div 
+          <div
             className="relative py-2"
             onMouseEnter={() => setShowAuditMenu(true)}
             onMouseLeave={() => setShowAuditMenu(false)}
           >
             <button
               onClick={() => setShowAuditMenu(!showAuditMenu)}
-              className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary ${location.pathname.startsWith('/audit') ? 'text-primary' : 'text-on-surface-variant'}`}
+              className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary ${location.pathname.includes('audit') ? 'text-primary' : 'text-on-surface-variant'}`}
             >
               Audit <ChevronDown size={14} className={`transition-transform duration-200 ${showAuditMenu ? 'rotate-180' : ''}`} />
             </button>
-            
+
             <AnimatePresence>
               {showAuditMenu && (
                 <motion.div
@@ -176,7 +176,7 @@ const Navbar = () => {
           </Link>
 
           {/* Areas Dropdown */}
-          <div 
+          <div
             className="relative py-2"
             onMouseEnter={() => setShowAreasMenu(true)}
             onMouseLeave={() => setShowAreasMenu(false)}
@@ -187,7 +187,7 @@ const Navbar = () => {
             >
               Areas <ChevronDown size={14} className={`transition-transform duration-200 ${showAreasMenu ? 'rotate-180' : ''}`} />
             </button>
-            
+
             <AnimatePresence>
               {showAreasMenu && (
                 <motion.div
@@ -309,7 +309,7 @@ const Navbar = () => {
 
               {/* Mobile Services */}
               <div className="flex flex-col border-t border-outline-variant/5 pt-2">
-                <button 
+                <button
                   onClick={() => setShowMobileServices(!showMobileServices)}
                   className="flex items-center justify-between text-lg font-bold text-on-surface-variant py-2"
                 >
@@ -318,7 +318,7 @@ const Navbar = () => {
                 </button>
                 <AnimatePresence>
                   {showMobileServices && (
-                    <motion.div 
+                    <motion.div
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
@@ -338,7 +338,7 @@ const Navbar = () => {
 
               {/* Mobile Audit */}
               <div className="flex flex-col border-t border-outline-variant/5 pt-2">
-                <button 
+                <button
                   onClick={() => setShowMobileAudit(!showMobileAudit)}
                   className="flex items-center justify-between text-lg font-bold text-on-surface-variant py-2"
                 >
@@ -347,7 +347,7 @@ const Navbar = () => {
                 </button>
                 <AnimatePresence>
                   {showMobileAudit && (
-                    <motion.div 
+                    <motion.div
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
@@ -371,7 +371,7 @@ const Navbar = () => {
 
               {/* Mobile Areas */}
               <div className="flex flex-col border-t border-outline-variant/5 pt-2">
-                <button 
+                <button
                   onClick={() => setShowMobileAreas(!showMobileAreas)}
                   className="flex items-center justify-between text-lg font-bold text-on-surface-variant py-2"
                 >
@@ -380,7 +380,7 @@ const Navbar = () => {
                 </button>
                 <AnimatePresence>
                   {showMobileAreas && (
-                    <motion.div 
+                    <motion.div
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}

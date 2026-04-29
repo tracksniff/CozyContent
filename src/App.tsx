@@ -52,12 +52,54 @@ function App() {
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/audit" element={<AuditPage />} />
-            <Route path="/audit/plumber" element={<AuditPage title="Free Plumber Website Audit" industry="Plumbing" />} />
-            <Route path="/audit/roofer" element={<AuditPage title="Free Roofer Website Audit" industry="Roofing" />} />
-            <Route path="/audit/locksmith" element={<AuditPage title="Free Locksmith Website Audit" industry="Locksmith" />} />
-            <Route path="/audit/electrician" element={<AuditPage title="Free Electrician Website Audit" industry="Electrical" />} />
-            <Route path="/audit/cleaning" element={<AuditPage title="Free Cleaning Website Audit" industry="Cleaning" />} />
-            <Route path="/audit/removals" element={<AuditPage title="Free Removals Website Audit" industry="Removals" />} />
+            <Route 
+              path="/free-plumbing-website-audit" 
+              element={<AuditPage 
+                title="Free Plumbing Website Audit | Get More Calls Online" 
+                industry="Plumbing"
+                description="Free plumbing website audit. Discover why your current site may be losing calls, enquiries and Google traffic."
+              />} 
+            />
+            <Route 
+              path="/free-roofer-website-audit" 
+              element={<AuditPage 
+                title="Free Roofer Website Audit | More Quote Requests" 
+                industry="Roofing"
+                description="Free roofer website audit. See how to improve your roofing website and generate more quote requests."
+              />} 
+            />
+            <Route 
+              path="/free-locksmith-website-audit" 
+              element={<AuditPage 
+                title="Free Locksmith Website Audit | More Emergency Leads" 
+                industry="Locksmith"
+                description="Free locksmith website audit. Discover what may be costing you emergency calls and local leads."
+              />} 
+            />
+            <Route 
+              path="/free-electrician-website-audit" 
+              element={<AuditPage 
+                title="Free Electrician Website Audit | Get More Enquiries" 
+                industry="Electrical"
+                description="Free electrician website audit. Find issues affecting enquiries, trust and Google visibility."
+              />} 
+            />
+            <Route 
+              path="/free-cleaning-website-audit" 
+              element={<AuditPage 
+                title="Free Cleaning Website Audit | More Bookings Online" 
+                industry="Cleaning"
+                description="Free cleaning website audit. Learn how to improve bookings, trust and local visibility."
+              />} 
+            />
+            <Route 
+              path="/free-removals-website-audit" 
+              element={<AuditPage 
+                title="Free Removal Company Website Audit | More Moving Leads" 
+                industry="Removals"
+                description="Free removals website audit. Find out how to improve quote requests and generate more enquiries."
+              />} 
+            />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />

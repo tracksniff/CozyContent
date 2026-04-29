@@ -360,7 +360,7 @@ const LandingPage = () => {
               className="relative group h-full"
             >
               <div className="absolute inset-0 bg-surface-container-low rounded-[2.5rem] border-2 border-primary shadow-xl shadow-primary/5 transition-all duration-500 group-hover:scale-[1.01]"></div>
-              
+
               <div className="absolute -top-4 left-10 bg-primary text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 z-10 border border-white/20 flex items-center gap-2">
                 <Check className="w-3 h-3" strokeWidth={4} /> Most Popular
               </div>
@@ -382,7 +382,7 @@ const LandingPage = () => {
                     <PricingToggle isAnnual={isAnnual} onChange={setIsAnnual} isPopular={false} />
                   </div>
                 </div>
-                
+
                 <div className="space-y-4 mb-10 flex-grow">
                   {[
                     'Hosting',
