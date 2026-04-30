@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import Navbar from './Navbar';
-import Footer from './Footer';
-import AuditTool from './AuditTool';
-import type { AuditResult } from './AuditTool';
-import { motion, AnimatePresence } from 'framer-motion';
-import { auditContent } from './auditContent';
+import React, { useEffect, useState } from "react";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
+import AuditTool from "./AuditTool";
+import type { AuditResult } from "./AuditTool";
+import { motion, AnimatePresence } from "framer-motion";
+import { auditContent } from "./auditContent";
 
 interface AuditPageProps {
   title?: string;
@@ -13,12 +13,12 @@ interface AuditPageProps {
 }
 
 const checks = [
-  { icon: '⚡', label: 'Page Speed' },
-  { icon: '🔍', label: 'SEO Health' },
-  { icon: '📱', label: 'Mobile Experience' },
-  { icon: '🔒', label: 'Security & HTTPS' },
-  { icon: '♿', label: 'Accessibility' },
-  { icon: '📈', label: 'Conversion Rate' },
+  { icon: "⚡", label: "Page Speed" },
+  { icon: "🔍", label: "SEO Health" },
+  { icon: "📱", label: "Mobile Experience" },
+  { icon: "🔒", label: "Security & HTTPS" },
+  { icon: "♿", label: "Accessibility" },
+  { icon: "📈", label: "Conversion Rate" },
 ];
 
 const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) => {
@@ -27,28 +27,33 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (industry) localStorage.setItem('audit_industry', industry);
+    if (industry) localStorage.setItem("audit_industry", industry);
     if (title) document.title = title;
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription && description) {
-      metaDescription.setAttribute('content', description);
+      metaDescription.setAttribute("content", description);
     } else if (description) {
-      const meta = document.createElement('meta');
-      meta.name = 'description';
+      const meta = document.createElement("meta");
+      meta.name = "description";
       meta.content = description;
-      document.getElementsByTagName('head')[0].appendChild(meta);
+      document.getElementsByTagName("head")[0].appendChild(meta);
     }
   }, [industry, title, description]);
 
   const scrollToAudit = () => {
-    document.getElementById('audit-tool')?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById("audit-tool")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <div className="min-h-screen" style={{ background: '#0a0a0a', color: '#f0ede8', fontFamily: "'DM Sans', sans-serif" }}>
+    <div
+      className="min-h-screen"
+      style={{
+        background: "#0a0a0a",
+        color: "#f0ede8",
+        fontFamily: "'Plus Jakarta Sans', sans-serif",
+      }}
+    >
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap');
-
         .audit-page * { box-sizing: border-box; }
 
         .hero-badge {
@@ -82,11 +87,11 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
         }
 
         .hero-title {
-          font-family: 'Playfair Display', serif;
+          font-family: 'Plus Jakarta Sans', sans-serif;
           font-size: clamp(3rem, 8vw, 6.5rem);
           font-weight: 900;
           line-height: 1.0;
-          letter-spacing: -0.02em;
+          letter-spacing: -0.04em;
           color: #f0ede8;
           margin: 0 0 28px;
         }
@@ -115,9 +120,9 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
           cursor: pointer;
           padding: 16px 36px;
           border-radius: 4px;
-          font-family: 'DM Sans', sans-serif;
+          font-family: 'Plus Jakarta Sans', sans-serif;
           font-size: 15px;
-          font-weight: 600;
+          font-weight: 800;
           letter-spacing: 0.01em;
           transition: all 0.2s ease;
           text-transform: uppercase;
@@ -215,12 +220,13 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
         }
 
         .col-panel-title {
-          font-family: 'Playfair Display', serif;
+          font-family: 'Plus Jakarta Sans', sans-serif;
           font-size: 26px;
-          font-weight: 700;
+          font-weight: 800;
           color: #f0ede8;
           margin: 0 0 28px;
           line-height: 1.2;
+          letter-spacing: -0.02em;
         }
 
         .list-item {
@@ -306,12 +312,13 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
         }
 
         .stat-number {
-          font-family: 'Playfair Display', serif;
+          font-family: 'Plus Jakarta Sans', sans-serif;
           font-size: 48px;
           font-weight: 900;
           color: #f0ede8;
           line-height: 1;
           margin-bottom: 8px;
+          letter-spacing: -0.04em;
         }
 
         .stat-label {
@@ -325,9 +332,8 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
       <div className="audit-page">
         <Navbar />
 
-        <main style={{ paddingTop: '120px', paddingBottom: '80px' }}>
-          <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 32px' }}>
-
+        <main style={{ paddingTop: "120px", paddingBottom: "80px" }}>
+          <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 32px" }}>
             <AnimatePresence>
               {!result && (
                 <>
@@ -337,18 +343,27 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                    style={{ textAlign: 'center', marginBottom: '80px' }}
+                    style={{ textAlign: "center", marginBottom: "80px" }}
                   >
                     <div className="hero-badge">Free · No signup required · Instant results</div>
 
                     <h1 className="hero-title">
-                      {content?.heroTitle
-                        ? content.heroTitle
-                        : <>Your website<br />is <em>losing you money.</em><br />Let's fix that.</>}
+                      {content?.heroTitle ? (
+                        content.heroTitle
+                      ) : (
+                        <>
+                          Your website
+                          <br />
+                          is <em>losing you money.</em>
+                          <br />
+                          Let's fix that.
+                        </>
+                      )}
                     </h1>
 
                     <p className="hero-subtitle">
-                      {content?.heroSubtitle || 'Paste your URL and get a detailed breakdown of every issue costing you traffic, leads, and revenue.'}
+                      {content?.heroSubtitle ||
+                        "Paste your URL and get a detailed breakdown of every issue costing you traffic, leads, and revenue."}
                     </p>
 
                     <button className="cta-button" onClick={scrollToAudit}>
@@ -369,15 +384,26 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
                   >
                     <div className="stat-cell">
                       <div className="stat-number">94%</div>
-                      <div className="stat-label">of first impressions are<br />design-related</div>
+                      <div className="stat-label">
+                        of first impressions are
+                        <br />
+                        design-related
+                      </div>
                     </div>
                     <div className="stat-cell">
                       <div className="stat-number">3s</div>
-                      <div className="stat-label">before visitors abandon<br />a slow-loading page</div>
+                      <div className="stat-label">
+                        before visitors abandon
+                        <br />a slow-loading page
+                      </div>
                     </div>
                     <div className="stat-cell">
                       <div className="stat-number">68%</div>
-                      <div className="stat-label">of online experiences<br />begin with a search engine</div>
+                      <div className="stat-label">
+                        of online experiences
+                        <br />
+                        begin with a search engine
+                      </div>
                     </div>
                   </motion.div>
 
@@ -387,12 +413,24 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.3 }}
                   >
-                    <p style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#57534e', marginBottom: '20px' }}>
+                    <p
+                      style={{
+                        fontSize: "11px",
+                        fontWeight: 600,
+                        letterSpacing: "0.14em",
+                        textTransform: "uppercase",
+                        color: "#57534e",
+                        marginBottom: "20px",
+                      }}
+                    >
                       What gets audited
                     </p>
                     <div className="checks-grid">
                       {(content?.whatWeCheck
-                        ? content.whatWeCheck.map((label: string, i: number) => ({ icon: checks[i % checks.length].icon, label }))
+                        ? content.whatWeCheck.map((label: string, i: number) => ({
+                            icon: checks[i % checks.length].icon,
+                            label,
+                          }))
                         : checks
                       ).map((item: { icon: string; label: string }, i: number) => (
                         <div key={i} className="check-cell">
@@ -426,7 +464,9 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
 
                       <div className="col-panel">
                         <div className="col-panel-label">Common findings</div>
-                        <div className="col-panel-title">Issues most sites don't know they have</div>
+                        <div className="col-panel-title">
+                          Issues most sites don't know they have
+                        </div>
                         <div>
                           {content.commonProblems.map((item: string, i: number) => (
                             <div key={i} className="list-item">
@@ -441,8 +481,12 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
 
                   {/* Scroll nudge */}
                   <div className="scroll-nudge">
-                    <span className="scroll-nudge-text">{content?.ctaText || 'Start your audit'}</span>
-                    <div className="scroll-arrow"><span /></div>
+                    <span className="scroll-nudge-text">
+                      {content?.ctaText || "Start your audit"}
+                    </span>
+                    <div className="scroll-arrow">
+                      <span />
+                    </div>
                   </div>
                 </>
               )}

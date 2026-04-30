@@ -83,10 +83,9 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        style={{ maxWidth: '900px', margin: '0 auto', fontFamily: "'DM Sans', sans-serif" }}
+        style={{ maxWidth: '900px', margin: '0 auto', fontFamily: "'Plus Jakarta Sans', sans-serif" }}
       >
         <style>{`
-          @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap');
           .audit-result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
           @media (max-width: 640px) { .audit-result-grid { grid-template-columns: 1fr; } }
           .scores-strip { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; }
@@ -127,7 +126,7 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
               <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#57534e', marginBottom: '12px' }}>
                 Audit Report
               </div>
-              <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '36px', fontWeight: 900, color: '#f0ede8', margin: '0 0 8px', lineHeight: 1.1 }}>
+              <h2 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '36px', fontWeight: 900, color: '#f0ede8', margin: '0 0 8px', lineHeight: 1.1, letterSpacing: '-0.02em' }}>
                 {formData.business_name}
               </h2>
               <p style={{ fontSize: '14px', color: '#57534e', margin: 0 }}>{formData.website_url}</p>
@@ -153,7 +152,7 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
                 {/* Overlaid via flex trick below */}
               </div>
               <div style={{ marginTop: '-88px', textAlign: 'center', lineHeight: 1 }}>
-                <div style={{ fontFamily: "'Playfair Display', serif", fontSize: '38px', fontWeight: 900, color: '#f0ede8' }}>
+                <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '38px', fontWeight: 900, color: '#f0ede8', letterSpacing: '-0.04em' }}>
                   {result.overall_score}
                 </div>
                 <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#57534e', marginTop: '68px' }}>
@@ -226,7 +225,7 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
           <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#57534e', marginBottom: '16px' }}>
             Next step
           </div>
-          <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '32px', fontWeight: 900, color: '#f0ede8', margin: '0 0 16px', lineHeight: 1.15 }}>
+          <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '32px', fontWeight: 900, color: '#f0ede8', margin: '0 0 16px', lineHeight: 1.15, letterSpacing: '-0.02em' }}>
             We can fix this <em style={{ fontStyle: 'italic', color: '#c8b8a2' }}>in 7 days.</em>
           </h3>
           <p style={{ fontSize: '15px', color: '#78716c', maxWidth: '480px', margin: '0 auto 36px', lineHeight: 1.65 }}>
@@ -241,8 +240,8 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
               color: '#0a0a0a',
               padding: '14px 32px',
               borderRadius: '4px',
-              fontFamily: "'DM Sans', sans-serif",
-              fontWeight: 600,
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontWeight: 800,
               fontSize: '14px',
               letterSpacing: '0.06em',
               textTransform: 'uppercase',
@@ -257,7 +256,7 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
               color: '#78716c',
               padding: '14px 28px',
               borderRadius: '4px',
-              fontFamily: "'DM Sans', sans-serif",
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
               fontWeight: 500,
               fontSize: '14px',
               cursor: 'pointer',
@@ -272,9 +271,8 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
   }
 
   return (
-    <div style={{ maxWidth: '820px', margin: '0 auto', fontFamily: "'DM Sans', sans-serif" }}>
+    <div style={{ maxWidth: '820px', margin: '0 auto', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap');
         .audit-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         @media (max-width: 640px) { .audit-form-grid { grid-template-columns: 1fr; } }
         .audit-input::placeholder { color: #44403c; }
@@ -294,7 +292,7 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
           <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#57534e', marginBottom: '16px' }}>
             Free website audit
           </div>
-          <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 900, color: '#f0ede8', margin: '0 0 12px', lineHeight: 1.1 }}>
+          <h2 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 900, color: '#f0ede8', margin: '0 0 12px', lineHeight: 1.1, letterSpacing: '-0.04em' }}>
             Is your website losing<br /><em style={{ fontStyle: 'italic', color: '#c8b8a2' }}>you leads?</em>
           </h2>
           <p style={{ fontSize: '15px', color: '#57534e', margin: 0, lineHeight: 1.6 }}>
@@ -314,7 +312,7 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
                   className="audit-input"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  style={{ background: '#111', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '14px 18px', color: '#f0ede8', fontSize: '15px', fontFamily: "'DM Sans', sans-serif", outline: 'none', transition: 'border-color 0.15s', width: '100%' }}
+                  style={{ background: '#111', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '14px 18px', color: '#f0ede8', fontSize: '15px', fontFamily: "'Plus Jakarta Sans', sans-serif", outline: 'none', transition: 'border-color 0.15s', width: '100%' }}
                 />
               </div>
               {/* Email */}
@@ -325,7 +323,7 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
                   className="audit-input"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  style={{ background: '#111', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '14px 18px', color: '#f0ede8', fontSize: '15px', fontFamily: "'DM Sans', sans-serif", outline: 'none', transition: 'border-color 0.15s', width: '100%' }}
+                  style={{ background: '#111', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '14px 18px', color: '#f0ede8', fontSize: '15px', fontFamily: "'Plus Jakarta Sans', sans-serif", outline: 'none', transition: 'border-color 0.15s', width: '100%' }}
                 />
               </div>
               {/* Business name */}
@@ -336,7 +334,7 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
                   className="audit-input"
                   value={formData.business_name}
                   onChange={(e) => setFormData({ ...formData, business_name: e.target.value })}
-                  style={{ background: '#111', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '14px 18px', color: '#f0ede8', fontSize: '15px', fontFamily: "'DM Sans', sans-serif", outline: 'none', transition: 'border-color 0.15s', width: '100%' }}
+                  style={{ background: '#111', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '14px 18px', color: '#f0ede8', fontSize: '15px', fontFamily: "'Plus Jakarta Sans', sans-serif", outline: 'none', transition: 'border-color 0.15s', width: '100%' }}
                 />
               </div>
               {/* Location */}
@@ -347,7 +345,7 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
                   className="audit-input"
                   value={formData.location}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  style={{ background: '#111', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '14px 18px', color: '#f0ede8', fontSize: '15px', fontFamily: "'DM Sans', sans-serif", outline: 'none', transition: 'border-color 0.15s', width: '100%' }}
+                  style={{ background: '#111', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '14px 18px', color: '#f0ede8', fontSize: '15px', fontFamily: "'Plus Jakarta Sans', sans-serif", outline: 'none', transition: 'border-color 0.15s', width: '100%' }}
                 />
               </div>
               {/* Website URL — full width */}
@@ -358,7 +356,7 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
                   className="audit-input"
                   value={formData.website_url}
                   onChange={(e) => setFormData({ ...formData, website_url: e.target.value })}
-                  style={{ background: '#111', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '14px 18px', color: '#f0ede8', fontSize: '15px', fontFamily: "'DM Sans', sans-serif", outline: 'none', transition: 'border-color 0.15s', width: '100%' }}
+                  style={{ background: '#111', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '14px 18px', color: '#f0ede8', fontSize: '15px', fontFamily: "'Plus Jakarta Sans', sans-serif", outline: 'none', transition: 'border-color 0.15s', width: '100%' }}
                 />
               </div>
               {/* Industry — full width */}
@@ -369,7 +367,7 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
                   className="audit-input"
                   value={formData.industry}
                   onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
-                  style={{ background: '#111', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '14px 18px', color: formData.industry ? '#f0ede8' : '#44403c', fontSize: '15px', fontFamily: "'DM Sans', sans-serif", outline: 'none', transition: 'border-color 0.15s', width: '100%', appearance: 'none', cursor: 'pointer' }}
+                  style={{ background: '#111', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '14px 18px', color: formData.industry ? '#f0ede8' : '#44403c', fontSize: '15px', fontFamily: "'Plus Jakarta Sans', sans-serif", outline: 'none', transition: 'border-color 0.15s', width: '100%', appearance: 'none', cursor: 'pointer' }}
                 >
                   <option value="" disabled>Select your industry</option>
                   {['Plumbing', 'Electrical', 'Roofing', 'Locksmith', 'Cleaning', 'Removals', 'Construction', 'Restaurant', 'Beauty/Salon', 'Other'].map(o => (
@@ -390,9 +388,9 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
                 border: 'none',
                 borderRadius: '6px',
                 padding: '16px',
-                fontFamily: "'DM Sans', sans-serif",
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
                 fontSize: '13px',
-                fontWeight: 700,
+                fontWeight: 800,
                 letterSpacing: '0.1em',
                 textTransform: 'uppercase',
                 cursor: 'pointer',
