@@ -46,10 +46,8 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
 
   return (
     <div
-      className="min-h-screen"
+      className="min-h-screen bg-surface text-on-surface"
       style={{
-        background: "#0a0a0a",
-        color: "#f0ede8",
         fontFamily: "'Plus Jakarta Sans', sans-serif",
       }}
     >
@@ -60,14 +58,14 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
           display: inline-flex;
           align-items: center;
           gap: 8px;
-          background: rgba(255,255,255,0.06);
-          border: 1px solid rgba(255,255,255,0.12);
+          background: var(--color-surface-container-low);
+          border: 1px solid var(--color-outline-variant);
           border-radius: 100px;
           padding: 6px 16px;
           font-size: 13px;
           font-weight: 500;
           letter-spacing: 0.04em;
-          color: #a8a29e;
+          color: var(--color-on-surface-variant);
           margin-bottom: 32px;
         }
 
@@ -92,19 +90,19 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
           font-weight: 900;
           line-height: 1.0;
           letter-spacing: -0.04em;
-          color: #f0ede8;
+          color: var(--color-on-surface);
           margin: 0 0 28px;
         }
 
         .hero-title em {
           font-style: italic;
-          color: #c8b8a2;
+          color: var(--color-primary);
         }
 
         .hero-subtitle {
           font-size: 18px;
           line-height: 1.65;
-          color: #78716c;
+          color: var(--color-on-surface-variant);
           font-weight: 400;
           max-width: 520px;
           margin: 0 auto 44px;
@@ -114,8 +112,8 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
           display: inline-flex;
           align-items: center;
           gap: 10px;
-          background: #f0ede8;
-          color: #0a0a0a;
+          background: var(--color-on-surface);
+          color: var(--color-surface);
           border: none;
           cursor: pointer;
           padding: 16px 36px;
@@ -130,9 +128,9 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
         }
 
         .cta-button:hover {
-          background: #ffffff;
+          opacity: 0.9;
           transform: translateY(-2px);
-          box-shadow: 0 12px 40px rgba(240, 237, 232, 0.15);
+          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
         }
 
         .cta-button svg {
@@ -148,7 +146,7 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
         .divider-line {
           width: 100%;
           height: 1px;
-          background: rgba(255,255,255,0.06);
+          background: var(--color-outline-variant);
           margin: 80px 0;
         }
 
@@ -156,8 +154,8 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
           display: grid;
           grid-template-columns: repeat(3, 1fr);
           gap: 1px;
-          background: rgba(255,255,255,0.06);
-          border: 1px solid rgba(255,255,255,0.06);
+          background: var(--color-outline-variant);
+          border: 1px solid var(--color-outline-variant);
           border-radius: 12px;
           overflow: hidden;
           margin-bottom: 80px;
@@ -168,7 +166,7 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
         }
 
         .check-cell {
-          background: #0a0a0a;
+          background: var(--color-surface);
           padding: 28px 24px;
           display: flex;
           flex-direction: column;
@@ -176,7 +174,7 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
           transition: background 0.2s;
         }
 
-        .check-cell:hover { background: #111111; }
+        .check-cell:hover { background: var(--color-surface-container-low); }
 
         .check-icon {
           font-size: 22px;
@@ -186,7 +184,7 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
         .check-label {
           font-size: 14px;
           font-weight: 500;
-          color: #a8a29e;
+          color: var(--color-on-surface-variant);
           letter-spacing: 0.01em;
         }
 
@@ -194,10 +192,10 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 2px;
-          background: rgba(255,255,255,0.06);
+          background: var(--color-outline-variant);
           border-radius: 12px;
           overflow: hidden;
-          border: 1px solid rgba(255,255,255,0.06);
+          border: 1px solid var(--color-outline-variant);
           margin-bottom: 80px;
         }
 
@@ -206,7 +204,7 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
         }
 
         .col-panel {
-          background: #0a0a0a;
+          background: var(--color-surface);
           padding: 48px 40px;
         }
 
@@ -215,7 +213,7 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
           font-weight: 600;
           letter-spacing: 0.14em;
           text-transform: uppercase;
-          color: #57534e;
+          color: var(--color-on-surface-variant);
           margin-bottom: 32px;
         }
 
@@ -223,7 +221,7 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
           font-family: 'Plus Jakarta Sans', sans-serif;
           font-size: 26px;
           font-weight: 800;
-          color: #f0ede8;
+          color: var(--color-on-surface);
           margin: 0 0 28px;
           line-height: 1.2;
           letter-spacing: -0.02em;
@@ -234,8 +232,8 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
           align-items: baseline;
           gap: 12px;
           padding: 10px 0;
-          border-bottom: 1px solid rgba(255,255,255,0.04);
-          color: #78716c;
+          border-bottom: 1px solid var(--color-outline-variant);
+          color: var(--color-on-surface-variant);
           font-size: 15px;
           line-height: 1.5;
           font-weight: 400;
@@ -247,12 +245,12 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
           width: 4px;
           height: 4px;
           border-radius: 50%;
-          background: #44403c;
+          background: var(--color-outline-variant);
           flex-shrink: 0;
           margin-top: 8px;
         }
 
-        .list-dot-accent { background: #c8b8a2; }
+        .list-dot-accent { background: var(--color-primary); }
 
         .scroll-nudge {
           display: flex;
@@ -267,7 +265,7 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
           font-weight: 600;
           letter-spacing: 0.16em;
           text-transform: uppercase;
-          color: #44403c;
+          color: var(--color-on-surface-variant);
         }
 
         .scroll-arrow {
@@ -281,7 +279,7 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
           display: block;
           width: 1px;
           height: 20px;
-          background: linear-gradient(to bottom, #44403c, transparent);
+          background: linear-gradient(to bottom, var(--color-on-surface-variant), transparent);
           animation: drip 1.6s ease-in-out infinite;
         }
 
@@ -295,8 +293,8 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
           display: flex;
           gap: 2px;
           margin-bottom: 80px;
-          background: rgba(255,255,255,0.06);
-          border: 1px solid rgba(255,255,255,0.06);
+          background: var(--color-outline-variant);
+          border: 1px solid var(--color-outline-variant);
           border-radius: 12px;
           overflow: hidden;
         }
@@ -307,7 +305,7 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
 
         .stat-cell {
           flex: 1;
-          background: #0a0a0a;
+          background: var(--color-surface);
           padding: 36px 32px;
         }
 
@@ -315,7 +313,7 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
           font-family: 'Plus Jakarta Sans', sans-serif;
           font-size: 48px;
           font-weight: 900;
-          color: #f0ede8;
+          color: var(--color-on-surface);
           line-height: 1;
           margin-bottom: 8px;
           letter-spacing: -0.04em;
@@ -323,7 +321,7 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
 
         .stat-label {
           font-size: 13px;
-          color: #57534e;
+          color: var(--color-on-surface-variant);
           font-weight: 400;
           line-height: 1.5;
         }
@@ -419,7 +417,7 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
                         fontWeight: 600,
                         letterSpacing: "0.14em",
                         textTransform: "uppercase",
-                        color: "#57534e",
+                        color: "var(--color-on-surface-variant)",
                         marginBottom: "20px",
                       }}
                     >

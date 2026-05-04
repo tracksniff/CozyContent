@@ -11,11 +11,7 @@ const Navbar = () => {
   const { theme, setTheme } = useTheme();
   const [showThemeMenu, setShowThemeMenu] = useState(false);
   const [showServicesMenu, setShowServicesMenu] = useState(false);
-  const [showAuditMenu, setShowAuditMenu] = useState(false);
-  const [showAreasMenu, setShowAreasMenu] = useState(false);
   const [showMobileServices, setShowMobileServices] = useState(false);
-  const [showMobileAudit, setShowMobileAudit] = useState(false);
-  const [showMobileAreas, setShowMobileAreas] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [systemTheme, setSystemTheme] = useState<'light' | 'dark'>(
     window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
@@ -51,33 +47,10 @@ const Navbar = () => {
     { label: 'Websites for Removal Companies', href: '/services/removals' }
   ];
 
-  const auditItems = [
-    { label: 'Free Website Audit', href: '/audit' },
-    { label: 'Free Plumber Website Audit', href: '/free-plumbing-website-audit' },
-    { label: 'Free Roofer Website Audit', href: '/free-roofer-website-audit' },
-    { label: 'Free Locksmith Website Audit', href: '/free-locksmith-website-audit' },
-    { label: 'Free Electrician Website Audit', href: '/free-electrician-website-audit' },
-    { label: 'Free Cleaning Website Audit', href: '/free-cleaning-website-audit' },
-    { label: 'Free Removals Website Audit', href: '/free-removals-website-audit' }
-  ];
-
-  const areaItems = [
-    { label: 'Luton', href: '/services/plumbing/luton' },
-    { label: 'Bedford', href: '/services/plumbing/bedford' },
-    { label: 'Milton Keynes', href: '/services/plumbing/milton-keynes' },
-    { label: 'St Albans', href: '/services/plumbing/st-albans' },
-    { label: 'Watford', href: '/services/plumbing/watford' },
-    { label: 'London', href: '/services/plumbing/london' }
-  ];
-
   const handleNavClick = () => {
     setIsMobileMenuOpen(false);
     setShowServicesMenu(false);
-    setShowAuditMenu(false);
-    setShowAreasMenu(false);
     setShowMobileServices(false);
-    setShowMobileAudit(false);
-    setShowMobileAreas(false);
   };
 
   return (
@@ -107,7 +80,7 @@ const Navbar = () => {
           >
             <button
               onClick={() => setShowServicesMenu(!showServicesMenu)}
-              className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary ${location.pathname.startsWith('/services/') && !areaItems.some(a => location.pathname.endsWith(a.label.toLowerCase().replace(' ', '-'))) ? 'text-primary' : 'text-on-surface-variant'}`}
+              className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary ${location.pathname.startsWith('/services/') && !location.pathname.includes('/services/plumbing/') ? 'text-primary' : 'text-on-surface-variant'}`}
             >
               Services <ChevronDown size={14} className={`transition-transform duration-200 ${showServicesMenu ? 'rotate-180' : ''}`} />
             </button>
@@ -135,84 +108,9 @@ const Navbar = () => {
             </AnimatePresence>
           </div>
 
-          {/* Audit Dropdown */}
-          <div
-            className="relative py-2"
-            onMouseEnter={() => setShowAuditMenu(true)}
-            onMouseLeave={() => setShowAuditMenu(false)}
-          >
-            <button
-              onClick={() => setShowAuditMenu(!showAuditMenu)}
-              className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary ${location.pathname.includes('audit') ? 'text-primary' : 'text-on-surface-variant'}`}
-            >
-              Audit <ChevronDown size={14} className={`transition-transform duration-200 ${showAuditMenu ? 'rotate-180' : ''}`} />
-            </button>
-
-            <AnimatePresence>
-              {showAuditMenu && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                  className="absolute left-0 mt-2 w-64 rounded-2xl bg-surface border border-outline-variant/20 shadow-xl z-20 overflow-hidden backdrop-blur-md"
-                >
-                  {auditItems.map((item) => (
-                    <Link
-                      key={item.label}
-                      to={item.href}
-                      onClick={handleNavClick}
-                      className={`w-full flex items-center gap-3 px-5 py-3 text-sm font-medium transition-colors hover:bg-surface-container-high ${location.pathname === item.href ? 'text-primary bg-primary/5' : 'text-on-surface-variant'}`}
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
           <Link to="/pricing" className={`text-sm font-medium transition-colors hover:text-primary ${location.pathname === '/pricing' ? 'text-primary' : 'text-on-surface-variant'}`}>
             Pricing
           </Link>
-
-          {/* Areas Dropdown */}
-          <div
-            className="relative py-2"
-            onMouseEnter={() => setShowAreasMenu(true)}
-            onMouseLeave={() => setShowAreasMenu(false)}
-          >
-            <button
-              onClick={() => setShowAreasMenu(!showAreasMenu)}
-              className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary ${areaItems.some(a => location.pathname.endsWith(a.label.toLowerCase().replace(' ', '-'))) ? 'text-primary' : 'text-on-surface-variant'}`}
-            >
-              Areas <ChevronDown size={14} className={`transition-transform duration-200 ${showAreasMenu ? 'rotate-180' : ''}`} />
-            </button>
-
-            <AnimatePresence>
-              {showAreasMenu && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                  className="absolute left-0 mt-2 w-56 rounded-2xl bg-surface border border-outline-variant/20 shadow-xl z-20 overflow-hidden backdrop-blur-md"
-                >
-                  <div className="px-5 py-2 text-[10px] font-black uppercase tracking-widest text-primary/60 border-b border-outline-variant/10">
-                    📍 Areas We Serve
-                  </div>
-                  {areaItems.map((item) => (
-                    <Link
-                      key={item.label}
-                      to={item.href}
-                      onClick={handleNavClick}
-                      className={`w-full flex items-center gap-3 px-5 py-3 text-sm font-medium transition-colors hover:bg-surface-container-high ${location.pathname === item.href ? 'text-primary bg-primary/5' : 'text-on-surface-variant'}`}
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
 
           <Link to="/our-brands" className={`text-sm font-medium transition-colors hover:text-primary ${location.pathname === '/our-brands' ? 'text-primary' : 'text-on-surface-variant'}`}>
             About
@@ -336,67 +234,9 @@ const Navbar = () => {
                 </AnimatePresence>
               </div>
 
-              {/* Mobile Audit */}
-              <div className="flex flex-col border-t border-outline-variant/5 pt-2">
-                <button
-                  onClick={() => setShowMobileAudit(!showMobileAudit)}
-                  className="flex items-center justify-between text-lg font-bold text-on-surface-variant py-2"
-                >
-                  Audit
-                  <ChevronDown size={20} className={`transition-transform duration-300 ${showMobileAudit ? 'rotate-180' : ''}`} />
-                </button>
-                <AnimatePresence>
-                  {showMobileAudit && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="overflow-hidden bg-surface-container-low rounded-2xl"
-                    >
-                      <div className="flex flex-col p-2">
-                        {auditItems.map((item) => (
-                          <Link key={item.label} to={item.href} onClick={handleNavClick} className="text-sm font-bold text-on-surface-variant p-3 hover:bg-surface-container rounded-xl">
-                            {item.label}
-                          </Link>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
               <Link to="/pricing" onClick={handleNavClick} className="text-lg font-bold text-on-surface-variant py-2 border-t border-outline-variant/5 pt-2">
                 Pricing
               </Link>
-
-              {/* Mobile Areas */}
-              <div className="flex flex-col border-t border-outline-variant/5 pt-2">
-                <button
-                  onClick={() => setShowMobileAreas(!showMobileAreas)}
-                  className="flex items-center justify-between text-lg font-bold text-on-surface-variant py-2"
-                >
-                  Areas We Serve
-                  <ChevronDown size={20} className={`transition-transform duration-300 ${showMobileAreas ? 'rotate-180' : ''}`} />
-                </button>
-                <AnimatePresence>
-                  {showMobileAreas && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="overflow-hidden bg-surface-container-low rounded-2xl"
-                    >
-                      <div className="flex flex-col p-2">
-                        {areaItems.map((item) => (
-                          <Link key={item.label} to={item.href} onClick={handleNavClick} className="text-sm font-bold text-on-surface-variant p-3 hover:bg-surface-container rounded-xl flex items-center gap-2">
-                            <MapPin size={14} className="text-primary/60" /> {item.label}
-                          </Link>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
 
               <Link to="/our-brands" onClick={handleNavClick} className="text-lg font-bold text-on-surface-variant py-2 border-t border-outline-variant/5 pt-2">
                 About

@@ -106,16 +106,16 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
           <span style={{ fontSize: '20px' }}>✓</span>
           <div>
             <div style={{ fontSize: '14px', fontWeight: 600, color: '#4ade80', marginBottom: '2px' }}>Thanks — your request has been received.</div>
-            <div style={{ fontSize: '14px', color: '#78716c' }}>
-              We’ll review your website and send your personalised audit shortly to <span style={{ color: '#a8a29e' }}>{formData.email}</span>
+            <div style={{ fontSize: '14px', color: 'var(--color-on-surface-variant)' }}>
+              We’ll review your website and send your personalised audit shortly to <span style={{ color: 'var(--color-on-surface)' }}>{formData.email}</span>
             </div>
           </div>
         </div>
 
         {/* Header */}
         <div style={{
-          background: '#0f0f0f',
-          border: '1px solid rgba(255,255,255,0.06)',
+          background: 'var(--color-surface)',
+          border: '1px solid var(--color-outline-variant)',
           borderTop: 'none',
           borderRadius: '0 0 12px 12px',
           padding: '40px 40px 0',
@@ -123,19 +123,19 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
         }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '32px', paddingBottom: '40px', flexWrap: 'wrap' }}>
             <div>
-              <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#57534e', marginBottom: '12px' }}>
+              <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-on-surface-variant)', marginBottom: '12px' }}>
                 Audit Report
               </div>
-              <h2 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '36px', fontWeight: 900, color: '#f0ede8', margin: '0 0 8px', lineHeight: 1.1, letterSpacing: '-0.02em' }}>
+              <h2 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '36px', fontWeight: 900, color: 'var(--color-on-surface)', margin: '0 0 8px', lineHeight: 1.1, letterSpacing: '-0.02em' }}>
                 {formData.business_name}
               </h2>
-              <p style={{ fontSize: '14px', color: '#57534e', margin: 0 }}>{formData.website_url}</p>
+              <p style={{ fontSize: '14px', color: 'var(--color-on-surface-variant)', margin: 0 }}>{formData.website_url}</p>
             </div>
 
             {/* Score ring */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
               <svg width="120" height="120" viewBox="0 0 120 120" style={{ transform: 'rotate(-90deg)' }}>
-                <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6" />
+                <circle cx="60" cy="60" r="54" fill="none" stroke="var(--color-outline-variant)" strokeWidth="6" />
                 <motion.circle
                   cx="60" cy="60" r="54"
                   fill="none"
@@ -152,10 +152,10 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
                 {/* Overlaid via flex trick below */}
               </div>
               <div style={{ marginTop: '-88px', textAlign: 'center', lineHeight: 1 }}>
-                <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '38px', fontWeight: 900, color: '#f0ede8', letterSpacing: '-0.04em' }}>
+                <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '38px', fontWeight: 900, color: 'var(--color-on-surface)', letterSpacing: '-0.04em' }}>
                   {result.overall_score}
                 </div>
-                <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#57534e', marginTop: '68px' }}>
+                <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-on-surface-variant)', marginTop: '68px' }}>
                   Overall
                 </div>
               </div>
@@ -163,12 +163,12 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
           </div>
 
           {/* Score strip */}
-          <div style={{ margin: '0 -40px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-            <div className="scores-strip" style={{ gap: '1px', background: 'rgba(255,255,255,0.06)' }}>
+          <div style={{ margin: '0 -40px', borderTop: '1px solid var(--color-outline-variant)' }}>
+            <div className="scores-strip" style={{ gap: '1px', background: 'var(--color-outline-variant)' }}>
               {Object.entries(result.scores).map(([key, score], i) => (
-                <div key={i} style={{ background: '#0f0f0f', padding: '20px 24px' }}>
+                <div key={i} style={{ background: 'var(--color-surface)', padding: '20px 24px' }}>
                   <div style={{ fontSize: '22px', fontWeight: 700, color: scoreColor(score), marginBottom: '4px' }}>{score}</div>
-                  <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#44403c' }}>
+                  <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--color-on-surface-variant)' }}>
                     {SCORE_LABELS[key] ?? key}
                   </div>
                 </div>
@@ -178,35 +178,35 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
         </div>
 
         {/* Findings + Quick wins */}
-        <div className="audit-result-grid" style={{ background: 'rgba(255,255,255,0.06)', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.06)', marginBottom: '2px' }}>
-          <div style={{ background: '#0f0f0f', padding: '36px 32px' }}>
-            <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#57534e', marginBottom: '24px' }}>
+        <div className="audit-result-grid" style={{ background: 'var(--color-outline-variant)', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--color-outline-variant)', marginBottom: '2px' }}>
+          <div style={{ background: 'var(--color-surface)', padding: '36px 32px' }}>
+            <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-on-surface-variant)', marginBottom: '24px' }}>
               Critical findings
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
               {result.findings.map((f, i) => (
-                <div key={i} style={{ padding: '16px 0', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                <div key={i} style={{ padding: '16px 0', borderBottom: '1px solid var(--color-outline-variant)' }}>
                   <div style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#f87171', marginBottom: '4px' }}>
                     {f.severity}
                   </div>
-                  <div style={{ fontSize: '14px', fontWeight: 600, color: '#f0ede8', marginBottom: '4px' }}>{f.issue}</div>
-                  <div style={{ fontSize: '13px', color: '#57534e', lineHeight: 1.5 }}>{f.detail}</div>
+                  <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-on-surface)', marginBottom: '4px' }}>{f.issue}</div>
+                  <div style={{ fontSize: '13px', color: 'var(--color-on-surface-variant)', lineHeight: 1.5 }}>{f.detail}</div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div style={{ background: '#0f0f0f', padding: '36px 32px', borderLeft: '1px solid rgba(255,255,255,0.06)' }}>
-            <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#57534e', marginBottom: '24px' }}>
+          <div style={{ background: 'var(--color-surface)', padding: '36px 32px', borderLeft: '1px solid var(--color-outline-variant)' }}>
+            <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-on-surface-variant)', marginBottom: '24px' }}>
               Quick wins
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
               {result.quick_wins.map((w, i) => (
-                <div key={i} style={{ padding: '16px 0', borderBottom: '1px solid rgba(255,255,255,0.04)', display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                <div key={i} style={{ padding: '16px 0', borderBottom: '1px solid var(--color-outline-variant)', display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
                   <span style={{ color: '#4ade80', fontSize: '13px', marginTop: '1px', flexShrink: 0 }}>→</span>
                   <div>
-                    <div style={{ fontSize: '14px', fontWeight: 600, color: '#f0ede8', marginBottom: '4px' }}>{w.action}</div>
-                    <div style={{ fontSize: '13px', color: '#57534e', lineHeight: 1.5 }}>{w.detail}</div>
+                    <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-on-surface)', marginBottom: '4px' }}>{w.action}</div>
+                    <div style={{ fontSize: '13px', color: 'var(--color-on-surface-variant)', lineHeight: 1.5 }}>{w.detail}</div>
                   </div>
                 </div>
               ))}
@@ -216,19 +216,19 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
 
         {/* CTA */}
         <div style={{
-          background: '#0f0f0f',
-          border: '1px solid rgba(255,255,255,0.06)',
+          background: 'var(--color-surface)',
+          border: '1px solid var(--color-outline-variant)',
           borderRadius: '12px',
           padding: '48px 40px',
           textAlign: 'center',
         }}>
-          <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#57534e', marginBottom: '16px' }}>
+          <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-on-surface-variant)', marginBottom: '16px' }}>
             Next step
           </div>
-          <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '32px', fontWeight: 900, color: '#f0ede8', margin: '0 0 16px', lineHeight: 1.15, letterSpacing: '-0.02em' }}>
-            We can fix this <em style={{ fontStyle: 'italic', color: '#c8b8a2' }}>in 7 days.</em>
+          <h3 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '32px', fontWeight: 900, color: 'var(--color-on-surface)', margin: '0 0 16px', lineHeight: 1.15, letterSpacing: '-0.02em' }}>
+            We can fix this <em style={{ fontStyle: 'italic', color: 'var(--color-primary)' }}>in 7 days.</em>
           </h3>
-          <p style={{ fontSize: '15px', color: '#78716c', maxWidth: '480px', margin: '0 auto 36px', lineHeight: 1.65 }}>
+          <p style={{ fontSize: '15px', color: 'var(--color-on-surface-variant)', maxWidth: '480px', margin: '0 auto 36px', lineHeight: 1.65 }}>
             We'll rebuild your site into a modern, high-converting lead machine — zero upfront cost on our monthly plan.
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -236,8 +236,8 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '10px',
-              background: '#f0ede8',
-              color: '#0a0a0a',
+              background: 'var(--color-on-surface)',
+              color: 'var(--color-surface)',
               padding: '14px 32px',
               borderRadius: '4px',
               fontFamily: "'Plus Jakarta Sans', sans-serif",
@@ -252,8 +252,8 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
             </Link>
             <button onClick={() => setResult(null)} style={{
               background: 'transparent',
-              border: '1px solid rgba(255,255,255,0.1)',
-              color: '#78716c',
+              border: '1px solid var(--color-outline-variant)',
+              color: 'var(--color-on-surface-variant)',
               padding: '14px 28px',
               borderRadius: '4px',
               fontFamily: "'Plus Jakarta Sans', sans-serif",
@@ -282,20 +282,20 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
       `}</style>
 
       <div style={{
-        background: '#0f0f0f',
-        border: '1px solid rgba(255,255,255,0.06)',
+        background: 'var(--color-surface)',
+        border: '1px solid var(--color-outline-variant)',
         borderRadius: '12px',
         overflow: 'hidden',
       }}>
         {/* Form header */}
-        <div style={{ padding: '48px 48px 40px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-          <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#57534e', marginBottom: '16px' }}>
+        <div style={{ padding: '48px 48px 40px', borderBottom: '1px solid var(--color-outline-variant)' }}>
+          <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--color-on-surface-variant)', marginBottom: '16px' }}>
             Free website audit
           </div>
-          <h2 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 900, color: '#f0ede8', margin: '0 0 12px', lineHeight: 1.1, letterSpacing: '-0.04em' }}>
-            Is your website losing<br /><em style={{ fontStyle: 'italic', color: '#c8b8a2' }}>you leads?</em>
+          <h2 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 900, color: 'var(--color-on-surface)', margin: '0 0 12px', lineHeight: 1.1, letterSpacing: '-0.04em' }}>
+            Is your website losing<br /><em style={{ fontStyle: 'italic', color: 'var(--color-primary)' }}>you leads?</em>
           </h2>
-          <p style={{ fontSize: '15px', color: '#57534e', margin: 0, lineHeight: 1.6 }}>
+          <p style={{ fontSize: '15px', color: 'var(--color-on-surface-variant)', margin: 0, lineHeight: 1.6 }}>
             Paste your URL and get a full breakdown — no signup, no card, no catch.
           </p>
         </div>
@@ -306,72 +306,72 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
             <div className="audit-form-grid" style={{ marginBottom: '20px' }}>
               {/* Name */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <label style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#57534e' }}>Your name</label>
+                <label style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-on-surface-variant)' }}>Your name</label>
                 <input
                   required type="text" placeholder="Jane Smith"
                   className="audit-input"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  style={{ background: '#111', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '14px 18px', color: '#f0ede8', fontSize: '15px', fontFamily: "'Plus Jakarta Sans', sans-serif", outline: 'none', transition: 'border-color 0.15s', width: '100%' }}
+                  style={{ background: 'var(--color-surface-container-low)', border: '1px solid var(--color-outline-variant)', borderRadius: '6px', padding: '14px 18px', color: 'var(--color-on-surface)', fontSize: '15px', fontFamily: "'Plus Jakarta Sans', sans-serif", outline: 'none', transition: 'border-color 0.15s', width: '100%' }}
                 />
               </div>
               {/* Email */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <label style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#57534e' }}>Email address</label>
+                <label style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-on-surface-variant)' }}>Email address</label>
                 <input
                   required type="email" placeholder="jane@company.com"
                   className="audit-input"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  style={{ background: '#111', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '14px 18px', color: '#f0ede8', fontSize: '15px', fontFamily: "'Plus Jakarta Sans', sans-serif", outline: 'none', transition: 'border-color 0.15s', width: '100%' }}
+                  style={{ background: 'var(--color-surface-container-low)', border: '1px solid var(--color-outline-variant)', borderRadius: '6px', padding: '14px 18px', color: 'var(--color-on-surface)', fontSize: '15px', fontFamily: "'Plus Jakarta Sans', sans-serif", outline: 'none', transition: 'border-color 0.15s', width: '100%' }}
                 />
               </div>
               {/* Business name */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <label style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#57534e' }}>Business name</label>
+                <label style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-on-surface-variant)' }}>Business name</label>
                 <input
                   required type="text" placeholder="Acme Plumbing"
                   className="audit-input"
                   value={formData.business_name}
                   onChange={(e) => setFormData({ ...formData, business_name: e.target.value })}
-                  style={{ background: '#111', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '14px 18px', color: '#f0ede8', fontSize: '15px', fontFamily: "'Plus Jakarta Sans', sans-serif", outline: 'none', transition: 'border-color 0.15s', width: '100%' }}
+                  style={{ background: 'var(--color-surface-container-low)', border: '1px solid var(--color-outline-variant)', borderRadius: '6px', padding: '14px 18px', color: 'var(--color-on-surface)', fontSize: '15px', fontFamily: "'Plus Jakarta Sans', sans-serif", outline: 'none', transition: 'border-color 0.15s', width: '100%' }}
                 />
               </div>
               {/* Location */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <label style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#57534e' }}>City / Location</label>
+                <label style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-on-surface-variant)' }}>City / Location</label>
                 <input
                   required type="text" placeholder="London, UK"
                   className="audit-input"
                   value={formData.location}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  style={{ background: '#111', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '14px 18px', color: '#f0ede8', fontSize: '15px', fontFamily: "'Plus Jakarta Sans', sans-serif", outline: 'none', transition: 'border-color 0.15s', width: '100%' }}
+                  style={{ background: 'var(--color-surface-container-low)', border: '1px solid var(--color-outline-variant)', borderRadius: '6px', padding: '14px 18px', color: 'var(--color-on-surface)', fontSize: '15px', fontFamily: "'Plus Jakarta Sans', sans-serif", outline: 'none', transition: 'border-color 0.15s', width: '100%' }}
                 />
               </div>
               {/* Website URL — full width */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', gridColumn: '1 / -1' }}>
-                <label style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#57534e' }}>Website URL</label>
+                <label style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-on-surface-variant)' }}>Website URL</label>
                 <input
                   required type="url" placeholder="https://yourwebsite.com"
                   className="audit-input"
                   value={formData.website_url}
                   onChange={(e) => setFormData({ ...formData, website_url: e.target.value })}
-                  style={{ background: '#111', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '14px 18px', color: '#f0ede8', fontSize: '15px', fontFamily: "'Plus Jakarta Sans', sans-serif", outline: 'none', transition: 'border-color 0.15s', width: '100%' }}
+                  style={{ background: 'var(--color-surface-container-low)', border: '1px solid var(--color-outline-variant)', borderRadius: '6px', padding: '14px 18px', color: 'var(--color-on-surface)', fontSize: '15px', fontFamily: "'Plus Jakarta Sans', sans-serif", outline: 'none', transition: 'border-color 0.15s', width: '100%' }}
                 />
               </div>
               {/* Industry — full width */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', gridColumn: '1 / -1' }}>
-                <label style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#57534e' }}>Industry</label>
+                <label style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-on-surface-variant)' }}>Industry</label>
                 <select
                   required
                   className="audit-input"
                   value={formData.industry}
                   onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
-                  style={{ background: '#111', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '6px', padding: '14px 18px', color: formData.industry ? '#f0ede8' : '#44403c', fontSize: '15px', fontFamily: "'Plus Jakarta Sans', sans-serif", outline: 'none', transition: 'border-color 0.15s', width: '100%', appearance: 'none', cursor: 'pointer' }}
+                  style={{ background: 'var(--color-surface-container-low)', border: '1px solid var(--color-outline-variant)', borderRadius: '6px', padding: '14px 18px', color: formData.industry ? 'var(--color-on-surface)' : 'var(--color-on-surface-variant)', fontSize: '15px', fontFamily: "'Plus Jakarta Sans', sans-serif", outline: 'none', transition: 'border-color 0.15s', width: '100%', appearance: 'none', cursor: 'pointer' }}
                 >
                   <option value="" disabled>Select your industry</option>
                   {['Plumbing', 'Electrical', 'Roofing', 'Locksmith', 'Cleaning', 'Removals', 'Construction', 'Restaurant', 'Beauty/Salon', 'Other'].map(o => (
-                    <option key={o} value={o} style={{ background: '#111', color: '#f0ede8' }}>{o}</option>
+                    <option key={o} value={o} style={{ background: 'var(--color-surface)', color: 'var(--color-on-surface)' }}>{o}</option>
                   ))}
                 </select>
               </div>
@@ -383,8 +383,8 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
               className="submit-btn"
               style={{
                 width: '100%',
-                background: '#f0ede8',
-                color: '#0a0a0a',
+                background: 'var(--color-on-surface)',
+                color: 'var(--color-surface)',
                 border: 'none',
                 borderRadius: '6px',
                 padding: '16px',
@@ -412,7 +412,7 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
               )}
             </button>
 
-            <p style={{ marginTop: '20px', textAlign: 'center', fontSize: '12px', color: '#44403c', letterSpacing: '0.04em' }}>
+            <p style={{ marginTop: '20px', textAlign: 'center', fontSize: '12px', color: 'var(--color-on-surface-variant)', letterSpacing: '0.04em' }}>
               No credit card · No account · Results in seconds
             </p>
           </form>
