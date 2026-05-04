@@ -3,7 +3,7 @@ import { useAuth } from './AuthContext';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
-import logo from './assets/PNG/Cosy Content Ltd -05.png';
+import logo from './assets/PNG/Cosy Content Ltd -04.png';
 import toast from 'react-hot-toast';
 
 const Login: React.FC = () => {

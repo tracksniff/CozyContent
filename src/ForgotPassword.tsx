@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeft, Mail, Lock, CheckCircle, ShieldCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
-import logo from './assets/PNG/Cosy Content Ltd -05.png';
+import logo from './assets/PNG/Cosy Content Ltd -04.png';
 
 const ForgotPassword: React.FC = () => {
   const [step, setStep] = useState<1 | 2>(1); // 1: Request OTP, 2: Verify & Reset

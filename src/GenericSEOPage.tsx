@@ -49,7 +49,11 @@ const GenericSEOPage: React.FC = () => {
               {data.location ? `Local SEO Experts in ${data.location}` : 'Industry Specific Solutions'}
             </div>
             <h1 className="text-5xl md:text-7xl font-black text-on-surface tracking-tight mb-8 leading-tight max-w-5xl mx-auto">
-              {data.metaTitle.split('|')[0].trim()}
+              {data.metaTitle.split('|')[0].trim().split(' ').map((word, i, arr) => (
+                <span key={i}>
+                  {i === arr.length - 1 ? <span className="text-primary italic">{word}</span> : word}{' '}
+                </span>
+              ))}
             </h1>
             <p className="text-xl text-on-surface-variant max-w-3xl mx-auto font-medium leading-relaxed mb-12">
               {data.metaDescription}

@@ -19,7 +19,7 @@ import {
 import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import logo from "./assets/PNG/Cosy Content Ltd -05.png";
+import logo from "./assets/PNG/Cosy Content Ltd -04.png";
 
 // @ts-ignore
 delete L.Icon.Default.prototype._getIconUrl;

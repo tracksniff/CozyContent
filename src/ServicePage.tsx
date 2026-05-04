@@ -169,6 +169,10 @@ const ServicePage: React.FC = () => {
   const { niche } = useParams<{ niche: string }>();
   const data = niche ? SERVICE_DATA[niche.toLowerCase()] : null;
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [niche]);
+
   if (!data) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-surface">
@@ -193,7 +197,7 @@ const ServicePage: React.FC = () => {
                 Industry Specific Solutions
               </div>
               <h1 className="text-5xl md:text-6xl font-black text-on-surface tracking-tight mb-6 leading-tight">
-                {data.title}
+                Websites for <span className="text-primary italic">{niche ? niche.charAt(0).toUpperCase() + niche.slice(1) : ''}</span>
               </h1>
               <p className="text-xl text-on-surface-variant font-medium mb-10 leading-relaxed">
                 {data.desc}

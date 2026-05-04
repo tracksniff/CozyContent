@@ -7,6 +7,10 @@ import Footer from './Footer';
 const LocalSEOPage: React.FC = () => {
   const { niche, city } = useParams<{ niche: string; city: string }>();
 
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [niche, city]);
+
   // Capitalize for display
   const nicheTitle = niche ? niche.charAt(0).toUpperCase() + niche.slice(1) : '';
   const cityTitle = city ? city.charAt(0).toUpperCase() + city.slice(1) : '';
@@ -24,7 +28,7 @@ const LocalSEOPage: React.FC = () => {
               <MapPin size={12} /> Local Service Experts in {cityTitle}
             </div>
             <h1 className="text-5xl md:text-7xl font-black text-on-surface tracking-tight mb-8">
-               Dominate {nicheTitle} in <span className="text-primary">{cityTitle}</span>
+               Dominate {nicheTitle} in <span className="text-primary italic">{cityTitle}</span>
             </h1>
             <p className="text-xl text-on-surface-variant max-w-3xl mx-auto font-medium leading-relaxed mb-12">
                Looking for the best {nicheTitle} website in {cityTitle}? We specialize in building performance-driven, SEO-optimized websites for local service businesses. Win the local search game and get more customers in {cityTitle}.

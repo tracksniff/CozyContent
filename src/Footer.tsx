@@ -1,10 +1,6 @@
 import { Link } from 'react-router-dom';
 import logoLight from './assets/Logo JPG/Cosy_Content_Ltd_-_Horizontal_2-removebg-preview.png';
 import logoDark from './assets/Logo JPG/Cosy_Content_Ltd_-_Horizontal-removebg-preview.png';
-import facebook from './assets/Social Media Icons/Cosy Content Ltd - Facebook.png';
-import instagram from './assets/Social Media Icons/Cosy Content Ltd - Instagram.png';
-import linkedin from './assets/Social Media Icons/Cosy Content Ltd - Linkedin.png';
-import tiktok from './assets/Social Media Icons/Cosy Content Ltd - TikTok.png';
 import { useTheme } from './ThemeContext';
 import { useState, useEffect } from 'react';
 import { seoPagesData } from './seoPagesData';
@@ -52,17 +48,11 @@ const Footer = () => {
             Modern websites in 7 days. No stress, just results.
           </p>
           <div className="flex items-center gap-4">
-            <a href="#" className="hover:scale-110 transition-transform">
-              <img src={facebook} alt="Facebook" className="w-6 h-6 object-contain grayscale hover:grayscale-0 transition-all" />
+            <a href="https://www.facebook.com/share/15nF3w1GAt/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">
+              <img src="https://www.vectorlogo.zone/logos/facebook/facebook-icon.svg" alt="Facebook" className="w-6 h-6 object-contain grayscale hover:grayscale-0 transition-all" />
             </a>
-            <a href="#" className="hover:scale-110 transition-transform">
-              <img src={instagram} alt="Instagram" className="w-6 h-6 object-contain grayscale hover:grayscale-0 transition-all" />
-            </a>
-            <a href="#" className="hover:scale-110 transition-transform">
-              <img src={linkedin} alt="Linkedin" className="w-6 h-6 object-contain grayscale hover:grayscale-0 transition-all" />
-            </a>
-            <a href="#" className="hover:scale-110 transition-transform">
-              <img src={tiktok} alt="TikTok" className="w-6 h-6 object-contain grayscale hover:grayscale-0 transition-all" />
+            <a href="https://www.linkedin.com/company/cosy-content/" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">
+              <img src="https://www.vectorlogo.zone/logos/linkedin/linkedin-icon.svg" alt="Linkedin" className="w-6 h-6 object-contain grayscale hover:grayscale-0 transition-all" />
             </a>
           </div>
         </div>

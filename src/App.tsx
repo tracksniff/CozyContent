@@ -19,6 +19,7 @@ import CookiePolicy from './CookiePolicy';
 import Contact from './Contact';
 import AuditPage from './AuditPage';
 import GenericSEOPage from './GenericSEOPage';
+import ScrollToTop from './ScrollToTop';
 import { seoPagesData } from './seoPagesData';
 import FloatingThemeToggle from './FloatingThemeToggle';
 import { ThemeProvider } from './ThemeContext';
@@ -51,6 +52,7 @@ function App() {
       <Toaster position="top-right" />
       <AuthProvider>
         <Router>
+          <ScrollToTop />
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/audit" element={<AuditPage />} />
