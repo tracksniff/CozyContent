@@ -18,6 +18,8 @@ import TermsConditions from './TermsConditions';
 import CookiePolicy from './CookiePolicy';
 import Contact from './Contact';
 import AuditPage from './AuditPage';
+import GenericSEOPage from './GenericSEOPage';
+import { seoPagesData } from './seoPagesData';
 import FloatingThemeToggle from './FloatingThemeToggle';
 import { ThemeProvider } from './ThemeContext';
 import { AuthProvider, useAuth } from './AuthContext';
@@ -112,6 +114,12 @@ function App() {
             <Route path="/terms-conditions" element={<TermsConditions />} />
             <Route path="/cookie-policy" element={<CookiePolicy />} />
             <Route path="/contact" element={<Contact />} />
+            
+            {/* Dynamic SEO Pages */}
+            {Object.keys(seoPagesData).map((path) => (
+              <Route key={path} path={`/${path}`} element={<GenericSEOPage />} />
+            ))}
+
             <Route
               path="/dashboard"
               element={

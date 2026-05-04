@@ -7,6 +7,7 @@ import linkedin from './assets/Social Media Icons/Cosy Content Ltd - Linkedin.pn
 import tiktok from './assets/Social Media Icons/Cosy Content Ltd - TikTok.png';
 import { useTheme } from './ThemeContext';
 import { useState, useEffect } from 'react';
+import { seoPagesData } from './seoPagesData';
 
 const Footer = () => {
   const { theme } = useTheme();
@@ -25,6 +26,16 @@ const Footer = () => {
 
   const isDark = theme === 'dark' || (theme === 'system' && systemTheme === 'dark');
   const currentLogo = isDark ? logoDark : logoLight;
+
+  const industries = [
+    { id: 'Plumbing', label: 'Plumbing' },
+    { id: 'Electrical', label: 'Electricians' },
+    { id: 'Roofing', label: 'Roofers' },
+    { id: 'Locksmith', label: 'Locksmiths' },
+    { id: 'Cleaning', label: 'Cleaning Companies' },
+    { id: 'Removals', label: 'Removal Companies' }
+  ];
+  const seoPages = Object.values(seoPagesData);
 
   return (
     <footer className="py-16 md:py-20 border-t border-outline-variant/10 transition-colors duration-300">
@@ -89,6 +100,30 @@ const Footer = () => {
           </div>
         </div>
       </div>
+
+      {/* Specialized SEO Services Section */}
+      <div className="max-w-7xl mx-auto px-6 md:px-12 mt-16 pt-16 border-t border-outline-variant/5">
+        <h4 className="font-bold mb-10 text-[10px] md:text-xs tracking-widest uppercase text-on-surface-variant">Our Specialized Services</h4>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-8 gap-y-12">
+          {industries.map(industry => (
+            <div key={industry.id}>
+              <h5 className="font-bold mb-5 text-xs text-on-surface tracking-tight">{industry.label}</h5>
+              <ul className="space-y-2.5 text-on-surface-variant text-[11px] font-medium">
+                {seoPages
+                  .filter(p => p.industry === industry.id)
+                  .map(page => (
+                    <li key={page.url}>
+                      <Link to={`/${page.url}`} className="hover:text-primary transition-colors inline-block">
+                        {page.location ? `${industry.label} in ${page.location}` : `Web Design for ${industry.label}`}
+                      </Link>
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className="max-w-7xl mx-auto px-6 md:px-12 mt-12 md:mt-20 pt-8 border-t border-outline-variant/5 text-xs md:text-sm text-on-surface-variant/60 font-medium">
         Copyright 2026 © Cosy Content Limited. All rights reserved.
       </div>
