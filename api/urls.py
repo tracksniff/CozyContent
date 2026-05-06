@@ -9,7 +9,6 @@ from .views import (
     CreateCheckoutSessionView, 
     StripeWebhookView,
     contact_us,
-    RequestEditView,
     RequestPasswordResetOTPView,
     VerifyPasswordResetOTPView,
     ChangePasswordView,
