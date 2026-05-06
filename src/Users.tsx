@@ -89,7 +89,7 @@ const Users: React.FC = () => {
                     )}
                     {u.is_premium ? (
                       <span className="px-3 py-1 bg-green-500/10 text-green-500 rounded-full text-[10px] font-black uppercase tracking-widest border border-green-500/20 flex items-center gap-1">
-                        Premium
+                        {u.plan_type ? u.plan_type.replace('_', ' ') : 'Premium'}
                       </span>
                     ) : (
                         <span className="px-3 py-1 bg-surface border border-outline-variant rounded-full text-[10px] font-black uppercase tracking-widest text-on-surface-variant">

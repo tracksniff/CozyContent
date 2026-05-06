@@ -68,11 +68,23 @@ const Profile: React.FC = () => {
                   <div className="space-y-4">
                     <div className="flex items-center gap-3 text-green-500">
                       <CheckCircle2 size={24} />
-                      <span className="text-lg font-bold">Your account is Premium</span>
+                      <span className="text-lg font-bold">
+                        {user.plan_type === 'one_time' ? 'Lifetime Owner' : 
+                         user.plan_type === 'annual' ? 'Annual Concierge' : 
+                         user.plan_type === 'monthly' ? 'Monthly Concierge' : 
+                         'Premium Account'}
+                      </span>
                     </div>
-                    <p className="text-on-surface-variant font-medium">
-                      Status: <span className="uppercase font-black text-xs tracking-widest">{user?.subscription_status}</span>
-                    </p>
+                    <div className="flex flex-wrap gap-4">
+                      <p className="text-on-surface-variant font-medium">
+                        Status: <span className="uppercase font-black text-xs tracking-widest bg-green-500/10 text-green-500 px-2 py-1 rounded-md">{user?.subscription_status}</span>
+                      </p>
+                      {user.plan_type && (
+                        <p className="text-on-surface-variant font-medium">
+                          Plan: <span className="uppercase font-black text-xs tracking-widest bg-primary/10 text-primary px-2 py-1 rounded-md">{user.plan_type.replace('_', ' ')}</span>
+                        </p>
+                      )}
+                    </div>
                   </div>
                 ) : (
                   <div className="space-y-8">

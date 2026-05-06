@@ -68,15 +68,17 @@ const Sidebar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const isMonthlyUser = user?.is_staff || user?.plan_type === 'monthly' || user?.plan_type === 'annual' || user?.plan_type === 'priority_monthly';
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    if (params.get('request_update') === 'true') {
+    if (params.get('request_update') === 'true' && isMonthlyUser) {
       setShowEditModal(true);
       // Remove the param without refreshing
       const newUrl = window.location.pathname;
       window.history.replaceState({}, '', newUrl);
     }
-  }, [location]);
+  }, [location, isMonthlyUser]);
 
   const fetchSiteRequests = async () => {
     if (!token) return;
@@ -125,7 +127,7 @@ const Sidebar: React.FC = () => {
     const totalRemaining = (user.monthly_requests_remaining || 0) + (user.purchased_requests_remaining || 0);
     if (totalRemaining <= 0) {
       alert('You have no remaining requests. Please purchase an update pack.');
-      navigate('/pricing');
+      navigate('/add-ons');
       setShowEditModal(false);
       return;
     }
@@ -161,7 +163,7 @@ const Sidebar: React.FC = () => {
         
         <div className="flex items-center gap-4">
           {user && !user.is_staff && (
-            <Link to="/pricing" className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20 hover:bg-primary/20 transition-all">
+            <Link to="/add-ons" className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20 hover:bg-primary/20 transition-all">
               <span className="text-[10px] font-black text-primary uppercase tracking-widest">
                 {(user.monthly_requests_remaining || 0) + (user.purchased_requests_remaining || 0)} Updates
               </span>
@@ -231,15 +233,17 @@ const Sidebar: React.FC = () => {
           ))}
 
           {/* Request Changes Option */}
-          <SidebarItem
-            icon={<Edit3 size={20} />}
-            label="Request Changes"
-            collapsed={isCollapsed}
-            onClick={() => {
-              setShowEditModal(true);
-              setIsMobileOpen(false);
-            }}
-          />
+          {isMonthlyUser && (
+            <SidebarItem
+              icon={<Edit3 size={20} />}
+              label="Request Changes"
+              collapsed={isCollapsed}
+              onClick={() => {
+                setShowEditModal(true);
+                setIsMobileOpen(false);
+              }}
+            />
+          )}
 
           {user && !user.is_staff && (
             <div className={`mt-8 px-4 ${isCollapsed ? 'hidden lg:block' : ''}`}>
@@ -259,7 +263,7 @@ const Sidebar: React.FC = () => {
                           </div>
                         )}
                       </div>
-                      <Link to="/pricing" className="mt-3 block text-[10px] font-black text-primary uppercase tracking-widest hover:brightness-125">Get More +</Link>
+                      <Link to="/add-ons" className="mt-3 block text-[10px] font-black text-primary uppercase tracking-widest hover:brightness-125">Get More +</Link>
                     </>
                   )}
                </div>

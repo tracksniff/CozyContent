@@ -8,6 +8,7 @@ interface User {
   last_name: string;
   is_staff: boolean;
   is_premium: boolean;
+  plan_type: string | null;
   subscription_status: string;
   monthly_requests_remaining: number;
   purchased_requests_remaining: number;

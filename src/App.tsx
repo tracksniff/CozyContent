@@ -12,6 +12,7 @@ import Profile from './Profile';
 import Websites from './Websites';
 import Settings from './Settings';
 import Users from './Users';
+import AddOns from './AddOns';
 import OurBrands from './OurBrands';
 import PrivacyPolicy from './PrivacyPolicy';
 import TermsConditions from './TermsConditions';
@@ -159,6 +160,14 @@ function App() {
               element={
                 <PrivateRoute adminOnly>
                   <Users />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/add-ons"
+              element={
+                <PrivateRoute>
+                  <AddOns />
                 </PrivateRoute>
               }
             />

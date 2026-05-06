@@ -646,12 +646,14 @@ const Dashboard: React.FC = () => {
                           )}
                         </div>
 
-                        <button
-                          onClick={() => navigate('/dashboard?request_update=true')}
-                          className="mt-4 w-full py-3 bg-surface border border-outline-variant rounded-xl text-xs font-black uppercase tracking-widest text-on-surface hover:bg-primary hover:text-white hover:border-primary transition-all flex items-center justify-center gap-2"
-                        >
-                          <Edit3 size={14} /> Request Update
-                        </button>
+                        {(user?.is_staff || user?.plan_type === 'monthly' || user?.plan_type === 'annual' || user?.plan_type === 'priority_monthly') && (
+                          <button
+                            onClick={() => navigate('/dashboard?request_update=true')}
+                            className="mt-4 w-full py-3 bg-surface border border-outline-variant rounded-xl text-xs font-black uppercase tracking-widest text-on-surface hover:bg-primary hover:text-white hover:border-primary transition-all flex items-center justify-center gap-2"
+                          >
+                            <Edit3 size={14} /> Request Update
+                          </button>
+                        )}
                       </div>
                     </div>
                   ))}
