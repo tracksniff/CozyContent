@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, Sparkles, Zap, Package } from 'lucide-react';
+import { Check, Sparkles, Package } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';

@@ -136,9 +136,8 @@ const AddOns: React.FC = () => {
                 {packs.map((pack) => (
                 <div key={pack.id} className="bg-surface-container-low p-8 rounded-[2.5rem] border border-outline-variant hover:border-primary hover:shadow-2xl hover:shadow-primary/5 transition-all group relative overflow-hidden flex flex-col">
                     <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-                        {React.cloneElement(pack.icon as React.ReactElement, { size: 120 })}
-                    </div>
-                    
+                        {React.cloneElement(pack.icon as React.ReactElement<any>, { size: 120 })}
+                    </div>                    
                     <div className="flex justify-between items-start mb-6">
                         <div className="w-12 h-12 bg-surface rounded-2xl border border-outline-variant flex items-center justify-center">
                             {pack.icon}
