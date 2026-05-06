@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Plus, Trash2, ExternalLink, Globe, Search, Sparkles, Cpu, Palette, Zap, Star, Clock, CheckCircle2, Upload, MessageSquare, Send, RefreshCcw, Edit3 } from 'lucide-react';
 import Sidebar from './Sidebar';
@@ -20,6 +20,7 @@ const funMessages = [
 ];
 
 const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
   const [websites, setWebsites] = useState<any[]>([]);
   const [applications, setApplications] = useState<any[]>([]);
   const [fetchingWebsites, setFetchingWebsites] = useState(true);

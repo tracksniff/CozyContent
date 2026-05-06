@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import Sidebar from './Sidebar';
+import { useNavigate } from 'react-router-dom';
 import { Globe, Plus, Search, ExternalLink, Trash2, UserPlus, Server, Monitor, Edit3 } from 'lucide-react';
 import axios from 'axios';
 
 const Websites: React.FC = () => {
+  const navigate = useNavigate();
   const [websites, setWebsites] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
