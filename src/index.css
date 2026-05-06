@@ -28,15 +28,15 @@
   }
 
   .dark {
-    --color-surface: #0f1111;
+    --color-surface: #050606;
     --color-on-surface: #f2f0f0;
-    --color-surface-container-low: #1a1c1c;
-    --color-surface-container-high: #242626;
-    --color-on-surface-variant: #aebaba;
-    --color-outline-variant: #3d4949;
+    --color-surface-container-low: #0f1111;
+    --color-surface-container-high: #161818;
+    --color-on-surface-variant: #94a3a3;
+    --color-outline-variant: #232a2a;
     
-    /* Slightly adjust primary for dark mode readability if needed */
-    --color-primary: #62d8dd; 
+    /* Muted, professional teal for dark mode */
+    --color-primary: #148f96; 
   }
 
   body {
