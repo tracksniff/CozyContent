@@ -376,26 +376,26 @@ const Dashboard: React.FC = () => {
               <div className="space-y-8">
                 {/* GitHub Transfer Box (One-Time Only) */}
                 {app.plan_type === 'one_time' && app.progress >= 80 && !app.github_username_for_transfer && (
-                  <div id={`transfer-${app.id}`} className="bg-primary p-8 rounded-[2.5rem] text-white shadow-xl relative overflow-hidden group">
-                     <h3 className="text-xl font-black mb-2">Code Ready for Transfer</h3>
-                     <p className="text-white/80 text-sm mb-6 font-medium">Please enter your GitHub username or email to initiate the code transfer.</p>
-                     <div className="flex gap-2">
-                        <input 
-                          className="flex-grow bg-white/10 border border-white/20 rounded-xl px-4 py-3 outline-none focus:bg-white/20 transition-all text-sm placeholder:text-white/40"
+                  <div id={`transfer-${app.id}`} className="bg-surface-container-high p-8 rounded-[2.5rem] border border-outline-variant/30 shadow-xl relative overflow-hidden group">
+                     <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
+                     <h3 className="text-xl font-black mb-2 text-on-surface">Code Ready for Transfer</h3>
+                     <p className="text-on-surface-variant text-sm mb-6 font-medium">Please enter your GitHub username or email to initiate the code transfer.</p>
+                     <div className="flex gap-2 relative">
+                        <input
+                          className="flex-grow bg-surface border border-outline-variant rounded-xl px-4 py-3 outline-none focus:border-primary transition-all text-sm text-on-surface placeholder:text-on-surface-variant/40"
                           placeholder="GitHub Username"
                           value={githubUsernames[app.id] || ''}
                           onChange={e => setGithubUsernames({...githubUsernames, [app.id]: e.target.value})}
                         />
-                        <button 
+                        <button
                           onClick={() => handleSubmitGithub(app.id)}
-                          className="bg-white text-primary px-6 py-3 rounded-xl font-black text-sm hover:brightness-110 active:scale-95 transition-all"
+                          className="bg-primary text-white px-6 py-3 rounded-xl font-black text-sm hover:brightness-110 active:scale-95 transition-all"
                         >
                           Submit
                         </button>
                      </div>
                   </div>
                 )}
-                
                 {app.plan_type === 'one_time' && app.github_username_for_transfer && app.progress < 100 && (
                   <div className="bg-surface-container-low p-8 rounded-[2.5rem] border border-outline-variant shadow-sm">
                     <h3 className="text-lg font-black text-on-surface mb-2">Transfer in Progress</h3>
