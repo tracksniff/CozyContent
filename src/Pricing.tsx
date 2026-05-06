@@ -10,7 +10,7 @@ import toast from 'react-hot-toast';
 
 const PricingPage: React.FC = () => {
   const [isAnnual, setIsAnnual] = useState(true);
-  const { user, token } = useAuth();
+  const { token } = useAuth();
   const navigate = useNavigate();
   const [loadingPack, setLoadingPack] = useState<string | null>(null);
 

@@ -14,7 +14,8 @@ import {
   Menu,
   X,
   Edit3,
-  CheckCircle
+  CheckCircle,
+  Zap
 } from 'lucide-react';
 import { useAuth } from './AuthContext';
 import { AnimatePresence, motion } from 'framer-motion';
