@@ -148,6 +148,9 @@ def contact_us(request):
 
 from rest_framework_simplejwt.views import TokenObtainPairView
 
+
+
+
 class LoginView(TokenObtainPairView):
     permission_classes = [AllowAny]
 
