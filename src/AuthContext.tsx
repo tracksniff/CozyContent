@@ -9,6 +9,9 @@ interface User {
   is_staff: boolean;
   is_premium: boolean;
   subscription_status: string;
+  monthly_requests_remaining: number;
+  purchased_requests_remaining: number;
+  priority_updates_active: boolean;
 }
 
 interface AuthContextType {

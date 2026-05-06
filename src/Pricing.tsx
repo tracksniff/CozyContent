@@ -1,12 +1,48 @@
 import React, { useState } from 'react';
-import { Check, Sparkles } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Check, Sparkles, Zap, Package } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import PricingToggle from './PricingToggle';
+import { useAuth } from './AuthContext';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const PricingPage: React.FC = () => {
   const [isAnnual, setIsAnnual] = useState(true);
+  const { user, token } = useAuth();
+  const navigate = useNavigate();
+  const [loadingPack, setLoadingPack] = useState<string | null>(null);
+
+  const handlePurchasePack = async (packType: string) => {
+    if (!token) {
+      navigate('/signup');
+      return;
+    }
+
+    setLoadingPack(packType);
+    try {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/create-checkout-session/`, {
+        plan_type: packType,
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.data.url) {
+        window.location.href = res.data.url;
+      }
+    } catch (err: any) {
+      toast.error(err.response?.data?.error || 'Failed to initiate purchase');
+    } finally {
+      setLoadingPack(null);
+    }
+  };
+
+  const packs = [
+    { id: 'pack_1', name: '1 Extra Update', price: '£15', desc: 'Single urgent change' },
+    { id: 'pack_5', name: '5 Extra Updates', price: '£39', desc: 'Better value for busy sites' },
+    { id: 'pack_10', name: '10 Extra Updates', price: '£69', desc: 'Popular for growing brands' },
+    { id: 'pack_20', name: '20 Extra Updates', price: '£119', desc: 'Maximum flexibility' },
+  ];
 
   const plans = [
     {
@@ -112,6 +148,71 @@ const PricingPage: React.FC = () => {
                 </Link>
               </div>
             ))}
+          </div>
+
+          {/* Update Packs Section */}
+          <div className="mt-32">
+            <div className="text-center mb-16">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full text-xs font-black uppercase tracking-widest mb-6">
+                    <Package className="w-4 h-4" /> Power Up Your Presence
+                </div>
+                <h2 className="text-4xl md:text-5xl font-black text-on-surface tracking-tight mb-4">Update Packs</h2>
+                <p className="text-on-surface-variant font-medium max-w-xl mx-auto">
+                    Need more than 5 updates? Grab a pack that never expires. Use them whenever you need a change.
+                </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+                {packs.map((pack) => (
+                    <div key={pack.id} className="bg-surface-container-low p-8 rounded-[2.5rem] border border-outline-variant hover:border-primary transition-all group flex flex-col">
+                        <div className="text-2xl font-black mb-1">{pack.name}</div>
+                        <div className="text-sm font-medium text-on-surface-variant mb-6">{pack.desc}</div>
+                        <div className="mt-auto">
+                            <div className="text-4xl font-black text-on-surface mb-6">{pack.price}</div>
+                            <button 
+                                onClick={() => handlePurchasePack(pack.id)}
+                                disabled={!!loadingPack}
+                                className="w-full py-4 bg-on-surface text-surface rounded-2xl font-black hover:bg-primary hover:text-white transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                            >
+                                {loadingPack === pack.id ? (
+                                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                ) : 'Buy Pack'}
+                            </button>
+                        </div>
+                    </div>
+                ))}
+            </div>
+          </div>
+
+          {/* Priority Updates Section */}
+          <div className="mt-12 max-w-6xl mx-auto">
+            <div className="bg-primary text-white p-8 md:p-12 rounded-[3rem] shadow-2xl shadow-primary/20 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
+                
+                <div className="relative">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 rounded-full text-xs font-black uppercase tracking-widest mb-6">
+                        <Zap className="w-4 h-4 text-yellow-300" /> Fast Track Everything
+                    </div>
+                    <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-2">Priority Updates</h2>
+                    <p className="text-white/80 font-medium">Skip the queue and get your changes processed in 24-48 hours.</p>
+                </div>
+
+                <div className="flex flex-col items-center md:items-end gap-4 relative">
+                    <div className="flex items-baseline gap-1">
+                        <span className="text-5xl font-black">£19</span>
+                        <span className="text-sm font-bold uppercase opacity-60">/month</span>
+                    </div>
+                    <button 
+                        onClick={() => handlePurchasePack('priority_monthly')}
+                        disabled={!!loadingPack}
+                        className="px-8 py-4 bg-white text-primary rounded-2xl font-black hover:scale-105 transition-all shadow-xl active:scale-95 disabled:opacity-50 min-w-[200px] flex items-center justify-center gap-2"
+                    >
+                        {loadingPack === 'priority_monthly' ? (
+                            <div className="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+                        ) : 'Upgrade to Priority'}
+                    </button>
+                </div>
+            </div>
           </div>
 
           <div className="mt-20 text-center bg-surface-container-low p-12 rounded-[3rem] border border-outline-variant border-dashed max-w-5xl mx-auto">

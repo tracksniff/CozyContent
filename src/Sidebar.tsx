@@ -62,15 +62,29 @@ const Sidebar: React.FC = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [websites, setWebsites] = useState<any[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [siteRequests, setSiteRequests] = useState<any[]>([]);
   const { logout, user, token } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const fetchSiteRequests = async () => {
+    if (!token) return;
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/site-requests/`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setSiteRequests(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
     if (token && showEditModal) {
       axios.get(`${import.meta.env.VITE_API_URL}/api/websites/`, {
         headers: { Authorization: `Bearer ${token}` }
       }).then(res => setWebsites(res.data));
+      fetchSiteRequests();
     }
   }, [token, showEditModal]);
 
@@ -95,16 +109,26 @@ const Sidebar: React.FC = () => {
 
   const handleEditRequest = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) return;
+
+    const totalRemaining = (user.monthly_requests_remaining || 0) + (user.purchased_requests_remaining || 0);
+    if (totalRemaining <= 0) {
+      alert('You have no remaining requests. Please purchase an update pack.');
+      navigate('/pricing');
+      setShowEditModal(false);
+      return;
+    }
+
     setIsSubmitting(true);
     const target = e.target as any;
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/request-edit/`, {
-        website_id: target.website.value,
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/site-requests/`, {
+        website: target.website.value,
         details: target.details.value
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      alert('Edit request sent! We will process it within 7 days.');
+      alert('Edit request sent! We will process it shortly.');
       setShowEditModal(false);
     } catch (err) {
       alert('Failed to send request.');
@@ -194,6 +218,31 @@ const Sidebar: React.FC = () => {
               setIsMobileOpen(false);
             }}
           />
+
+          {user && !user.is_staff && (
+            <div className={`mt-8 px-4 ${isCollapsed ? 'hidden lg:block' : ''}`}>
+               <div className={`p-4 bg-surface-container-high rounded-2xl border border-outline-variant ${isCollapsed ? 'flex justify-center' : ''}`}>
+                  {isCollapsed ? (
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-black text-xs">
+                        {(user.monthly_requests_remaining || 0) + (user.purchased_requests_remaining || 0)}
+                    </div>
+                  ) : (
+                    <>
+                      <div className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-2">Available Updates</div>
+                      <div className="flex items-end gap-2">
+                        <span className="text-2xl font-black text-on-surface">{(user.monthly_requests_remaining || 0) + (user.purchased_requests_remaining || 0)}</span>
+                        {user.priority_updates_active && (
+                          <div className="mb-1.5 px-2 py-0.5 bg-yellow-400 text-black text-[8px] font-black rounded-full uppercase tracking-tighter flex items-center gap-1">
+                            <Zap size={8} fill="black" /> Priority
+                          </div>
+                        )}
+                      </div>
+                      <Link to="/pricing" className="mt-3 block text-[10px] font-black text-primary uppercase tracking-widest hover:brightness-125">Get More +</Link>
+                    </>
+                  )}
+               </div>
+            </div>
+          )}
 
           {user?.is_staff && (
              <a
@@ -307,6 +356,33 @@ const Sidebar: React.FC = () => {
                     </button>
                   </div>
                 </form>
+
+                {/* Recent Requests List */}
+                {siteRequests.length > 0 && (
+                  <div className="mt-12">
+                    <h3 className="text-xs font-black uppercase tracking-widest text-on-surface-variant mb-4 ml-1">Recent Requests</h3>
+                    <div className="space-y-3 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+                      {siteRequests.map(req => (
+                        <div key={req.id} className="p-4 bg-surface-container-low border border-outline-variant rounded-xl">
+                          <div className="flex justify-between items-start mb-1">
+                            <span className="text-[10px] font-black uppercase text-primary">{req.website_name}</span>
+                            <span className={`text-[8px] font-black px-2 py-0.5 rounded-full uppercase ${
+                              req.status === 'completed' ? 'bg-green-500/10 text-green-500' : 
+                              req.status === 'pending' ? 'bg-yellow-500/10 text-yellow-500' :
+                              'bg-surface-variant text-on-surface-variant'
+                            }`}>
+                              {req.status}
+                            </span>
+                          </div>
+                          <p className="text-xs text-on-surface line-clamp-2">{req.details}</p>
+                          <div className="mt-2 text-[8px] font-bold text-on-surface-variant opacity-60">
+                            {new Date(req.created_at).toLocaleDateString()}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </motion.div>
           </div>
