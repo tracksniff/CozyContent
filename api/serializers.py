@@ -96,7 +96,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = (
             'id', 'email', 'password', 'first_name', 'last_name', 'is_staff', 
-            'is_premium', 'subscription_status', 'monthly_requests_remaining',
+            'is_premium', 'plan_type', 'subscription_status', 'monthly_requests_remaining',
             'purchased_requests_remaining', 'priority_updates_active'
         )
 

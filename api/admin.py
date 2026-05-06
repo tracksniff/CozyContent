@@ -6,8 +6,9 @@ from .models import (
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('email', 'first_name', 'last_name', 'is_staff', 'is_premium', 'subscription_status')
+    list_display = ('email', 'first_name', 'last_name', 'is_staff', 'is_premium', 'plan_type', 'subscription_status')
     search_fields = ('email', 'first_name', 'last_name')
+    list_filter = ('is_staff', 'is_premium', 'plan_type', 'subscription_status')
 
 @admin.register(ClientApplication)
 class ClientApplicationAdmin(admin.ModelAdmin):

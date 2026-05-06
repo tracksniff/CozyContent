@@ -523,6 +523,9 @@ class StripeWebhookView(generics.GenericAPIView):
                 user.is_premium = True
                 user.stripe_customer_id = getattr(session, "customer", None)
                 user.subscription_status = "active"
+                
+                if plan_type:
+                    user.plan_type = plan_type
 
                 # Handle plan-specific logic
                 if plan_type in ["monthly", "annual"]:

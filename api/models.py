@@ -32,6 +32,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_premium = models.BooleanField(default=False)
 
     # Request Tracking Fields
+    plan_type = models.CharField(max_length=20, blank=True, null=True) # 'monthly', 'annual', 'one_time'
     monthly_requests_remaining = models.IntegerField(default=0)
     purchased_requests_remaining = models.IntegerField(default=0)
     priority_updates_active = models.BooleanField(default=False)
