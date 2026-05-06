@@ -33,6 +33,7 @@ import logging
 import os
 from django.conf import settings
 from django.http import HttpResponse
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from .utils import send_welcome_email, send_otp_email
