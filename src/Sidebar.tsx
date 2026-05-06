@@ -148,12 +148,23 @@ const Sidebar: React.FC = () => {
           </div>
           <span className="font-black text-lg tracking-tighter">Cosy Content</span>
         </div>
-        <button 
-          onClick={toggleMobile}
-          className="p-2 text-on-surface-variant hover:text-primary transition-colors"
-        >
-          {isMobileOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        
+        <div className="flex items-center gap-4">
+          {user && !user.is_staff && (
+            <div className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20">
+              <span className="text-[10px] font-black text-primary uppercase tracking-widest">
+                {(user.monthly_requests_remaining || 0) + (user.purchased_requests_remaining || 0)} Updates
+              </span>
+              {user.priority_updates_active && <Zap size={10} className="text-yellow-500 fill-yellow-500" />}
+            </div>
+          )}
+          <button 
+            onClick={toggleMobile}
+            className="p-2 text-on-surface-variant hover:text-primary transition-colors"
+          >
+            {isMobileOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
       {/* Backdrop */}

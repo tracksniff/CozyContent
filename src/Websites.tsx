@@ -4,39 +4,6 @@ import Sidebar from './Sidebar';
 import { Globe, Plus, Search, ExternalLink, Trash2, UserPlus, Server, Monitor } from 'lucide-react';
 import axios from 'axios';
 
-const LIVE_DEMOS = [
-  { niche: 'Plumbing', sites: [
-    { name: 'Flow-Right Plumbing', url: 'https://demo.cosycontent.com/plumbing-1' },
-    { name: 'Elite Pipe Solutions', url: 'https://demo.cosycontent.com/plumbing-2' },
-    { name: 'Emergency Leak Fix', url: 'https://demo.cosycontent.com/plumbing-3' }
-  ]},
-  { niche: 'Roofing', sites: [
-    { name: 'Apex Roofing Experts', url: 'https://demo.cosycontent.com/roofing-1' },
-    { name: 'Sky-High Tiles', url: 'https://demo.cosycontent.com/roofing-2' },
-    { name: 'Durable Roof Care', url: 'https://demo.cosycontent.com/roofing-3' }
-  ]},
-  { niche: 'Electrical', sites: [
-    { name: 'Volt-Amp Electricians', url: 'https://demo.cosycontent.com/electrical-1' },
-    { name: 'Sparky Connect', url: 'https://demo.cosycontent.com/electrical-2' },
-    { name: 'Bright Phase Systems', url: 'https://demo.cosycontent.com/electrical-3' }
-  ]},
-  { niche: 'Cleaning', sites: [
-    { name: 'Sparkle Sweep Pro', url: 'https://demo.cosycontent.com/cleaning-1' },
-    { name: 'Pristine Home Care', url: 'https://demo.cosycontent.com/cleaning-2' },
-    { name: 'Eco-Shine Services', url: 'https://demo.cosycontent.com/cleaning-3' }
-  ]},
-  { niche: 'Removals', sites: [
-    { name: 'Swift Move Logistics', url: 'https://demo.cosycontent.com/removals-1' },
-    { name: 'Careful Carry Co.', url: 'https://demo.cosycontent.com/removals-2' },
-    { name: 'Urban Shift Removals', url: 'https://demo.cosycontent.com/removals-3' }
-  ]},
-  { niche: 'Locksmiths', sites: [
-    { name: 'Secure-Key Solutions', url: 'https://demo.cosycontent.com/locksmith-1' },
-    { name: 'Locked-Out Rescue', url: 'https://demo.cosycontent.com/locksmith-2' },
-    { name: 'Titan Lock Systems', url: 'https://demo.cosycontent.com/locksmith-3' }
-  ]}
-];
-
 const Websites: React.FC = () => {
   const [websites, setWebsites] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
@@ -304,42 +271,6 @@ const Websites: React.FC = () => {
             </div>
           )}
 
-          {/* Live Demos Section */}
-          <div className="mt-20">
-            <header className="mb-10">
-              <h2 className="text-3xl font-black text-on-surface tracking-tight mb-2">Live Demos</h2>
-              <p className="text-on-surface-variant font-medium">Explore industry-specific designs built by our team.</p>
-            </header>
-            
-            <div className="space-y-12">
-              {LIVE_DEMOS.map((nicheData, idx) => (
-                <div key={idx} className="bg-surface-container-low p-8 md:p-10 rounded-[3rem] border border-outline-variant/30 shadow-sm">
-                  <h3 className="text-xl font-black mb-6 flex items-center gap-3">
-                    <div className="w-1.5 h-8 bg-primary rounded-full"></div>
-                    {nicheData.niche} Websites
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {nicheData.sites.map((site, sIdx) => (
-                      <a 
-                        key={sIdx} 
-                        href={site.url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="p-6 bg-surface border border-outline-variant rounded-2xl hover:border-primary transition-all group flex flex-col h-full"
-                      >
-                        <div className="flex justify-between items-start mb-4">
-                          <Globe className="text-primary/40 group-hover:text-primary transition-colors" size={20} />
-                          <ExternalLink className="text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity" size={14} />
-                        </div>
-                        <h4 className="font-bold text-on-surface mb-2">{site.name}</h4>
-                        <div className="mt-auto text-[10px] font-black uppercase tracking-widest text-primary">View Demo</div>
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </main>
     </div>
