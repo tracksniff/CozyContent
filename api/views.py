@@ -178,12 +178,21 @@ class UserDetailView(generics.RetrieveAPIView):
         user = self.request.user
         
         # Check if monthly quota needs reset (every 30 days)
-        if user.is_premium and user.subscription_status == 'active':
+        # Use getattr/hasattr to avoid crashes if migrations haven't been run yet
+        is_premium = getattr(user, 'is_premium', False)
+        subscription_status = getattr(user, 'subscription_status', 'inactive')
+        
+        if is_premium and subscription_status == 'active':
             now = timezone.now()
-            if not user.last_quota_reset or (now - user.last_quota_reset).days >= 30:
-                user.monthly_requests_remaining = 5
-                user.last_quota_reset = now
-                user.save()
+            last_reset = getattr(user, 'last_quota_reset', None)
+            
+            if not last_reset or (now - last_reset).days >= 30:
+                try:
+                    user.monthly_requests_remaining = 5
+                    user.last_quota_reset = now
+                    user.save()
+                except Exception as e:
+                    logger.error(f"Failed to reset quota for user {user.email}: {str(e)}")
                 
         return user
 

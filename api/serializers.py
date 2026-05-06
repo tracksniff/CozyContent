@@ -86,6 +86,11 @@ class ClientApplicationSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=False)
+    
+    # Use SerializerMethodField to avoid crash if columns are not yet in DB
+    monthly_requests_remaining = serializers.SerializerMethodField()
+    purchased_requests_remaining = serializers.SerializerMethodField()
+    priority_updates_active = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -94,6 +99,15 @@ class UserSerializer(serializers.ModelSerializer):
             'is_premium', 'subscription_status', 'monthly_requests_remaining',
             'purchased_requests_remaining', 'priority_updates_active'
         )
+
+    def get_monthly_requests_remaining(self, obj):
+        return getattr(obj, 'monthly_requests_remaining', 0)
+
+    def get_purchased_requests_remaining(self, obj):
+        return getattr(obj, 'purchased_requests_remaining', 0)
+
+    def get_priority_updates_active(self, obj):
+        return getattr(obj, 'priority_updates_active', False)
 
     def create(self, validated_data):
         user = User.objects.create_user(
