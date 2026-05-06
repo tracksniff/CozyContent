@@ -12,6 +12,7 @@ from .serializers import (
     FeedbackSerializer,
     AttachmentSerializer,
     AuditReportSerializer,
+    SiteRequestSerializer,
 )
 from .models import (
     User,
@@ -21,6 +22,7 @@ from .models import (
     Feedback,
     Attachment,
     AuditReport,
+    SiteRequest,
 )
 import stripe
 import random
@@ -143,82 +145,6 @@ def contact_us(request):
         )
 
 
-class RequestEditView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        user = request.user
-        website_id = request.data.get("website_id")
-        edit_details = request.data.get("details")
-
-        if not all([website_id, edit_details]):
-            return Response(
-                {"error": "Website ID and details are required"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        try:
-            website = Website.objects.get(id=website_id, owner=user)
-        except Website.DoesNotExist:
-            return Response(
-                {"error": "Website not found or not owned by you"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-
-        # Send email via Brevo
-        brevo_api_key = os.getenv("BREVO_API_KEY")
-        if not brevo_api_key:
-            return Response(
-                {"error": "Email service not configured"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
-
-        subject = f"Edit Request for {website.name} from {user.email}"
-        html_content = f"""
-        <html>
-        <body>
-            <h2>New Edit Request</h2>
-            <p><strong>User:</strong> {user.email} ({user.first_name} {user.last_name})</p>
-            <p><strong>Website:</strong> {website.name} ({website.url})</p>
-            <p><strong>Details:</strong></p>
-            <div style="padding: 15px; background: #f4f4f4; border-radius: 5px;">{edit_details}</div>
-        </body>
-        </html>
-        """
-
-        headers = {
-            "accept": "application/json",
-            "api-key": brevo_api_key,
-            "content-type": "application/json",
-        }
-
-        payload = {
-            "sender": {
-                "name": "Cosy Content System",
-                "email": "system@cosycontent.com",
-            },
-            "to": [
-                {"email": "contact@cosycontent.com", "name": "Cosy Content Support"}
-            ],
-            "subject": subject,
-            "htmlContent": html_content,
-        }
-
-        response = requests.post(
-            "https://api.brevo.com/v3/smtp/email", json=payload, headers=headers
-        )
-
-        if response.status_code == 201:
-            return Response(
-                {"success": True, "message": "Edit request sent successfully!"}
-            )
-        else:
-            return Response(
-                {"error": "Failed to send request"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
-
-
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = (permissions.AllowAny,)
@@ -244,7 +170,17 @@ class UserDetailView(generics.RetrieveAPIView):
     serializer_class = UserSerializer
 
     def get_object(self):
-        return self.request.user
+        user = self.request.user
+        
+        # Check if monthly quota needs reset (every 30 days)
+        if user.is_premium and user.subscription_status == 'active':
+            now = timezone.now()
+            if not user.last_quota_reset or (now - user.last_quota_reset).days >= 30:
+                user.monthly_requests_remaining = 5
+                user.last_quota_reset = now
+                user.save()
+                
+        return user
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -451,22 +387,40 @@ class CreateCheckoutSessionView(generics.GenericAPIView):
                 customer_email = user_email
                 user_id = None
 
-            if plan_type == "one_time":
-                price_id = settings.STRIPE_ONE_TIME_PRICE_ID
-                mode = "payment"
-            elif plan_type == "annual":
-                price_id = settings.STRIPE_ANNUAL_PRICE_ID
-                mode = "subscription"
-            else:
-                price_id = settings.STRIPE_MONTHLY_PRICE_ID
-                mode = "subscription"
-
             metadata = {
                 "plan_type": plan_type, 
                 "application_id": application_id,
                 "first_name": first_name,
                 "last_name": last_name
             }
+
+            if plan_type == "one_time":
+                price_id = settings.STRIPE_ONE_TIME_PRICE_ID
+                mode = "payment"
+            elif plan_type == "annual":
+                price_id = settings.STRIPE_ANNUAL_PRICE_ID
+                mode = "subscription"
+            elif plan_type == "monthly":
+                price_id = settings.STRIPE_MONTHLY_PRICE_ID
+                mode = "subscription"
+            elif plan_type == "pack_1":
+                price_id = settings.STRIPE_PACK_1_PRICE_ID
+                mode = "payment"
+            elif plan_type == "pack_5":
+                price_id = settings.STRIPE_PACK_5_PRICE_ID
+                mode = "payment"
+            elif plan_type == "pack_10":
+                price_id = settings.STRIPE_PACK_10_PRICE_ID
+                mode = "payment"
+            elif plan_type == "pack_20":
+                price_id = settings.STRIPE_PACK_20_PRICE_ID
+                mode = "payment"
+            elif plan_type == "priority_monthly":
+                price_id = settings.STRIPE_PRIORITY_MONTHLY_PRICE_ID
+                mode = "subscription"
+            else:
+                return Response({"error": "Invalid plan type"}, status=status.HTTP_400_BAD_REQUEST)
+
             if user_id:
                 metadata["user_id"] = user_id
                 success_url = settings.FRONTEND_URL + "/dashboard?success=true"
@@ -551,6 +505,21 @@ class StripeWebhookView(generics.GenericAPIView):
                 user.is_premium = True
                 user.stripe_customer_id = getattr(session, "customer", None)
                 user.subscription_status = "active"
+
+                # Handle plan-specific logic
+                if plan_type in ["monthly", "annual"]:
+                    user.monthly_requests_remaining = 5
+                elif plan_type == "pack_1":
+                    user.purchased_requests_remaining += 1
+                elif plan_type == "pack_5":
+                    user.purchased_requests_remaining += 5
+                elif plan_type == "pack_10":
+                    user.purchased_requests_remaining += 10
+                elif plan_type == "pack_20":
+                    user.purchased_requests_remaining += 20
+                elif plan_type == "priority_monthly":
+                    user.priority_updates_active = True
+                
                 user.save()
 
                 if application_id:
@@ -608,6 +577,78 @@ class WebsiteViewSet(viewsets.ModelViewSet):
                 return Response({"error": "Vercel redeployment failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class SiteRequestViewSet(viewsets.ModelViewSet):
+    serializer_class = SiteRequestSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return SiteRequest.objects.all()
+        return SiteRequest.objects.filter(user=self.request.user).order_by('-created_at')
+
+    def create(self, request, *args, **kwargs):
+        user = request.user
+        
+        # Check if user has enough requests
+        if user.monthly_requests_remaining <= 0 and user.purchased_requests_remaining <= 0:
+            return Response(
+                {"error": "You have no remaining requests. Please purchase an update pack."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        # Deduct from monthly first, then purchased
+        if user.monthly_requests_remaining > 0:
+            user.monthly_requests_remaining -= 1
+        else:
+            user.purchased_requests_remaining -= 1
+        
+        user.save()
+
+        # Set priority if user has priority updates active
+        is_priority = user.priority_updates_active
+        
+        site_request = serializer.save(user=user, is_priority=is_priority)
+        
+        # Notify admin (reuse logic from RequestEditView or similar)
+        self.notify_admin(site_request)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def notify_admin(self, site_request):
+        brevo_api_key = os.getenv("BREVO_API_KEY")
+        if not brevo_api_key:
+            return
+
+        priority_tag = "[PRIORITY] " if site_request.is_priority else ""
+        subject = f"{priority_tag}New Update Request for {site_request.website.name}"
+        html_content = f"""
+        <html>
+        <body>
+            <h2>New Update Request</h2>
+            <p><strong>User:</strong> {site_request.user.email}</p>
+            <p><strong>Website:</strong> {site_request.website.name} ({site_request.website.url})</p>
+            <p><strong>Priority:</strong> {"Yes" if site_request.is_priority else "No"}</p>
+            <p><strong>Details:</strong></p>
+            <div style="padding: 15px; background: #f4f4f4; border-radius: 5px;">{site_request.details}</div>
+        </body>
+        </html>
+        """
+
+        payload = {
+            "sender": {"name": "Cosy Content System", "email": "system@cosycontent.com"},
+            "to": [{"email": "contact@cosycontent.com"}],
+            "subject": subject,
+            "htmlContent": html_content,
+        }
+        requests.post(
+            "https://api.brevo.com/v3/smtp/email", 
+            json=payload, 
+            headers={"api-key": brevo_api_key, "content-type": "application/json"}
+        )
 
 
 class RequestPasswordResetOTPView(APIView):

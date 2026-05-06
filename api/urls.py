@@ -14,6 +14,7 @@ from .views import (
     VerifyPasswordResetOTPView,
     ChangePasswordView,
     AuditViewSet,
+    SiteRequestViewSet,
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -25,6 +26,7 @@ router.register(r"websites", WebsiteViewSet, basename="website")
 router.register(r"users", UserViewSet, basename="user")
 router.register(r"applications", ClientApplicationViewSet, basename="application")
 router.register(r"audits", AuditViewSet, basename="audit")
+router.register(r"site-requests", SiteRequestViewSet, basename="site-request")
 
 urlpatterns = [
     path("register/", RegisterView.as_view(), name="auth_register"),
@@ -32,7 +34,6 @@ urlpatterns = [
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("user/", UserDetailView.as_view(), name="user_detail"),
     path("contact-us/", contact_us, name="contact_us"),
-    path("request-edit/", RequestEditView.as_view(), name="request_edit"),
     path("forgot-password/request/", RequestPasswordResetOTPView.as_view(), name="forgot_password_request"),
     path("forgot-password/verify/", VerifyPasswordResetOTPView.as_view(), name="forgot_password_verify"),
     path("change-password/", ChangePasswordView.as_view(), name="change_password"),

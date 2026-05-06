@@ -178,6 +178,16 @@ STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET', 'whsec_placeholder')
 STRIPE_ONE_TIME_PRICE_ID = os.getenv('STRIPE_ONE_TIME_PRICE_ID', 'price_placeholder')
 STRIPE_MONTHLY_PRICE_ID = os.getenv('STRIPE_MONTHLY_PRICE_ID', 'price_placeholder')
 STRIPE_ANNUAL_PRICE_ID = os.getenv('STRIPE_ANNUAL_PRICE_ID', 'price_placeholder_annual')
+
+# Update Packs
+STRIPE_PACK_1_PRICE_ID = os.getenv('STRIPE_PACK_1_PRICE_ID', 'price_pack_1')
+STRIPE_PACK_5_PRICE_ID = os.getenv('STRIPE_PACK_5_PRICE_ID', 'price_pack_5')
+STRIPE_PACK_10_PRICE_ID = os.getenv('STRIPE_PACK_10_PRICE_ID', 'price_pack_10')
+STRIPE_PACK_20_PRICE_ID = os.getenv('STRIPE_PACK_20_PRICE_ID', 'price_pack_20')
+
+# Priority Updates
+STRIPE_PRIORITY_MONTHLY_PRICE_ID = os.getenv('STRIPE_PRIORITY_MONTHLY_PRICE_ID', 'price_priority_monthly')
+
 FRONTEND_URL = os.getenv('FRONTEND_URL', 'https://cosycontent.com').rstrip('/')
 BACKEND_URL = os.getenv('BACKEND_URL', 'https://api.cosycontent.com').rstrip('/')
 

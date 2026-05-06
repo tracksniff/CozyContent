@@ -31,6 +31,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     subscription_status = models.CharField(max_length=50, default='inactive')
     is_premium = models.BooleanField(default=False)
 
+    # Request Tracking Fields
+    monthly_requests_remaining = models.IntegerField(default=0)
+    purchased_requests_remaining = models.IntegerField(default=0)
+    priority_updates_active = models.BooleanField(default=False)
+    last_quota_reset = models.DateTimeField(null=True, blank=True)
+
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
@@ -38,6 +44,24 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+class SiteRequest(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed'),
+        ('denied', 'Denied'),
+    ]
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='site_requests')
+    website = models.ForeignKey('Website', on_delete=models.CASCADE, related_name='site_requests')
+    details = models.TextField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    is_priority = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Request by {self.user.email} for {self.website.name} ({self.status})"
 
 class ClientApplication(models.Model):
     STATUS_CHOICES = [
