@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import Sidebar from './Sidebar';
-import { Globe, Plus, Search, ExternalLink, Trash2, UserPlus, Server, Monitor } from 'lucide-react';
+import { Globe, Plus, Search, ExternalLink, Trash2, UserPlus, Server, Monitor, Edit3 } from 'lucide-react';
 import axios from 'axios';
 
 const Websites: React.FC = () => {
@@ -253,18 +253,26 @@ const Websites: React.FC = () => {
                       )}
                   </div>
 
-                  <div className="flex items-center justify-between mt-auto pt-6 border-t border-outline-variant/50">
-                    <a
-                      href={site.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-primary hover:gap-4 transition-all"
+                  <div className="flex flex-col gap-3 mt-auto pt-6 border-t border-outline-variant/50">
+                    <div className="flex items-center justify-between">
+                      <a
+                        href={site.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-primary hover:gap-4 transition-all"
+                      >
+                        Visit Site <ExternalLink size={14} />
+                      </a>
+                      <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
+                          {new Date(site.created_at).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => navigate('/websites?request_update=true')}
+                      className="w-full py-3 bg-surface border border-outline-variant rounded-xl text-xs font-black uppercase tracking-widest text-on-surface hover:bg-primary hover:text-white hover:border-primary transition-all flex items-center justify-center gap-2"
                     >
-                      Visit Site <ExternalLink size={14} />
-                    </a>
-                    <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
-                        {new Date(site.created_at).toLocaleDateString()}
-                    </span>
+                      <Edit3 size={14} /> Request Update
+                    </button>
                   </div>
                 </div>
               ))}

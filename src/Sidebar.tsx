@@ -68,6 +68,16 @@ const Sidebar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('request_update') === 'true') {
+      setShowEditModal(true);
+      // Remove the param without refreshing
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, '', newUrl);
+    }
+  }, [location]);
+
   const fetchSiteRequests = async () => {
     if (!token) return;
     try {
@@ -151,12 +161,12 @@ const Sidebar: React.FC = () => {
         
         <div className="flex items-center gap-4">
           {user && !user.is_staff && (
-            <div className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20">
+            <Link to="/pricing" className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20 hover:bg-primary/20 transition-all">
               <span className="text-[10px] font-black text-primary uppercase tracking-widest">
                 {(user.monthly_requests_remaining || 0) + (user.purchased_requests_remaining || 0)} Updates
               </span>
               {user.priority_updates_active && <Zap size={10} className="text-yellow-500 fill-yellow-500" />}
-            </div>
+            </Link>
           )}
           <button 
             onClick={toggleMobile}

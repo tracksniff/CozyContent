@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { Plus, Trash2, ExternalLink, Globe, Search, Sparkles, Cpu, Palette, Zap, Star, Clock, CheckCircle2, Upload, MessageSquare, Send, RefreshCcw } from 'lucide-react';
+import { Plus, Trash2, ExternalLink, Globe, Search, Sparkles, Cpu, Palette, Zap, Star, Clock, CheckCircle2, Upload, MessageSquare, Send, RefreshCcw, Edit3 } from 'lucide-react';
 import Sidebar from './Sidebar';
 import toast from 'react-hot-toast';
 
@@ -645,6 +645,12 @@ const Dashboard: React.FC = () => {
                           )}
                         </div>
 
+                        <button
+                          onClick={() => navigate('/dashboard?request_update=true')}
+                          className="mt-4 w-full py-3 bg-surface border border-outline-variant rounded-xl text-xs font-black uppercase tracking-widest text-on-surface hover:bg-primary hover:text-white hover:border-primary transition-all flex items-center justify-center gap-2"
+                        >
+                          <Edit3 size={14} /> Request Update
+                        </button>
                       </div>
                     </div>
                   ))}
