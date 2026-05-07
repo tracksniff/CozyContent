@@ -95,22 +95,35 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-6 md:px-12 mt-16 pt-16 border-t border-outline-variant/5">
         <h4 className="font-bold mb-10 text-[10px] md:text-xs tracking-widest uppercase text-on-surface-variant">Our Specialized Services</h4>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-8 gap-y-12">
-          {industries.map(industry => (
-            <div key={industry.id}>
-              <h5 className="font-bold mb-5 text-xs text-on-surface tracking-tight">{industry.label}</h5>
-              <ul className="space-y-2.5 text-on-surface-variant text-[11px] font-medium">
-                {seoPages
-                  .filter(p => p.industry === industry.id)
-                  .map(page => (
-                    <li key={page.url}>
-                      <Link to={`/${page.url}`} className="hover:text-primary transition-colors inline-block">
-                        {page.location ? `${industry.label} in ${page.location}` : `Web Design for ${industry.label}`}
-                      </Link>
-                    </li>
-                  ))}
-              </ul>
-            </div>
-          ))}
+          {industries.map(industry => {
+            const industryToSlug: Record<string, string> = {
+              'Plumbing': 'plumber-web-design',
+              'Electrical': 'electrician-web-design',
+              'Roofing': 'roofer-web-design',
+              'Locksmith': 'locksmith-web-design',
+              'Cleaning': 'cleaning-company-web-design',
+              'Removals': 'removals-web-design'
+            };
+            const slug = industryToSlug[industry.id];
+            
+            return (
+              <div key={industry.id}>
+                <h5 className="font-bold mb-5 text-xs text-on-surface tracking-tight">{industry.label}</h5>
+                <ul className="space-y-2.5 text-on-surface-variant text-[11px] font-medium">
+                  <li>
+                    <Link to={`/${slug}`} className="hover:text-primary transition-colors inline-block font-bold">
+                      Main Industry Page
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to={`/${slug}-luton`} className="hover:text-primary transition-colors inline-block">
+                      Local Services & Locations
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            );
+          })}
         </div>
       </div>
 
