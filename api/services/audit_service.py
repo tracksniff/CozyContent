@@ -20,6 +20,7 @@ from reportlab.platypus import (
     Flowable,
 )
 from reportlab.pdfgen import canvas as rl_canvas
+from reportlab.pdfbase.pdfmetrics import stringWidth
 
 logger = logging.getLogger(__name__)
 
@@ -41,21 +42,31 @@ W, H = A4
 # ─────────────────────────────────────────────────────────────────────────────
 
 
+def _get_wrapped_lines(text, font_name, font_size, max_width):
+    """Helper to wrap text using stringWidth."""
+    words = str(text).split()
+    if not words:
+        return []
+    lines = []
+    current_line = ""
+    for word in words:
+        test_line = (current_line + " " + word).strip()
+        if stringWidth(test_line, font_name, font_size) <= max_width:
+            current_line = test_line
+        else:
+            if current_line:
+                lines.append(current_line)
+            current_line = word
+    if current_line:
+        lines.append(current_line)
+    return lines
+
+
 def _draw_wrapped(c, text, x, y, max_width, line_height=4.5):
     """Draw word-wrapped text; returns final y position."""
-    words = str(text).split()
-    line, lines = "", []
-    # rough char-width estimate for Helvetica at current font size
-    char_w = c._fontsize * 0.55
-    max_chars = max(1, int(max_width / char_w))
-    for word in words:
-        if len(line) + len(word) + 1 <= max_chars:
-            line = (line + " " + word).strip()
-        else:
-            lines.append(line)
-            line = word
-    if line:
-        lines.append(line)
+    font_name = c._fontname
+    font_size = c._fontsize
+    lines = _get_wrapped_lines(text, font_name, font_size, max_width)
     for ln in lines:
         c.drawString(x, y, ln)
         y -= line_height * mm
@@ -228,13 +239,19 @@ class _FindingCard(Flowable):
         self._title = title
         self._body = body
 
-    def _card_height(self, w):
-        lines = max(2, len(self._body) // 90 + 1)
-        return (22 + lines * 13) * mm / 3.78 + 12 * mm
+    def _get_layout(self, w):
+        max_w = w - 14 * mm
+        t_lines = _get_wrapped_lines(self._title, "Helvetica-Bold", 11, max_w)
+        b_lines = _get_wrapped_lines(self._body, "Helvetica", 9, max_w)
+        # title area: lines * 5mm
+        # body area: lines * 4.5mm
+        # base height (badge + title start + padding): 20mm
+        h = 16 * mm + len(t_lines) * 5 * mm + len(b_lines) * 4.5 * mm + 4 * mm
+        return max(32 * mm, h), t_lines, b_lines
 
     def wrap(self, avW, avH):
         self._w = avW
-        self._h = self._card_height(avW)
+        self._h, _, _ = self._get_layout(avW)
         return avW, self._h
 
     def draw(self):
@@ -256,22 +273,24 @@ class _FindingCard(Flowable):
         c.rect(1.5 * mm, 0, 1.5 * mm, h, fill=1, stroke=0)
 
         # priority badge
-        badge_w = len(self._priority) * 5.5 + 8
+        badge_text = self._priority
+        badge_w = stringWidth(badge_text, "Helvetica-Bold", 7) + 6
         c.setFillColor(badge_col)
         c.roundRect(8 * mm, h - 8.5 * mm, badge_w, 6 * mm, 3 * mm, fill=1, stroke=0)
         c.setFillColor(colors.white if self._priority == "CRITICAL" else DARK)
         c.setFont("Helvetica-Bold", 7)
-        c.drawString(8 * mm + 4, h - 5.5 * mm, self._priority)
+        c.drawString(8 * mm + 3, h - 5.5 * mm, badge_text)
 
         # title
         c.setFillColor(DARK)
         c.setFont("Helvetica-Bold", 11)
-        c.drawString(8 * mm, h - 14 * mm, self._title)
+        y = _draw_wrapped(c, self._title, 8 * mm, h - 14 * mm, w - 14 * mm, line_height=5)
 
         # body
+        y -= 1 * mm
         c.setFont("Helvetica", 9)
         c.setFillColor(MID_GREY)
-        _draw_wrapped(c, self._body, 8 * mm, h - 20 * mm, w - 14 * mm)
+        _draw_wrapped(c, self._body, 8 * mm, y, w - 14 * mm, line_height=4.5)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -286,10 +305,16 @@ class _QuickWinCard(Flowable):
         self._title = title
         self._body = body
 
+    def _get_layout(self, w):
+        max_w = w - 18 * mm
+        t_lines = _get_wrapped_lines(self._title, "Helvetica-Bold", 10, max_w)
+        b_lines = _get_wrapped_lines(self._body, "Helvetica", 9, max_w)
+        h = 10 * mm + len(t_lines) * 4.5 * mm + len(b_lines) * 4.5 * mm + 4 * mm
+        return max(22 * mm, h), t_lines, b_lines
+
     def wrap(self, avW, avH):
         self._w = avW
-        lines = max(2, len(self._body) // 90 + 1)
-        self._h = 14 * mm + lines * 4.5 * mm + 4 * mm
+        self._h, _, _ = self._get_layout(avW)
         return avW, self._h
 
     def draw(self):
@@ -312,12 +337,15 @@ class _QuickWinCard(Flowable):
         # title
         c.setFillColor(DARK)
         c.setFont("Helvetica-Bold", 10)
-        c.drawString(16 * mm, h - 9.5 * mm, self._title)
+        y = _draw_wrapped(
+            c, self._title, 16 * mm, h - 9.5 * mm, w - 18 * mm, line_height=4.5
+        )
 
         # body
+        y -= 0.5 * mm
         c.setFont("Helvetica", 9)
         c.setFillColor(MID_GREY)
-        _draw_wrapped(c, self._body, 16 * mm, h - 14.5 * mm, w - 18 * mm)
+        _draw_wrapped(c, self._body, 16 * mm, y, w - 18 * mm, line_height=4.5)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
