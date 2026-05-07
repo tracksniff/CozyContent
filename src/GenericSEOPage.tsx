@@ -50,7 +50,7 @@ const GenericSEOPage: React.FC = () => {
             </div>
 
             {/* City Switcher */}
-            {data.location && (
+            {!data.location && (
               <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 mb-8 text-[11px] font-black uppercase tracking-widest text-on-surface-variant/60">
                 {['Luton', 'Bedford', 'Dunstable', 'Milton Keynes', 'St Albans', 'Watford'].map((city) => {
                   const industryToSlug: Record<string, string> = {

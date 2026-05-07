@@ -13,6 +13,7 @@ import Websites from './Websites';
 import Settings from './Settings';
 import Users from './Users';
 import AddOns from './AddOns';
+import RequestChanges from './RequestChanges';
 import OurBrands from './OurBrands';
 import PrivacyPolicy from './PrivacyPolicy';
 import TermsConditions from './TermsConditions';
@@ -168,6 +169,14 @@ function App() {
               element={
                 <PrivateRoute>
                   <AddOns />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/request-changes"
+              element={
+                <PrivateRoute>
+                  <RequestChanges />
                 </PrivateRoute>
               }
             />

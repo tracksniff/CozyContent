@@ -202,6 +202,36 @@ const ServicePage: React.FC = () => {
               <p className="text-xl text-on-surface-variant font-medium mb-10 leading-relaxed">
                 {data.desc}
               </p>
+
+              {/* City Switcher */}
+              <div className="flex flex-wrap gap-x-4 gap-y-2 mb-12 text-[11px] font-black uppercase tracking-widest text-on-surface-variant/60">
+                {['Luton', 'Bedford', 'Dunstable', 'Milton Keynes', 'St Albans', 'Watford'].map((city) => {
+                  const nicheToSlug: Record<string, string> = {
+                    'plumbing': 'plumber-web-design',
+                    'electrical': 'electrician-web-design',
+                    'roofing': 'roofer-web-design',
+                    'locksmiths': 'locksmith-web-design',
+                    'cleaning': 'cleaning-company-web-design',
+                    'removals': 'removals-web-design'
+                  };
+                  const slug = nicheToSlug[niche?.toLowerCase() || ''];
+                  const citySlug = city.toLowerCase().replace(' ', '-');
+                  const targetUrl = slug ? `/${slug}-${citySlug}` : `/services/${niche}/${citySlug}`;
+
+                  return (
+                    <React.Fragment key={city}>
+                      <Link 
+                        to={targetUrl}
+                        className="transition-colors hover:text-primary"
+                      >
+                        {city}
+                      </Link>
+                      {city !== 'Watford' && <span>•</span>}
+                    </React.Fragment>
+                  );
+                })}
+              </div>
+
               <div className="flex flex-wrap gap-4">
                 <Link to="/signup" className="px-8 py-4 bg-primary text-white font-black rounded-2xl shadow-xl shadow-primary/20 hover:scale-105 transition-all">
                    Start Your Build

@@ -55,7 +55,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-16 w-full md:w-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 md:gap-16 w-full md:w-auto">
           <div>
             <h4 className="font-bold mb-4 md:mb-6 text-[10px] md:text-xs tracking-widest uppercase text-on-surface-variant">Navigation</h4>
             <ul className="space-y-3 md:space-y-4 text-on-surface-variant font-medium text-sm md:text-base">
@@ -65,17 +65,6 @@ const Footer = () => {
               <li><Link to="/our-brands" className="hover:text-primary transition-colors">Our Brands</Link></li>
               <li><Link to="/audit" className="hover:text-primary transition-colors font-bold">Free Website Audit</Link></li>
               <li><a href="https://cosycontent.com/blog/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Blog</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-bold mb-4 md:mb-6 text-[10px] md:text-xs tracking-widest uppercase text-on-surface-variant">Areas We Serve</h4>
-            <ul className="space-y-3 md:space-y-4 text-on-surface-variant font-medium text-sm md:text-base">
-              <li><Link to="/services/plumbing/luton" className="hover:text-primary transition-colors">Luton</Link></li>
-              <li><Link to="/services/plumbing/bedford" className="hover:text-primary transition-colors">Bedford</Link></li>
-              <li><Link to="/services/plumbing/milton-keynes" className="hover:text-primary transition-colors">Milton Keynes</Link></li>
-              <li><Link to="/services/plumbing/st-albans" className="hover:text-primary transition-colors">St Albans</Link></li>
-              <li><Link to="/services/plumbing/watford" className="hover:text-primary transition-colors">Watford</Link></li>
-              <li><Link to="/services/plumbing/london" className="hover:text-primary transition-colors">London</Link></li>
             </ul>
           </div>
           <div>
