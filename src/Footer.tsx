@@ -3,7 +3,6 @@ import logoLight from './assets/Logo JPG/Cosy_Content_Ltd_-_Horizontal_2-removeb
 import logoDark from './assets/Logo JPG/Cosy_Content_Ltd_-_Horizontal-removebg-preview.png';
 import { useTheme } from './ThemeContext';
 import { useState, useEffect } from 'react';
-import { seoPagesData } from './seoPagesData';
 
 const Footer = () => {
   const { theme } = useTheme();
@@ -31,7 +30,6 @@ const Footer = () => {
     { id: 'Cleaning', label: 'Cleaning Companies' },
     { id: 'Removals', label: 'Removal Companies' }
   ];
-  const seoPages = Object.values(seoPagesData);
 
   return (
     <footer className="py-16 md:py-20 border-t border-outline-variant/10 transition-colors duration-300">
