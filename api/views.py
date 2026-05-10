@@ -92,7 +92,7 @@ def contact_us(request):
         <html>
         <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
             <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e9ecef; border-radius: 8px;">
-                <h2 style="color: #3b82f6;">New Contact Form Submission</h2>
+                <h2 style="color: #00696D;">New Contact Form Submission</h2>
                 <p><strong>From:</strong> {name}</p>
                 <p><strong>Email:</strong> {email}</p>
                 <div style="margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 4px;">

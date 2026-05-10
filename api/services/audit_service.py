@@ -7,6 +7,7 @@ import logging
 import stripe
 from django.conf import settings
 from io import BytesIO
+from datetime import datetime
 
 # ── ReportLab imports ──────────────────────────────────────────────────────────
 from reportlab.lib.pagesizes import A4
@@ -25,11 +26,11 @@ from reportlab.pdfbase.pdfmetrics import stringWidth
 logger = logging.getLogger(__name__)
 
 # ── Brand palette ──────────────────────────────────────────────────────────────
-DARK = colors.HexColor("#0D0D0D")
-OFF_WHITE = colors.HexColor("#F7F5F0")
-ACCENT = colors.HexColor("#C8F04A")  # lime green
-ACCENT2 = colors.HexColor("#E8F5A3")  # pale lime
-MID_GREY = colors.HexColor("#6B6B6B")
+DARK = colors.HexColor("#1B1C1C")
+OFF_WHITE = colors.HexColor("#FBF9F8")
+ACCENT = colors.HexColor("#00696D")  # teal
+ACCENT2 = colors.HexColor("#19A4A9")  # light teal
+MID_GREY = colors.HexColor("#3D4949")
 RED = colors.HexColor("#E84040")
 ORANGE = colors.HexColor("#F5A623")
 YELLOW = colors.HexColor("#F5D623")
@@ -110,7 +111,8 @@ class _CoverPage(Flowable):
         c.roundRect(20 * mm, H - 28 * mm, 72 * mm, 10 * mm, 5 * mm, fill=1, stroke=0)
         c.setFillColor(ACCENT)
         c.setFont("Helvetica-Bold", 8)
-        c.drawString(25 * mm, H - 23 * mm, "PERFORMANCE AUDIT  \u2022  APRIL 2026")
+        current_date = datetime.now().strftime("%B %Y").upper()
+        c.drawString(25 * mm, H - 23 * mm, f"PERFORMANCE AUDIT  \u2022  {current_date}")
 
         # ── score circle ──
         cx, cy, r = W / 2, H / 2 + 30 * mm, 38 * mm
@@ -460,8 +462,9 @@ def _make_interior_callback(business_name):
         )
         canvas.setFillColor(MID_GREY)
         canvas.setFont("Helvetica", 8)
+        current_date = datetime.now().strftime("%B %Y")
         canvas.drawRightString(
-            W - 10 * mm, H - 9 * mm, "Cosy Content Ltd  \u2022  April 2026"
+            W - 10 * mm, H - 9 * mm, f"Cosy Content Ltd  \u2022  {current_date}"
         )
         # footer
         canvas.setFillColor(DARK)
@@ -602,7 +605,7 @@ def send_audit_email(report, pdf_content):
             <body style="font-family: sans-serif; color: #333; line-height: 1.6;">
                 <div style="max-width: 600px; margin: 0 auto; padding: 20px;
                             border: 1px solid #eee; border-radius: 10px;">
-                    <h1 style="color: #0D0D0D;">Hi {report.name}!</h1>
+                    <h1 style="color: #1B1C1C;">Hi {report.name}!</h1>
                     <p>Thanks for requesting an audit for <strong>{report.business_name}</strong>.</p>
                     <p>We've analysed your site at <code>{report.website_url}</code> and
                        generated a detailed performance scorecard for you.</p>
@@ -610,9 +613,9 @@ def send_audit_email(report, pdf_content):
                                 text-align:center; margin:20px 0;">
                         <span style="font-size:14px; text-transform:uppercase;
                                      letter-spacing:1px; font-weight:bold;
-                                     color:#64748b;">Overall Score</span><br/>
+                                     color:#3D4949;">Overall Score</span><br/>
                         <span style="font-size:48px; font-weight:900;
-                                     color:#C8F04A;">{report.report_data.get("overall_score", "–")}/100</span>
+                                     color:#00696D;">{report.report_data.get("overall_score", "–")}/100</span>
                     </div>
                     <p><strong>Your PDF report is attached.</strong> It includes critical
                        findings and quick wins to help you get more leads.</p>
@@ -620,11 +623,11 @@ def send_audit_email(report, pdf_content):
                     <p>We can rebuild your website in just 7 days — for as little as
                        £59/month with no upfront cost.</p>
                     <a href="https://cosycontent.com/signup"
-                       style="display:inline-block; background:#C8F04A; color:#0D0D0D;
+                       style="display:inline-block; background:#00696D; color:#FFFFFF;
                               padding:15px 25px; text-decoration:none; border-radius:8px;
                               font-weight:bold; margin-top:10px;">Get My New Website</a>
                     <p style="margin-top:40px; font-size:12px; color:#94a3b8;">
-                        &copy; Cosy Content Ltd. All rights reserved.
+                        &copy; 2026 Cosy Content Ltd. All rights reserved.
                     </p>
                 </div>
             </body>
