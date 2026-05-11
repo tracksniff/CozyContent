@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { CheckCircle2, ArrowRight, Shield, Rocket, Target, Globe, Check } from 'lucide-react';
+import { CheckCircle2, ArrowRight, Shield, Check } from 'lucide-react';
 import Navbar from './Navbar';
 import Footer from './Footer';
-import { SEOPageInfo } from './seoPagesData';
+import type { SEOPageInfo } from './seoPagesData';
 
 interface GenericSEOPageProps {
   data: SEOPageInfo;

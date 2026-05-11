@@ -1,41 +1,12 @@
 import React, { useState } from 'react';
 import { Check, Sparkles, ArrowRight, Minus } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import PricingToggle from './PricingToggle';
-import { useAuth } from './AuthContext';
-import axios from 'axios';
-import toast from 'react-hot-toast';
 
 const PricingPage: React.FC = () => {
   const [isAnnual, setIsAnnual] = useState(true);
-  const { token } = useAuth();
-  const navigate = useNavigate();
-  const [loadingPack, setLoadingPack] = useState<string | null>(null);
-
-  const handlePurchasePack = async (packType: string) => {
-    if (!token) {
-      navigate('/signup');
-      return;
-    }
-
-    setLoadingPack(packType);
-    try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/create-checkout-session/`, {
-        plan_type: packType,
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (res.data.url) {
-        window.location.href = res.data.url;
-      }
-    } catch (err: any) {
-      toast.error(err.response?.data?.error || 'Failed to initiate purchase');
-    } finally {
-      setLoadingPack(null);
-    }
-  };
 
   const plans = [
     {

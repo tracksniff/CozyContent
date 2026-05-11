@@ -120,8 +120,8 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             
             {/* Dynamic SEO Pages */}
-            {Object.keys(seoPagesData).map((path) => (
-              <Route key={path} path={`/${path}`} element={<GenericSEOPage />} />
+            {Object.entries(seoPagesData).map(([path, data]) => (
+              <Route key={path} path={`/${path}`} element={<GenericSEOPage data={data} />} />
             ))}
 
             <Route

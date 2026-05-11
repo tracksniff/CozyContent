@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Shield, ArrowRight, CheckCircle2, Monitor, Smartphone, Zap, Check } from 'lucide-react';
+import { Shield, ArrowRight, Monitor, Check } from 'lucide-react';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
@@ -73,7 +73,7 @@ const SERVICE_DATA: { [key: string]: any } = {
   }
 };
 
-const LivePreview: React.FC<{ url: string; name: string; type: string }> = ({ url, name, type }) => {
+const LivePreview: React.FC<{ url: string; name: string; type: string }> = ({ name, type }) => {
   const [isInView, setIsInView] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
