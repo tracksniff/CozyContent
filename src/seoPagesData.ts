@@ -25,7 +25,67 @@ export const seoPagesData: Record<string, SEOPageInfo> = {
     keyword: "Web design for plumbers",
     metaTitle: "Website Design for Plumbers | From £59 Per Month",
     metaDescription: "We build high-converting websites for plumbers. Modern, fast and fully managed from 59 per month. Get more leads today.",
-    industry: "Plumbing"
+    industry: "Plumbing",
+    heroTitle: "Website Design for Plumbers",
+    heroSubtitle: "Get More Plumbing Jobs with a Website That Actually Converts",
+    checklist: ["No upfront cost on our monthly plan", "Fully managed — hosting, maintenance, and updates", "Built to generate calls and quote requests"],
+    sections: [
+      {
+        title: "Why Your Plumbing Website Isn't Bringing in Leads",
+        description: "A plumbing website that looks outdated or performs poorly doesn't just fail to impress — it actively drives customers away. In the time it takes a slow page to load, a potential customer has already hit back and called someone else.",
+        points: [
+          "Designs that haven't kept pace with customer expectations",
+          "Page speeds that fail Google's Core Web Vitals",
+          "Mobile layouts that are awkward to use on smartphones",
+          "No clear call-to-action or way to request a quote",
+          "Little to no local SEO — invisible to local customers",
+          "Generic content that doesn't build local trust"
+        ]
+      },
+      {
+        title: "What You Get with a Cosy Content Plumber Website",
+        description: "We don't just build websites — we build lead generation tools for your plumbing business. Every decision we make is made with one question in mind: will this help a local customer choose you?",
+        points: [
+          "Modern, Professional Design: Clean, trustworthy layouts designed specifically for plumbing businesses.",
+          "Fast & Mobile-First: Capturing the majority of local plumbing searches which happen on phones.",
+          "Built for Enquiries: Prominent phone numbers and quote request forms positioned where customers look.",
+          "Fully Managed: Hosting, security patches, and maintenance all handled by our team.",
+          "Ongoing Updates Included: Need to add a new service or update a price? We'll take care of it.",
+          "Content Written for You: We write all the copy — service descriptions, location pages, and FAQs."
+        ]
+      },
+      {
+        title: "Designed with SEO from Day One",
+        description: "Your website isn't just built to look good — it's built to be found. Every plumber website we create is structured from the ground up to rank in local Google searches.",
+        points: [
+          "Technical SEO Foundations: Proper site structure and XML sitemaps for search engines.",
+          "Local SEO Setup: Pages targeting your specific service areas and local search terms.",
+          "Smart Schema Markup: LocalBusiness, Service, and FAQ schema for richer search results.",
+          "Performance & Security: SSL certificates and caching for fast, secure browsing."
+        ]
+      },
+      {
+        title: "How It Works",
+        description: "We keep the process straightforward. Most plumber websites are live within a matter of days:",
+        points: [
+          "1. We build your site: We create a modern plumbing website tailored to your business — writing all the content, designing the layout, and setting up the full technical and SEO foundation.",
+          "2. You review it: We share a preview link. If anything needs adjusting before launch, just say the word.",
+          "3. We launch it: Your site goes live and begins working to generate enquiries. We handle the hosting setup and Google submission.",
+          "4. We manage everything: From that point on, hosting, maintenance, security, and updates are all handled by our team — indefinitely."
+        ]
+      },
+      {
+        title: "Who This Is For",
+        description: "This service is built for plumbers who are serious about growing their business online. It works particularly well for:",
+        points: [
+          "Plumbers with outdated websites that aren't generating consistent enquiries",
+          "New plumbing businesses that need to look established and credible from day one",
+          "Sole traders who want a professional online presence without the hassle of managing it themselves",
+          "Tradespeople who rely too heavily on word-of-mouth and want a more predictable source of leads",
+          "Plumbing businesses looking to break into specific local search terms they're currently missing"
+        ]
+      }
+    ]
   },
   "plumber-web-design-luton": {
     url: "plumber-web-design-luton",
@@ -356,7 +416,67 @@ export const seoPagesData: Record<string, SEOPageInfo> = {
     keyword: "Web design for electricians",
     metaTitle: "Website Design for Electricians | Get More Leads",
     metaDescription: "We build high-converting websites for electricians built to generate enquiries. Fully managed from £59 per month. Start getting more jobs today.",
-    industry: "Electrical"
+    industry: "Electrical",
+    heroTitle: "Website Design for Electricians",
+    heroSubtitle: "Get More Electrical Work with a Website That Builds Trust and Converts",
+    checklist: ["No upfront cost on our monthly plan", "Credentials presented prominently", "Built for emergency and planned work"],
+    sections: [
+      {
+        title: "Why Electrical Customers Aren't Choosing You Online",
+        description: "Electrical work is trust-sensitive. Customers are making a safety-critical decision and scrutinise electricians more carefully than almost any other trade. If your website doesn't address that scrutiny, they'll find someone else.",
+        points: [
+          "NICEIC, NAPIT, or Part P registration not mentioned or buried",
+          "No customer reviews or testimonials to provide social proof",
+          "Generic service pages with no separation between distinct services",
+          "Missing from local search results for the terms customers actually use",
+          "Slow, outdated designs that undermine your professional impression",
+          "Contact information difficult to find, especially for out-of-hours calls"
+        ]
+      },
+      {
+        title: "What You Get with a Cosy Content Electrician Website",
+        description: "Every site we build for electricians is structured around what customers need to see before they'll make contact — credentials, trust signals, and clarity.",
+        points: [
+          "Credentials-First Design: Your registrations and insurance are front and centre.",
+          "Service-Specific Pages: Separate sections for rewires, EICRs, EV chargers, and more.",
+          "Fast & Mobile-First Build: Essential for capturing urgent fault-finding searches.",
+          "Review Integration: Testimonials integrated naturally to build confidence.",
+          "Fully Managed: Hosting, security, and maintenance all handled by our team.",
+          "Content Written for You: Professional copywriting for all your services."
+        ]
+      },
+      {
+        title: "Designed with SEO from Day One",
+        description: "Ranking for electrical searches in your area takes a site built with local SEO as a foundation, not an afterthought.",
+        points: [
+          "Technical SEO Foundations: Proper site structure and optimized performance.",
+          "Local SEO Setup: Targeting your specific service areas and local searches.",
+          "Smart Schema Markup: LocalBusiness and Service schema for better visibility.",
+          "Future-Ready: llms.txt implementation for visibility in AI-powered search."
+        ]
+      },
+      {
+        title: "How It Works",
+        description: "We keep the process simple. Most electrician websites are live within days:",
+        points: [
+          "1. We build your site: We create a modern electrician website tailored to your business — writing all the content, designing the layout, and setting up the full technical and SEO foundation.",
+          "2. You review it: We share a preview link. If anything needs adjusting before launch, just say the word.",
+          "3. We launch it: Your site goes live and begins generating enquiries. We handle the hosting setup and Google submission.",
+          "4. We manage everything: Hosting, maintenance, security, and updates — all handled by our team on an ongoing basis."
+        ]
+      },
+      {
+        title: "Who This Is For",
+        description: "This service is designed for qualified electricians who want their online presence to match the standard of their actual work. It works best for:",
+        points: [
+          "Electricians with outdated websites that aren't reflecting their qualifications or generating enquiries",
+          "Sole traders who want to look as professional online as they are on the job",
+          "Electricians looking to promote higher-value services like EV charging or smart home installations",
+          "Anyone who wants to reduce reliance on directories and own their own source of leads",
+          "Electrical businesses expanding into new service areas or postcode coverage"
+        ]
+      }
+    ]
   },
   "electrician-web-design-luton": {
     url: "electrician-web-design-luton",
@@ -666,7 +786,67 @@ export const seoPagesData: Record<string, SEOPageInfo> = {
     keyword: "web design for roofers",
     metaTitle: "Website Design for Roofers | More Enquiries",
     metaDescription: "We design websites for roofing companies that convert visitors into leads. Modern, fast and fully managed from £59 per month.",
-    industry: "Roofing"
+    industry: "Roofing",
+    heroTitle: "Website Design for Roofers",
+    heroSubtitle: "Get More Roofing Jobs with a Website That Actually Converts",
+    checklist: ["No upfront cost on our monthly plan", "Showcase your portfolio", "Built for high-value leads"],
+    sections: [
+      {
+        title: "Why Your Roofing Website Isn't Bringing in Work",
+        description: "Roofing is a high-intent local search category. When someone searches for a roofer, they usually need one soon. If your site is slow, buried on page two, or doesn't build trust quickly, that job goes to someone else.",
+        points: [
+          "Invisible in Google local results for the searches that matter most",
+          "Outdated designs that undermine confidence before a customer reads a word",
+          "No mention of insurance or guarantees — the first things customers check for",
+          "Slow load times on mobile, where the majority of roofing searches happen",
+          "No service-specific pages for pitched roofs, flat roofs, or guttering",
+          "Missing from surrounding area searches despite covering those locations"
+        ]
+      },
+      {
+        title: "What You Get with a Cosy Content Roofer Website",
+        description: "Every site we build for roofers is designed around how customers make decisions — with urgency and trust at the centre.",
+        points: [
+          "Professional, Trust-Building Design: Credible layouts that communicate reliability.",
+          "Service-Specific Pages: Dedicated sections for pitched roofing, flat roofing, and repairs.",
+          "Fast & Mobile-First: Capturing customers searching during or after weather events.",
+          "Insurance & Guarantee Visibility: Displaying your cover details prominently.",
+          "Fully Managed: Hosting, security, and all technical maintenance handled.",
+          "Content Written for You: Service descriptions, area coverage, and FAQs included."
+        ]
+      },
+      {
+        title: "Designed with SEO from Day One",
+        description: "Ranking for roofing searches requires a website built with local SEO at its core, not added as an afterthought.",
+        points: [
+          "Technical SEO Foundations: Optimized site structure and performance scores.",
+          "Local SEO Setup: Pages targeting your service areas and local searches.",
+          "Smart Schema Markup: LocalBusiness, Service, and FAQ schema for richer results.",
+          "Future-Ready: llms.txt implementation for visibility in AI and traditional search."
+        ]
+      },
+      {
+        title: "How It Works",
+        description: "We keep the process simple. Most roofing websites are live within days:",
+        points: [
+          "1. We build your site: We create a modern roofing website tailored to your business — writing all the content, designing the layout, and setting up the full technical and SEO foundation.",
+          "2. You review it: We share a preview link. If anything needs adjusting before launch, just say the word.",
+          "3. We launch it: Your site goes live and begins generating enquiries. We handle the hosting setup and Google submission.",
+          "4. We manage everything: Hosting, maintenance, security, and updates — all handled by our team on an ongoing basis."
+        ]
+      },
+      {
+        title: "Who This Is For",
+        description: "This service is built for roofing businesses serious about growing their online presence. It works particularly well for:",
+        points: [
+          "Roofers with outdated websites that aren't generating a consistent flow of enquiries",
+          "New roofing businesses that need to look established and credible from day one",
+          "Sole traders who want a professional online presence without the hassle of managing it",
+          "Roofers who rely heavily on word-of-mouth and want a more predictable source of work",
+          "Roofing companies looking to expand into new areas or add new service lines online"
+        ]
+      }
+    ]
   },
   "roofer-web-design-luton": {
     url: "roofer-web-design-luton",
@@ -976,7 +1156,67 @@ export const seoPagesData: Record<string, SEOPageInfo> = {
     keyword: "web design for locksmiths",
     metaTitle: "Website Design for Locksmiths | Get More Calls",
     metaDescription: "Lead-focused websites for locksmiths. Built to capture urgent enquiries and drive more calls. Low upfront cost, fully managed.",
-    industry: "Locksmith"
+    industry: "Locksmith",
+    heroTitle: "Website Design for Locksmiths",
+    heroSubtitle: "Be the First Locksmith Customers Call — Day or Night",
+    checklist: ["No upfront cost on our monthly plan", "Built for urgent conversions", "Captures emergency and planned work"],
+    sections: [
+      {
+        title: "Why Locksmith Customers Aren't Calling You",
+        description: "Locksmith searches are almost always urgent. The customer looks at the first result that seems credible and calls. That decision takes under thirty seconds.",
+        points: [
+          "No visible pricing or call-out fee information — the biggest trust barrier",
+          "Absent from Google results for emergency and local locksmith searches",
+          "No accreditations or DBS information to verify legitimacy",
+          "Phone number hard to find or not click-to-call on mobile",
+          "Generic designs that look indistinguishable from rogue traders",
+          "No coverage of the surrounding areas customers actually search from"
+        ]
+      },
+      {
+        title: "What You Get with a Cosy Content Locksmith Website",
+        description: "Every element of your site is chosen to convert a stressed customer into a phone call as quickly and confidently as possible.",
+        points: [
+          "Click-to-Call Design: Your phone number is unmissable on every page.",
+          "Transparent Pricing: Clear call-out fees displayed openly to build trust.",
+          "Trust Credentials Prominent: DBS status and trade memberships highlighted.",
+          "24/7 Availability Signposting: Capturing the high-value emergency market.",
+          "Fully Managed: Hosting, security, and updates all handled by our team.",
+          "Content Written for You: Service pages, area coverage, and FAQs included."
+        ]
+      },
+      {
+        title: "Designed with SEO from Day One",
+        description: "Appearing at the top of local locksmith searches requires a site built for local SEO and extreme loading speed.",
+        points: [
+          "Technical SEO Foundations: Proper site structure and XML sitemaps.",
+          "Local SEO Setup: Targeting your specific service areas and local searches.",
+          "Smart Schema Markup: LocalBusiness and Service schema for featured results.",
+          "Performance & Security: Secure HTTPS and caching for instant loading."
+        ]
+      },
+      {
+        title: "How It Works",
+        description: "We keep the process simple. Most locksmith websites are live within days:",
+        points: [
+          "1. We build your site: We create a modern locksmith website tailored to your business — writing all the content, designing the layout, and setting up the full technical and SEO foundation.",
+          "2. You review it: We share a preview link. If anything needs adjusting before launch, just say the word.",
+          "3. We launch it: Your site goes live and begins generating enquiries. We handle the hosting setup and Google submission.",
+          "4. We manage everything: Hosting, maintenance, security, and updates — all handled by our team on an ongoing basis."
+        ]
+      },
+      {
+        title: "Who This Is For",
+        description: "This service is built for locksmiths who want a reliable, professional online presence that wins work consistently. It's a particularly good fit for:",
+        points: [
+          "Locksmiths offering 24/7 emergency cover who aren't capturing that high-value search traffic",
+          "Locksmith businesses looking to stand out as trustworthy alternatives to rogue trader operations",
+          "Sole traders who want to look professional online without managing a website themselves",
+          "Anyone expanding into commercial locksmith work who needs a web presence to support it",
+          "Locksmiths relying on comparison sites who want to own their own enquiry source"
+        ]
+      }
+    ]
   },
   "locksmith-web-design-luton": {
     url: "locksmith-web-design-luton",
@@ -1286,7 +1526,67 @@ export const seoPagesData: Record<string, SEOPageInfo> = {
     keyword: "web design for cleaning companies",
     metaTitle: "Website Design for Cleaning Companies | More Bookings",
     metaDescription: "We create websites for cleaning businesses that drive bookings. Simple, affordable and fully managed from £59 per month.",
-    industry: "Cleaning"
+    industry: "Cleaning",
+    heroTitle: "Website Design for Cleaning Companies",
+    heroSubtitle: "Fill Your Cleaning Schedule with Regular Clients — Not One-Off Jobs",
+    checklist: ["No upfront cost on our monthly plan", "Built to attract recurring clients", "Covers domestic and commercial"],
+    sections: [
+      {
+        title: "Why Your Cleaning Website Isn't Attracting the Clients You Want",
+        description: "The cleaning business runs on repeat customers. If your business doesn't look professional online, potential regular clients will start that relationship with a competitor instead.",
+        points: [
+          "No clear information about what's included in a clean",
+          "Missing trust signals — no DBS checks or insurance visible",
+          "Everything on one generic page — no separation of services",
+          "No easy online quote request or booking path",
+          "Invisible in search for specific high-value service types",
+          "Designs that look identical to dozens of competitors"
+        ]
+      },
+      {
+        title: "What You Get with a Cosy Content Cleaning Website",
+        description: "Every part of your site is built to attract the clients you actually want — reliable, recurring customers who stay with you long term.",
+        points: [
+          "Trust-First Design: Insurance and DBS status featured prominently.",
+          "Service-Specific Pages: Dedicated sections for regular, deep, and commercial cleaning.",
+          "Frictionless Enquiry Path: Simple quote forms on every page.",
+          "What's Included Made Clear: Detailed service descriptions to reduce hesitation.",
+          "Fully Managed: Hosting, security, and maintenance all handled.",
+          "Content Written for You: Professional copywriting for all your services."
+        ]
+      },
+      {
+        title: "Designed with SEO from Day One",
+        description: "Ranking consistently for cleaning searches requires more than a good-looking website. We target the terms that bring in the most valuable clients.",
+        points: [
+          "Technical SEO Foundations: Proper site structure for search engines.",
+          "Local SEO Setup: Pages targeting your service areas and local searches.",
+          "Smart Schema Markup: LocalBusiness, Service, and FAQ schema.",
+          "Performance & Security: SSL certificate and fast loading speeds included."
+        ]
+      },
+      {
+        title: "How It Works",
+        description: "We keep the process simple. Most cleaning websites are live within days:",
+        points: [
+          "1. We build your site: We create a modern cleaning website tailored to your business — writing all the content, designing the layout, and setting up the full technical and SEO foundation.",
+          "2. You review it: We share a preview link. If anything needs adjusting before launch, just say the word.",
+          "3. We launch it: Your site goes live and begins generating enquiries. We handle the hosting setup and Google submission.",
+          "4. We manage everything: Hosting, maintenance, security, and updates — all handled by our team on an ongoing basis."
+        ]
+      },
+      {
+        title: "Who This Is For",
+        description: "This service works particularly well for cleaning businesses who want to build a reliable, growing client base online. It's a good fit for:",
+        points: [
+          "Cleaning companies who want to build a steady base of regular domestic clients",
+          "Cleaners looking to expand into commercial or end-of-tenancy work with a professional presence",
+          "Anyone currently relying on word-of-mouth who wants a more consistent source of leads",
+          "Cleaning businesses spending money on apps or platforms that take a cut of every booking",
+          "Companies ready to own their client pipeline rather than renting access to someone else's platform"
+        ]
+      }
+    ]
   },
   "cleaning-company-web-design-luton": {
     url: "cleaning-company-web-design-luton",
@@ -1596,7 +1896,67 @@ export const seoPagesData: Record<string, SEOPageInfo> = {
     keyword: "web design for removal companies",
     metaTitle: "Website Design for Removal Companies | Get More Leads",
     metaDescription: "High-converting websites for removals businesses. We design, build and manage everything. Low upfront cost, start today.",
-    industry: "Removals"
+    industry: "Removals",
+    heroTitle: "Website Design for Removal Companies",
+    heroSubtitle: "Win More House Move Bookings with a Website That Earns Trust",
+    checklist: ["No upfront cost on our monthly plan", "Built for trust-heavy decisions", "Covers domestic and commercial moves"],
+    sections: [
+      {
+        title: "Why Removal Customers Are Choosing Competitors Over You",
+        description: "Moving house is one of the most considered purchases a household makes. Customers take their time choosing who to trust with their belongings. A website that doesn't stand up to scrutiny loses bookings.",
+        points: [
+          "No visible insurance or goods-in-transit cover — a major concern",
+          "Customer reviews absent or poorly positioned",
+          "Vague service descriptions leaving customers unsure of coverage",
+          "No dedicated content for different move types (office, man-and-van)",
+          "Missing from searches beyond broad local removal terms",
+          "Complicated quote process losing customers ready to book"
+        ]
+      },
+      {
+        title: "What You Get with a Cosy Content Removal Company Website",
+        description: "Every element of your site is chosen to build confidence and guide customers smoothly towards a quote request.",
+        points: [
+          "Insurance and Credentials Visible: Displaying your cover details prominently.",
+          "Service and Coverage Clarity: Clear info about the move types you handle.",
+          "Review Integration: Local testimonials positioned where they influence decisions.",
+          "Streamlined Quote Request: Capturing what you need without overwhelming the customer.",
+          "Fully Managed: Hosting, security, and maintenance all handled by our team.",
+          "Content Written for You: Service pages, area coverage, and FAQs included."
+        ]
+      },
+      {
+        title: "Designed with SEO from Day One",
+        description: "Ranking for removal searches requires both strong local SEO and the content depth to rank for specific move types.",
+        points: [
+          "Technical SEO Foundations: Proper site structure and XML sitemaps.",
+          "Local SEO Setup: Pages targeting your specific service areas.",
+          "Smart Schema Markup: LocalBusiness, Service, and FAQ schema.",
+          "Performance & Security: SSL certificate and fast loading for better rankings."
+        ]
+      },
+      {
+        title: "How It Works",
+        description: "We keep the process simple. Most removal websites are live within days:",
+        points: [
+          "1. We build your site: We create a modern removal website tailored to your business — writing all the content, designing the layout, and setting up the full technical and SEO foundation.",
+          "2. You review it: We share a preview link. If anything needs adjusting before launch, just say the word.",
+          "3. We launch it: Your site goes live and begins generating enquiries. We handle the hosting setup and Google submission.",
+          "4. We manage everything: Hosting, maintenance, security, and updates — all handled by our team on an ongoing basis."
+        ]
+      },
+      {
+        title: "Who This Is For",
+        description: "This service is built for removal companies that want a website working as hard as their team. It works particularly well for:",
+        points: [
+          "Removal companies whose website doesn't reflect their professionalism",
+          "Businesses looking to break into office relocations or specialist services",
+          "Removal operators relying on comparison sites who want to own their own leads",
+          "Van-and-man operators wanting to grow into a full-service removal business",
+          "Companies expanding their coverage area and needing that reflected online"
+        ]
+      }
+    ]
   },
   "removals-web-design-luton": {
     url: "removals-web-design-luton",

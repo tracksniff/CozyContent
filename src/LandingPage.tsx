@@ -385,11 +385,13 @@ const LandingPage = () => {
 
                 <div className="space-y-4 mb-10 flex-grow">
                   {[
-                    'Hosting',
-                    'SSL',
-                    'Security',
-                    'Performance optimization',
-                    'Upto 5 small updates per month (eg text changes, image swaps, contact info updates)'
+                    'Professional website design and build',
+                    'All content written by our team',
+                    'Local SEO setup from day one',
+                    'Hosting and security — fully managed',
+                    'Up to 5 updates per month',
+                    'Ongoing maintenance and support',
+                    'Cancel anytime — no minimum term'
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-3">
                       <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center">
@@ -430,11 +432,13 @@ const LandingPage = () => {
 
                 <div className="space-y-4 mb-10 flex-grow">
                   {[
-                    'Fully built website',
-                    'No ongoing commitment',
-                    'Full source files available',
-                    'Handover within 7 days',
-                    'Ready to use'
+                    'Professional website design and build',
+                    'All content written by our team',
+                    'Local SEO setup from day one',
+                    'Full ownership of the finished site',
+                    'No monthly fees — ever',
+                    'Hosting not included',
+                    'No ongoing updates or support'
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-3">
                       <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-surface-container-high flex items-center justify-center">
