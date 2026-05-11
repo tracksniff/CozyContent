@@ -78,7 +78,7 @@ const Pricing: React.FC = () => {
                   <span className="text-on-surface-variant font-bold text-sm uppercase tracking-widest">/month</span>
                 </div>
                 <div className="mt-4 pt-4 border-t border-outline-variant/10">
-                  <PricingToggle isAnnual={isAnnual} onChange={setIsAnnual} isPopular={false} />
+                  <PricingToggle isAnnual={isAnnual} onChange={setIsAnnual} />
                 </div>
               </div>
 

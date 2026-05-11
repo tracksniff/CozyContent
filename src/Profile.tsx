@@ -105,7 +105,7 @@ const Profile: React.FC = () => {
                                 {isAnnual ? '£47' : '£59'}<span className="text-xs md:text-sm font-bold">/month</span>
                               </div>
                               <div className="mt-2 pt-2 border-t border-outline-variant/5">
-                                <PricingToggle isAnnual={isAnnual} onChange={setIsAnnual} isPopular={false} />
+                                <PricingToggle isAnnual={isAnnual} onChange={setIsAnnual} />
                               </div>
                             </div>
                             <button 
