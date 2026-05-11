@@ -261,20 +261,20 @@ const Dashboard: React.FC = () => {
     <div className="min-h-screen bg-surface flex transition-colors duration-300">
       <Sidebar />
       
-      <main className="flex-grow lg:ml-64 p-6 md:p-8 lg:p-12 transition-all duration-500 mt-16 lg:mt-0">
+      <main className="flex-grow lg:ml-64 p-4 md:p-8 lg:p-12 transition-all duration-500 mt-16 lg:mt-0">
         <div className="max-w-6xl mx-auto">
           {/* Header Section */}
-          <header className="mb-10 lg:mb-12 flex flex-col md:flex-row justify-between items-start gap-4">
+          <header className="mb-8 md:mb-10 lg:mb-12 flex flex-col md:flex-row justify-between items-start gap-4">
             <div>
-              <h1 className="text-3xl lg:text-4xl font-black font-headline text-on-surface tracking-tight mb-2">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black font-headline text-on-surface tracking-tight mb-2">
                 {user?.is_staff ? 'Admin Dashboard' : `Welcome Back, ${displayName}`}
               </h1>
-              <p className="text-on-surface-variant font-medium text-sm lg:text-base">
+              <p className="text-on-surface-variant font-medium text-xs sm:text-sm lg:text-base">
                 {user?.is_staff ? 'Manage all websites across the platform.' : 'Manage and monitor your digital ecosystem.'}
               </p>
             </div>
             {user?.is_staff && (
-              <div className="bg-primary/10 text-primary px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest border border-primary/20">
+              <div className="bg-primary/10 text-primary px-3 py-1.5 rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest border border-primary/20">
                 Staff Access
               </div>
             )}
@@ -282,36 +282,36 @@ const Dashboard: React.FC = () => {
 
           {/* System Generation Progress Spinner */}
           {processingApps.length > 0 && (
-            <div className="mb-12 relative overflow-hidden bg-primary/5 rounded-[3rem] border border-primary/10 p-8 md:p-12 animate-in fade-in zoom-in-95 duration-700 shadow-xl shadow-primary/5">
-               <div className="absolute top-0 right-0 p-8 opacity-10">
-                 <Sparkles size={120} className="animate-pulse" />
+            <div className="mb-8 md:mb-12 relative overflow-hidden bg-primary/5 rounded-[2rem] md:rounded-[3rem] border border-primary/10 p-6 md:p-12 animate-in fade-in zoom-in-95 duration-700 shadow-xl shadow-primary/5">
+               <div className="absolute top-0 right-0 p-6 md:p-8 opacity-10">
+                 <Sparkles size={80} className="md:size-[120px] animate-pulse" />
                </div>
                
                <div className="relative z-10 flex flex-col items-center text-center">
-                 <div className="relative mb-8">
-                    <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full animate-pulse"></div>
-                    <div className="relative w-24 h-24 bg-surface rounded-full flex items-center justify-center border-4 border-primary/20 shadow-xl overflow-hidden">
+                 <div className="relative mb-6 md:mb-8">
+                    <div className="absolute inset-0 bg-primary/20 blur-2xl md:blur-3xl rounded-full animate-pulse"></div>
+                    <div className="relative w-16 h-16 md:w-24 md:h-24 bg-surface rounded-full flex items-center justify-center border-4 border-primary/20 shadow-xl overflow-hidden">
                        <div className="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-                       <Sparkles size={32} className="text-primary animate-bounce" />
+                       <Sparkles size={24} className="md:size-[32px] text-primary animate-bounce" />
                     </div>
                  </div>
 
-                 <h2 className="text-2xl font-black text-on-surface mb-4 tracking-tight">
+                 <h2 className="text-xl md:text-2xl font-black text-on-surface mb-3 md:mb-4 tracking-tight px-4">
                     Your Website is coming to life!
                  </h2>
                  
-                 <div className="bg-surface/50 backdrop-blur-sm px-8 py-4 rounded-2xl border border-primary/10 inline-flex items-center gap-4 min-w-[320px] transition-all duration-500 hover:scale-105 shadow-sm">
-                    <div className="flex gap-2 text-primary">
-                        <Cpu size={20} className="animate-pulse" />
-                        <Palette size={20} className="animate-bounce" style={{ animationDelay: '0.2s' }} />
-                        <Zap size={20} className="animate-pulse" style={{ animationDelay: '0.4s' }} />
+                 <div className="bg-surface/50 backdrop-blur-sm px-6 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl border border-primary/10 inline-flex items-center gap-3 md:gap-4 min-w-0 md:min-w-[320px] max-w-full transition-all duration-500 hover:scale-105 shadow-sm">
+                    <div className="flex gap-1.5 md:gap-2 text-primary shrink-0">
+                        <Cpu size={16} className="md:size-[20px] animate-pulse" />
+                        <Palette size={16} className="md:size-[20px] animate-bounce" style={{ animationDelay: '0.2s' }} />
+                        <Zap size={16} className="md:size-[20px] animate-pulse" style={{ animationDelay: '0.4s' }} />
                     </div>
-                    <p className="text-primary font-black uppercase tracking-widest text-[11px] min-w-[240px]">
+                    <p className="text-primary font-black uppercase tracking-widest text-[9px] md:text-[11px] min-w-0 md:min-w-[240px] truncate">
                         {funMessages[currentMessageIndex]}
                     </p>
                  </div>
                  
-                 <p className="mt-8 text-on-surface-variant text-xs font-medium max-w-sm">
+                 <p className="mt-6 md:mt-8 text-on-surface-variant text-[10px] md:text-xs font-medium max-w-sm px-4">
                    Our system is currently building your custom code, setting up your GitHub repo, and launching your brand. It should take about a minute!
                  </p>
                </div>
@@ -320,25 +320,25 @@ const Dashboard: React.FC = () => {
 
           {/* Project Progress & Reviews (Customer Only) */}
           {!user?.is_staff && applications.map(app => (
-            <div key={app.id} className="mb-20">
-              <div className="flex items-center gap-4 mb-8">
-                <div className="h-10 w-1.5 bg-primary rounded-full"></div>
-                <h2 className="text-2xl font-black text-on-surface tracking-tight uppercase">{app.company_name}</h2>
+            <div key={app.id} className="mb-12 md:mb-20">
+              <div className="flex items-center gap-3 md:gap-4 mb-6 md:mb-8">
+                <div className="h-8 md:h-10 w-1 md:w-1.5 bg-primary rounded-full"></div>
+                <h2 className="text-xl md:text-2xl font-black text-on-surface tracking-tight uppercase truncate">{app.company_name}</h2>
               </div>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
               {/* Progress Timeline */}
-              <div className="bg-surface-container-low p-8 rounded-[2.5rem] border border-outline-variant shadow-sm">
-                <div className="flex items-center justify-between mb-8">
-                  <h3 className="text-xl font-black text-on-surface flex items-center gap-2">
-                    <Clock size={20} className="text-primary" /> {app.company_name} Timeline
+              <div className="bg-surface-container-low p-6 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border border-outline-variant shadow-sm">
+                <div className="flex items-center justify-between mb-6 md:mb-8">
+                  <h3 className="text-lg md:text-xl font-black text-on-surface flex items-center gap-2">
+                    <Clock size={18} className="text-primary md:size-[20px]" /> <span className="truncate">Timeline</span>
                   </h3>
-                  <div className="px-3 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-black uppercase tracking-widest">
+                  <div className="px-2.5 py-1 bg-primary/10 text-primary rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest shrink-0">
                     {app.progress}% Complete
                   </div>
                 </div>
 
-                <div className="space-y-6 relative">
-                  <div className="absolute left-4 top-2 bottom-2 w-0.5 bg-outline-variant/30"></div>
+                <div className="space-y-4 md:space-y-6 relative">
+                  <div className="absolute left-3.5 md:left-4 top-2 bottom-2 w-0.5 bg-outline-variant/30"></div>
                   
                   {[
                     { label: 'Project Confirmed', target: 0, desc: 'We’ve received your details and started your build.' },
@@ -359,13 +359,13 @@ const Dashboard: React.FC = () => {
                     const isCurrent = app.progress >= step.target && (idx === 4 || app.progress < [0, 20, 60, 80, 100][idx+1]);
                     
                     return (
-                      <div key={idx} className={`relative pl-10 flex gap-4 transition-all ${isDone ? 'opacity-100' : 'opacity-40'}`}>
-                        <div className={`absolute left-0 w-8 h-8 rounded-full flex items-center justify-center border-4 ${isDone ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20' : 'bg-surface border-outline-variant text-on-surface-variant'}`}>
-                          {isDone ? <CheckCircle2 size={16} /> : <div className="w-2 h-2 rounded-full bg-current"></div>}
+                      <div key={idx} className={`relative pl-8 md:pl-10 flex gap-3 md:gap-4 transition-all ${isDone ? 'opacity-100' : 'opacity-40'}`}>
+                        <div className={`absolute left-0 w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center border-4 ${isDone ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20' : 'bg-surface border-outline-variant text-on-surface-variant'}`}>
+                          {isDone ? <CheckCircle2 size={14} className="md:size-[16px]" /> : <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-current"></div>}
                         </div>
                         <div>
-                          <h4 className={`text-sm font-black ${isCurrent ? 'text-primary' : 'text-on-surface'}`}>{step.label}</h4>
-                          <p className="text-[10px] font-medium text-on-surface-variant">{step.desc}</p>
+                          <h4 className={`text-xs md:text-sm font-black ${isCurrent ? 'text-primary' : 'text-on-surface'}`}>{step.label}</h4>
+                          <p className="text-[9px] md:text-[10px] font-medium text-on-surface-variant">{step.desc}</p>
                         </div>
                       </div>
                     );
@@ -374,23 +374,23 @@ const Dashboard: React.FC = () => {
               </div>
 
               {/* Review & Feedback Section */}
-              <div className="space-y-8">
+              <div className="space-y-6 md:space-y-8">
                 {/* GitHub Transfer Box (One-Time Only) */}
                 {app.plan_type === 'one_time' && app.progress >= 80 && !app.github_username_for_transfer && (
-                  <div id={`transfer-${app.id}`} className="bg-surface-container-high p-8 rounded-[2.5rem] border border-outline-variant/30 shadow-xl relative overflow-hidden group">
-                     <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
-                     <h3 className="text-xl font-black mb-2 text-on-surface">Code Ready for Transfer</h3>
-                     <p className="text-on-surface-variant text-sm mb-6 font-medium">Please enter your GitHub username or email to initiate the code transfer.</p>
-                     <div className="flex gap-2 relative">
+                  <div id={`transfer-${app.id}`} className="bg-surface-container-high p-6 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border border-outline-variant/30 shadow-xl relative overflow-hidden group">
+                     <div className="absolute top-0 right-0 w-48 md:w-64 h-48 md:h-64 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl md:blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
+                     <h3 className="text-lg md:text-xl font-black mb-2 text-on-surface">Code Ready for Transfer</h3>
+                     <p className="text-on-surface-variant text-xs md:text-sm mb-4 md:mb-6 font-medium">Please enter your GitHub username or email to initiate the code transfer.</p>
+                     <div className="flex flex-col sm:flex-row gap-2 relative">
                         <input
-                          className="flex-grow bg-surface border border-outline-variant rounded-xl px-4 py-3 outline-none focus:border-primary transition-all text-sm text-on-surface placeholder:text-on-surface-variant/40"
+                          className="flex-grow bg-surface border border-outline-variant rounded-xl px-4 py-2.5 md:py-3 outline-none focus:border-primary transition-all text-xs md:text-sm text-on-surface placeholder:text-on-surface-variant/40"
                           placeholder="GitHub Username"
                           value={githubUsernames[app.id] || ''}
                           onChange={e => setGithubUsernames({...githubUsernames, [app.id]: e.target.value})}
                         />
                         <button
                           onClick={() => handleSubmitGithub(app.id)}
-                          className="bg-primary text-white px-6 py-3 rounded-xl font-black text-sm hover:brightness-110 active:scale-95 transition-all"
+                          className="bg-primary text-white px-5 md:px-6 py-2.5 md:py-3 rounded-xl font-black text-xs md:text-sm hover:brightness-110 active:scale-95 transition-all"
                         >
                           Submit
                         </button>
@@ -398,42 +398,42 @@ const Dashboard: React.FC = () => {
                   </div>
                 )}
                 {app.plan_type === 'one_time' && app.github_username_for_transfer && app.progress < 100 && (
-                  <div className="bg-surface-container-low p-8 rounded-[2.5rem] border border-outline-variant shadow-sm">
-                    <h3 className="text-lg font-black text-on-surface mb-2">Transfer in Progress</h3>
-                    <p className="text-sm font-medium text-on-surface-variant">Our team is transferring the repository to <strong>{app.github_username_for_transfer}</strong>. You'll receive an email from GitHub shortly.</p>
+                  <div className="bg-surface-container-low p-6 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border border-outline-variant shadow-sm">
+                    <h3 className="text-base md:text-lg font-black text-on-surface mb-2">Transfer in Progress</h3>
+                    <p className="text-xs md:text-sm font-medium text-on-surface-variant">Our team is transferring the repository to <strong>{app.github_username_for_transfer}</strong>. You'll receive an email from GitHub shortly.</p>
                   </div>
                 )}
                 {/* GMB Review Box */}
                 {app.progress >= 80 && (
-                  <div className="bg-primary/5 p-8 rounded-[2.5rem] border border-primary/20 shadow-xl relative overflow-hidden group">
+                  <div className="bg-primary/5 p-6 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border border-primary/20 shadow-xl relative overflow-hidden group">
                     <div className="absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                      <Star size={120} />
+                      <Star size={80} className="md:size-[120px]" />
                     </div>
-                    <h3 className="text-xl font-black text-on-surface mb-2 tracking-tight">Enjoying the experience?</h3>
-                    <p className="text-sm font-medium text-on-surface-variant mb-6">Your feedback means the world to us. Please leave a review on our Google profile!</p>
+                    <h3 className="text-lg md:text-xl font-black text-on-surface mb-2 tracking-tight">Enjoying the experience?</h3>
+                    <p className="text-xs md:text-sm font-medium text-on-surface-variant mb-4 md:mb-6">Your feedback means the world to us. Please leave a review on our Google profile!</p>
                     <a 
                       href="https://g.page/r/CcL50VdU9y65EAE/review" 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95"
+                      className="inline-flex items-center gap-2 bg-primary text-white px-5 md:px-6 py-2.5 md:py-3 rounded-xl font-bold text-xs md:text-sm hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95"
                     >
-                      <Star size={18} fill="currentColor" /> Leave a Review
+                      <Star size={16} fill="currentColor" className="md:size-[18px]" /> Leave a Review
                     </a>
                   </div>
                 )}
 
                 {/* Feedback & Uploads */}
-                <div className="bg-surface-container-low p-8 rounded-[2.5rem] border border-outline-variant shadow-sm">
-                  <h3 className="text-lg font-black text-on-surface mb-6 flex items-center gap-2">
-                    <MessageSquare size={18} className="text-primary" /> Requests & Feedback
+                <div className="bg-surface-container-low p-6 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border border-outline-variant shadow-sm">
+                  <h3 className="text-base md:text-lg font-black text-on-surface mb-4 md:mb-6 flex items-center gap-2">
+                    <MessageSquare size={16} className="text-primary md:size-[18px]" /> Requests & Feedback
                   </h3>
                   
-                  <div className="space-y-6">
+                  <div className="space-y-4 md:space-y-6">
                     <div>
-                      <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 mb-2 block">Leave Feedback (80% Stage)</label>
+                      <label className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 mb-2 block">Leave Feedback (80% Stage)</label>
                       <div className="relative">
                         <textarea 
-                          className="w-full p-4 bg-surface border border-outline-variant rounded-2xl focus:border-primary outline-none text-sm min-h-[100px] font-medium transition-all"
+                          className="w-full p-3 md:p-4 bg-surface border border-outline-variant rounded-xl md:rounded-2xl focus:border-primary outline-none text-xs md:text-sm min-h-[80px] md:min-h-[100px] font-medium transition-all"
                           placeholder="Tell us what you'd like changed..."
                           value={feedback[app.id] || ''}
                           onChange={e => setFeedback({...feedback, [app.id]: e.target.value})}
@@ -441,19 +441,19 @@ const Dashboard: React.FC = () => {
                         <button 
                           onClick={() => handleSubmitFeedback(app.id)}
                           disabled={!feedback[app.id]}
-                          className="absolute bottom-4 right-4 p-2 bg-primary text-white rounded-xl disabled:opacity-50 hover:brightness-110 transition-all shadow-md"
+                          className="absolute bottom-3 md:bottom-4 right-3 md:right-4 p-1.5 md:p-2 bg-primary text-white rounded-lg md:rounded-xl disabled:opacity-50 hover:brightness-110 transition-all shadow-md"
                         >
-                          <Send size={16} />
+                          <Send size={14} className="md:size-[16px]" />
                         </button>
                       </div>
                     </div>
 
                     <div className="pt-4 border-t border-outline-variant/30">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 mb-2 block">Attachments & Assets</label>
-                      <div className="flex items-center gap-4">
+                      <label className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 mb-2 block">Attachments & Assets</label>
+                      <div className="flex items-center gap-3 md:gap-4">
                         <label className="flex-grow cursor-pointer group">
-                          <div className="w-full py-3 px-4 bg-surface border-2 border-dashed border-outline-variant rounded-xl group-hover:border-primary transition-all flex items-center justify-center gap-2 text-sm font-bold text-on-surface-variant group-hover:text-primary">
-                            {isUploading ? <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div> : <Upload size={18} />}
+                          <div className="w-full py-2.5 md:py-3 px-3 md:px-4 bg-surface border-2 border-dashed border-outline-variant rounded-xl group-hover:border-primary transition-all flex items-center justify-center gap-2 text-xs md:text-sm font-bold text-on-surface-variant group-hover:text-primary">
+                            {isUploading ? <div className="w-3.5 h-3.5 md:w-4 md:h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div> : <Upload size={16} className="md:size-[18px]" />}
                             Upload Image or File
                           </div>
                           <input type="file" className="hidden" onChange={e => handleFileUpload(app.id, e)} />
@@ -461,9 +461,9 @@ const Dashboard: React.FC = () => {
                       </div>
                       
                       {app.attachments?.length > 0 && (
-                        <div className="mt-4 flex flex-wrap gap-2">
+                        <div className="mt-3 md:mt-4 flex flex-wrap gap-2">
                           {app.attachments.map((file: any) => (
-                            <div key={file.id} className="px-3 py-1 bg-surface border border-outline-variant rounded-lg text-[10px] font-bold flex items-center gap-2">
+                            <div key={file.id} className="px-2 md:px-3 py-1 bg-surface border border-outline-variant rounded-lg text-[9px] md:text-[10px] font-bold flex items-center gap-1.5 md:gap-2">
                               {file.filename}
                             </div>
                           ))}
@@ -559,31 +559,31 @@ const Dashboard: React.FC = () => {
           )}
 
           {/* Stats/Overview Cards (Simple) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <div className="bg-surface-container-low p-6 rounded-[2rem] border border-outline-variant shadow-sm">
-              <div className="w-10 h-10 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-4">
-                <Globe size={20} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
+            <div className="bg-surface-container-low p-5 md:p-6 rounded-2xl md:rounded-[2rem] border border-outline-variant shadow-sm">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/10 text-primary rounded-lg md:rounded-xl flex items-center justify-center mb-3 md:mb-4">
+                <Globe size={18} className="md:size-[20px]" />
               </div>
-              <div className="text-3xl font-black text-on-surface mb-1">{websites.length}</div>
-              <div className="text-sm font-bold text-on-surface-variant uppercase tracking-wider">
-                {user?.is_staff ? 'Total Websites (All Users)' : 'Your Websites'}
+              <div className="text-2xl md:text-3xl font-black text-on-surface mb-1">{websites.length}</div>
+              <div className="text-[10px] md:text-sm font-bold text-on-surface-variant uppercase tracking-wider">
+                {user?.is_staff ? 'Total Websites' : 'Your Websites'}
               </div>
             </div>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-12">
+          <div className="grid lg:grid-cols-3 gap-8 md:gap-12">
             {/* Main Content: Website List */}
-            <div className="lg:col-span-2 space-y-8">
-              <div className="flex items-center justify-between gap-4">
-                <h2 className="text-2xl font-black text-on-surface tracking-tight">
+            <div className="lg:col-span-2 space-y-6 md:space-y-8">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <h2 className="text-xl md:text-2xl font-black text-on-surface tracking-tight">
                    {user?.is_staff ? 'All Websites' : 'Your Portfolio'}
                 </h2>
-                <div className="relative flex-grow max-w-xs">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" size={16} />
+                <div className="relative w-full sm:max-w-xs">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" size={14} />
                   <input
                     type="text"
                     placeholder="Search sites or owners..."
-                    className="w-full pl-10 pr-4 py-2 bg-surface border border-outline-variant rounded-xl focus:border-primary outline-none text-sm transition-all"
+                    className="w-full pl-9 pr-4 py-2 bg-surface border border-outline-variant rounded-xl focus:border-primary outline-none text-xs md:text-sm transition-all"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
@@ -591,57 +591,56 @@ const Dashboard: React.FC = () => {
               </div>
 
               {fetchingWebsites ? (
-                <div className="flex justify-center py-20">
+                <div className="flex justify-center py-12 md:py-20">
                   <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
                 </div>
               ) : filteredWebsites.length === 0 ? (
-                <div className="bg-surface-container-low border-2 border-dashed border-outline-variant rounded-[2.5rem] py-20 text-center">
-                  <Globe className="mx-auto text-on-surface-variant/20 mb-4" size={48} />
-                  <p className="text-on-surface-variant font-bold">No websites found.</p>
+                <div className="bg-surface-container-low border-2 border-dashed border-outline-variant rounded-[1.5rem] md:rounded-[2.5rem] py-12 md:py-20 text-center">
+                  <Globe className="mx-auto text-on-surface-variant/20 mb-3 md:mb-4 md:size-[48px]" size={32} />
+                  <p className="text-xs md:text-sm font-bold text-on-surface-variant">No websites found.</p>
                 </div>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              ) : (                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
                   {filteredWebsites.map((site) => (
-                    <div key={site.id} className="bg-surface-container-low p-6 rounded-[2rem] border border-outline-variant shadow-sm hover:shadow-md transition-all group relative overflow-hidden">
-                      <div className="flex justify-between items-start mb-4 relative z-10">
-                        <div className="w-10 h-10 bg-surface rounded-xl border border-outline-variant flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                          <Globe size={18} />
+                    <div key={site.id} className="bg-surface-container-low p-5 md:p-6 rounded-2xl md:rounded-[2rem] border border-outline-variant shadow-sm hover:shadow-md transition-all group relative overflow-hidden">
+                      <div className="flex justify-between items-start mb-3 md:mb-4 relative z-10">
+                        <div className="w-8 h-8 md:w-10 md:h-10 bg-surface rounded-lg md:rounded-xl border border-outline-variant flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                          <Globe size={16} className="md:size-[18px]" />
                         </div>
                         <button
                           onClick={() => handleDelete(site.id)}
-                          className="p-2 text-on-surface-variant hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
+                          className="p-1.5 md:p-2 text-on-surface-variant hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
                         >
-                          <Trash2 size={16} />
+                          <Trash2 size={14} className="md:size-[16px]" />
                         </button>
                       </div>
                       
                       <div className="relative z-10">
-                        <h3 className="text-lg font-black text-on-surface mb-1 group-hover:text-primary transition-colors">{site.name}</h3>
-                        <p className="text-sm font-medium text-on-surface-variant truncate mb-2">{site.url}</p>
+                        <h3 className="text-base md:text-lg font-black text-on-surface mb-1 group-hover:text-primary transition-colors truncate">{site.name}</h3>
+                        <p className="text-xs font-medium text-on-surface-variant truncate mb-2">{site.url}</p>
                         
                         {user?.is_staff && site.owner_email && (
-                          <div className="mb-4 inline-block px-3 py-1 bg-surface border border-outline-variant rounded-full text-[10px] font-bold text-on-surface-variant">
+                          <div className="mb-3 md:mb-4 inline-block px-2.5 py-0.5 bg-surface border border-outline-variant rounded-full text-[9px] md:text-[10px] font-bold text-on-surface-variant truncate max-w-full">
                             Owner: {site.owner_email}
                           </div>
                         )}
                         
-                        <div className="mt-4 flex items-center justify-between">
+                        <div className="mt-3 md:mt-4 flex items-center justify-between gap-2">
                           <a
                             href={site.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-primary hover:gap-3 transition-all"
+                            className="inline-flex items-center gap-1.5 md:gap-2 text-[10px] md:text-xs font-black uppercase tracking-widest text-primary hover:gap-3 transition-all shrink-0"
                           >
-                            View Live <ExternalLink size={14} />
+                            View Live <ExternalLink size={12} className="md:size-[14px]" />
                           </a>
                           {user?.is_staff && (
                             <button
                               onClick={() => handleRedeployVercel(site.id)}
                               disabled={isRedeploying[site.id]}
                               title="Redeploy on Vercel"
-                              className="p-2 bg-secondary/10 text-secondary hover:bg-secondary hover:text-white rounded-lg transition-all disabled:opacity-50"
+                              className="p-1.5 md:p-2 bg-secondary/10 text-secondary hover:bg-secondary hover:text-white rounded-lg transition-all disabled:opacity-50 shrink-0"
                             >
-                              {isRedeploying[site.id] ? <Zap size={14} className="animate-pulse" /> : <Zap size={14} />}
+                              {isRedeploying[site.id] ? <Zap size={12} className="md:size-[14px] animate-pulse" /> : <Zap size={12} className="md:size-[14px]" />}
                             </button>
                           )}
                         </div>
@@ -649,9 +648,9 @@ const Dashboard: React.FC = () => {
                         {(user?.is_staff || user?.plan_type === 'monthly' || user?.plan_type === 'annual' || user?.plan_type === 'priority_monthly') && (
                           <button
                             onClick={() => navigate('/request-changes')}
-                            className="mt-4 w-full py-3 bg-surface border border-outline-variant rounded-xl text-xs font-black uppercase tracking-widest text-on-surface hover:bg-primary hover:text-white hover:border-primary transition-all flex items-center justify-center gap-2"
+                            className="mt-4 w-full py-2.5 md:py-3 bg-surface border border-outline-variant rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest text-on-surface hover:bg-primary hover:text-white hover:border-primary transition-all flex items-center justify-center gap-2"
                           >
-                            <Edit3 size={14} /> Request Update
+                            <Edit3 size={12} className="md:size-[14px]" /> Request Update
                           </button>
                         )}
                       </div>
@@ -663,36 +662,36 @@ const Dashboard: React.FC = () => {
 
             {/* Sidebar Content: Add New Website */}
             <div className="lg:col-span-1">
-              <div className="bg-surface-container-low p-8 rounded-[2.5rem] border border-outline-variant shadow-sm sticky top-12">
-                <h2 className="text-xl font-black text-on-surface mb-6 tracking-tight">Add Website</h2>
+              <div className="bg-surface-container-low p-6 md:p-8 rounded-2xl md:rounded-[2.5rem] border border-outline-variant shadow-sm lg:sticky lg:top-12">
+                <h2 className="text-lg md:text-xl font-black text-on-surface mb-5 md:mb-6 tracking-tight">Add Website</h2>
                 <form onSubmit={handleAddWebsite} className="space-y-4">
                   <div>
-                    <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant mb-2 ml-1">Friendly Name</label>
+                    <label className="block text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant mb-2 ml-1">Friendly Name</label>
                     <input
                       type="text"
                       placeholder="My Store"
                       required
-                      className="w-full px-4 py-3 bg-surface border border-outline-variant rounded-2xl focus:border-primary outline-none transition-all text-sm font-medium"
+                      className="w-full px-4 py-2.5 md:py-3 bg-surface border border-outline-variant rounded-xl md:rounded-2xl focus:border-primary outline-none transition-all text-xs md:text-sm font-medium"
                       value={newWebsite.name}
                       onChange={(e) => setNewWebsite({ ...newWebsite, name: e.target.value })}
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant mb-2 ml-1">URL Endpoint</label>
+                    <label className="block text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant mb-2 ml-1">URL Endpoint</label>
                     <input
                       type="url"
                       placeholder="https://..."
                       required
-                      className="w-full px-4 py-3 bg-surface border border-outline-variant rounded-2xl focus:border-primary outline-none transition-all text-sm font-medium"
+                      className="w-full px-4 py-2.5 md:py-3 bg-surface border border-outline-variant rounded-xl md:rounded-2xl focus:border-primary outline-none transition-all text-xs md:text-sm font-medium"
                       value={newWebsite.url}
                       onChange={(e) => setNewWebsite({ ...newWebsite, url: e.target.value })}
                     />
                   </div>
                   <button
                     type="submit"
-                    className="w-full py-4 px-6 bg-primary text-white font-black rounded-2xl hover:brightness-110 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 mt-4"
+                    className="w-full py-3 md:py-4 px-5 md:px-6 bg-primary text-white font-black rounded-xl md:rounded-2xl hover:brightness-110 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 mt-2 md:mt-4 text-xs md:text-base"
                   >
-                    <Plus size={18} /> Confirm Add
+                    <Plus size={16} className="md:size-[18px]" /> Confirm Add
                   </button>
                 </form>
               </div>

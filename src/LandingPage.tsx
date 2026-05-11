@@ -149,20 +149,20 @@ const LandingPage = () => {
       <Navbar />
 
       {/* Hero Section */}
-      <header className="relative pt-44 pb-32 overflow-hidden">
+      <header className="relative pt-28 pb-16 md:pt-44 md:pb-32 overflow-hidden">
         <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-[800px] h-[800px] bg-primary/10 rounded-full blur-[120px] pointer-events-none opacity-50 dark:opacity-5"></div>
         <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/4 w-[600px] h-[600px] bg-secondary-container/10 rounded-full blur-[100px] pointer-events-none opacity-50 dark:opacity-5"></div>
 
-        <div className="max-w-7xl mx-auto px-8 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-3 py-1 mb-8 rounded-full bg-surface-container-low border border-outline-variant/30 shadow-sm"
+              className="inline-flex items-center gap-2 px-3 py-1 mb-6 md:mb-8 rounded-full bg-surface-container-low border border-outline-variant/30 shadow-sm"
             >
               <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse"></span>
-              <span className="text-[11px] font-extrabold uppercase tracking-widest text-on-surface-variant">
+              <span className="text-[10px] md:text-[11px] font-extrabold uppercase tracking-widest text-on-surface-variant">
                 Modern Websites in 7 Days
               </span>
             </motion.div>
@@ -171,7 +171,7 @@ const LandingPage = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-6xl md:text-8xl font-extrabold tracking-tighter leading-[0.95] mb-8"
+              className="text-4xl sm:text-6xl md:text-8xl font-extrabold tracking-tighter leading-[1.1] md:leading-[0.95] mb-6 md:mb-8"
             >
               Get a Modern Website <br />
               <span className="text-primary italic font-light serif">Without the Hassle</span>.
@@ -181,7 +181,7 @@ const LandingPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-xl text-on-surface-variant leading-relaxed mb-12 max-w-2xl mx-auto font-medium"
+              className="text-lg md:text-xl text-on-surface-variant leading-relaxed mb-8 md:mb-12 max-w-2xl mx-auto font-medium px-4 md:px-0"
             >
               We build or redesign your business website in 7 days — no calls, no meetings, no stress.
             </motion.p>
@@ -190,19 +190,19 @@ const LandingPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.3 }}
-              className="mt-12 flex flex-col sm:flex-row justify-center gap-6 relative z-10"
+              className="mt-8 md:mt-12 flex flex-col sm:flex-row justify-center gap-4 md:gap-6 relative z-10 px-4 md:px-0"
             >
-              <Link to="/signup" className="bg-primary text-white px-10 py-5 rounded-2xl font-black text-lg hover:shadow-2xl shadow-primary/30 transition-all active:scale-95">
+              <Link to="/signup" className="bg-primary text-white px-8 md:px-10 py-4 md:py-5 rounded-2xl font-black text-base md:text-lg hover:shadow-2xl shadow-primary/30 transition-all active:scale-95">
                 Get Your Website
               </Link>
-              <a href="#services" className="bg-surface-container-high text-on-surface px-10 py-5 rounded-2xl font-black text-lg hover:bg-surface-container-highest transition-all shadow-sm active:scale-95">
+              <a href="#services" className="bg-surface-container-high text-on-surface px-8 md:px-10 py-4 md:py-5 rounded-2xl font-black text-base md:text-lg hover:bg-surface-container-highest transition-all shadow-sm active:scale-95">
                 View Example
               </a>
             </motion.div>
           </div>
 
-          <MousePerspective className="mt-24 relative max-w-5xl mx-auto group">
-            <div className="relative z-10 rounded-[3rem] overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.2)] dark:shadow-primary/10 border border-outline-variant/30 dark:border-primary/20 p-2 bg-surface-container-low/30 backdrop-blur-md transition-all duration-500 group-hover:scale-[1.02] group-hover:border-primary/40">
+          <MousePerspective className="mt-16 md:mt-24 relative max-w-5xl mx-auto group">
+            <div className="relative z-10 rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-[0_20px_50px_-20px_rgba(0,0,0,0.2)] md:shadow-[0_40px_100px_-20px_rgba(0,0,0,0.2)] dark:shadow-primary/10 border border-outline-variant/30 dark:border-primary/20 p-1 md:p-2 bg-surface-container-low/30 backdrop-blur-md transition-all duration-500 group-hover:scale-[1.02] group-hover:border-primary/40">
               <PortfolioSlider />
             </div>
           </MousePerspective>
@@ -210,11 +210,11 @@ const LandingPage = () => {
       </header>
 
       {/* How It Works Section */}
-      <section id="services" className="py-32 bg-surface-container-low/30 relative transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-8">
-          <div className="text-center mb-20">
-            <span className="text-primary font-bold text-sm tracking-widest uppercase mb-4 block">How It Works</span>
-            <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight">No back-and-forth. <br />No long timelines. Just results.</h2>
+      <section id="services" className="py-16 md:py-32 bg-surface-container-low/30 relative transition-colors duration-300">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8">
+          <div className="text-center mb-12 md:mb-20">
+            <span className="text-primary font-bold text-xs md:text-sm tracking-widest uppercase mb-4 block">How It Works</span>
+            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">No back-and-forth. <br />No long timelines. Just results.</h2>
           </div>
 
           <motion.div
@@ -222,7 +222,7 @@ const LandingPage = () => {
             initial="initial"
             whileInView="whileInView"
             viewport={{ once: true }}
-            className="grid md:grid-cols-3 gap-8"
+            className="grid md:grid-cols-3 gap-6 md:gap-8"
           >
             {[
               {
@@ -250,14 +250,14 @@ const LandingPage = () => {
               <motion.div
                 key={idx}
                 variants={fadeInUp}
-                className="group p-10 rounded-3xl bg-surface border border-outline-variant/10 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 relative overflow-hidden"
+                className="group p-8 md:p-10 rounded-2xl md:rounded-3xl bg-surface border border-outline-variant/10 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 relative overflow-hidden"
               >
-                <div className={`w-14 h-14 ${item.color} rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500`}>
+                <div className={`w-12 h-12 md:w-14 md:h-14 ${item.color} rounded-xl md:rounded-2xl flex items-center justify-center mb-6 md:mb-8 group-hover:scale-110 transition-transform duration-500`}>
                   {item.icon}
                 </div>
-                <h3 className="text-2xl font-bold mb-4">{item.title}</h3>
-                <p className="text-on-surface-variant leading-relaxed font-medium">{item.desc}</p>
-                <div className="absolute top-8 right-10 text-6xl font-black text-outline-variant/5 group-hover:text-primary/10 transition-colors">
+                <h3 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">{item.title}</h3>
+                <p className="text-sm md:text-base text-on-surface-variant leading-relaxed font-medium">{item.desc}</p>
+                <div className="absolute top-6 md:top-8 right-8 md:right-10 text-5xl md:text-6xl font-black text-outline-variant/5 group-hover:text-primary/10 transition-colors">
                   {item.step}
                 </div>
               </motion.div>
@@ -268,21 +268,21 @@ const LandingPage = () => {
 
 
       {/* Before & After Section */}
-      <section className="py-32 bg-surface relative overflow-hidden transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-8 flex flex-col lg:flex-row items-center gap-24">
+      <section className="py-16 md:py-32 bg-surface relative overflow-hidden transition-colors duration-300">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 flex flex-col lg:flex-row items-center gap-12 md:gap-24">
           <motion.div
             {...fadeInUp}
             className="lg:w-1/2"
           >
-            <h2 className="text-5xl md:text-6xl font-extrabold mb-8 tracking-tighter leading-tight">
+            <h2 className="text-4xl md:text-6xl font-extrabold mb-6 md:mb-8 tracking-tighter leading-tight">
               Outdated → <br />
               <span className="text-primary">Modern</span>
             </h2>
-            <p className="text-xl text-on-surface-variant mb-12 leading-relaxed font-medium">
+            <p className="text-lg md:text-xl text-on-surface-variant mb-8 md:mb-12 leading-relaxed font-medium">
               We transform slow, outdated websites into fast, clean, mobile-friendly designs that convert visitors into customers.
             </p>
 
-            <div className="space-y-6">
+            <div className="space-y-4 md:space-y-6">
               {[
                 'Modern, mobile-friendly design',
                 'Fast-loading website',
@@ -290,38 +290,38 @@ const LandingPage = () => {
                 'Click-to-call & contact forms',
                 'Hosting & security (if on monthly plan)'
               ].map((text, i) => (
-                <div key={i} className="flex items-center gap-4">
-                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
-                    <CheckCircle2 className="w-4 h-4 text-primary" />
+                <div key={i} className="flex items-center gap-3 md:gap-4">
+                  <div className="flex-shrink-0 w-5 h-5 md:w-6 md:h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                    <CheckCircle2 className="w-3 h-3 md:w-4 md:h-4 text-primary" />
                   </div>
-                  <span className="text-lg font-semibold text-on-surface">{text}</span>
+                  <span className="text-base md:text-lg font-semibold text-on-surface">{text}</span>
                 </div>
               ))}
             </div>
 
-            <div className="mt-12">
-              <button className="bg-surface-container-high text-on-surface px-8 py-4 rounded-xl font-bold text-lg hover:bg-surface-container-highest transition-colors shadow-sm">
+            <div className="mt-8 md:mt-12">
+              <button className="w-full sm:w-auto bg-surface-container-high text-on-surface px-8 py-4 rounded-xl font-bold text-base md:text-lg hover:bg-surface-container-highest transition-colors shadow-sm">
                 View Live Demo
               </button>
             </div>
           </motion.div>
 
-          <div className="lg:w-1/2 grid grid-cols-2 gap-6">
-            <div className="space-y-6">
-              <div className="p-4 bg-surface-container-low rounded-3xl border border-outline-variant/10 grayscale opacity-40 dark:opacity-20">
-                <div className="text-[10px] font-black tracking-[0.2em] mb-3 opacity-40 uppercase">Outdated (Plumber Example)</div>
+          <div className="lg:w-1/2 grid grid-cols-2 gap-4 md:gap-6">
+            <div className="space-y-4 md:space-y-6">
+              <div className="p-3 md:p-4 bg-surface-container-low rounded-2xl md:rounded-3xl border border-outline-variant/10 grayscale opacity-40 dark:opacity-20">
+                <div className="text-[8px] md:text-[10px] font-black tracking-[0.2em] mb-2 md:mb-3 opacity-40 uppercase">Outdated (Plumber Example)</div>
                 <img
-                  className="rounded-2xl w-full aspect-[3/4] object-cover"
+                  className="rounded-xl md:rounded-2xl w-full aspect-[3/4] object-cover"
                   alt="Old design"
                   src="https://images.unsplash.com/photo-1504148455328-c376907d081c?q=80&w=1000&auto=format&fit=crop"
                 />
               </div>
             </div>
-            <div className="space-y-6 mt-16">
-              <MousePerspective className="p-4 bg-primary/5 rounded-3xl border border-primary/20 shadow-2xl shadow-primary/10">
-                <div className="text-[10px] font-black tracking-[0.2em] mb-3 text-primary uppercase">Modern (Redesigned)</div>
+            <div className="space-y-4 md:space-y-6 mt-8 md:mt-16">
+              <MousePerspective className="p-3 md:p-4 bg-primary/5 rounded-2xl md:rounded-3xl border border-primary/20 shadow-2xl shadow-primary/10">
+                <div className="text-[8px] md:text-[10px] font-black tracking-[0.2em] mb-2 md:mb-3 text-primary uppercase">Modern (Redesigned)</div>
                 <img
-                  className="rounded-2xl w-full aspect-[3/4] object-cover"
+                  className="rounded-xl md:rounded-2xl w-full aspect-[3/4] object-cover"
                   alt="Modern design"
                   src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=1000&auto=format&fit=crop"
                 />
@@ -332,26 +332,26 @@ const LandingPage = () => {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-32 bg-surface transition-colors duration-300 overflow-hidden relative">
-        <div className="max-w-7xl mx-auto px-8 relative z-10">
-          <div className="text-center mb-16">
+      <section id="pricing" className="py-16 md:py-32 bg-surface transition-colors duration-300 overflow-hidden relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
+          <div className="text-center mb-12 md:mb-16">
             <motion.span
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
-              className="text-primary font-bold text-sm tracking-[0.3em] uppercase mb-4 block"
+              className="text-primary font-bold text-xs md:text-sm tracking-[0.3em] uppercase mb-4 block"
             >
               Simple Pricing
             </motion.span>
             <motion.h2
               {...fadeInUp}
-              className="text-5xl md:text-6xl font-black tracking-tighter mb-12"
+              className="text-3xl md:text-6xl font-black tracking-tighter mb-8 md:mb-12"
             >
               No hidden fees. <br />
-              <span className="text-on-surface-variant/50 text-4xl md:text-5xl">No contracts. Cancel anytime.</span>
+              <span className="text-on-surface-variant/50 text-2xl md:text-5xl">No contracts. Cancel anytime.</span>
             </motion.h2>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8 items-stretch max-w-5xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-6 md:gap-8 items-stretch max-w-5xl mx-auto">
             {/* Monthly Plan */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -359,31 +359,31 @@ const LandingPage = () => {
               viewport={{ once: true }}
               className="relative group h-full"
             >
-              <div className="absolute inset-0 bg-surface-container-low rounded-[2.5rem] border-2 border-primary shadow-xl shadow-primary/5 transition-all duration-500 group-hover:scale-[1.01]"></div>
+              <div className="absolute inset-0 bg-surface-container-low rounded-[2rem] md:rounded-[2.5rem] border-2 border-primary shadow-xl shadow-primary/5 transition-all duration-500 group-hover:scale-[1.01]"></div>
 
-              <div className="absolute -top-4 left-10 bg-primary text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 z-10 border border-white/20 flex items-center gap-2">
-                <Check className="w-3 h-3" strokeWidth={4} /> Most Popular
+              <div className="absolute -top-3 md:-top-4 left-6 md:left-10 bg-primary text-white px-3 md:px-4 py-1 md:py-1.5 rounded-full text-[8px] md:text-[10px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 z-10 border border-white/20 flex items-center gap-2">
+                <Check className="w-2.5 h-2.5 md:w-3 md:h-3" strokeWidth={4} /> Most Popular
               </div>
 
-              <div className="relative p-10 flex flex-col h-full">
-                <div className="mb-8">
-                  <h3 className="text-2xl font-black mb-3">Monthly Subscription</h3>
-                  <p className="text-on-surface-variant font-medium leading-relaxed text-sm">
+              <div className="relative p-8 md:p-10 flex flex-col h-full">
+                <div className="mb-6 md:mb-8">
+                  <h3 className="text-xl md:text-2xl font-black mb-2 md:mb-3">Monthly Subscription</h3>
+                  <p className="text-on-surface-variant font-medium leading-relaxed text-xs md:text-sm">
                     Website included with hosting & maintenance.
                   </p>
                 </div>
 
-                <div className="flex flex-col gap-1 mb-8 p-6 rounded-3xl bg-surface/50 border border-outline-variant/10">
+                <div className="flex flex-col gap-1 mb-6 md:mb-8 p-4 md:p-6 rounded-2xl md:rounded-3xl bg-surface/50 border border-outline-variant/10">
                   <div className="flex items-baseline gap-2">
-                    <span className="text-6xl font-black text-on-surface">{isAnnual ? '£47' : '£59'}</span>
-                    <span className="text-on-surface-variant font-bold text-sm uppercase tracking-widest">/month</span>
+                    <span className="text-5xl md:text-6xl font-black text-on-surface">{isAnnual ? '£47' : '£59'}</span>
+                    <span className="text-on-surface-variant font-bold text-xs md:text-sm uppercase tracking-widest">/month</span>
                   </div>
                   <div className="mt-4 pt-4 border-t border-outline-variant/10">
                     <PricingToggle isAnnual={isAnnual} onChange={setIsAnnual} isPopular={false} />
                   </div>
                 </div>
 
-                <div className="space-y-4 mb-10 flex-grow">
+                <div className="space-y-3 md:space-y-4 mb-8 md:mb-10 flex-grow">
                   {[
                     'Professional website design and build',
                     'All content written by our team',
@@ -393,16 +393,16 @@ const LandingPage = () => {
                     'Ongoing maintenance and support',
                     'Cancel anytime — no minimum term'
                   ].map((item, i) => (
-                    <div key={i} className="flex items-start gap-3">
-                      <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Check className="w-3 h-3 text-primary" strokeWidth={4} />
+                    <div key={i} className="flex items-start gap-2.5 md:gap-3">
+                      <div className="mt-1 flex-shrink-0 w-4 h-4 md:w-5 md:h-5 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Check className="w-2.5 h-2.5 md:w-3 md:h-3 text-primary" strokeWidth={4} />
                       </div>
-                      <span className="text-on-surface font-bold text-sm">{item}</span>
+                      <span className="text-on-surface font-bold text-xs md:text-sm">{item}</span>
                     </div>
                   ))}
                 </div>
 
-                <Link to="/signup" className="w-full py-4 rounded-xl bg-primary text-white font-black shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all text-base flex items-center justify-center gap-2 active:scale-95">
+                <Link to="/signup" className="w-full py-3.5 md:py-4 rounded-xl bg-primary text-white font-black shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all text-sm md:text-base flex items-center justify-center gap-2 active:scale-95">
                   Select Monthly
                 </Link>
               </div>
@@ -415,22 +415,22 @@ const LandingPage = () => {
               viewport={{ once: true }}
               className="relative group h-full"
             >
-              <div className="absolute inset-0 bg-surface-container-low rounded-[2.5rem] border border-outline-variant/30 shadow-lg transition-all duration-500 group-hover:shadow-xl group-hover:scale-[1.01]"></div>
+              <div className="absolute inset-0 bg-surface-container-low rounded-[2rem] md:rounded-[2.5rem] border border-outline-variant/30 shadow-lg transition-all duration-500 group-hover:shadow-xl group-hover:scale-[1.01]"></div>
 
-              <div className="relative p-10 flex flex-col h-full">
-                <div className="mb-8">
-                  <h3 className="text-2xl font-black mb-3">One-Time Payment</h3>
-                  <p className="text-on-surface-variant font-medium leading-relaxed text-sm">
+              <div className="relative p-8 md:p-10 flex flex-col h-full">
+                <div className="mb-6 md:mb-8">
+                  <h3 className="text-xl md:text-2xl font-black mb-2 md:mb-3">One-Time Payment</h3>
+                  <p className="text-on-surface-variant font-medium leading-relaxed text-xs md:text-sm">
                     £349 for your fully built website. Delivered ready to use.
                   </p>
                 </div>
 
-                <div className="flex items-baseline gap-2 mb-8 p-6 rounded-3xl bg-surface/50 border border-outline-variant/10">
-                  <span className="text-6xl font-black text-on-surface">£349</span>
-                  <span className="text-on-surface-variant font-bold text-sm uppercase tracking-widest">Fixed</span>
+                <div className="flex items-baseline gap-2 mb-6 md:mb-8 p-4 md:p-6 rounded-2xl md:rounded-3xl bg-surface/50 border border-outline-variant/10">
+                  <span className="text-5xl md:text-6xl font-black text-on-surface">£349</span>
+                  <span className="text-on-surface-variant font-bold text-xs md:text-sm uppercase tracking-widest">Fixed</span>
                 </div>
 
-                <div className="space-y-4 mb-10 flex-grow">
+                <div className="space-y-3 md:space-y-4 mb-8 md:mb-10 flex-grow">
                   {[
                     'Professional website design and build',
                     'All content written by our team',
@@ -440,16 +440,16 @@ const LandingPage = () => {
                     'Hosting not included',
                     'No ongoing updates or support'
                   ].map((item, i) => (
-                    <div key={i} className="flex items-start gap-3">
-                      <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-surface-container-high flex items-center justify-center">
-                        <Check className="w-3 h-3 text-on-surface-variant" strokeWidth={4} />
+                    <div key={i} className="flex items-start gap-2.5 md:gap-3">
+                      <div className="mt-1 flex-shrink-0 w-4 h-4 md:w-5 md:h-5 rounded-full bg-surface-container-high flex items-center justify-center">
+                        <Check className="w-2.5 h-2.5 md:w-3 md:h-3 text-on-surface-variant" strokeWidth={4} />
                       </div>
-                      <span className="text-on-surface font-bold text-sm">{item}</span>
+                      <span className="text-on-surface font-bold text-xs md:text-sm">{item}</span>
                     </div>
                   ))}
                 </div>
 
-                <Link to="/signup" className="w-full py-4 rounded-xl bg-on-surface text-surface font-black hover:bg-on-surface-variant transition-all text-base flex items-center justify-center gap-2 active:scale-95">
+                <Link to="/signup" className="w-full py-3.5 md:py-4 rounded-xl bg-on-surface text-surface font-black hover:bg-on-surface-variant transition-all text-sm md:text-base flex items-center justify-center gap-2 active:scale-95">
                   Claim Ownership
                 </Link>
               </div>
@@ -459,20 +459,20 @@ const LandingPage = () => {
       </section>
 
       {/* Who This Is For Section */}
-      <section className="py-32 transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-black tracking-tight">Who This Is For</h2>
+      <section className="py-16 md:py-32 transition-colors duration-300">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8">
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-3xl md:text-4xl font-black tracking-tight">Who This Is For</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {[
               { title: 'Local Businesses', desc: 'Perfect for trades like plumbing, electrical, or construction with outdated sites.' },
               { title: 'No Website At All', desc: 'Get online instantly without having to learn complex tools.' },
               { title: 'Hassle-Free Owners', desc: 'Owners who want results without the long meetings.' }
             ].map((item, i) => (
-              <div key={i} className="bg-surface-container-low p-8 rounded-[2rem] border border-outline-variant/10">
-                <h3 className="text-xl font-bold mb-4">{item.title}</h3>
-                <p className="text-on-surface-variant font-medium">{item.desc}</p>
+              <div key={i} className="bg-surface-container-low p-6 md:p-8 rounded-2xl md:rounded-[2rem] border border-outline-variant/10">
+                <h3 className="text-lg md:text-xl font-bold mb-3 md:mb-4">{item.title}</h3>
+                <p className="text-sm md:text-base text-on-surface-variant font-medium">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -480,19 +480,19 @@ const LandingPage = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-32 bg-surface-container-low/30 transition-colors duration-300">
-        <div className="max-w-3xl mx-auto px-8">
-          <h2 className="text-4xl font-black mb-12 text-center">Frequently Asked Questions</h2>
-          <div className="space-y-6">
+      <section className="py-16 md:py-32 bg-surface-container-low/30 transition-colors duration-300">
+        <div className="max-w-3xl mx-auto px-4 sm:px-8">
+          <h2 className="text-3xl md:text-4xl font-black mb-8 md:mb-12 text-center">Frequently Asked Questions</h2>
+          <div className="space-y-4 md:space-y-6">
             {[
               { q: 'Do I own the website?', a: 'Yes — once you purchase, the website is yours.' },
               { q: 'Can I host it myself?', a: 'Yes, or you can stay on our monthly plan and we handle everything.' },
               { q: 'How fast is delivery?', a: 'Typically within 7 days.' },
               { q: 'Do I need to provide anything?', a: 'No — we handle everything.' }
             ].map((item, i) => (
-              <div key={i} className="bg-surface p-6 rounded-2xl border border-outline-variant/10">
-                <h3 className="font-bold mb-2">{item.q}</h3>
-                <p className="text-on-surface-variant text-sm">{item.a}</p>
+              <div key={i} className="bg-surface p-5 md:p-6 rounded-xl md:rounded-2xl border border-outline-variant/10">
+                <h3 className="text-sm md:text-base font-bold mb-2">{item.q}</h3>
+                <p className="text-on-surface-variant text-xs md:text-sm font-medium">{item.a}</p>
               </div>
             ))}
           </div>
@@ -500,19 +500,19 @@ const LandingPage = () => {
       </section>
 
       {/* Final CTA */}
-      <section className="py-32 px-8 transition-colors duration-300">
-        <MousePerspective className="max-w-6xl mx-auto bg-surface-container-low rounded-[3rem] p-12 md:p-24 text-center relative overflow-hidden shadow-2xl border border-outline-variant/20 transition-all">
+      <section className="py-16 md:py-32 px-4 sm:px-8 transition-colors duration-300">
+        <MousePerspective className="max-w-6xl mx-auto bg-surface-container-low rounded-2xl md:rounded-[3rem] p-8 md:p-24 text-center relative overflow-hidden shadow-2xl border border-outline-variant/20 transition-all">
           <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
 
           <div className="relative z-10">
-            <h2 className="text-5xl md:text-7xl font-black text-on-surface mb-8 tracking-tighter leading-none">
+            <h2 className="text-3xl sm:text-5xl md:text-7xl font-black text-on-surface mb-6 md:mb-8 tracking-tighter leading-tight md:leading-none">
               Your new website is <br />already one step away.
             </h2>
-            <p className="text-on-surface-variant text-xl mb-12 max-w-xl mx-auto font-medium">
+            <p className="text-on-surface-variant text-lg md:text-xl mb-8 md:mb-12 max-w-xl mx-auto font-medium">
               See what your business could look like today.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-6">
-              <Link to="/signup" className="bg-primary text-white px-12 py-6 rounded-2xl font-black text-xl hover:scale-105 transition-all shadow-2xl shadow-primary/30 active:scale-95">
+            <div className="flex flex-col sm:flex-row justify-center gap-4 md:gap-6">
+              <Link to="/signup" className="bg-primary text-white px-8 md:px-12 py-4 md:py-6 rounded-2xl font-black text-lg md:text-xl hover:scale-105 transition-all shadow-2xl shadow-primary/30 active:scale-95">
                 View My Website Preview
               </Link>
             </div>

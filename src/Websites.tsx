@@ -115,42 +115,42 @@ const Websites: React.FC = () => {
   return (
     <div className="min-h-screen bg-surface flex transition-colors duration-300">
       <Sidebar />
-      <main className="flex-grow lg:ml-64 p-6 md:p-8 lg:p-12 transition-all duration-500 mt-16 lg:mt-0">
+      <main className="flex-grow lg:ml-64 p-4 md:p-8 lg:p-12 transition-all duration-500 mt-16 lg:mt-0">
         <div className="max-w-6xl mx-auto">
-          <header className="mb-10 lg:mb-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <header className="mb-8 md:mb-10 lg:mb-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-6">
             <div>
-              <h1 className="text-3xl lg:text-4xl font-black font-headline text-on-surface tracking-tight mb-2">Websites</h1>
-              <p className="text-on-surface-variant font-medium text-sm lg:text-base">Manage hosted {user?.is_staff ? 'platform' : 'personal'} assets.</p>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black font-headline text-on-surface tracking-tight mb-2">Websites</h1>
+              <p className="text-on-surface-variant font-medium text-xs sm:text-sm lg:text-base">Manage hosted {user?.is_staff ? 'platform' : 'personal'} assets.</p>
             </div>
             <button 
                 onClick={() => setShowAddForm(!showAddForm)}
-                className="w-full md:w-auto bg-primary text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:shadow-lg transition-all active:scale-95"
+                className="w-full md:w-auto bg-primary text-white px-5 md:px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:shadow-lg transition-all active:scale-95 text-sm"
             >
-                <Plus size={20} /> {showAddForm ? 'Cancel' : 'Register Website'}
+                <Plus size={18} className="md:size-[20px]" /> {showAddForm ? 'Cancel' : 'Register Website'}
             </button>
           </header>
 
           {showAddForm && (
-              <div className="mb-12 bg-surface-container-low p-8 rounded-[2.5rem] border border-primary/20 shadow-xl animate-in fade-in slide-in-from-top-4 duration-300">
-                  <h2 className="text-xl font-black mb-6">New Website Registration</h2>
-                  <form onSubmit={handleAddWebsite} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="mb-8 md:mb-12 bg-surface-container-low p-6 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border border-primary/20 shadow-xl animate-in fade-in slide-in-from-top-4 duration-300">
+                  <h2 className="text-lg md:text-xl font-black mb-4 md:mb-6">New Website Registration</h2>
+                  <form onSubmit={handleAddWebsite} className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                       <div className="space-y-4">
                           <div>
-                            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 mb-2 block">Name</label>
+                            <label className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 mb-2 block">Name</label>
                             <input 
                                 required
-                                className="w-full px-4 py-3 bg-surface border border-outline-variant rounded-xl focus:border-primary outline-none transition-all"
+                                className="w-full px-4 py-2.5 md:py-3 bg-surface border border-outline-variant rounded-xl focus:border-primary outline-none transition-all text-sm"
                                 value={newWebsite.name}
                                 onChange={e => setNewWebsite({...newWebsite, name: e.target.value})}
                                 placeholder="e.g. London Plumbers"
                             />
                           </div>
                           <div>
-                            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 mb-2 block">URL</label>
+                            <label className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 mb-2 block">URL</label>
                             <input 
                                 required
                                 type="url"
-                                className="w-full px-4 py-3 bg-surface border border-outline-variant rounded-xl focus:border-primary outline-none transition-all"
+                                className="w-full px-4 py-2.5 md:py-3 bg-surface border border-outline-variant rounded-xl focus:border-primary outline-none transition-all text-sm"
                                 value={newWebsite.url}
                                 onChange={e => setNewWebsite({...newWebsite, url: e.target.value})}
                                 placeholder="https://..."
@@ -160,9 +160,9 @@ const Websites: React.FC = () => {
                       <div className="space-y-4">
                           {user?.is_staff && (
                               <div>
-                                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 mb-2 block">Assign Owner</label>
+                                <label className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 mb-2 block">Assign Owner</label>
                                 <select 
-                                    className="w-full px-4 py-3 bg-surface border border-outline-variant rounded-xl focus:border-primary outline-none transition-all"
+                                    className="w-full px-4 py-2.5 md:py-3 bg-surface border border-outline-variant rounded-xl focus:border-primary outline-none transition-all text-sm"
                                     value={newWebsite.owner_id}
                                     onChange={e => setNewWebsite({...newWebsite, owner_id: e.target.value})}
                                 >
@@ -174,25 +174,25 @@ const Websites: React.FC = () => {
                               </div>
                           )}
                           <div>
-                            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 mb-2 block">Hosting Configuration</label>
+                            <label className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-on-surface-variant ml-1 mb-2 block">Hosting Configuration</label>
                             <div className="flex gap-2">
                                 <button 
                                     type="button"
                                     onClick={() => setNewWebsite({...newWebsite, hosting_type: 'PLATFORM'})}
-                                    className={`flex-grow py-3 rounded-xl border-2 flex items-center justify-center gap-2 font-bold transition-all ${newWebsite.hosting_type === 'PLATFORM' ? 'border-primary bg-primary/5 text-primary' : 'border-outline-variant'}`}
+                                    className={`flex-grow py-2.5 md:py-3 rounded-xl border-2 flex items-center justify-center gap-2 font-bold transition-all text-xs md:text-sm ${newWebsite.hosting_type === 'PLATFORM' ? 'border-primary bg-primary/5 text-primary' : 'border-outline-variant'}`}
                                 >
-                                    <Server size={18} /> Platform
+                                    <Server size={16} className="md:size-[18px]" /> Platform
                                 </button>
                                 <button 
                                     type="button"
                                     onClick={() => setNewWebsite({...newWebsite, hosting_type: 'SELF'})}
-                                    className={`flex-grow py-3 rounded-xl border-2 flex items-center justify-center gap-2 font-bold transition-all ${newWebsite.hosting_type === 'SELF' ? 'border-primary bg-primary/5 text-primary' : 'border-outline-variant'}`}
+                                    className={`flex-grow py-2.5 md:py-3 rounded-xl border-2 flex items-center justify-center gap-2 font-bold transition-all text-xs md:text-sm ${newWebsite.hosting_type === 'SELF' ? 'border-primary bg-primary/5 text-primary' : 'border-outline-variant'}`}
                                 >
-                                    <Monitor size={18} /> Self-Hosted
+                                    <Monitor size={16} className="md:size-[18px]" /> Self-Hosted
                                 </button>
                             </div>
                           </div>
-                          <button type="submit" className="w-full py-4 bg-primary text-white font-black rounded-xl hover:brightness-110 shadow-lg shadow-primary/20 transition-all">
+                          <button type="submit" className="w-full py-3.5 md:py-4 bg-primary text-white font-black rounded-xl hover:brightness-110 shadow-lg shadow-primary/20 transition-all text-sm">
                               Register Asset
                           </button>
                       </div>
@@ -201,80 +201,79 @@ const Websites: React.FC = () => {
           )}
 
           <div className="mb-8">
-            <div className="relative max-w-md">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant" size={20} />
+            <div className="relative w-full max-w-md">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant md:size-[20px]" size={18} />
               <input
                 type="text"
-                placeholder="Search websites, URLs or owners..."
-                className="w-full pl-12 pr-6 py-4 bg-surface-container-low border border-outline-variant rounded-2xl focus:border-primary outline-none transition-all font-medium"
+                placeholder="Search websites..."
+                className="w-full pl-11 md:pl-12 pr-6 py-3 md:py-4 bg-surface-container-low border border-outline-variant rounded-xl md:rounded-2xl focus:border-primary outline-none transition-all font-medium text-sm"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
           </div>
-
           {loading ? (
             <div className="flex justify-center py-20">
-              <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-10 h-10 md:w-12 md:h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
               {filteredWebsites.map((site) => (
-                <div key={site.id} className="bg-surface-container-low p-8 rounded-[2.5rem] border border-outline-variant shadow-sm hover:shadow-xl transition-all group relative overflow-hidden">
-                  <div className="absolute top-0 right-0 p-4 translate-x-full group-hover:translate-x-0 transition-transform">
+                <div key={site.id} className="bg-surface-container-low p-6 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border border-outline-variant shadow-sm hover:shadow-xl transition-all group relative overflow-hidden flex flex-col">
+                  <div className="absolute top-0 right-0 p-3 md:p-4 translate-x-full group-hover:translate-x-0 transition-transform">
                      <button
                         onClick={() => handleDelete(site.id)}
-                        className="p-3 text-on-surface-variant hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
+                        className="p-2 md:p-3 text-on-surface-variant hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
                       >
-                        <Trash2 size={20} />
+                        <Trash2 size={18} className="md:size-[20px]" />
                       </button>
                   </div>
                   
-                  <div className="flex justify-between items-start mb-6">
-                    <div className="w-14 h-14 bg-surface rounded-2xl border border-outline-variant flex items-center justify-center text-primary">
-                        <Globe size={24} />
+                  <div className="flex justify-between items-start mb-4 md:mb-6">
+                    <div className="w-12 h-12 md:w-14 md:h-14 bg-surface rounded-xl md:rounded-2xl border border-outline-variant flex items-center justify-center text-primary">
+                        <Globe size={20} className="md:size-[24px]" />
                     </div>
-                    <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${site.hosting_type === 'PLATFORM' ? 'bg-primary/10 text-primary border-primary/20' : 'bg-surface-variant text-on-surface-variant border-outline-variant'}`}>
+                    <div className={`px-2.5 py-1 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest border ${site.hosting_type === 'PLATFORM' ? 'bg-primary/10 text-primary border-primary/20' : 'bg-surface-variant text-on-surface-variant border-outline-variant'}`}>
                         {site.hosting_type}
                     </div>
                   </div>
                   
-                  <h3 className="text-xl font-black text-on-surface mb-2 group-hover:text-primary transition-colors">{site.name}</h3>
-                  <p className="text-sm font-medium text-on-surface-variant truncate mb-6">{site.url}</p>
+                  <h3 className="text-lg md:text-xl font-black text-on-surface mb-1 md:mb-2 group-hover:text-primary transition-colors truncate">{site.name}</h3>
+                  <p className="text-xs md:text-sm font-medium text-on-surface-variant truncate mb-4 md:mb-6">{site.url}</p>
                   
-                  <div className="mb-6 p-4 bg-surface rounded-2xl border border-outline-variant">
-                      <div className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-1">Current Owner</div>
-                      <div className="font-bold text-sm truncate">{site.owner_email}</div>
+                  <div className="mb-4 md:mb-6 p-3.5 md:p-4 bg-surface rounded-xl md:rounded-2xl border border-outline-variant">
+                      <div className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-1">Current Owner</div>
+                      <div className="font-bold text-xs md:text-sm truncate">{site.owner_email}</div>
                       {user?.is_staff && (
                           <button 
                             onClick={() => handleTransfer(site.id, site.owner_id)}
-                            className="mt-3 w-full py-2 bg-on-surface text-surface rounded-lg text-[10px] font-black uppercase tracking-widest hover:brightness-125 transition-all flex items-center justify-center gap-2"
+                            className="mt-3 w-full py-2 bg-on-surface text-surface rounded-lg text-[9px] md:text-[10px] font-black uppercase tracking-widest hover:brightness-125 transition-all flex items-center justify-center gap-2"
                           >
-                            <UserPlus size={14} /> Transfer Ownership
+                            <UserPlus size={14} /> Transfer
                           </button>
                       )}
                   </div>
 
-                  <div className="flex flex-col gap-3 mt-auto pt-6 border-t border-outline-variant/50">
+                  <div className="flex flex-col gap-3 mt-auto pt-4 md:pt-6 border-t border-outline-variant/50">
                     <div className="flex items-center justify-between">
                       <a
                         href={site.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-primary hover:gap-4 transition-all"
+                        className="inline-flex items-center gap-1.5 md:gap-2 text-[10px] md:text-xs font-black uppercase tracking-widest text-primary hover:gap-4 transition-all"
                       >
-                        Visit Site <ExternalLink size={14} />
+                        Visit Site <ExternalLink size={12} className="md:size-[14px]" />
                       </a>
-                      <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
+                      <span className="text-[9px] md:text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
                           {new Date(site.created_at).toLocaleDateString()}
                       </span>
                     </div>
                     {(user?.is_staff || user?.plan_type === 'monthly' || user?.plan_type === 'annual' || user?.plan_type === 'priority_monthly') && (
                       <button
-                        onClick={() => navigate('/websites?request_update=true')}
-                        className="w-full py-3 bg-surface border border-outline-variant rounded-xl text-xs font-black uppercase tracking-widest text-on-surface hover:bg-primary hover:text-white hover:border-primary transition-all flex items-center justify-center gap-2"
+                        onClick={() => navigate('/request-changes')}
+                        className="w-full py-2.5 md:py-3 bg-surface border border-outline-variant rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest text-on-surface hover:bg-primary hover:text-white hover:border-primary transition-all flex items-center justify-center gap-2"
                       >
-                        <Edit3 size={14} /> Request Update
+                        <Edit3 size={12} className="md:size-[14px]" /> Request Update
                       </button>
                     )}
                   </div>

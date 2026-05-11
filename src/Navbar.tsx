@@ -7,6 +7,12 @@ import { useAuth } from "./AuthContext";
 import logoLight from "./assets/Logo JPG/Cosy_Content_Ltd_-_Horizontal_2-removebg-preview.png";
 import logoDark from "./assets/Logo JPG/Cosy_Content_Ltd_-_Horizontal-removebg-preview.png";
 
+const ThemeIcon = ({ theme }: { theme: string }) => {
+  if (theme === "light") return <Sun className="w-4 h-4" />;
+  if (theme === "dark") return <Moon className="w-4 h-4" />;
+  return <Monitor className="w-4 h-4" />;
+};
+
 const Navbar = () => {
   const { theme, setTheme } = useTheme();
   const [showThemeMenu, setShowThemeMenu] = useState(false);
@@ -31,12 +37,6 @@ const Navbar = () => {
   // Determine which logo to show based on theme
   const isDark = theme === "dark" || (theme === "system" && systemTheme === "dark");
   const currentLogo = isDark ? logoDark : logoLight;
-
-  const ThemeIcon = () => {
-    if (theme === "light") return <Sun className="w-4 h-4" />;
-    if (theme === "dark") return <Moon className="w-4 h-4" />;
-    return <Monitor className="w-4 h-4" />;
-  };
 
   const serviceItems = [
     { label: "Websites for Plumbers", href: "/services/plumbing" },
@@ -144,7 +144,7 @@ const Navbar = () => {
               onClick={() => setShowThemeMenu(!showThemeMenu)}
               className="p-2 md:p-2.5 rounded-xl border border-outline-variant/20 bg-surface/50 dark:bg-white/5 hover:bg-surface-container-high transition-colors shadow-sm"
             >
-              <ThemeIcon />
+              <ThemeIcon theme={theme} />
             </button>
 
             <AnimatePresence>
@@ -217,26 +217,26 @@ const Navbar = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="md:hidden absolute top-24 left-4 right-4 bg-surface rounded-[2rem] border border-outline-variant/20 shadow-2xl p-8 z-40 backdrop-blur-xl max-h-[80vh] overflow-y-auto"
+            className="md:hidden absolute top-20 left-2 right-2 bg-surface rounded-[1.5rem] border border-outline-variant/20 shadow-2xl p-6 z-40 backdrop-blur-xl max-h-[85vh] overflow-y-auto"
           >
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2 md:gap-4">
               <Link
                 to="/"
                 onClick={handleNavClick}
-                className="text-lg font-bold text-on-surface-variant py-2"
+                className="text-base font-bold text-on-surface-variant py-2"
               >
                 Home
               </Link>
 
               {/* Mobile Services */}
-              <div className="flex flex-col border-t border-outline-variant/5 pt-2">
+              <div className="flex flex-col border-t border-outline-variant/5 pt-1">
                 <button
                   onClick={() => setShowMobileServices(!showMobileServices)}
-                  className="flex items-center justify-between text-lg font-bold text-on-surface-variant py-2"
+                  className="flex items-center justify-between text-base font-bold text-on-surface-variant py-2"
                 >
                   Services
                   <ChevronDown
-                    size={20}
+                    size={18}
                     className={`transition-transform duration-300 ${showMobileServices ? "rotate-180" : ""}`}
                   />
                 </button>
@@ -246,15 +246,15 @@ const Navbar = () => {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      className="overflow-hidden bg-surface-container-low rounded-2xl"
+                      className="overflow-hidden bg-surface-container-low rounded-xl"
                     >
-                      <div className="flex flex-col p-2">
+                      <div className="flex flex-col p-1.5">
                         {serviceItems.map((item) => (
                           <Link
                             key={item.label}
                             to={item.href}
                             onClick={handleNavClick}
-                            className="text-sm font-bold text-on-surface-variant p-3 hover:bg-surface-container rounded-xl"
+                            className="text-sm font-bold text-on-surface-variant p-2.5 hover:bg-surface-container rounded-lg"
                           >
                             {item.label}
                           </Link>
@@ -268,7 +268,7 @@ const Navbar = () => {
               <Link
                 to="/pricing"
                 onClick={handleNavClick}
-                className="text-lg font-bold text-on-surface-variant py-2 border-t border-outline-variant/5 pt-2"
+                className="text-base font-bold text-on-surface-variant py-2 border-t border-outline-variant/5 pt-1"
               >
                 Pricing
               </Link>
@@ -276,7 +276,7 @@ const Navbar = () => {
               <Link
                 to="/our-brands"
                 onClick={handleNavClick}
-                className="text-lg font-bold text-on-surface-variant py-2 border-t border-outline-variant/5 pt-2"
+                className="text-base font-bold text-on-surface-variant py-2 border-t border-outline-variant/5 pt-1"
               >
                 About
               </Link>
@@ -284,17 +284,17 @@ const Navbar = () => {
               <Link
                 to="/contact"
                 onClick={handleNavClick}
-                className="text-lg font-bold text-on-surface-variant py-2 border-t border-outline-variant/5 pt-2"
+                className="text-base font-bold text-on-surface-variant py-2 border-t border-outline-variant/5 pt-1"
               >
                 Contact
               </Link>
 
-              <div className="pt-6 border-t border-outline-variant/10 flex flex-col gap-4">
+              <div className="pt-4 border-t border-outline-variant/10 flex flex-col gap-3">
                 {isAuthenticated ? (
                   <Link
                     to="/dashboard"
                     onClick={handleNavClick}
-                    className="w-full bg-primary text-white py-4 rounded-2xl text-center font-black"
+                    className="w-full bg-primary text-white py-3.5 rounded-xl text-center font-black text-sm"
                   >
                     Dashboard
                   </Link>
@@ -302,7 +302,7 @@ const Navbar = () => {
                   <Link
                     to="/signup"
                     onClick={handleNavClick}
-                    className="w-full bg-on-surface text-surface py-4 rounded-2xl text-center font-black"
+                    className="w-full bg-on-surface text-surface py-3.5 rounded-xl text-center font-black text-sm"
                   >
                     Get Started
                   </Link>
