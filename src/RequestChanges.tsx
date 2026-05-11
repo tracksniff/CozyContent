@@ -68,52 +68,52 @@ const RequestChanges: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-surface flex">
+    <div className="min-h-screen bg-surface flex transition-colors duration-300">
       <Sidebar />
       
-      <main className="flex-grow lg:ml-64 p-4 md:p-8 lg:p-12 mt-16 lg:mt-0 transition-all duration-500">
+      <main className="flex-grow lg:ml-64 p-4 md:p-8 lg:p-10 mt-16 lg:mt-0 transition-all duration-500">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="mb-8 md:mb-12">
-            <Link to="/dashboard" className="inline-flex items-center gap-2 text-on-surface-variant hover:text-primary font-bold text-xs md:text-sm mb-4 md:mb-6 transition-colors group">
-              <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform md:size-[16px]" /> Back to Dashboard
+          <div className="mb-8 md:mb-10">
+            <Link to="/dashboard" className="inline-flex items-center gap-1.5 text-on-surface-variant hover:text-primary font-bold text-[10px] md:text-xs mb-4 transition-colors group">
+              <ArrowLeft size={12} className="group-hover:-translate-x-1 transition-transform" /> Back to Dashboard
             </Link>
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div>
-                <h1 className="text-2xl sm:text-4xl md:text-5xl font-black text-on-surface tracking-tight mb-2">Request Changes</h1>
-                <p className="text-on-surface-variant font-medium text-sm md:text-lg">Tell us what you'd like to update on your website.</p>
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-on-surface tracking-tight mb-1.5">Request Changes</h1>
+                <p className="text-on-surface-variant font-medium text-[10px] sm:text-xs lg:text-sm">Tell us what you'd like to update on your website.</p>
               </div>
               
               {user && !user.is_staff && (
-                <div className="flex items-center gap-3 bg-surface-container-high px-5 py-3 md:px-6 md:py-4 rounded-2xl md:rounded-[2rem] border border-outline-variant shadow-sm">
+                <div className="flex items-center gap-3 bg-surface-container-high px-4 py-2.5 md:px-5 md:py-3 rounded-xl md:rounded-2xl border border-outline-variant shadow-sm">
                   <div>
-                    <div className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-1">Available Updates</div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl md:text-2xl font-black text-on-surface">
+                    <div className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-on-surface-variant mb-0.5">Available Updates</div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-lg md:text-xl font-black text-on-surface">
                         {(user.monthly_requests_remaining || 0) + (user.purchased_requests_remaining || 0)}
                       </span>
-                      {user.priority_updates_active && <Zap size={12} className="text-yellow-500 fill-yellow-500 md:size-[14px]" />}
+                      {user.priority_updates_active && <Zap size={10} className="text-yellow-500 fill-yellow-500" />}
                     </div>
                   </div>
-                  <Link to="/add-ons" className="ml-2 md:ml-4 p-2 bg-primary/10 text-primary rounded-lg md:rounded-xl hover:bg-primary hover:text-white transition-all">
-                    <CheckCircle size={18} className="md:size-[20px]" />
+                  <Link to="/add-ons" className="ml-2 md:ml-4 p-1.5 bg-primary/10 text-primary rounded-lg hover:bg-primary hover:text-white transition-all">
+                    <CheckCircle size={16} className="md:size-[18px]" />
                   </Link>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 md:gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 md:gap-10">
             {/* Form Section */}
             <div className="lg:col-span-3">
-              <div className="bg-surface-container-low p-6 md:p-10 rounded-[1.5rem] md:rounded-[3rem] border border-outline-variant shadow-sm">
-                <form className="space-y-6 md:space-y-8" onSubmit={handleEditRequest}>
+              <div className="bg-surface-container-low p-5 md:p-8 rounded-2xl md:rounded-3xl border border-outline-variant shadow-sm">
+                <form className="space-y-4 md:space-y-6" onSubmit={handleEditRequest}>
                   <div>
-                    <label className="block text-[10px] md:text-xs font-black uppercase tracking-widest text-on-surface-variant mb-3 md:mb-4 ml-1">Select Website</label>
+                    <label className="block text-[8px] md:text-[9px] font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">Select Website</label>
                     <select
                       name="website"
                       required
-                      className="w-full px-5 py-3 md:px-6 md:py-4 bg-surface border border-outline-variant rounded-xl md:rounded-2xl focus:border-primary outline-none transition-all font-bold text-sm appearance-none cursor-pointer"
+                      className="w-full px-4 py-2.5 md:py-3 bg-surface border border-outline-variant rounded-xl focus:border-primary outline-none transition-all font-bold text-xs md:text-sm appearance-none cursor-pointer"
                     >
                       {websites.map(site => (
                         <option key={site.id} value={site.id}>{site.name}</option>
@@ -123,28 +123,28 @@ const RequestChanges: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-[10px] md:text-xs font-black uppercase tracking-widest text-on-surface-variant mb-3 md:mb-4 ml-1">Edit Details</label>
+                    <label className="block text-[8px] md:text-[9px] font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">Edit Details</label>
                     <textarea
                       name="details"
                       required
                       rows={6}
                       placeholder="Be as specific as possible. E.g., 'Change the header color to blue'..."
-                      className="w-full px-5 py-4 md:px-6 md:py-5 bg-surface border border-outline-variant rounded-2xl md:rounded-[2rem] focus:border-primary outline-none transition-all font-medium text-sm resize-none h-40 md:h-48"
+                      className="w-full px-4 py-3 md:py-4 bg-surface border border-outline-variant rounded-xl md:rounded-2xl focus:border-primary outline-none transition-all font-medium text-xs md:text-sm resize-none h-32 md:h-40"
                     ></textarea>
                   </div>
 
                   <div className="pt-2">
                     <button
                       disabled={isSubmitting || websites.length === 0}
-                      className="w-full py-4 md:py-5 bg-primary text-white font-black rounded-xl md:rounded-2xl hover:shadow-2xl hover:shadow-primary/30 transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 md:gap-3 text-[11px] md:text-sm uppercase tracking-widest"
+                      className="w-full py-3.5 bg-primary text-white font-black rounded-xl hover:shadow-2xl hover:shadow-primary/30 transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 text-[10px] md:text-xs uppercase tracking-widest"
                     >
                       {isSubmitting ? (
-                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                       ) : (
-                        <>Submit Request <CheckCircle size={18} className="md:size-[20px]" /></>
+                        <>Submit Request <CheckCircle size={16} /></>
                       )}
                     </button>
-                    <p className="mt-4 text-center text-[9px] md:text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">
+                    <p className="mt-3 text-center text-[8px] md:text-[9px] text-on-surface-variant font-bold uppercase tracking-widest">
                       Typical turnaround: 24-48 hours
                     </p>
                   </div>
@@ -154,25 +154,25 @@ const RequestChanges: React.FC = () => {
 
             {/* Sidebar/Recent Requests */}
             <div className="lg:col-span-2 space-y-6 md:space-y-8">
-              <div className="bg-surface-container-high p-6 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] border border-outline-variant">
-                <h3 className="flex items-center gap-2 text-[10px] md:text-xs font-black uppercase tracking-widest text-on-surface-variant mb-5 md:mb-6 ml-1">
+              <div className="bg-surface-container-high p-5 md:p-6 rounded-2xl md:rounded-3xl border border-outline-variant">
+                <h3 className="flex items-center gap-2 text-[8px] md:text-[9px] font-black uppercase tracking-widest text-on-surface-variant mb-4 md:mb-5 ml-1">
                   <Clock size={12} className="md:size-[14px]" /> Recent Requests
                 </h3>
                 
-                <div className="space-y-3 md:space-y-4">
+                <div className="space-y-2.5 md:space-y-3">
                   {siteRequests.length === 0 ? (
-                    <div className="text-center py-8 md:py-12 px-4">
-                      <div className="w-10 h-10 md:w-12 md:h-12 bg-surface rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4 text-on-surface-variant opacity-20">
-                        <CheckCircle size={20} className="md:size-[24px]" />
+                    <div className="text-center py-6 md:py-8 px-4">
+                      <div className="w-8 h-8 md:w-10 bg-surface rounded-full flex items-center justify-center mx-auto mb-3 text-on-surface-variant opacity-20">
+                        <CheckCircle size={16} className="md:size-[20px]" />
                       </div>
-                      <p className="text-xs md:text-sm font-bold text-on-surface-variant">No requests yet.</p>
+                      <p className="text-[10px] md:text-xs font-bold text-on-surface-variant">No requests yet.</p>
                     </div>
                   ) : (
                     siteRequests.map(req => (
-                      <div key={req.id} className="p-4 md:p-5 bg-surface rounded-xl md:rounded-2xl border border-outline-variant hover:border-primary/30 transition-all group">
-                        <div className="flex justify-between items-start mb-2 md:mb-3">
-                          <span className="text-[9px] md:text-[10px] font-black uppercase text-primary tracking-wider truncate">{req.website_name}</span>
-                          <span className={`text-[7px] md:text-[8px] font-black px-1.5 py-0.5 md:px-2 md:py-1 rounded-full uppercase tracking-tighter shrink-0 ${
+                      <div key={req.id} className="p-3.5 md:p-4 bg-surface rounded-xl border border-outline-variant hover:border-primary/30 transition-all group">
+                        <div className="flex justify-between items-start mb-1.5 md:mb-2">
+                          <span className="text-[8px] md:text-[9px] font-black uppercase text-primary tracking-wider truncate">{req.website_name}</span>
+                          <span className={`text-[7px] md:text-[8px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-tighter shrink-0 ${
                             req.status === 'completed' ? 'bg-green-500/10 text-green-500' : 
                             req.status === 'pending' ? 'bg-yellow-500/10 text-yellow-500' :
                             'bg-surface-variant text-on-surface-variant'
@@ -180,9 +180,9 @@ const RequestChanges: React.FC = () => {
                             {req.status}
                           </span>
                         </div>
-                        <p className="text-xs md:text-sm text-on-surface font-medium line-clamp-3 mb-3 md:mb-4">{req.details}</p>
+                        <p className="text-[11px] md:text-xs text-on-surface font-medium line-clamp-2 mb-2 md:mb-3">{req.details}</p>
                         <div className="flex items-center justify-between">
-                          <span className="text-[9px] md:text-[10px] font-bold text-on-surface-variant opacity-60">
+                          <span className="text-[8px] md:text-[9px] font-bold text-on-surface-variant opacity-60">
                             {new Date(req.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}
                           </span>
                         </div>
@@ -192,19 +192,19 @@ const RequestChanges: React.FC = () => {
                 </div>
 
                 {siteRequests.length > 5 && (
-                  <button className="w-full mt-6 py-2.5 bg-surface border border-outline-variant text-[9px] md:text-[10px] font-black text-on-surface-variant uppercase tracking-widest rounded-xl hover:bg-surface-container-highest transition-all">
+                  <button className="w-full mt-4 py-2 bg-surface border border-outline-variant text-[8px] md:text-[9px] font-black text-on-surface-variant uppercase tracking-widest rounded-lg hover:bg-surface-container-highest transition-all">
                     View History
                   </button>
                 )}
               </div>
 
               {/* Help Box */}
-              <div className="p-6 md:p-8 bg-primary/5 rounded-[1.5rem] md:rounded-[2.5rem] border border-primary/10">
-                <h4 className="font-black text-on-surface text-xs md:text-sm mb-2">Need help?</h4>
-                <p className="text-[10px] md:text-xs text-on-surface-variant font-medium leading-relaxed mb-4">
+              <div className="p-5 md:p-6 bg-primary/5 rounded-2xl md:rounded-3xl border border-primary/10">
+                <h4 className="font-black text-on-surface text-[11px] md:text-xs mb-1.5">Need help?</h4>
+                <p className="text-[9px] md:text-[10px] text-on-surface-variant font-medium leading-relaxed mb-3">
                   For complex requests, contact our support team directly.
                 </p>
-                <Link to="/contact" className="inline-flex items-center gap-2 text-primary text-[9px] md:text-[10px] font-black uppercase tracking-widest hover:gap-3 transition-all">
+                <Link to="/contact" className="inline-flex items-center gap-1.5 text-primary text-[8px] md:text-[9px] font-black uppercase tracking-widest hover:gap-2 transition-all">
                   Contact Support <ExternalLink size={10} className="md:size-[12px]" />
                 </Link>
               </div>

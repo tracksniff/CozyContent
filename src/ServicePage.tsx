@@ -96,31 +96,31 @@ const LivePreview: React.FC<{ url: string; name: string; type: string }> = ({ na
   }, []);
 
   return (
-    <div ref={containerRef} className="group bg-surface-container-low rounded-[2.5rem] border border-outline-variant overflow-hidden hover:border-primary/40 transition-all shadow-sm hover:shadow-2xl flex flex-col h-full">
+    <div ref={containerRef} className="group bg-surface-container-low rounded-2xl border border-outline-variant overflow-hidden hover:border-primary/40 transition-all shadow-sm hover:shadow-2xl flex flex-col h-full">
       <div className="aspect-[4/3] overflow-hidden relative bg-surface-container-highest border-b border-outline-variant">
         {isInView ? (
-          <div className="w-full h-full p-4">
+          <div className="w-full h-full p-2 md:p-4">
              <div className="w-full h-full bg-surface rounded-xl border border-outline-variant/30 overflow-hidden relative group-hover:scale-[1.02] transition-transform duration-700">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5" />
                 <div className="absolute inset-0 flex items-center justify-center">
-                   <Monitor className="w-12 h-12 text-primary/20" />
+                   <Monitor className="w-8 h-8 md:w-12 md:h-12 text-primary/20" />
                 </div>
              </div>
           </div>
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+            <div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
           </div>
         )}
       </div>
-      <div className="p-8">
-        <div className="flex justify-between items-start mb-4">
+      <div className="p-5 md:p-6">
+        <div className="flex justify-between items-start mb-2">
           <div>
-            <h4 className="text-xl font-black text-on-surface mb-1">{name}</h4>
-            <span className="text-xs font-black uppercase tracking-widest text-primary">{type}</span>
+            <h4 className="text-lg font-black text-on-surface mb-0.5">{name}</h4>
+            <span className="text-[10px] font-black uppercase tracking-widest text-primary">{type}</span>
           </div>
-          <Link to="/signup" className="p-3 bg-surface border border-outline-variant rounded-xl hover:border-primary/40 hover:text-primary transition-all">
-            <ArrowRight size={20} />
+          <Link to="/signup" className="p-2.5 bg-surface border border-outline-variant rounded-xl hover:border-primary/40 hover:text-primary transition-all">
+            <ArrowRight size={16} />
           </Link>
         </div>
       </div>

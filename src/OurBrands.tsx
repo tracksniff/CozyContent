@@ -41,18 +41,18 @@ const OurBrands = () => {
   const BrowserPreview = ({ url, title }: { url: string, title: string }) => (
     <div className="relative group w-full">
       {/* Browser Bar */}
-      <div className="bg-surface-container-highest rounded-t-2xl border border-outline-variant/30 px-4 py-3 flex items-center gap-2">
-        <div className="flex gap-1.5">
-          <div className="w-2.5 h-2.5 rounded-full bg-red-400/50" />
-          <div className="w-2.5 h-2.5 rounded-full bg-amber-400/50" />
-          <div className="w-2.5 h-2.5 rounded-full bg-emerald-400/50" />
+      <div className="bg-surface-container-highest rounded-t-xl border border-outline-variant/30 px-3 py-2 flex items-center gap-2">
+        <div className="flex gap-1">
+          <div className="w-2 h-2 rounded-full bg-red-400/50" />
+          <div className="w-2 h-2 rounded-full bg-amber-400/50" />
+          <div className="w-2 h-2 rounded-full bg-emerald-400/50" />
         </div>
-        <div className="mx-auto bg-surface/50 rounded-lg px-3 py-1 text-[10px] text-on-surface-variant font-medium border border-outline-variant/10 w-48 text-center truncate">
+        <div className="mx-auto bg-surface/50 rounded-md px-2 py-0.5 text-[8px] text-on-surface-variant font-medium border border-outline-variant/10 w-32 text-center truncate">
           {title.toLowerCase()}.com
         </div>
       </div>
       {/* Image Container */}
-      <div className="relative aspect-[16/10] overflow-hidden rounded-b-2xl border-x border-b border-outline-variant/30 shadow-2xl transition-all duration-700 group-hover:shadow-primary/5">
+      <div className="relative aspect-[16/10] overflow-hidden rounded-b-xl border-x border-b border-outline-variant/30 shadow-2xl transition-all duration-700 group-hover:shadow-primary/5">
         <img 
           src={url} 
           alt={title} 

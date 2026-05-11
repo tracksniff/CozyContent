@@ -90,34 +90,34 @@ const Sidebar: React.FC = () => {
   return (
     <>
       {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-surface border-b border-outline-variant z-40 flex items-center justify-between px-6 transition-colors duration-300">
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-surface border-b border-outline-variant z-40 flex items-center justify-between px-4 transition-colors duration-300">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 flex items-center justify-center">
+          <div className="w-6 h-6 flex items-center justify-center">
             <img src={logo} alt="Cosy Content Logo" className="w-full h-full object-contain" />
           </div>
-          <span className="font-black text-lg tracking-tighter">Cosy Content</span>
+          <span className="font-black text-base tracking-tighter">Cosy Content</span>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           {user && !user.is_staff && (
             <Link
               to="/add-ons"
-              className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full border border-primary/20 hover:bg-primary/20 transition-all"
+              className="flex items-center gap-1.5 bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20 hover:bg-primary/20 transition-all"
             >
-              <span className="text-[10px] font-black text-primary uppercase tracking-widest">
+              <span className="text-[9px] font-black text-primary uppercase tracking-widest">
                 {(user.monthly_requests_remaining || 0) + (user.purchased_requests_remaining || 0)}{" "}
                 Updates
               </span>
               {user.priority_updates_active && (
-                <Zap size={10} className="text-yellow-500 fill-yellow-500" />
+                <Zap size={8} className="text-yellow-500 fill-yellow-500" />
               )}
             </Link>
           )}
           <button
             onClick={toggleMobile}
-            className="p-2 text-on-surface-variant hover:text-primary transition-colors"
+            className="p-1.5 text-on-surface-variant hover:text-primary transition-colors"
           >
-            {isMobileOpen ? <X size={24} /> : <Menu size={24} />}
+            {isMobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </div>

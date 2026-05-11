@@ -559,19 +559,19 @@ const Dashboard: React.FC = () => {
           )}
 
           {/* Stats/Overview Cards (Simple) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
-            <div className="bg-surface-container-low p-5 md:p-6 rounded-2xl md:rounded-[2rem] border border-outline-variant shadow-sm">
-              <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/10 text-primary rounded-lg md:rounded-xl flex items-center justify-center mb-3 md:mb-4">
-                <Globe size={18} className="md:size-[20px]" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-10">
+            <div className="bg-surface-container-low p-5 md:p-6 rounded-2xl border border-outline-variant shadow-sm">
+              <div className="w-8 h-8 md:w-10 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-3 md:mb-4">
+                <Globe size={16} className="md:size-[18px]" />
               </div>
               <div className="text-2xl md:text-3xl font-black text-on-surface mb-1">{websites.length}</div>
-              <div className="text-[10px] md:text-sm font-bold text-on-surface-variant uppercase tracking-wider">
+              <div className="text-[9px] md:text-xs font-bold text-on-surface-variant uppercase tracking-wider">
                 {user?.is_staff ? 'Total Websites' : 'Your Websites'}
               </div>
             </div>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8 md:gap-12">
+          <div className="grid lg:grid-cols-3 gap-8 md:gap-10">
             {/* Main Content: Website List */}
             <div className="lg:col-span-2 space-y-6 md:space-y-8">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -579,11 +579,11 @@ const Dashboard: React.FC = () => {
                    {user?.is_staff ? 'All Websites' : 'Your Portfolio'}
                 </h2>
                 <div className="relative w-full sm:max-w-xs">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" size={14} />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" size={12} />
                   <input
                     type="text"
                     placeholder="Search sites or owners..."
-                    className="w-full pl-9 pr-4 py-2 bg-surface border border-outline-variant rounded-xl focus:border-primary outline-none text-xs md:text-sm transition-all"
+                    className="w-full pl-8 pr-4 py-2 bg-surface border border-outline-variant rounded-xl focus:border-primary outline-none text-[11px] md:text-xs transition-all"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
@@ -591,56 +591,56 @@ const Dashboard: React.FC = () => {
               </div>
 
               {fetchingWebsites ? (
-                <div className="flex justify-center py-12 md:py-20">
+                <div className="flex justify-center py-12 md:py-16">
                   <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
                 </div>
               ) : filteredWebsites.length === 0 ? (
-                <div className="bg-surface-container-low border-2 border-dashed border-outline-variant rounded-[1.5rem] md:rounded-[2.5rem] py-12 md:py-20 text-center">
-                  <Globe className="mx-auto text-on-surface-variant/20 mb-3 md:mb-4 md:size-[48px]" size={32} />
-                  <p className="text-xs md:text-sm font-bold text-on-surface-variant">No websites found.</p>
+                <div className="bg-surface-container-low border-2 border-dashed border-outline-variant rounded-2xl md:rounded-3xl py-12 md:py-16 text-center">
+                  <Globe className="mx-auto text-on-surface-variant/20 mb-3 md:size-[40px]" size={28} />
+                  <p className="text-[10px] md:text-xs font-bold text-on-surface-variant">No websites found.</p>
                 </div>
-              ) : (                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+              ) : (                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {filteredWebsites.map((site) => (
-                    <div key={site.id} className="bg-surface-container-low p-5 md:p-6 rounded-2xl md:rounded-[2rem] border border-outline-variant shadow-sm hover:shadow-md transition-all group relative overflow-hidden">
+                    <div key={site.id} className="bg-surface-container-low p-4 md:p-6 rounded-2xl border border-outline-variant shadow-sm hover:shadow-md transition-all group relative overflow-hidden">
                       <div className="flex justify-between items-start mb-3 md:mb-4 relative z-10">
-                        <div className="w-8 h-8 md:w-10 md:h-10 bg-surface rounded-lg md:rounded-xl border border-outline-variant flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                          <Globe size={16} className="md:size-[18px]" />
+                        <div className="w-8 h-8 md:w-10 bg-surface rounded-xl border border-outline-variant flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                          <Globe size={14} className="md:size-[16px]" />
                         </div>
                         <button
                           onClick={() => handleDelete(site.id)}
-                          className="p-1.5 md:p-2 text-on-surface-variant hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
+                          className="p-1.5 text-on-surface-variant hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
                         >
-                          <Trash2 size={14} className="md:size-[16px]" />
+                          <Trash2 size={12} className="md:size-[14px]" />
                         </button>
                       </div>
                       
                       <div className="relative z-10">
-                        <h3 className="text-base md:text-lg font-black text-on-surface mb-1 group-hover:text-primary transition-colors truncate">{site.name}</h3>
-                        <p className="text-xs font-medium text-on-surface-variant truncate mb-2">{site.url}</p>
+                        <h3 className="text-sm md:text-base font-black text-on-surface mb-0.5 group-hover:text-primary transition-colors truncate">{site.name}</h3>
+                        <p className="text-[10px] md:text-xs font-medium text-on-surface-variant truncate mb-2">{site.url}</p>
                         
                         {user?.is_staff && site.owner_email && (
-                          <div className="mb-3 md:mb-4 inline-block px-2.5 py-0.5 bg-surface border border-outline-variant rounded-full text-[9px] md:text-[10px] font-bold text-on-surface-variant truncate max-w-full">
+                          <div className="mb-3 inline-block px-2 py-0.5 bg-surface border border-outline-variant rounded-full text-[8px] md:text-[9px] font-bold text-on-surface-variant truncate max-w-full">
                             Owner: {site.owner_email}
                           </div>
                         )}
                         
-                        <div className="mt-3 md:mt-4 flex items-center justify-between gap-2">
+                        <div className="mt-3 flex items-center justify-between gap-2">
                           <a
                             href={site.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 md:gap-2 text-[10px] md:text-xs font-black uppercase tracking-widest text-primary hover:gap-3 transition-all shrink-0"
+                            className="inline-flex items-center gap-1 text-[9px] md:text-[10px] font-black uppercase tracking-widest text-primary hover:gap-2 transition-all shrink-0"
                           >
-                            View Live <ExternalLink size={12} className="md:size-[14px]" />
+                            View Live <ExternalLink size={10} className="md:size-[12px]" />
                           </a>
                           {user?.is_staff && (
                             <button
                               onClick={() => handleRedeployVercel(site.id)}
                               disabled={isRedeploying[site.id]}
                               title="Redeploy on Vercel"
-                              className="p-1.5 md:p-2 bg-secondary/10 text-secondary hover:bg-secondary hover:text-white rounded-lg transition-all disabled:opacity-50 shrink-0"
+                              className="p-1.5 bg-secondary/10 text-secondary hover:bg-secondary hover:text-white rounded-lg transition-all disabled:opacity-50 shrink-0"
                             >
-                              {isRedeploying[site.id] ? <Zap size={12} className="md:size-[14px] animate-pulse" /> : <Zap size={12} className="md:size-[14px]" />}
+                              {isRedeploying[site.id] ? <Zap size={10} className="md:size-[12px] animate-pulse" /> : <Zap size={10} className="md:size-[12px]" />}
                             </button>
                           )}
                         </div>
@@ -648,7 +648,7 @@ const Dashboard: React.FC = () => {
                         {(user?.is_staff || user?.plan_type === 'monthly' || user?.plan_type === 'annual' || user?.plan_type === 'priority_monthly') && (
                           <button
                             onClick={() => navigate('/request-changes')}
-                            className="mt-4 w-full py-2.5 md:py-3 bg-surface border border-outline-variant rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest text-on-surface hover:bg-primary hover:text-white hover:border-primary transition-all flex items-center justify-center gap-2"
+                            className="mt-4 w-full py-2 bg-surface border border-outline-variant rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest text-on-surface hover:bg-primary hover:text-white hover:border-primary transition-all flex items-center justify-center gap-2"
                           >
                             <Edit3 size={12} className="md:size-[14px]" /> Request Update
                           </button>
@@ -662,36 +662,36 @@ const Dashboard: React.FC = () => {
 
             {/* Sidebar Content: Add New Website */}
             <div className="lg:col-span-1">
-              <div className="bg-surface-container-low p-6 md:p-8 rounded-2xl md:rounded-[2.5rem] border border-outline-variant shadow-sm lg:sticky lg:top-12">
-                <h2 className="text-lg md:text-xl font-black text-on-surface mb-5 md:mb-6 tracking-tight">Add Website</h2>
+              <div className="bg-surface-container-low p-6 md:p-8 rounded-2xl md:rounded-3xl border border-outline-variant shadow-sm lg:sticky lg:top-12">
+                <h2 className="text-base md:text-lg font-black text-on-surface mb-4 md:mb-5 tracking-tight">Add Website</h2>
                 <form onSubmit={handleAddWebsite} className="space-y-4">
                   <div>
-                    <label className="block text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant mb-2 ml-1">Friendly Name</label>
+                    <label className="block text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] text-on-surface-variant mb-2 ml-1">Friendly Name</label>
                     <input
                       type="text"
                       placeholder="My Store"
                       required
-                      className="w-full px-4 py-2.5 md:py-3 bg-surface border border-outline-variant rounded-xl md:rounded-2xl focus:border-primary outline-none transition-all text-xs md:text-sm font-medium"
+                      className="w-full px-4 py-2 bg-surface border border-outline-variant rounded-xl focus:border-primary outline-none transition-all text-xs font-medium"
                       value={newWebsite.name}
                       onChange={(e) => setNewWebsite({ ...newWebsite, name: e.target.value })}
                     />
                   </div>
                   <div>
-                    <label className="block text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant mb-2 ml-1">URL Endpoint</label>
+                    <label className="block text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] text-on-surface-variant mb-2 ml-1">URL Endpoint</label>
                     <input
                       type="url"
                       placeholder="https://..."
                       required
-                      className="w-full px-4 py-2.5 md:py-3 bg-surface border border-outline-variant rounded-xl md:rounded-2xl focus:border-primary outline-none transition-all text-xs md:text-sm font-medium"
+                      className="w-full px-4 py-2 bg-surface border border-outline-variant rounded-xl focus:border-primary outline-none transition-all text-xs font-medium"
                       value={newWebsite.url}
                       onChange={(e) => setNewWebsite({ ...newWebsite, url: e.target.value })}
                     />
                   </div>
                   <button
                     type="submit"
-                    className="w-full py-3 md:py-4 px-5 md:px-6 bg-primary text-white font-black rounded-xl md:rounded-2xl hover:brightness-110 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 mt-2 md:mt-4 text-xs md:text-base"
+                    className="w-full py-3 px-5 bg-primary text-white font-black rounded-xl hover:brightness-110 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 mt-2 md:mt-3 text-xs md:text-sm"
                   >
-                    <Plus size={16} className="md:size-[18px]" /> Confirm Add
+                    <Plus size={14} className="md:size-[16px]" /> Confirm Add
                   </button>
                 </form>
               </div>
