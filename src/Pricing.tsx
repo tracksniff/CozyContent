@@ -1,6 +1,21 @@
 import React, { useState } from 'react';
-import { Check, Sparkles, ArrowRight, Minus } from 'lucide-react';
+import { 
+  Check, 
+  Sparkles, 
+  ArrowRight, 
+  Minus, 
+  Layout, 
+  FileText, 
+  Search, 
+  Zap, 
+  Smartphone, 
+  ShieldCheck, 
+  Code, 
+  Globe,
+  Star
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import PricingToggle from './PricingToggle';
@@ -28,7 +43,8 @@ const PricingPage: React.FC = () => {
       ],
       cta: 'Get Started',
       popular: true,
-      hasToggle: true
+      hasToggle: true,
+      color: 'primary'
     },
     {
       id: 'one_time_launch',
@@ -49,8 +65,33 @@ const PricingPage: React.FC = () => {
       ],
       cta: 'Claim Ownership',
       popular: false,
-      hasToggle: false
+      hasToggle: false,
+      color: 'on-surface'
     }
+  ];
+
+  const coreFeatures = [
+    { title: 'Professional Design', desc: 'A clean, modern layout built specifically for your trade — designed to look credible and professional.', icon: Layout },
+    { title: 'Content Written for You', desc: 'We write every word — service pages, location content, FAQs, and more. No blank pages to fill in.', icon: FileText },
+    { title: 'Local SEO Setup', desc: 'Proper site structure, XML sitemap, optimised page titles and metadata — all built in from day one.', icon: Search },
+    { title: 'Schema Markup', desc: 'LocalBusiness, Service, and FAQ schema implemented across your site to improve Google search visibility.', icon: Code },
+    { title: 'Mobile-Optimised', desc: 'Your site is designed to work perfectly on smartphones — where most local trade searches happen.', icon: Smartphone },
+    { title: 'Fast Loading Speeds', desc: "Optimised performance to meet Google's Core Web Vitals — helping both search rankings and user experience.", icon: Zap },
+    { title: 'SSL Certificate', desc: 'Secure HTTPS across your entire site — standard on every build, included at no extra cost.', icon: ShieldCheck },
+    { title: 'AI Ready', desc: 'llms.txt implementation ensuring your business remains visible as AI search behavior evolves.', icon: Globe }
+  ];
+
+  const comparisonRows = [
+    { f: 'Professional website design & build', m: true, o: true },
+    { f: 'Content written by our team', m: true, o: true },
+    { f: 'Local SEO setup', m: true, o: true },
+    { f: 'Managed hosting included', m: true, o: false },
+    { f: 'Security & maintenance', m: true, o: false },
+    { f: 'Up to 5 updates per month', m: true, o: false },
+    { f: 'Ongoing support', m: true, o: false },
+    { f: 'Full site ownership', m: false, o: true },
+    { f: 'No monthly fees', m: false, o: true },
+    { f: 'Cancel anytime', m: true, o: 'n/a' }
   ];
 
   const faqs = [
@@ -85,54 +126,87 @@ const PricingPage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-surface">
+    <div className="min-h-screen bg-surface overflow-hidden">
       <Navbar />
       
+      {/* Background blobs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/5 rounded-full blur-[120px]" />
+      </div>
+
       <main className="pt-32 pb-32 px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h1 className="text-5xl md:text-7xl font-black text-on-surface tracking-tighter mb-6">Website Pricing</h1>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-16"
+          >
+            <h1 className="text-5xl md:text-8xl font-black text-on-surface tracking-tighter mb-6">
+              Simple, Honest <span className="text-primary italic">Pricing.</span>
+            </h1>
             <p className="text-xl text-on-surface-variant max-w-2xl mx-auto font-medium leading-relaxed">
-              Two straightforward options. No setup fees. No hidden costs. No surprises.
+              Choose the perfect plan for your trade business. No setup fees, no hidden costs.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-32">
+          <PricingToggle isAnnual={isAnnual} onChange={setIsAnnual} />
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-40">
             {plans.map((plan, idx) => (
-              <div 
+              <motion.div 
                 key={idx} 
-                className={`relative p-10 md:p-12 rounded-[3rem] border flex flex-col transition-all duration-500 hover:shadow-2xl bg-surface-container-low border-outline-variant/30 ${plan.popular ? 'ring-2 ring-primary shadow-xl shadow-primary/5' : 'shadow-lg shadow-black/5'}`}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: idx * 0.1 }}
+                className={`relative p-10 md:p-14 rounded-[3.5rem] border flex flex-col transition-all duration-500 hover:shadow-4xl group ${
+                  plan.popular 
+                    ? 'bg-white dark:bg-surface-container-high border-primary/20 ring-4 ring-primary/5 shadow-2xl shadow-primary/10' 
+                    : 'bg-surface-container-low border-outline-variant/30 shadow-xl shadow-black/5'
+                }`}
               >
                 {plan.popular && (
-                  <div className="absolute -top-4 left-10 px-4 py-1.5 bg-primary text-white rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2 shadow-lg shadow-primary/20">
-                    <Sparkles className="w-3 h-3" /> Recommended
+                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 px-6 py-2 bg-primary text-white rounded-full text-xs font-black uppercase tracking-widest flex items-center gap-2 shadow-xl shadow-primary/20 z-20">
+                    <Sparkles className="w-4 h-4" /> Most Popular Choice
                   </div>
                 )}
                 
-                <div className="mb-8">
-                  <h3 className="text-3xl font-black mb-3 text-on-surface">{plan.name}</h3>
-                  <p className="text-sm font-medium text-on-surface-variant leading-relaxed max-w-[280px]">{plan.desc}</p>
+                <div className="mb-10 text-center">
+                  <h3 className="text-4xl font-black mb-4 text-on-surface">{plan.name}</h3>
+                  <p className="text-base font-medium text-on-surface-variant leading-relaxed mx-auto max-w-[280px]">{plan.desc}</p>
                 </div>
                 
-                <div className="flex flex-col gap-1 mb-8 p-8 rounded-[2rem] bg-surface/50 border border-outline-variant/10">
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-7xl font-black text-on-surface tracking-tighter">{plan.hasToggle ? (isAnnual ? plan.annualPrice : plan.monthlyPrice) : plan.monthlyPrice}</span>
-                    <span className="text-xs font-black uppercase tracking-widest text-on-surface-variant">{plan.period}</span>
+                <div className="flex flex-col items-center gap-1 mb-10 p-10 rounded-[2.5rem] bg-surface/50 border border-outline-variant/20 relative overflow-hidden">
+                  <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${plan.popular ? 'bg-primary/5' : 'bg-on-surface/5'}`} />
+                  <div className="flex items-baseline gap-1 relative z-10">
+                    <span className="text-2xl font-black text-on-surface-variant mb-4 self-start">£</span>
+                    <AnimatePresence mode="wait">
+                      <motion.span 
+                        key={isAnnual ? 'annual' : 'monthly'}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="text-8xl font-black text-on-surface tracking-tighter"
+                      >
+                        {plan.hasToggle 
+                          ? (isAnnual ? plan.annualPrice.replace('£', '') : plan.monthlyPrice.replace('£', '')) 
+                          : plan.monthlyPrice.replace('£', '')
+                        }
+                      </motion.span>
+                    </AnimatePresence>
+                    <span className="text-sm font-black uppercase tracking-widest text-on-surface-variant ml-2">{plan.period}</span>
                   </div>
-                  {plan.hasToggle && (
-                    <div className="mt-6 pt-6 border-t border-outline-variant/10">
-                      <PricingToggle isAnnual={isAnnual} onChange={setIsAnnual} isPopular={false} />
-                    </div>
-                  )}
                 </div>
 
-                <div className="space-y-4 mb-12 flex-grow">
+                <div className="space-y-5 mb-12 flex-grow">
                   {plan.features.map((feature, fIdx) => (
-                    <div key={fIdx} className="flex items-start gap-3">
-                      <div className={`mt-1 w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${plan.popular ? 'bg-primary/10' : 'bg-surface-container-high'}`}>
-                        <Check className={`w-3 h-3 ${plan.popular ? 'text-primary' : 'text-on-surface-variant'}`} strokeWidth={4} />
+                    <div key={fIdx} className="flex items-start gap-4">
+                      <div className={`mt-1 w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${
+                        plan.popular ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-surface-container-high text-on-surface-variant'
+                      }`}>
+                        <Check className="w-3.5 h-3.5" strokeWidth={4} />
                       </div>
-                      <span className="text-sm font-bold text-on-surface">{feature}</span>
+                      <span className="text-base font-bold text-on-surface leading-tight">{feature}</span>
                     </div>
                   ))}
                 </div>
@@ -140,134 +214,192 @@ const PricingPage: React.FC = () => {
                 <Link 
                   to="/signup" 
                   state={{ planId: plan.id, planType: plan.type, billing: plan.hasToggle ? (isAnnual ? 'annual' : 'monthly') : 'one_time' }}
-                  className={`py-5 rounded-2xl font-black text-center transition-all flex items-center justify-center gap-2 text-lg ${plan.popular ? 'bg-primary text-white hover:brightness-110 shadow-lg shadow-primary/20 active:scale-95' : 'bg-on-surface text-surface hover:bg-on-surface-variant active:scale-95'}`}
+                  className={`group/btn py-6 rounded-3xl font-black text-center transition-all flex items-center justify-center gap-3 text-xl relative overflow-hidden ${
+                    plan.popular 
+                      ? 'bg-primary text-white hover:shadow-2xl hover:shadow-primary/30 active:scale-[0.98]' 
+                      : 'bg-on-surface text-surface hover:bg-on-surface-variant active:scale-[0.98]'
+                  }`}
                 >
-                  {plan.cta}
+                  <span className="relative z-10 flex items-center gap-3 transition-all group-hover/btn:gap-6">
+                    {plan.cta} <ArrowRight className="w-6 h-6" />
+                  </span>
+                  <div className="absolute inset-0 bg-white/10 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
                 </Link>
-              </div>
+              </motion.div>
             ))}
           </div>
 
-          <div className="mb-32">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-black text-on-surface tracking-tight mb-4">What Every Website Includes</h2>
-              <p className="text-on-surface-variant font-medium max-w-2xl mx-auto">
-                Regardless of which pricing option you choose, your website includes the following as standard.
+          <div className="mb-40">
+            <div className="text-center mb-20">
+              <h2 className="text-4xl md:text-7xl font-black text-on-surface tracking-tight mb-6">Standard with Every Build</h2>
+              <p className="text-on-surface-variant font-medium max-w-2xl mx-auto text-xl">
+                High-performance features baked into every single website we build.
               </p>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[
-                { title: 'Professional Design', desc: 'A clean, modern layout built specifically for your trade — designed to look credible and professional.' },
-                { title: 'Content Written for You', desc: 'We write every word — service pages, location content, FAQs, and more. No blank pages to fill in.' },
-                { title: 'Local SEO Setup', desc: 'Proper site structure, XML sitemap, optimised page titles and metadata — all built in from day one.' },
-                { title: 'Schema Markup', desc: 'LocalBusiness, Service, and FAQ schema implemented across your site to improve Google search visibility.' },
-                { title: 'Mobile-Optimised', desc: 'Your site is designed to work perfectly on smartphones — where most local trade searches happen.' },
-                { title: 'Fast Loading Speeds', desc: "Optimised performance to meet Google's Core Web Vitals — helping both search rankings and user experience." },
-                { title: 'SSL Certificate', desc: 'Secure HTTPS across your entire site — standard on every build, included at no extra cost.' },
-                { title: 'AI Ready', desc: 'llms.txt implementation ensuring your business remains visible as AI search behavior evolves.' }
-              ].map((item, idx) => (
-                <div key={idx} className="p-8 rounded-[2.5rem] bg-surface-container-low border border-outline-variant hover:border-primary/30 transition-all group">
-                  <div className="w-12 h-12 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                    <Check className="w-6 h-6" strokeWidth={3} />
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {coreFeatures.map((item, idx) => (
+                <motion.div 
+                  key={idx} 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.05 }}
+                  className="p-10 rounded-[3rem] bg-surface-container-low border border-outline-variant hover:border-primary/50 transition-all group hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/5"
+                >
+                  <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-8 group-hover:bg-primary group-hover:text-white transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                    <item.icon className="w-8 h-8" strokeWidth={2} />
                   </div>
-                  <h4 className="font-black text-lg text-on-surface mb-2 leading-tight">{item.title}</h4>
-                  <p className="text-sm text-on-surface-variant font-medium leading-relaxed">{item.desc}</p>
-                </div>
+                  <h4 className="font-black text-xl text-on-surface mb-3 leading-tight">{item.title}</h4>
+                  <p className="text-base text-on-surface-variant font-medium leading-relaxed">{item.desc}</p>
+                </motion.div>
               ))}
             </div>
           </div>
 
-          <div className="mb-32 max-w-5xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-black text-on-surface tracking-tight mb-4">Plan Comparison</h2>
-              <p className="text-on-surface-variant font-medium">A quick reference to see exactly what's included in each option.</p>
+          <div className="mb-40 max-w-6xl mx-auto px-4 sm:px-0">
+            <div className="text-center mb-20">
+              <h2 className="text-4xl md:text-7xl font-black text-on-surface tracking-tight mb-6">Compare Plans</h2>
+              <p className="text-on-surface-variant font-medium text-xl">A detailed look at what you get with each option.</p>
             </div>
-            <div className="overflow-x-auto rounded-[3rem] border border-outline-variant bg-surface-container-low shadow-xl">
-              <table className="w-full text-left border-collapse min-w-[600px]">
-                <thead>
-                  <tr className="border-b border-outline-variant">
-                    <th className="p-10 text-lg font-black text-on-surface">Feature</th>
-                    <th className="p-10 text-lg font-black text-on-surface text-center bg-primary/5">Monthly Plan</th>
-                    <th className="p-10 text-lg font-black text-on-surface text-center">One-Off</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-outline-variant/10">
-                  {[
-                    { f: 'Professional website design & build', m: true, o: true },
-                    { f: 'Content written by our team', m: true, o: true },
-                    { f: 'Local SEO setup', m: true, o: true },
-                    { f: 'Managed hosting included', m: true, o: false },
-                    { f: 'Security & maintenance', m: true, o: false },
-                    { f: 'Up to 5 updates per month', m: true, o: false },
-                    { f: 'Ongoing support', m: true, o: false },
-                    { f: 'Full site ownership', m: false, o: true },
-                    { f: 'No monthly fees', m: false, o: true },
-                    { f: 'Cancel anytime', m: true, o: 'n/a' }
-                  ].map((row, i) => (
-                    <tr key={i} className="hover:bg-surface-container-high transition-colors group">
-                      <td className="p-8 font-bold text-on-surface group-hover:text-primary transition-colors">{row.f}</td>
-                      <td className="p-8 text-center bg-primary/5">
-                        {row.m === true ? <Check className="w-6 h-6 text-primary mx-auto" strokeWidth={4} /> : row.m}
-                      </td>
-                      <td className="p-8 text-center">
-                        {row.o === true ? <Check className="w-6 h-6 text-primary mx-auto" strokeWidth={4} /> : (row.o === false ? <Minus className="w-5 h-5 text-on-surface-variant/30 mx-auto" /> : <span className="text-on-surface-variant font-bold">{row.o}</span>)}
-                      </td>
+            <div className="overflow-hidden rounded-[3rem] md:rounded-[4rem] border border-outline-variant bg-surface-container-low shadow-3xl relative">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse min-w-[800px]">
+                  <thead>
+                    <tr className="bg-surface-container-high/90 border-b border-outline-variant sticky top-0 z-30 backdrop-blur-md">
+                      <th className="p-10 md:p-14 text-xl md:text-2xl font-black text-on-surface">Feature</th>
+                      <th className="p-10 md:p-14 text-xl md:text-2xl font-black text-on-surface text-center bg-primary/5 relative">
+                        Monthly Plan
+                        <div className="absolute top-0 left-0 right-0 h-1 bg-primary" />
+                      </th>
+                      <th className="p-10 md:p-14 text-xl md:text-2xl font-black text-on-surface text-center">One-Off Payment</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-outline-variant/20">
+                    {comparisonRows.map((row, i) => (
+                      <tr key={i} className="hover:bg-surface-container-high/50 transition-colors group">
+                        <td className="p-10 md:p-12 font-bold text-on-surface group-hover:text-primary transition-colors text-lg md:text-xl leading-snug">
+                          {row.f}
+                        </td>
+                        <td className="p-10 md:p-12 text-center bg-primary/5 border-x border-primary/5">
+                          {row.m === true ? (
+                            <motion.div 
+                              initial={{ scale: 0.8, opacity: 0 }}
+                              whileInView={{ scale: 1, opacity: 1 }}
+                              viewport={{ once: true }}
+                              transition={{ delay: i * 0.05 }}
+                              className="bg-primary text-white w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center mx-auto shadow-lg shadow-primary/20"
+                            >
+                              <Check className="w-6 h-6 md:w-7 md:h-7" strokeWidth={4} />
+                            </motion.div>
+                          ) : (
+                            <span className="text-on-surface-variant/40 font-black text-lg md:text-xl">{row.m}</span>
+                          )}
+                        </td>
+                        <td className="p-10 md:p-12 text-center">
+                          {row.o === true ? (
+                            <motion.div 
+                              initial={{ scale: 0.8, opacity: 0 }}
+                              whileInView={{ scale: 1, opacity: 1 }}
+                              viewport={{ once: true }}
+                              transition={{ delay: i * 0.05 + 0.1 }}
+                              className="bg-on-surface text-surface w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center mx-auto opacity-80"
+                            >
+                              <Check className="w-6 h-6 md:w-7 md:h-7" strokeWidth={4} />
+                            </motion.div>
+                          ) : (
+                            row.o === false ? (
+                              <Minus className="w-8 h-8 text-on-surface-variant/20 mx-auto" />
+                            ) : (
+                              <span className="text-on-surface-variant font-black text-lg md:text-xl">{row.o}</span>
+                            )
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
 
-          <div className="mb-32 max-w-4xl mx-auto">
-            <h2 className="text-4xl font-black text-on-surface tracking-tight mb-12 text-center">Common Pricing Questions</h2>
-            <div className="grid gap-6">
+          <div className="mb-40 max-w-5xl mx-auto">
+            <div className="flex items-center justify-center gap-4 mb-12">
+              <div className="h-px bg-outline-variant flex-grow" />
+              <h2 className="text-4xl md:text-6xl font-black text-on-surface tracking-tight px-8">Common Questions</h2>
+              <div className="h-px bg-outline-variant flex-grow" />
+            </div>
+            <div className="grid md:grid-cols-2 gap-8">
               {faqs.map((faq, idx) => (
-                <div key={idx} className="p-10 rounded-[2.5rem] bg-surface-container-low border border-outline-variant hover:border-primary/20 transition-all group">
-                  <h3 className="text-xl font-black text-on-surface mb-4 group-hover:text-primary transition-colors">{faq.q}</h3>
-                  <p className="text-on-surface-variant font-medium leading-relaxed">{faq.a}</p>
-                </div>
+                <motion.div 
+                  key={idx} 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  className="p-12 rounded-[4rem] bg-surface-container-low border border-outline-variant hover:border-primary/30 transition-all group shadow-xl shadow-black/5 hover:shadow-2xl"
+                >
+                  <div className="flex items-start gap-4 mb-6">
+                    <div className="mt-1.5 w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 font-black text-sm">?</div>
+                    <h3 className="text-2xl font-black text-on-surface group-hover:text-primary transition-colors leading-tight">{faq.q}</h3>
+                  </div>
+                  <p className="text-on-surface-variant font-medium leading-relaxed text-lg pl-12">{faq.a}</p>
+                </motion.div>
               ))}
             </div>
-            <div className="mt-12 p-10 rounded-[3rem] bg-primary/5 border-2 border-dashed border-primary/20 text-center">
-              <h3 className="text-xl font-black text-on-surface mb-4">Do you build websites for all trades?</h3>
-              <p className="text-on-surface-variant font-medium leading-relaxed max-w-2xl mx-auto">
-                Currently we build websites for plumbers, roofers, electricians, locksmiths, cleaning companies, and removal companies. We cover Luton, Bedford, Dunstable, Milton Keynes, St Albans, and Watford.
-              </p>
-            </div>
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mt-16 p-12 rounded-[4rem] bg-primary text-white text-center shadow-3xl relative overflow-hidden"
+            >
+              <div className="relative z-10">
+                <Star className="w-12 h-12 mx-auto mb-8 opacity-50" />
+                <h3 className="text-3xl font-black mb-6">Do you build websites for all trades?</h3>
+                <p className="text-white/80 font-medium leading-relaxed max-w-3xl mx-auto text-xl">
+                  Currently we build websites for plumbers, roofers, electricians, locksmiths, cleaning companies, and removal companies. We cover Luton, Bedford, Dunstable, Milton Keynes, St Albans, and Watford.
+                </p>
+              </div>
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+            </motion.div>
           </div>
 
-          <div className="text-center bg-surface-container-high p-12 md:p-24 rounded-[4rem] border border-outline-variant/30 shadow-2xl relative overflow-hidden group">
+          <motion.div 
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center bg-on-surface p-12 md:p-32 rounded-[6rem] shadow-4xl relative overflow-hidden group"
+          >
             <div className="relative z-10">
-              <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter leading-none text-on-surface">Ready to Get Started?</h2>
-              <p className="text-on-surface-variant font-medium max-w-2xl mx-auto mb-16 text-xl leading-relaxed">
-                Choose the option that suits your business, or get in touch to discuss your specific requirements. No obligation, no pressure.
+              <h2 className="text-5xl md:text-9xl font-black mb-10 tracking-tighter leading-none text-surface">
+                Ready to <span className="text-primary italic">Grow?</span>
+              </h2>
+              <p className="text-surface/70 font-medium max-w-2xl mx-auto mb-20 text-2xl leading-relaxed">
+                Choose the option that suits your business, or get in touch to discuss your specific requirements.
               </p>
               
-              <div className="grid sm:grid-cols-2 gap-y-6 gap-x-12 max-w-3xl mx-auto text-left mb-16 px-4">
+              <div className="grid sm:grid-cols-2 gap-y-10 gap-x-20 max-w-5xl mx-auto text-left mb-24 px-4">
                 {[
-                  'Monthly plan from £59 — fully managed',
+                  'Monthly plan from £47 — fully managed',
                   'One-off payment of £349 — own it outright',
                   'No setup fee on either option',
-                  'Live within days of your brief'
+                  'Live within 7 working days'
                 ].map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-4">
-                    <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                      <Check className="w-4 h-4 text-primary" strokeWidth={4} />
+                  <div key={idx} className="flex items-center gap-6">
+                    <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
+                      <Check className="w-6 h-6 text-white" strokeWidth={4} />
                     </div>
-                    <span className="text-lg font-bold text-on-surface">{item}</span>
+                    <span className="text-2xl font-bold text-surface">{item}</span>
                   </div>
                 ))}
               </div>
 
-              <Link to="/contact" className="inline-flex items-center gap-4 bg-primary text-white px-12 py-6 rounded-2xl font-black uppercase tracking-widest hover:gap-8 transition-all shadow-xl shadow-primary/20">
-                Get in touch <ArrowRight className="w-6 h-6" />
+              <Link to="/contact" className="inline-flex items-center gap-8 bg-primary text-white px-20 py-10 rounded-[2.5rem] font-black uppercase tracking-widest hover:gap-14 transition-all shadow-3xl shadow-primary/40 text-2xl hover:scale-105 active:scale-95">
+                Get started today <ArrowRight className="w-10 h-10" />
               </Link>
             </div>
-            {/* Abstract Background Decoration */}
-            <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl group-hover:bg-primary/10 transition-colors duration-1000" />
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl group-hover:bg-primary/10 transition-colors duration-1000" />
-          </div>
+            {/* Dark Mode Gradient Decor */}
+            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/20 rounded-full -translate-y-1/2 translate-x-1/2 blur-[150px] group-hover:bg-primary/30 transition-colors duration-1000" />
+            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-primary/20 rounded-full translate-y-1/2 -translate-x-1/2 blur-[150px] group-hover:bg-primary/30 transition-colors duration-1000" />
+          </motion.div>
         </div>
       </main>
 
