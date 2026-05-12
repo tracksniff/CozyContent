@@ -17,6 +17,7 @@ export interface SEOPageInfo {
   heroSubtitle?: string;
   checklist?: string[];
   sections?: SEOPageContentSection[];
+  demos?: { name: string; url: string; image: string }[];
 }
 
 // Plumbers
@@ -70,17 +71,51 @@ const industryImages = {
   Removals: [r1, r2, r3, r4, r5]
 };
 
-const attachImages = (pages: Record<string, SEOPageInfo>) => {
+const industryDemos = {
+  Plumbing: [
+    { name: "EcoFlow Plumbing", url: "https://plumbing-demo-1.test", image: p1 },
+    { name: "Rapid Response Pipes", url: "https://plumbing-demo-2.test", image: p2 },
+    { name: "Blue Diamond Heating", url: "https://plumbing-demo-3.test", image: p3 },
+  ],
+  Electrical: [
+    { name: "VoltSafe Solutions", url: "https://electrical-demo-1.test", image: e1 },
+    { name: "Bright Current Ltd", url: "https://electrical-demo-2.test", image: e2 },
+    { name: "Zap Electrical Services", url: "https://electrical-demo-3.test", image: e3 },
+  ],
+  Roofing: [
+    { name: "SkyGuard Roofing", url: "https://roofing-demo-1.test", image: ro1 },
+    { name: "Peak Performance Roofs", url: "https://roofing-demo-2.test", image: ro2 },
+    { name: "Durable Slate Co", url: "https://roofing-demo-3.test", image: ro3 },
+  ],
+  Locksmith: [
+    { name: "SureLock Security", url: "https://locksmith-demo-1.test", image: l1 },
+    { name: "QuickKey Responders", url: "https://locksmith-demo-2.test", image: l2 },
+    { name: "Fortress Lock & Key", url: "https://locksmith-demo-3.test", image: l3 },
+  ],
+  Cleaning: [
+    { name: "Sparkle & Shine Co", url: "https://cleaning-demo-1.test", image: c1 },
+    { name: "Pristine Office Care", url: "https://cleaning-demo-2.test", image: c2 },
+    { name: "EcoGreen Cleaners", url: "https://cleaning-demo-3.test", image: c3 },
+  ],
+  Removals: [
+    { name: "SwiftMove Logistics", url: "https://removals-demo-1.test", image: r1 },
+    { name: "Careful Carry Removals", url: "https://removals-demo-2.test", image: r2 },
+    { name: "City to City Transit", url: "https://removals-demo-3.test", image: r3 },
+  ],
+};
+
+const attachData = (pages: Record<string, SEOPageInfo>) => {
   Object.values(pages).forEach(page => {
     const images = industryImages[page.industry as keyof typeof industryImages] || [];
     page.sections?.forEach((section, idx) => {
       section.image = images[idx % images.length];
     });
+    page.demos = industryDemos[page.industry as keyof typeof industryDemos] || [];
   });
   return pages;
 };
 
-export const seoPagesData: Record<string, SEOPageInfo> = attachImages({
+export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   // Plumbing
   "plumber-web-design": {
     url: "plumber-web-design",

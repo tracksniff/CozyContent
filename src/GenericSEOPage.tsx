@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { ArrowRight, Shield, Check, Star, Zap, Clock, Phone } from "lucide-react";
+import { ArrowRight, Shield, Check, Star, Zap, Clock, Phone, ExternalLink } from "lucide-react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import type { SEOPageInfo } from "./seoPagesData";
@@ -265,6 +265,58 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
             ))}
           </div>
         </section>
+
+        {/* ── LIVE DEMOS ─────────────────────────────────────────── */}
+        {data.demos && data.demos.length > 0 && (
+          <section className="max-w-7xl mx-auto px-6 lg:px-8 mb-28">
+            <div className="text-center mb-12">
+              <p className="text-xs font-bold uppercase tracking-widest text-primary mb-3">Portfolio</p>
+              <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-4">
+                Explore Our Demos
+              </h2>
+              <p className="text-on-surface-variant font-medium max-w-xl mx-auto">
+                Take a look at what we've built for other {data.industry.toLowerCase()} businesses. 
+                Modern, fast, and lead-focused.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {data.demos.map((demo, idx) => (
+                <a
+                  key={idx}
+                  href={demo.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative flex flex-col bg-surface rounded-[2.5rem] border border-outline-variant/30 overflow-hidden hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500"
+                >
+                  <div className="aspect-[4/3] overflow-hidden relative">
+                    <img
+                      src={demo.image}
+                      alt={demo.name}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center text-black transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 shadow-xl">
+                        <ExternalLink className="w-6 h-6" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-8">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-xl font-black group-hover:text-primary transition-colors">
+                        {demo.name}
+                      </h3>
+                      <ArrowRight className="w-5 h-5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-primary" />
+                    </div>
+                    <p className="text-sm text-on-surface-variant font-medium">
+                      High-converting {data.industry.toLowerCase()} website demo
+                    </p>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* ── PRICING ─────────────────────────────────────────── */}
         <section className="max-w-7xl mx-auto px-6 lg:px-8 mb-28">
