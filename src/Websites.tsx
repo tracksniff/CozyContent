@@ -2,22 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import Sidebar from './Sidebar';
 import { useNavigate } from 'react-router-dom';
-import { Globe, Plus, Search, ExternalLink, Trash2, UserPlus, Server, Monitor, Edit3 } from 'lucide-react';
+import { Globe, Search, ExternalLink, Trash2, UserPlus, Edit3 } from 'lucide-react';
 import axios from 'axios';
 
 const Websites: React.FC = () => {
   const navigate = useNavigate();
   const [websites, setWebsites] = useState<any[]>([]);
-  const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [newWebsite, setNewWebsite] = useState({ 
-    name: '', 
-    url: '', 
-    owner_id: '', 
-    hosting_type: 'PLATFORM' 
-  });
   const { token, user, loading: authLoading } = useAuth();
 
   const fetchWebsites = async () => {
@@ -34,47 +26,11 @@ const Websites: React.FC = () => {
     }
   };
 
-  const fetchUsers = async () => {
-    if (!token || !user?.is_staff) return;
-    try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/users/`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setUsers(response.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   useEffect(() => {
     if (!authLoading) {
       fetchWebsites();
-      if (user?.is_staff) fetchUsers();
     }
   }, [token, authLoading]);
-
-  const handleAddWebsite = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const payload: any = { 
-        name: newWebsite.name, 
-        url: newWebsite.url,
-        hosting_type: newWebsite.hosting_type
-      };
-      if (user?.is_staff && newWebsite.owner_id) {
-          payload.owner_id = parseInt(newWebsite.owner_id);
-      }
-      
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/websites/`, payload, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setNewWebsite({ name: '', url: '', owner_id: '', hosting_type: 'PLATFORM' });
-      setShowAddForm(false);
-      fetchWebsites();
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   const handleTransfer = async (siteId: number, _currentOwnerId: number) => {
       if (!user?.is_staff) return;
@@ -122,83 +78,7 @@ const Websites: React.FC = () => {
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black font-headline text-on-surface tracking-tight mb-1.5">Websites</h1>
               <p className="text-on-surface-variant font-medium text-[10px] sm:text-xs lg:text-sm">Manage hosted {user?.is_staff ? 'platform' : 'personal'} assets.</p>
             </div>
-            <button 
-                onClick={() => setShowAddForm(!showAddForm)}
-                className="w-full md:w-auto bg-primary text-white px-5 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:shadow-lg transition-all active:scale-95 text-xs md:text-sm"
-            >
-                <Plus size={16} className="md:size-[18px]" /> {showAddForm ? 'Cancel' : 'Register Website'}
-            </button>
           </header>
-
-          {showAddForm && (
-              <div className="mb-8 md:mb-10 bg-surface-container-low p-5 md:p-8 rounded-2xl md:rounded-3xl border border-primary/20 shadow-xl animate-in fade-in slide-in-from-top-4 duration-300">
-                  <h2 className="text-lg md:text-xl font-black mb-4">New Website Registration</h2>
-                  <form onSubmit={handleAddWebsite} className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                      <div className="space-y-4">
-                          <div>
-                            <label className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-on-surface-variant ml-1 mb-2 block">Name</label>
-                            <input 
-                                required
-                                className="w-full px-4 py-2 bg-surface border border-outline-variant rounded-xl focus:border-primary outline-none transition-all text-xs md:text-sm"
-                                value={newWebsite.name}
-                                onChange={e => setNewWebsite({...newWebsite, name: e.target.value})}
-                                placeholder="e.g. London Plumbers"
-                            />
-                          </div>
-                          <div>
-                            <label className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-on-surface-variant ml-1 mb-2 block">URL</label>
-                            <input 
-                                required
-                                type="url"
-                                className="w-full px-4 py-2 bg-surface border border-outline-variant rounded-xl focus:border-primary outline-none transition-all text-xs md:text-sm"
-                                value={newWebsite.url}
-                                onChange={e => setNewWebsite({...newWebsite, url: e.target.value})}
-                                placeholder="https://..."
-                            />
-                          </div>
-                      </div>
-                      <div className="space-y-4">
-                          {user?.is_staff && (
-                              <div>
-                                <label className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-on-surface-variant ml-1 mb-2 block">Assign Owner</label>
-                                <select 
-                                    className="w-full px-4 py-2 bg-surface border border-outline-variant rounded-xl focus:border-primary outline-none transition-all text-xs md:text-sm"
-                                    value={newWebsite.owner_id}
-                                    onChange={e => setNewWebsite({...newWebsite, owner_id: e.target.value})}
-                                >
-                                    <option value="">Myself (Admin)</option>
-                                    {users.map(u => (
-                                        <option key={u.id} value={u.id}>{u.email} ({u.first_name})</option>
-                                    ))}
-                                </select>
-                              </div>
-                          )}
-                          <div>
-                            <label className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-on-surface-variant ml-1 mb-2 block">Hosting Configuration</label>
-                            <div className="flex gap-2">
-                                <button 
-                                    type="button"
-                                    onClick={() => setNewWebsite({...newWebsite, hosting_type: 'PLATFORM'})}
-                                    className={`flex-grow py-2 rounded-xl border-2 flex items-center justify-center gap-2 font-bold transition-all text-xs ${newWebsite.hosting_type === 'PLATFORM' ? 'border-primary bg-primary/5 text-primary' : 'border-outline-variant'}`}
-                                >
-                                    <Server size={14} className="md:size-[16px]" /> Platform
-                                </button>
-                                <button 
-                                    type="button"
-                                    onClick={() => setNewWebsite({...newWebsite, hosting_type: 'SELF'})}
-                                    className={`flex-grow py-2 rounded-xl border-2 flex items-center justify-center gap-2 font-bold transition-all text-xs ${newWebsite.hosting_type === 'SELF' ? 'border-primary bg-primary/5 text-primary' : 'border-outline-variant'}`}
-                                >
-                                    <Monitor size={14} className="md:size-[16px]" /> Self-Hosted
-                                </button>
-                            </div>
-                          </div>
-                          <button type="submit" className="w-full py-3 bg-primary text-white font-black rounded-xl hover:brightness-110 shadow-lg shadow-primary/20 transition-all text-xs md:text-sm uppercase tracking-widest">
-                              Register Asset
-                          </button>
-                      </div>
-                  </form>
-              </div>
-          )}
 
           <div className="mb-6 md:mb-8">
             <div className="relative w-full max-w-md">

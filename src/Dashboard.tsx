@@ -3,7 +3,6 @@ import { useAuth } from './AuthContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { 
-  Plus, 
   Trash2, 
   ExternalLink, 
   Globe, 
@@ -42,7 +41,6 @@ const Dashboard: React.FC = () => {
   const [applications, setApplications] = useState<any[]>([]);
   const [fetchingWebsites, setFetchingWebsites] = useState(true);
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
-  const [newWebsite, setNewWebsite] = useState({ name: '', url: '' });
   const [searchQuery, setSearchQuery] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [isRedeploying, setIsRedeploying] = useState<{ [key: number]: boolean }>({});
@@ -190,21 +188,6 @@ const Dashboard: React.FC = () => {
   }
 
   const processingApps = applications.filter(app => app.status === 'processing');
-
-  const handleAddWebsite = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/websites/`, newWebsite, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setNewWebsite({ name: '', url: '' });
-      fetchData();
-      toast.success('Website added successfully!');
-    } catch (err) {
-      console.error(err);
-      toast.error('Failed to add website.');
-    }
-  };
 
   const handleDelete = async (id: number) => {
     if (!window.confirm('Are you sure you want to delete this website?')) return;
@@ -506,39 +489,6 @@ const Dashboard: React.FC = () => {
               </div>
             )}
           </div>
-
-          {/* Add Website Section (Admin or if allowed) */}
-          {(user?.is_staff || websites.length === 0) && (
-            <div className="mt-12 bg-surface-container-low p-8 rounded-[2.5rem] border border-outline-variant/30 shadow-xl shadow-black/5 max-w-2xl">
-              <h2 className="text-xl font-black text-on-surface mb-6 tracking-tight">Add New Website</h2>
-              <form onSubmit={handleAddWebsite} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <input
-                    type="text"
-                    placeholder="Friendly Name"
-                    required
-                    className="w-full px-4 py-3 bg-white dark:bg-surface border border-outline-variant/30 rounded-xl focus:border-primary outline-none transition-all text-sm font-medium"
-                    value={newWebsite.name}
-                    onChange={(e) => setNewWebsite({ ...newWebsite, name: e.target.value })}
-                  />
-                  <input
-                    type="url"
-                    placeholder="https://..."
-                    required
-                    className="w-full px-4 py-3 bg-white dark:bg-surface border border-outline-variant/30 rounded-xl focus:border-primary outline-none transition-all text-sm font-medium"
-                    value={newWebsite.url}
-                    onChange={(e) => setNewWebsite({ ...newWebsite, url: e.target.value })}
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="w-full py-4 bg-primary text-white font-black rounded-xl hover:scale-[1.02] transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2 text-sm uppercase tracking-widest"
-                >
-                  <Plus size={18} /> Add Website
-                </button>
-              </form>
-            </div>
-          )}
         </div>
       </main>
     </div>

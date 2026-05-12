@@ -1,8 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { ArrowRight, Shield, Check, Star, Zap, Clock, Phone, ExternalLink } from "lucide-react";
+import { 
+  ArrowRight, 
+  Shield, 
+  Check, 
+  Star, 
+  Zap, 
+  Clock, 
+  Phone, 
+  ExternalLink,
+  Sparkles
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import PricingToggle from "./PricingToggle";
 import type { SEOPageInfo } from "./seoPagesData";
 
 interface GenericSEOPageProps {
@@ -74,11 +86,59 @@ const stats = [
 const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
   const { pathname } = useLocation();
   const [activeSection, setActiveSection] = useState<number | null>(null);
+  const [isAnnual, setIsAnnual] = useState(true);
   const config = industryConfig[data.industry] || industryConfig["Cleaning"];
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+
+  const plans = [
+    {
+      id: 'monthly_growth',
+      type: 'monthly',
+      name: 'Monthly Plan',
+      monthlyPrice: '£59',
+      annualPrice: '£47',
+      period: ' /month',
+      desc: 'Everything handled — build, hosting, updates, and support — for one low monthly cost.',
+      features: [
+        'Professional website design and build',
+        'All content written by our team',
+        'Local SEO setup from day one',
+        'Hosting and security — fully managed',
+        'Up to 5 updates per month',
+        'Ongoing maintenance and support',
+        'Cancel anytime — no minimum term'
+      ],
+      cta: 'Get Started',
+      popular: true,
+      hasToggle: true,
+      color: 'primary'
+    },
+    {
+      id: 'one_time_launch',
+      type: 'one_time',
+      name: 'One-Off Payment',
+      monthlyPrice: '£349',
+      annualPrice: '£349',
+      period: ' Fixed',
+      desc: 'Own your site outright and handle hosting and updates yourself.',
+      features: [
+        'Professional website design and build',
+        'All content written by our team',
+        'Local SEO setup from day one',
+        'Full ownership of the finished site',
+        'No monthly fees — ever',
+        'Hosting not included',
+        'No ongoing updates or support'
+      ],
+      cta: 'Claim Ownership',
+      popular: false,
+      hasToggle: false,
+      color: 'on-surface'
+    }
+  ];
 
   return (
     <div className="bg-surface min-h-screen text-on-surface transition-colors duration-300">
@@ -325,104 +385,88 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
             <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-4">
               Simple, Transparent Pricing
             </h2>
-            <p className="text-on-surface-variant font-medium max-w-xl mx-auto">
-              Two clear options. No hidden fees. Cancel any time on the monthly plan.
+            <p className="text-on-surface-variant font-medium max-w-xl mx-auto text-lg">
+              Choose the perfect plan for your trade business. No setup fees, no hidden costs.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-            {/* Monthly plan */}
-            <div className="relative group flex flex-col p-8 bg-surface rounded-3xl border border-outline-variant/40 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/8 transition-all duration-300">
-              <div className="flex items-start justify-between mb-6">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1">
-                    Monthly
-                  </p>
-                  <h3 className="text-xl font-black">Fully Managed</h3>
-                </div>
-                <div className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold border border-primary/20">
-                  Popular
-                </div>
-              </div>
+          <PricingToggle isAnnual={isAnnual} onChange={setIsAnnual} />
 
-              <div className="flex items-baseline gap-1 mb-2">
-                <span className="text-5xl font-black">£59</span>
-                <span className="text-on-surface-variant font-medium">/month</span>
-              </div>
-              <p className="text-sm text-on-surface-variant mb-8">
-                No upfront cost — launch today.
-              </p>
-
-              <ul className="space-y-3 mb-8 flex-1">
-                {[
-                  "Hosting & security included",
-                  "Unlimited minor updates",
-                  "SEO setup & maintenance",
-                  "Dedicated support team",
-                  "Cancel any time",
-                ].map((f, i) => (
-                  <li key={i} className="flex items-center gap-3 text-sm font-medium">
-                    <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                      <Check className="w-3 h-3 text-primary" strokeWidth={3} />
-                    </div>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-
-              <Link
-                to="/signup"
-                className="group/btn flex items-center justify-center gap-2 w-full py-4 bg-primary text-white font-bold rounded-xl hover:brightness-110 active:scale-[0.97] transition-all text-sm"
+          <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+            {plans.map((plan, idx) => (
+              <motion.div 
+                key={idx} 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: idx * 0.1 }}
+                className={`relative p-6 md:p-10 rounded-3xl border flex flex-col transition-all duration-500 hover:shadow-4xl group ${
+                  plan.popular 
+                    ? 'bg-white dark:bg-surface-container-high border-primary/20 ring-4 ring-primary/5 shadow-2xl shadow-primary/10' 
+                    : 'bg-surface-container-low border-outline-variant/30 shadow-xl shadow-black/5'
+                }`}
               >
-                Start Monthly Plan
-                <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-0.5 transition-transform" />
-              </Link>
-            </div>
-
-            {/* One-time plan */}
-            <div className="relative group flex flex-col p-8 bg-surface rounded-3xl border border-outline-variant/40 hover:border-on-surface/20 hover:shadow-xl transition-all duration-300">
-              <div className="flex items-start justify-between mb-6">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1">
-                    One-time
-                  </p>
-                  <h3 className="text-xl font-black">Own It Outright</h3>
+                {plan.popular && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1.5 bg-primary text-white rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2 shadow-xl shadow-primary/20 z-20">
+                    <Sparkles className="w-3.5 h-3.5" /> Most Popular Choice
+                  </div>
+                )}
+                
+                <div className="mb-8 text-center">
+                  <h3 className="text-3xl font-black mb-3 text-on-surface">{plan.name}</h3>
+                  <p className="text-sm font-medium text-on-surface-variant leading-relaxed mx-auto max-w-[240px]">{plan.desc}</p>
                 </div>
-              </div>
+                
+                <div className="flex flex-col items-center gap-1 mb-8 p-6 rounded-2xl bg-surface/50 border border-outline-variant/20 relative overflow-hidden">
+                  <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${plan.popular ? 'bg-primary/5' : 'bg-on-surface/5'}`} />
+                  <div className="flex items-baseline gap-1 relative z-10">
+                    <span className="text-xl font-black text-on-surface-variant mb-2 self-start">£</span>
+                    <AnimatePresence mode="wait">
+                      <motion.span 
+                        key={isAnnual ? 'annual' : 'monthly'}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="text-6xl font-black text-on-surface tracking-tighter"
+                      >
+                        {plan.hasToggle 
+                          ? (isAnnual ? plan.annualPrice.replace('£', '') : plan.monthlyPrice.replace('£', '')) 
+                          : plan.monthlyPrice.replace('£', '')
+                        }
+                      </motion.span>
+                    </AnimatePresence>
+                    <span className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-2">{plan.period}</span>
+                  </div>
+                </div>
 
-              <div className="flex items-baseline gap-1 mb-2">
-                <span className="text-5xl font-black">£349</span>
-                <span className="text-on-surface-variant font-medium"> fixed</span>
-              </div>
-              <p className="text-sm text-on-surface-variant mb-8">
-                Full ownership. Source code yours forever.
-              </p>
-
-              <ul className="space-y-3 mb-8 flex-1">
-                {[
-                  "Complete source code handover",
-                  "Figma design files included",
-                  "Full SEO setup at launch",
-                  "One month free support",
-                  "You manage hosting after",
-                ].map((f, i) => (
-                  <li key={i} className="flex items-center gap-3 text-sm font-medium">
-                    <div className="w-5 h-5 rounded-full bg-on-surface/10 flex items-center justify-center shrink-0">
-                      <Check className="w-3 h-3 text-on-surface" strokeWidth={3} />
+                <div className="space-y-4 mb-10 flex-grow">
+                  {plan.features.map((feature, fIdx) => (
+                    <div key={fIdx} className="flex items-start gap-3">
+                      <div className={`mt-1 w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
+                        plan.popular ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-surface-container-high text-on-surface-variant'
+                      }`}>
+                        <Check className="w-3 h-3" strokeWidth={4} />
+                      </div>
+                      <span className="text-sm font-bold text-on-surface leading-tight">{feature}</span>
                     </div>
-                    {f}
-                  </li>
-                ))}
-              </ul>
+                  ))}
+                </div>
 
-              <Link
-                to="/signup"
-                className="group/btn flex items-center justify-center gap-2 w-full py-4 bg-on-surface text-surface font-bold rounded-xl hover:bg-on-surface-variant active:scale-[0.97] transition-all text-sm"
-              >
-                Claim Ownership
-                <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-0.5 transition-transform" />
-              </Link>
-            </div>
+                <Link 
+                  to="/signup" 
+                  state={{ planId: plan.id, planType: plan.type, billing: plan.hasToggle ? (isAnnual ? 'annual' : 'monthly') : 'one_time' }}
+                  className={`group/btn py-4 rounded-xl font-black text-center transition-all flex items-center justify-center gap-2 text-lg relative overflow-hidden ${
+                    plan.popular 
+                      ? 'bg-primary text-white hover:shadow-2xl hover:shadow-primary/30 active:scale-[0.98]' 
+                      : 'bg-on-surface text-surface hover:bg-on-surface-variant active:scale-[0.98]'
+                  }`}
+                >
+                  <span className="relative z-10 flex items-center gap-2 transition-all group-hover/btn:gap-4">
+                    {plan.cta} <ArrowRight className="w-5 h-5" />
+                  </span>
+                  <div className="absolute inset-0 bg-white/10 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
+                </Link>
+              </motion.div>
+            ))}
           </div>
         </section>
 
