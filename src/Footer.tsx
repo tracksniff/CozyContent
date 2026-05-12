@@ -22,15 +22,6 @@ const Footer = () => {
   const isDark = theme === 'dark' || (theme === 'system' && systemTheme === 'dark');
   const currentLogo = isDark ? logoDark : logoLight;
 
-  const industries = [
-    { id: 'Plumbing', label: 'Plumbing' },
-    { id: 'Electrical', label: 'Electricians' },
-    { id: 'Roofing', label: 'Roofers' },
-    { id: 'Locksmith', label: 'Locksmiths' },
-    { id: 'Cleaning', label: 'Cleaning Companies' },
-    { id: 'Removals', label: 'Removal Companies' }
-  ];
-
   return (
     <footer className="py-16 md:py-20 border-t border-outline-variant/10 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-start gap-12 md:gap-8">
@@ -75,42 +66,6 @@ const Footer = () => {
               <li><Link to="/cookie-policy" className="hover:text-primary transition-colors">Cookie Policy</Link></li>
             </ul>
           </div>
-        </div>
-      </div>
-
-      {/* Specialized SEO Services Section */}
-      <div className="max-w-7xl mx-auto px-4 md:px-12 mt-12 md:mt-16 pt-12 md:pt-16 border-t border-outline-variant/5">
-        <h4 className="font-bold mb-8 md:mb-10 text-[10px] md:text-xs tracking-widest uppercase text-on-surface-variant">Our Specialized Services</h4>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-8 gap-y-10 md:gap-y-12">
-          {industries.map(industry => {
-            const industryToSlug: Record<string, string> = {
-              'Plumbing': 'plumber-web-design',
-              'Electrical': 'electrician-web-design',
-              'Roofing': 'roofer-web-design',
-              'Locksmith': 'locksmith-web-design',
-              'Cleaning': 'cleaning-company-web-design',
-              'Removals': 'removals-web-design'
-            };
-            const slug = industryToSlug[industry.id];
-            
-            return (
-              <div key={industry.id}>
-                <h5 className="font-bold mb-5 text-xs text-on-surface tracking-tight">{industry.label}</h5>
-                <ul className="space-y-2.5 text-on-surface-variant text-[11px] font-medium">
-                  <li>
-                    <Link to={`/${slug}`} className="hover:text-primary transition-colors inline-block font-bold">
-                      Main Industry Page
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to={`/${slug}-luton`} className="hover:text-primary transition-colors inline-block">
-                      Local Services & Locations
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            );
-          })}
         </div>
       </div>
 

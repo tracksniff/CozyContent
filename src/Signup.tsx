@@ -646,31 +646,31 @@ const Signup: React.FC = () => {
           </div>
         </div>
 
-        <div className="p-8 md:p-12 pt-12 bg-surface-container-low rounded-[2.5rem] border border-outline-variant shadow-lg">
+        <div className="p-10 md:p-12 pt-12 bg-surface-container-low rounded-[2.5rem] border border-outline-variant shadow-2xl relative overflow-hidden">
           {/* Progress header */}
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-black font-headline text-on-surface tracking-tight">
-              Your New Website
+            <h2 className="text-4xl font-black text-on-surface tracking-tighter leading-none mb-3">
+              Your New <span className="text-primary italic">Website.</span>
             </h2>
-            <p className="mt-2 text-on-surface-variant font-medium text-sm">
+            <p className="text-on-surface-variant font-bold text-sm">
               Tell us about your business
             </p>
-            <div className="flex items-center justify-center gap-2 mt-6">
+            <div className="flex items-center justify-center gap-2 mt-8">
               {Array.from({ length: TOTAL_STEPS }, (_, i) => i + 1).map((s) => (
                 <div
                   key={s}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${s <= step ? "w-8 bg-primary" : "w-4 bg-outline-variant"}`}
+                  className={`h-1.5 rounded-full transition-all duration-500 ${s <= step ? "w-10 bg-primary shadow-lg shadow-primary/20" : "w-4 bg-outline-variant/30"}`}
                 />
               ))}
             </div>
-            <p className="mt-2 text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">
+            <p className="mt-4 text-[10px] text-primary font-black uppercase tracking-[0.2em]">
               Step {step} of {TOTAL_STEPS}
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-8">
             {error && (
-              <div className="text-red-500 text-xs font-bold text-center bg-red-500/5 p-3 rounded-xl border border-red-500/20">
+              <div className="text-red-500 text-[10px] font-black uppercase tracking-widest text-center bg-red-500/5 p-4 rounded-2xl border border-red-500/20">
                 {error}
               </div>
             )}

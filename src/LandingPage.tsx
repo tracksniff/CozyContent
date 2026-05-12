@@ -1,6 +1,5 @@
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import {
-  CheckCircle2,
   ShieldCheck,
   Zap,
   Monitor,
@@ -171,17 +170,17 @@ const LandingPage = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tighter leading-[1.1] md:leading-[0.95] mb-6"
+              className="text-5xl sm:text-7xl md:text-8xl font-black tracking-tighter leading-[0.9] mb-8"
             >
               Get a Modern Website <br />
-              <span className="text-primary italic font-light serif">Without the Hassle</span>.
+              <span className="text-primary italic">Without the Hassle.</span>
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-lg md:text-xl text-on-surface-variant leading-relaxed mb-8 max-w-2xl mx-auto font-medium px-4 md:px-0"
+              className="text-lg md:text-2xl text-on-surface-variant leading-relaxed mb-10 max-w-2xl mx-auto font-medium px-4 md:px-0"
             >
               We build or redesign your business website in 7 days — no calls, no meetings, no stress.
             </motion.p>
@@ -192,17 +191,17 @@ const LandingPage = () => {
               transition={{ duration: 0.7, delay: 0.3 }}
               className="mt-8 flex flex-col sm:flex-row justify-center gap-4 relative z-10 px-4 md:px-0"
             >
-              <Link to="/signup" className="bg-primary text-white px-8 md:px-10 py-4 rounded-2xl font-black text-base md:text-lg hover:shadow-2xl shadow-primary/30 transition-all active:scale-95">
-                Get Your Website
+              <Link to="/signup" className="bg-primary text-white px-10 py-5 rounded-2xl font-black text-lg hover:shadow-2xl shadow-primary/30 transition-all hover:scale-105 active:scale-95">
+                Get Started
               </Link>
-              <a href="#services" className="bg-surface-container-high text-on-surface px-8 md:px-10 py-4 rounded-2xl font-black text-base md:text-lg hover:bg-surface-container-highest transition-all shadow-sm active:scale-95">
+              <a href="#services" className="bg-on-surface text-surface px-10 py-5 rounded-2xl font-black text-lg hover:bg-on-surface-variant transition-all shadow-xl active:scale-95">
                 View Example
               </a>
             </motion.div>
           </div>
 
-          <MousePerspective className="mt-16 md:mt-20 relative max-w-5xl mx-auto group">
-            <div className="relative z-10 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl dark:shadow-primary/10 border border-outline-variant/30 dark:border-primary/20 p-1 md:p-2 bg-surface-container-low/30 backdrop-blur-md transition-all duration-500 group-hover:scale-[1.01] group-hover:border-primary/40">
+          <MousePerspective className="mt-20 md:mt-24 relative max-w-5xl mx-auto group">
+            <div className="relative z-10 rounded-[2.5rem] overflow-hidden shadow-4xl dark:shadow-primary/10 border border-outline-variant/30 p-2 bg-surface-container-low/30 backdrop-blur-md transition-all duration-700 group-hover:scale-[1.02] group-hover:border-primary/40">
               <PortfolioSlider />
             </div>
           </MousePerspective>
@@ -210,11 +209,11 @@ const LandingPage = () => {
       </header>
 
       {/* How It Works Section */}
-      <section id="services" className="py-16 md:py-24 bg-surface-container-low/30 relative transition-colors duration-300">
+      <section id="services" className="py-24 md:py-32 bg-surface-container-low/30 relative transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
-          <div className="text-center mb-12">
-            <span className="text-primary font-bold text-xs md:text-sm tracking-widest uppercase mb-4 block">How It Works</span>
-            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">No back-and-forth. <br />No long timelines. Just results.</h2>
+          <div className="text-center mb-16">
+            <span className="text-primary font-black text-xs tracking-[0.3em] uppercase mb-4 block">Process</span>
+            <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-none mb-6">No back-and-forth. <br /><span className="text-primary italic">Just results.</span></h2>
           </div>
 
           <motion.div
@@ -222,42 +221,42 @@ const LandingPage = () => {
             initial="initial"
             whileInView="whileInView"
             viewport={{ once: true }}
-            className="grid md:grid-cols-3 gap-6"
+            className="grid md:grid-cols-3 gap-8"
           >
             {[
               {
                 step: '01',
                 title: 'We Build It',
                 desc: 'We create a brand new or redesigned version of your website based on your business.',
-                icon: <Zap className="w-6 h-6" />,
+                icon: <Zap className="w-8 h-8" />,
                 color: 'bg-primary/10 text-primary'
               },
               {
                 step: '02',
                 title: 'You Preview It',
                 desc: 'You get a live preview of your new site — fully designed and ready to go.',
-                icon: <Monitor className="w-6 h-6" />,
-                color: 'bg-secondary-container/20 text-secondary'
+                icon: <Monitor className="w-8 h-8" />,
+                color: 'bg-secondary/10 text-secondary'
               },
               {
                 step: '03',
                 title: 'You Own It',
                 desc: 'Love it? Purchase instantly and we transfer everything to you.',
-                icon: <ShieldCheck className="w-6 h-6" />,
-                color: 'bg-primary-fixed-dim/20 text-on-primary-fixed-variant'
+                icon: <ShieldCheck className="w-8 h-8" />,
+                color: 'bg-on-surface/10 text-on-surface'
               }
             ].map((item, idx) => (
               <motion.div
                 key={idx}
                 variants={fadeInUp}
-                className="group p-6 md:p-8 rounded-2xl md:rounded-3xl bg-surface border border-outline-variant/10 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 relative overflow-hidden"
+                className="group p-8 md:p-10 rounded-[2.5rem] bg-surface border border-outline-variant/20 hover:border-primary/40 transition-all duration-500 hover:shadow-4xl hover:-translate-y-2 relative overflow-hidden"
               >
-                <div className={`w-12 h-12 md:w-14 ${item.color} rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500`}>
+                <div className={`w-16 h-16 ${item.color} rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}>
                   {item.icon}
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold mb-3">{item.title}</h3>
-                <p className="text-sm md:text-base text-on-surface-variant leading-relaxed font-medium">{item.desc}</p>
-                <div className="absolute top-6 right-8 text-5xl md:text-6xl font-black text-outline-variant/5 group-hover:text-primary/10 transition-colors">
+                <h3 className="text-2xl font-black mb-4 tracking-tight">{item.title}</h3>
+                <p className="text-base text-on-surface-variant leading-relaxed font-bold">{item.desc}</p>
+                <div className="absolute top-8 right-10 text-7xl font-black text-outline-variant/10 group-hover:text-primary/10 transition-colors">
                   {item.step}
                 </div>
               </motion.div>
@@ -268,21 +267,21 @@ const LandingPage = () => {
 
 
       {/* Before & After Section */}
-      <section className="py-16 md:py-24 bg-surface relative overflow-hidden transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 flex flex-col lg:flex-row items-center gap-12 md:gap-20">
+      <section className="py-24 md:py-32 bg-surface relative overflow-hidden transition-colors duration-300">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 flex flex-col lg:flex-row items-center gap-16 md:gap-24">
           <motion.div
             {...fadeInUp}
             className="lg:w-1/2"
           >
-            <h2 className="text-4xl md:text-6xl font-extrabold mb-6 tracking-tighter leading-tight">
+            <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter leading-[0.9]">
               Outdated → <br />
-              <span className="text-primary">Modern</span>
+              <span className="text-primary italic">Modern.</span>
             </h2>
-            <p className="text-lg md:text-xl text-on-surface-variant mb-8 leading-relaxed font-medium">
+            <p className="text-xl md:text-2xl text-on-surface-variant mb-10 leading-relaxed font-medium">
               We transform slow, outdated websites into fast, clean, mobile-friendly designs that convert visitors into customers.
             </p>
 
-            <div className="space-y-4">
+            <div className="space-y-5">
               {[
                 'Modern, mobile-friendly design',
                 'Fast-loading website',
@@ -290,38 +289,38 @@ const LandingPage = () => {
                 'Click-to-call & contact forms',
                 'Hosting & security (if on monthly plan)'
               ].map((text, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center">
-                    <CheckCircle2 className="w-3 h-3 text-primary" />
+                <div key={i} className="flex items-center gap-4">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Check className="w-3.5 h-3.5 text-primary" strokeWidth={4} />
                   </div>
-                  <span className="text-base md:text-lg font-semibold text-on-surface">{text}</span>
+                  <span className="text-lg font-black text-on-surface leading-tight">{text}</span>
                 </div>
               ))}
             </div>
 
-            <div className="mt-8">
-              <button className="w-full sm:w-auto bg-surface-container-high text-on-surface px-8 py-4 rounded-xl font-bold text-base md:text-lg hover:bg-surface-container-highest transition-colors shadow-sm">
+            <div className="mt-12">
+              <button className="bg-on-surface text-surface px-10 py-5 rounded-2xl font-black text-lg hover:bg-on-surface-variant transition-all shadow-xl active:scale-95">
                 View Live Demo
               </button>
             </div>
           </motion.div>
 
-          <div className="lg:w-1/2 grid grid-cols-2 gap-4 md:gap-6">
-            <div className="space-y-4 md:space-y-6">
-              <div className="p-3 md:p-4 bg-surface-container-low rounded-2xl border border-outline-variant/10 grayscale opacity-40 dark:opacity-20">
-                <div className="text-[8px] md:text-[10px] font-black tracking-[0.2em] mb-2 opacity-40 uppercase">Outdated (Plumber Example)</div>
+          <div className="lg:w-1/2 grid grid-cols-2 gap-6 md:gap-8">
+            <div className="space-y-6 md:space-y-8">
+              <div className="p-4 md:p-6 bg-surface-container-low rounded-3xl border border-outline-variant/20 grayscale opacity-40 dark:opacity-20 shadow-xl">
+                <div className="text-[10px] font-black tracking-widest mb-4 opacity-40 uppercase">Outdated Site</div>
                 <img
-                  className="rounded-xl w-full aspect-[3/4] object-cover"
+                  className="rounded-2xl w-full aspect-[3/4] object-cover"
                   alt="Old design"
                   src="https://images.unsplash.com/photo-1504148455328-c376907d081c?q=80&w=1000&auto=format&fit=crop"
                 />
               </div>
             </div>
-            <div className="space-y-4 md:space-y-6 mt-8 md:mt-12">
-              <MousePerspective className="p-3 md:p-4 bg-primary/5 rounded-2xl border border-primary/20 shadow-2xl shadow-primary/10">
-                <div className="text-[8px] md:text-[10px] font-black tracking-[0.2em] mb-2 text-primary uppercase">Modern (Redesigned)</div>
+            <div className="space-y-6 md:space-y-8 mt-12 md:mt-20">
+              <MousePerspective className="p-4 md:p-6 bg-primary/5 rounded-3xl border border-primary/20 shadow-4xl shadow-primary/10">
+                <div className="text-[10px] font-black tracking-widest mb-4 text-primary uppercase">Modern (Redesigned)</div>
                 <img
-                  className="rounded-xl w-full aspect-[3/4] object-cover"
+                  className="rounded-2xl w-full aspect-[3/4] object-cover"
                   alt="Modern design"
                   src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=1000&auto=format&fit=crop"
                 />
@@ -332,26 +331,26 @@ const LandingPage = () => {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-16 md:py-24 bg-surface transition-colors duration-300 overflow-hidden relative">
+      <section id="pricing" className="py-24 md:py-32 bg-surface transition-colors duration-300 overflow-hidden relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
-          <div className="text-center mb-12">
+          <div className="text-center mb-16">
             <motion.span
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
-              className="text-primary font-bold text-xs md:text-sm tracking-[0.3em] uppercase mb-4 block"
+              className="text-primary font-black text-xs tracking-[0.4em] uppercase mb-4 block"
             >
               Simple Pricing
             </motion.span>
             <motion.h2
               {...fadeInUp}
-              className="text-3xl md:text-5xl font-black tracking-tighter mb-8"
+              className="text-4xl md:text-6xl font-black tracking-tighter mb-4"
             >
-              No hidden fees. <br />
-              <span className="text-on-surface-variant/50 text-2xl md:text-4xl">No contracts. Cancel anytime.</span>
+              Honest <span className="text-primary italic">Pricing.</span>
             </motion.h2>
+            <p className="text-on-surface-variant font-bold text-lg md:text-xl">No hidden fees. No contracts. Cancel anytime.</p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-6 items-stretch max-w-5xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-8 items-stretch max-w-5xl mx-auto">
             {/* Monthly Plan */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -359,31 +358,31 @@ const LandingPage = () => {
               viewport={{ once: true }}
               className="relative group h-full"
             >
-              <div className="absolute inset-0 bg-surface dark:bg-surface-container-high rounded-3xl border-2 border-primary shadow-xl shadow-primary/5 transition-all duration-500 group-hover:scale-[1.01]"></div>
+              <div className="absolute inset-0 bg-white dark:bg-surface-container-high rounded-[2.5rem] border-2 border-primary shadow-2xl shadow-primary/10 transition-all duration-500 group-hover:scale-[1.01] group-hover:shadow-4xl group-hover:shadow-primary/20"></div>
 
-              <div className="absolute -top-3 left-6 bg-primary text-white px-3 py-1 rounded-full text-[8px] md:text-[10px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 z-10 border border-white/20 flex items-center gap-2">
-                <Check className="w-2.5 h-2.5" strokeWidth={4} /> Most Popular
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl shadow-primary/30 z-10 border border-white/20 flex items-center gap-2">
+                <Check className="w-3 h-3" strokeWidth={4} /> Most Popular Choice
               </div>
 
-              <div className="relative p-6 md:p-8 flex flex-col h-full">
-                <div className="mb-6">
-                  <h3 className="text-xl md:text-2xl font-black mb-2">Monthly Subscription</h3>
-                  <p className="text-on-surface-variant font-medium leading-relaxed text-xs md:text-sm">
-                    Website included with hosting & maintenance.
+              <div className="relative p-8 md:p-12 flex flex-col h-full">
+                <div className="mb-8 text-center">
+                  <h3 className="text-3xl font-black mb-3">Monthly Plan</h3>
+                  <p className="text-on-surface-variant font-bold leading-relaxed text-sm">
+                    Everything handled — build, hosting, and support.
                   </p>
                 </div>
 
-                <div className="flex flex-col gap-1 mb-6 p-4 md:p-6 rounded-2xl bg-surface/50 dark:bg-surface/5 border border-outline-variant/10">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-5xl md:text-6xl font-black text-on-surface">{isAnnual ? '£47' : '£59'}</span>
-                    <span className="text-on-surface-variant font-bold text-xs md:text-sm uppercase tracking-widest">/month</span>
+                <div className="flex flex-col items-center gap-1 mb-10 p-6 rounded-2xl bg-surface/50 dark:bg-surface/5 border border-outline-variant/20 shadow-sm">
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-6xl font-black text-on-surface tracking-tighter">{isAnnual ? '£47' : '£59'}</span>
+                    <span className="text-on-surface-variant font-black text-xs uppercase tracking-widest ml-2">/month</span>
                   </div>
-                  <div className="mt-4 pt-4 border-t border-outline-variant/10">
+                  <div className="mt-6 pt-6 border-t border-outline-variant/10 w-full flex justify-center">
                     <PricingToggle isAnnual={isAnnual} onChange={setIsAnnual} />
                   </div>
                 </div>
 
-                <div className="space-y-3 mb-8 flex-grow">
+                <div className="space-y-4 mb-10 flex-grow">
                   {[
                     'Professional website design and build',
                     'All content written by our team',
@@ -393,17 +392,17 @@ const LandingPage = () => {
                     'Ongoing maintenance and support',
                     'Cancel anytime — no minimum term'
                   ].map((item, i) => (
-                    <div key={i} className="flex items-start gap-2.5">
-                      <div className="mt-1 flex-shrink-0 w-4 h-4 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Check className="w-2.5 h-2.5 text-primary" strokeWidth={4} />
+                    <div key={i} className="flex items-start gap-4">
+                      <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/20">
+                        <Check className="w-3 h-3" strokeWidth={4} />
                       </div>
-                      <span className="text-on-surface font-bold text-xs md:text-sm">{item}</span>
+                      <span className="text-on-surface font-black text-sm leading-tight">{item}</span>
                     </div>
                   ))}
                 </div>
 
-                <Link to="/signup" className="w-full py-3 md:py-4 rounded-xl bg-primary text-white font-black shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all text-sm md:text-base flex items-center justify-center gap-2 active:scale-95">
-                  Select Monthly
+                <Link to="/signup" className="w-full py-5 rounded-2xl bg-primary text-white font-black shadow-xl shadow-primary/30 hover:shadow-primary/50 transition-all text-lg flex items-center justify-center gap-2 active:scale-95">
+                  Get Started
                 </Link>
               </div>
             </motion.div>
@@ -415,22 +414,24 @@ const LandingPage = () => {
               viewport={{ once: true }}
               className="relative group h-full"
             >
-              <div className="absolute inset-0 bg-surface-container-low rounded-3xl border border-outline-variant/30 shadow-lg transition-all duration-500 group-hover:shadow-xl group-hover:scale-[1.01]"></div>
+              <div className="absolute inset-0 bg-surface-container-low rounded-[2.5rem] border border-outline-variant/30 shadow-2xl shadow-black/5 transition-all duration-500 group-hover:shadow-4xl group-hover:scale-[1.01]"></div>
 
-              <div className="relative p-6 md:p-8 flex flex-col h-full">
-                <div className="mb-6">
-                  <h3 className="text-xl md:text-2xl font-black mb-2">One-Time Payment</h3>
-                  <p className="text-on-surface-variant font-medium leading-relaxed text-xs md:text-sm">
-                    £349 for your fully built website. Delivered ready to use.
+              <div className="relative p-8 md:p-12 flex flex-col h-full">
+                <div className="mb-8 text-center">
+                  <h3 className="text-3xl font-black mb-3">One-Off Payment</h3>
+                  <p className="text-on-surface-variant font-bold leading-relaxed text-sm">
+                    Own your site outright. Delivered ready to use.
                   </p>
                 </div>
 
-                <div className="flex items-baseline gap-2 mb-6 p-4 md:p-6 rounded-2xl bg-surface/50 border border-outline-variant/10">
-                  <span className="text-5xl md:text-6xl font-black text-on-surface">£349</span>
-                  <span className="text-on-surface-variant font-bold text-xs md:text-sm uppercase tracking-widest">Fixed</span>
+                <div className="flex flex-col items-center gap-1 mb-10 p-6 rounded-2xl bg-surface/50 border border-outline-variant/20 shadow-sm">
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-6xl font-black text-on-surface tracking-tighter">£349</span>
+                    <span className="text-on-surface-variant font-black text-xs uppercase tracking-widest ml-2">Fixed</span>
+                  </div>
                 </div>
 
-                <div className="space-y-3 mb-8 flex-grow">
+                <div className="space-y-4 mb-10 flex-grow">
                   {[
                     'Professional website design and build',
                     'All content written by our team',
@@ -440,16 +441,16 @@ const LandingPage = () => {
                     'Hosting not included',
                     'No ongoing updates or support'
                   ].map((item, i) => (
-                    <div key={i} className="flex items-start gap-2.5">
-                      <div className="mt-1 flex-shrink-0 w-4 h-4 rounded-full bg-surface-container-high flex items-center justify-center">
-                        <Check className="w-2.5 h-2.5 text-on-surface-variant" strokeWidth={4} />
+                    <div key={i} className="flex items-start gap-4">
+                      <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-surface-container-high flex items-center justify-center">
+                        <Check className="w-3 h-3 text-on-surface-variant" strokeWidth={4} />
                       </div>
-                      <span className="text-on-surface font-bold text-xs md:text-sm">{item}</span>
+                      <span className="text-on-surface font-black text-sm leading-tight">{item}</span>
                     </div>
                   ))}
                 </div>
 
-                <Link to="/signup" className="w-full py-3 md:py-4 rounded-xl bg-on-surface text-surface hover:bg-on-surface-variant transition-all text-sm md:text-base flex items-center justify-center gap-2 active:scale-95">
+                <Link to="/signup" className="w-full py-5 rounded-2xl bg-on-surface text-surface hover:bg-on-surface-variant transition-all text-lg flex items-center justify-center gap-2 active:scale-95 shadow-xl">
                   Claim Ownership
                 </Link>
               </div>
@@ -459,20 +460,20 @@ const LandingPage = () => {
       </section>
 
       {/* Who This Is For Section */}
-      <section className="py-16 md:py-24 transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-black tracking-tight">Who This Is For</h2>
+      <section className="py-24 md:py-32 transition-colors duration-300">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-6xl font-black tracking-tighter">Who This Is <span className="text-primary italic">For.</span></h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               { title: 'Local Businesses', desc: 'Perfect for trades like plumbing, electrical, or construction with outdated sites.' },
               { title: 'No Website At All', desc: 'Get online instantly without having to learn complex tools.' },
               { title: 'Hassle-Free Owners', desc: 'Owners who want results without the long meetings.' }
             ].map((item, i) => (
-              <div key={i} className="bg-surface-container-low p-6 md:p-8 rounded-2xl border border-outline-variant/10">
-                <h3 className="text-lg md:text-xl font-bold mb-3">{item.title}</h3>
-                <p className="text-sm md:text-base text-on-surface-variant font-medium">{item.desc}</p>
+              <div key={i} className="bg-surface-container-low p-10 rounded-[2.5rem] border border-outline-variant/20 shadow-xl shadow-black/5 hover:shadow-2xl transition-all">
+                <h3 className="text-2xl font-black mb-4 tracking-tight">{item.title}</h3>
+                <p className="text-base text-on-surface-variant font-bold leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -480,19 +481,19 @@ const LandingPage = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-16 md:py-24 bg-surface-container-low/30 transition-colors duration-300">
-        <div className="max-w-3xl mx-auto px-4 sm:px-8">
-          <h2 className="text-3xl md:text-4xl font-black mb-8 text-center">Frequently Asked Questions</h2>
-          <div className="space-y-4">
+      <section className="py-24 md:py-32 bg-surface-container-low/30 transition-colors duration-300">
+        <div className="max-w-4xl mx-auto px-6">
+          <h2 className="text-4xl md:text-6xl font-black mb-16 text-center tracking-tighter">Common <span className="text-primary italic">Questions.</span></h2>
+          <div className="space-y-6">
             {[
               { q: 'Do I own the website?', a: 'Yes — once you purchase, the website is yours.' },
               { q: 'Can I host it myself?', a: 'Yes, or you can stay on our monthly plan and we handle everything.' },
               { q: 'How fast is delivery?', a: 'Typically within 7 days.' },
               { q: 'Do I need to provide anything?', a: 'No — we handle everything.' }
             ].map((item, i) => (
-              <div key={i} className="bg-surface p-5 rounded-xl border border-outline-variant/10">
-                <h3 className="text-sm md:text-base font-bold mb-2">{item.q}</h3>
-                <p className="text-on-surface-variant text-xs md:text-sm font-medium">{item.a}</p>
+              <div key={i} className="bg-surface p-8 rounded-3xl border border-outline-variant/20 shadow-lg shadow-black/5 group hover:border-primary/30 transition-all">
+                <h3 className="text-lg font-black mb-3 group-hover:text-primary transition-colors">{item.q}</h3>
+                <p className="text-on-surface-variant text-base font-bold leading-relaxed">{item.a}</p>
               </div>
             ))}
           </div>
@@ -500,20 +501,20 @@ const LandingPage = () => {
       </section>
 
       {/* Final CTA */}
-      <section className="py-16 md:py-24 px-4 sm:px-8 transition-colors duration-300">
-        <MousePerspective className="max-w-6xl mx-auto bg-surface-container-low dark:bg-surface-container-high rounded-3xl p-8 md:p-16 text-center relative overflow-hidden shadow-2xl border border-outline-variant/20 transition-all">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
+      <section className="py-24 md:py-32 px-6 transition-colors duration-300">
+        <MousePerspective className="max-w-7xl mx-auto bg-on-surface dark:bg-surface-container-high rounded-[3rem] p-12 md:p-24 text-center relative overflow-hidden shadow-4xl group transition-all">
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 group-hover:bg-primary/30 transition-colors duration-1000"></div>
 
           <div className="relative z-10">
-            <h2 className="text-3xl sm:text-5xl md:text-6xl font-black text-on-surface mb-6 tracking-tighter leading-tight md:leading-none">
-              Your new website is <br />already one step away.
+            <h2 className="text-4xl sm:text-6xl md:text-8xl font-black text-surface dark:text-on-surface mb-8 tracking-tighter leading-[0.9] md:leading-[0.85]">
+              Your new website is <br /><span className="text-primary italic">one step away.</span>
             </h2>
-            <p className="text-on-surface-variant text-lg md:text-xl mb-8 max-w-xl mx-auto font-medium">
+            <p className="text-surface/70 dark:text-on-surface-variant text-xl md:text-2xl mb-12 max-w-2xl mx-auto font-medium">
               See what your business could look like today.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link to="/signup" className="bg-primary text-white px-8 md:px-12 py-4 rounded-2xl font-black text-lg md:text-xl hover:scale-105 transition-all shadow-2xl shadow-primary/30 active:scale-95">
-                View My Website Preview
+            <div className="flex flex-col sm:flex-row justify-center gap-6">
+              <Link to="/signup" className="bg-primary text-white px-12 py-6 rounded-2xl font-black text-xl md:text-2xl hover:scale-105 transition-all shadow-3xl shadow-primary/40 active:scale-95">
+                Get Started Today
               </Link>
             </div>
           </div>

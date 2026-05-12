@@ -1,16 +1,80 @@
-import React, { useEffect } from 'react';
-import { useLocation, Link } from 'react-router-dom';
-import { CheckCircle2, ArrowRight, Shield, Check } from 'lucide-react';
-import Navbar from './Navbar';
-import Footer from './Footer';
-import type { SEOPageInfo } from './seoPagesData';
+import React, { useEffect, useState } from "react";
+import { useLocation, Link } from "react-router-dom";
+import { ArrowRight, Shield, Check, Star, Zap, Clock, Phone } from "lucide-react";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
+import type { SEOPageInfo } from "./seoPagesData";
 
 interface GenericSEOPageProps {
   data: SEOPageInfo;
 }
 
+// Industry-specific accent colors and imagery
+const industryConfig: Record<
+  string,
+  {
+    gradient: string;
+    accent: string;
+    icon: string;
+    badge: string;
+    statLabel: string;
+  }
+> = {
+  Plumbing: {
+    gradient: "from-blue-600/20 via-cyan-500/10 to-transparent",
+    accent: "from-blue-500 to-cyan-500",
+    icon: "🔧",
+    badge: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+    statLabel: "Plumbing Specialists",
+  },
+  Electrical: {
+    gradient: "from-amber-500/20 via-yellow-400/10 to-transparent",
+    accent: "from-amber-500 to-yellow-400",
+    icon: "⚡",
+    badge: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+    statLabel: "Electrical Experts",
+  },
+  Roofing: {
+    gradient: "from-slate-500/20 via-stone-400/10 to-transparent",
+    accent: "from-slate-500 to-stone-400",
+    icon: "🏠",
+    badge: "bg-slate-500/10 text-slate-300 border-slate-500/20",
+    statLabel: "Roofing Contractors",
+  },
+  Locksmith: {
+    gradient: "from-emerald-600/20 via-teal-500/10 to-transparent",
+    accent: "from-emerald-500 to-teal-500",
+    icon: "🔑",
+    badge: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+    statLabel: "Security Experts",
+  },
+  Cleaning: {
+    gradient: "from-violet-600/20 via-purple-500/10 to-transparent",
+    accent: "from-violet-500 to-purple-500",
+    icon: "✨",
+    badge: "bg-violet-500/10 text-violet-400 border-violet-500/20",
+    statLabel: "Cleaning Businesses",
+  },
+  Removals: {
+    gradient: "from-orange-500/20 via-amber-400/10 to-transparent",
+    accent: "from-orange-500 to-amber-400",
+    icon: "📦",
+    badge: "bg-orange-500/10 text-orange-400 border-orange-500/20",
+    statLabel: "Removal Companies",
+  },
+};
+
+const stats = [
+  { icon: <Clock className="w-5 h-5" />, value: "48h", label: "Avg. Launch Time" },
+  { icon: <Star className="w-5 h-5" />, value: "5.0", label: "Client Rating" },
+  { icon: <Zap className="w-5 h-5" />, value: "99%", label: "Uptime SLA" },
+  { icon: <Phone className="w-5 h-5" />, value: "24/7", label: "Support Access" },
+];
+
 const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
   const { pathname } = useLocation();
+  const [activeSection, setActiveSection] = useState<number | null>(null);
+  const config = industryConfig[data.industry] || industryConfig["Cleaning"];
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -20,146 +84,400 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
     <div className="bg-surface min-h-screen text-on-surface transition-colors duration-300">
       <Navbar />
 
-      <main className="pt-32 pb-20">
-        <div className="max-w-7xl mx-auto px-8">
-          {/* Hero Section */}
-          <div className="text-center max-w-4xl mx-auto mb-24">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary/10 text-primary rounded-full text-xs font-black uppercase tracking-widest mb-8">
-              <Shield className="w-4 h-4" /> Professional {data.industry} Solutions
-            </div>
-            <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-8 leading-[0.95]">
-              {data.heroTitle || data.keyword}
-            </h1>
-            <p className="text-xl text-on-surface-variant font-medium mb-12 leading-relaxed">
-              {data.heroSubtitle || data.metaDescription}
-            </p>
-            
-            <div className="flex flex-wrap justify-center gap-4">
-              {(data.checklist || ['Fast Delivery', 'Fully Managed', 'SEO Optimized']).map((item, idx) => (
-                <div key={idx} className="flex items-center gap-2 px-6 py-3 bg-surface-container-low rounded-2xl border border-outline-variant/30 font-bold text-sm">
-                  <CheckCircle2 className="w-4 h-4 text-primary" />
-                  {item}
-                </div>
-              ))}
+      <main className="pt-28 pb-24">
+        {/* ── HERO ─────────────────────────────────────────────── */}
+        <section className="relative overflow-hidden mb-28">
+          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[140px] pointer-events-none" />
+
+          <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
+            <div className="max-w-5xl mx-auto text-center py-16">
+              {/* Industry badge */}
+              <div
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-bold uppercase tracking-[0.15em] mb-8"
+              >
+                <Shield className="w-3.5 h-3.5" />
+                {data.industry} Web Design
+              </div>
+
+              {/* Headline */}
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-black tracking-[-0.03em] leading-[0.93] mb-6">
+                {data.heroTitle || data.keyword}
+              </h1>
+
+              {/* Subhead */}
+              <p className="text-lg md:text-xl text-on-surface-variant font-medium leading-relaxed max-w-2xl mx-auto mb-10">
+                {data.heroSubtitle || data.metaDescription}
+              </p>
+
+              {/* Checklist pills */}
+              <div className="flex flex-wrap justify-center gap-3 mb-12">
+                {(data.checklist || ["Fast Delivery", "Fully Managed", "SEO Optimised"]).map(
+                  (item, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-center gap-2.5 px-5 py-2.5 bg-surface rounded-full border border-outline-variant/40 text-sm font-semibold"
+                    >
+                      <span className="flex items-center justify-center w-4.5 h-4.5 rounded-full bg-primary">
+                        <Check className="w-2.5 h-2.5 text-white" strokeWidth={3.5} />
+                      </span>
+                      {item}
+                    </div>
+                  ),
+                )}
+              </div>
+
+              {/* CTA buttons */}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link
+                  to="/contact"
+                  className="group inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold rounded-2xl hover:brightness-110 active:scale-[0.97] transition-all shadow-lg shadow-primary/25 text-base"
+                >
+                  Get a Free Quote
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link
+                  to="/signup"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-surface text-on-surface font-bold rounded-2xl border border-outline-variant/50 hover:border-primary/40 hover:bg-surface active:scale-[0.97] transition-all text-base"
+                >
+                  View Pricing
+                </Link>
+              </div>
+
+              {/* Stats row */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-px mt-16 bg-outline-variant/20 rounded-2xl overflow-hidden border border-outline-variant/20">
+                {stats.map((s, i) => (
+                  <div
+                    key={i}
+                    className="flex flex-col items-center gap-1.5 py-6 px-4 bg-surface"
+                  >
+                    <span className="text-primary">{s.icon}</span>
+                    <span className="text-2xl font-black tracking-tight">{s.value}</span>
+                    <span className="text-xs text-on-surface-variant font-medium">{s.label}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
+        </section>
 
-          {/* Dynamic Sections */}
-          <div className="grid gap-16 mb-32">
+        {/* ── CONTENT SECTIONS ──────────────────────────────────── */}
+        <section className="max-w-7xl mx-auto px-6 lg:px-8 mb-28">
+          <div className="space-y-8">
             {data.sections?.map((section, idx) => (
-              <div 
-                key={idx} 
-                className={`flex flex-col lg:flex-row gap-12 items-start p-12 md:p-16 rounded-[4rem] border border-outline-variant/30 bg-surface-container-low transition-all hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5 group ${idx % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}
+              <div
+                key={idx}
+                onMouseEnter={() => setActiveSection(idx)}
+                onMouseLeave={() => setActiveSection(null)}
+                className={`
+                  group relative overflow-hidden rounded-3xl border transition-all duration-500
+                  ${
+                    activeSection === idx
+                      ? "border-primary/30 shadow-2xl shadow-primary/8 bg-surface"
+                      : "border-outline-variant/30 bg-surface hover:border-outline-variant/60"
+                  }
+                `}
               >
-                <div className="lg:w-1/2">
-                  <h2 className="text-4xl font-black mb-6 tracking-tight group-hover:text-primary transition-colors">{section.title}</h2>
-                  <p className="text-lg text-on-surface-variant leading-relaxed font-medium mb-8">
-                    {section.description}
-                  </p>
-                  {section.points && (
-                    <div className="grid gap-4">
-                      {section.points.map((point, pIdx) => (
-                        <div key={pIdx} className="flex items-start gap-3">
-                          <div className="mt-1.5 w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                            <Check className="w-3 h-3 text-primary" strokeWidth={4} />
-                          </div>
-                          <span className="text-on-surface font-bold text-base">{point}</span>
-                        </div>
-                      ))}
+                <div
+                  className={`flex flex-col ${idx % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"} gap-0`}
+                >
+                  {/* Image panel */}
+                  {section.image && (
+                    <div className="lg:w-[42%] relative overflow-hidden min-h-[260px] lg:min-h-0">
+                      <img
+                        src={section.image}
+                        alt={section.title}
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      {/* Gradient overlay for text legibility */}
+                      <div
+                        className={`absolute inset-0 bg-gradient-to-r ${idx % 2 === 0 ? "from-transparent to-surface/60" : "from-surface/60 to-transparent"} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
+                      />
+                      {/* Section number badge */}
+                      <div className="absolute top-5 left-5 w-9 h-9 rounded-xl bg-black/40 backdrop-blur-sm flex items-center justify-center text-white/90 text-sm font-black">
+                        {String(idx + 1).padStart(2, "0")}
+                      </div>
                     </div>
                   )}
+
+                  {/* Text panel */}
+                  <div
+                    className={`flex-1 p-8 md:p-10 lg:p-12 flex flex-col justify-center ${!section.image ? "lg:flex-row lg:gap-12 lg:items-start" : ""}`}
+                  >
+                    {/* If no image, show section number differently */}
+                    {!section.image && (
+                      <div className="lg:shrink-0 mb-4 lg:mb-0">
+                        <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-black text-lg">
+                          {idx + 1}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex-1">
+                      <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-4 group-hover:text-primary transition-colors duration-300">
+                        {section.title}
+                      </h2>
+
+                      {section.description && (
+                        <p className="text-base text-on-surface-variant leading-relaxed font-medium mb-6">
+                          {section.description}
+                        </p>
+                      )}
+
+                      {section.points && (
+                        <div
+                          className={`grid gap-3 ${!section.image && section.points.length > 3 ? "sm:grid-cols-2" : ""}`}
+                        >
+                          {section.points.map((point, pIdx) => {
+                            // Split at first colon for styled label
+                            const colonIdx = point.indexOf(":");
+                            const hasLabel = colonIdx > 0 && colonIdx < 40;
+                            const label = hasLabel ? point.slice(0, colonIdx) : null;
+                            const body = hasLabel ? point.slice(colonIdx + 1).trim() : point;
+
+                            return (
+                              <div
+                                key={pIdx}
+                                className="flex items-start gap-3 p-3 rounded-xl hover:bg-surface transition-colors"
+                              >
+                                <div className="mt-0.5 shrink-0 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                                  <Check className="w-3 h-3 text-white" strokeWidth={3} />
+                                </div>
+                                <span className="text-sm leading-relaxed">
+                                  {label && (
+                                    <span className="font-bold text-on-surface">{label}: </span>
+                                  )}
+                                  <span className="text-on-surface-variant">{body}</span>
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <div className="lg:w-1/2 w-full aspect-video rounded-[3rem] overflow-hidden relative">
-                   <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20" />
-                   <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-32 h-32 bg-white/10 rounded-full blur-3xl" />
-                   </div>
-                   <div className="absolute inset-0 border border-white/10 rounded-[3rem]" />
-                </div>
+
+                {/* Subtle active indicator */}
+                <div
+                  className={`absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r ${config.accent} transition-opacity duration-300 ${activeSection === idx ? "opacity-100" : "opacity-0"}`}
+                />
               </div>
             ))}
           </div>
+        </section>
 
-          {/* Pricing Summary */}
-          <div className="mb-32">
-             <div className="text-center mb-16">
-                <h2 className="text-4xl md:text-5xl font-black mb-4">Simple, Local Pricing</h2>
-                <p className="text-on-surface-variant font-medium">Choose the plan that fits your business goals.</p>
-             </div>
-             <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                <div className="p-10 bg-surface-container-low rounded-[3rem] border border-outline-variant shadow-xl hover:border-primary/40 transition-all flex flex-col">
-                   <h3 className="text-2xl font-black mb-2">Monthly Plan</h3>
-                   <div className="text-5xl font-black mb-6">£59<span className="text-sm font-medium text-on-surface-variant">/mo</span></div>
-                   <p className="text-base font-medium text-on-surface-variant mb-10 flex-grow">Fully managed hosting, security, performance and updates included.</p>
-                   <Link to="/signup" className="w-full text-center py-5 bg-primary text-white font-black rounded-2xl hover:brightness-110 active:scale-95 transition-all">Get Started Monthly</Link>
-                </div>
-                <div className="p-10 bg-surface-container-low rounded-[3rem] border border-outline-variant shadow-xl hover:border-primary/40 transition-all flex flex-col">
-                   <h3 className="text-2xl font-black mb-2">Own It Outright</h3>
-                   <div className="text-5xl font-black mb-6">£349<span className="text-sm font-medium text-on-surface-variant"> Fixed</span></div>
-                   <p className="text-base font-medium text-on-surface-variant mb-10 flex-grow">One-time payment for full ownership, source code handover and design files.</p>
-                   <Link to="/signup" className="w-full text-center py-5 bg-on-surface text-surface font-black rounded-2xl hover:bg-on-surface-variant active:scale-95 transition-all">Claim Ownership</Link>
-                </div>
-             </div>
+        {/* ── PRICING ─────────────────────────────────────────── */}
+        <section className="max-w-7xl mx-auto px-6 lg:px-8 mb-28">
+          <div className="text-center mb-12">
+            <p className="text-xs font-bold uppercase tracking-widest text-primary mb-3">Pricing</p>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-4">
+              Simple, Transparent Pricing
+            </h2>
+            <p className="text-on-surface-variant font-medium max-w-xl mx-auto">
+              Two clear options. No hidden fees. Cancel any time on the monthly plan.
+            </p>
           </div>
 
-          {/* Areas We Serve Section */}
-          {!data.location && (
-            <div className="mb-32">
-              <div className="text-center mb-16">
-                <h2 className="text-4xl font-black text-on-surface mb-6">Areas We Serve</h2>
-                <p className="text-on-surface-variant font-medium max-w-2xl mx-auto">
-                  We build professional {data.industry} websites for businesses across Luton and the surrounding area. Each location page is individually written with unique local content.
-                </p>
+          <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+            {/* Monthly plan */}
+            <div className="relative group flex flex-col p-8 bg-surface rounded-3xl border border-outline-variant/40 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/8 transition-all duration-300">
+              <div className="flex items-start justify-between mb-6">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1">
+                    Monthly
+                  </p>
+                  <h3 className="text-xl font-black">Fully Managed</h3>
+                </div>
+                <div className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold border border-primary/20">
+                  Popular
+                </div>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-                {['Luton', 'Bedford', 'Dunstable', 'Milton Keynes', 'St Albans', 'Watford'].map((city) => {
+
+              <div className="flex items-baseline gap-1 mb-2">
+                <span className="text-5xl font-black">£59</span>
+                <span className="text-on-surface-variant font-medium">/month</span>
+              </div>
+              <p className="text-sm text-on-surface-variant mb-8">
+                No upfront cost — launch today.
+              </p>
+
+              <ul className="space-y-3 mb-8 flex-1">
+                {[
+                  "Hosting & security included",
+                  "Unlimited minor updates",
+                  "SEO setup & maintenance",
+                  "Dedicated support team",
+                  "Cancel any time",
+                ].map((f, i) => (
+                  <li key={i} className="flex items-center gap-3 text-sm font-medium">
+                    <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <Check className="w-3 h-3 text-primary" strokeWidth={3} />
+                    </div>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+
+              <Link
+                to="/signup"
+                className="group/btn flex items-center justify-center gap-2 w-full py-4 bg-primary text-white font-bold rounded-xl hover:brightness-110 active:scale-[0.97] transition-all text-sm"
+              >
+                Start Monthly Plan
+                <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-0.5 transition-transform" />
+              </Link>
+            </div>
+
+            {/* One-time plan */}
+            <div className="relative group flex flex-col p-8 bg-surface rounded-3xl border border-outline-variant/40 hover:border-on-surface/20 hover:shadow-xl transition-all duration-300">
+              <div className="flex items-start justify-between mb-6">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1">
+                    One-time
+                  </p>
+                  <h3 className="text-xl font-black">Own It Outright</h3>
+                </div>
+              </div>
+
+              <div className="flex items-baseline gap-1 mb-2">
+                <span className="text-5xl font-black">£349</span>
+                <span className="text-on-surface-variant font-medium"> fixed</span>
+              </div>
+              <p className="text-sm text-on-surface-variant mb-8">
+                Full ownership. Source code yours forever.
+              </p>
+
+              <ul className="space-y-3 mb-8 flex-1">
+                {[
+                  "Complete source code handover",
+                  "Figma design files included",
+                  "Full SEO setup at launch",
+                  "One month free support",
+                  "You manage hosting after",
+                ].map((f, i) => (
+                  <li key={i} className="flex items-center gap-3 text-sm font-medium">
+                    <div className="w-5 h-5 rounded-full bg-on-surface/10 flex items-center justify-center shrink-0">
+                      <Check className="w-3 h-3 text-on-surface" strokeWidth={3} />
+                    </div>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+
+              <Link
+                to="/signup"
+                className="group/btn flex items-center justify-center gap-2 w-full py-4 bg-on-surface text-surface font-bold rounded-xl hover:bg-on-surface-variant active:scale-[0.97] transition-all text-sm"
+              >
+                Claim Ownership
+                <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-0.5 transition-transform" />
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* ── AREAS WE SERVE ────────────────────────────────────── */}
+        {!data.location && (
+          <section className="max-w-7xl mx-auto px-6 lg:px-8 mb-28">
+            <div className="text-center mb-12">
+              <p className="text-xs font-bold uppercase tracking-widest text-primary mb-3">
+                Coverage
+              </p>
+              <h2 className="text-4xl font-black tracking-tight mb-4">Areas We Serve</h2>
+              <p className="text-on-surface-variant font-medium max-w-2xl mx-auto">
+                We build professional {data.industry} websites for businesses across Luton and the
+                wider region. Each location page is individually written with unique local content.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {["Luton", "Bedford", "Dunstable", "Milton Keynes", "St Albans", "Watford"].map(
+                (city) => {
                   const industryToSlug: Record<string, string> = {
-                    'Plumbing': 'plumber-web-design',
-                    'Electrical': 'electrician-web-design',
-                    'Roofing': 'roofer-web-design',
-                    'Locksmith': 'locksmith-web-design',
-                    'Cleaning': 'cleaning-company-web-design',
-                    'Removals': 'removals-web-design'
+                    Plumbing: "plumber-web-design",
+                    Electrical: "electrician-web-design",
+                    Roofing: "roofer-web-design",
+                    Locksmith: "locksmith-web-design",
+                    Cleaning: "cleaning-company-web-design",
+                    Removals: "removals-web-design",
                   };
                   const slug = industryToSlug[data.industry];
-                  const citySlug = city.toLowerCase().replace(' ', '-');
+                  const citySlug = city.toLowerCase().replace(" ", "-");
                   const targetUrl = `${slug}-${citySlug}`;
 
                   return (
-                    <Link 
+                    <Link
                       key={city}
                       to={`/${targetUrl}`}
-                      className="p-8 bg-surface-container-low rounded-[2rem] border border-outline-variant hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/5 transition-all font-black text-on-surface text-center"
+                      className="group flex items-center justify-center p-6 bg-surface rounded-2xl border border-outline-variant/30 hover:border-primary/40 hover:bg-surface hover:shadow-lg hover:shadow-primary/5 transition-all duration-200"
                     >
-                      {city}
+                      <span className="font-bold text-sm text-center group-hover:text-primary transition-colors">
+                        {city}
+                      </span>
                     </Link>
                   );
-                })}
-              </div>
-              <p className="mt-12 text-on-surface-variant text-center text-sm font-medium italic">
-                Each area page is individually written with unique local content — no duplicate pages — designed to rank specifically for searches in that town.
-              </p>
+                },
+              )}
             </div>
-          )}
 
-          {/* Final Call to Action */}
-          <div className="text-center py-24 bg-surface-container-high rounded-[5rem] border border-outline-variant/30 text-on-surface overflow-hidden relative shadow-3xl group">
-            <div className="relative z-10 px-8">
-              <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter leading-none">Ready to transform your <br/>online presence?</h2>
-              <p className="text-on-surface-variant text-xl font-medium max-w-2xl mx-auto mb-16 leading-relaxed">
-                Start your {data.industry} business growth today with a high-converting, professional website.
+            <p className="mt-8 text-on-surface-variant text-center text-sm font-medium">
+              Every area page is individually written — no duplicate content — designed to rank
+              specifically for that town.
+            </p>
+          </section>
+        )}
+
+        {/* ── FINAL CTA ─────────────────────────────────────────── */}
+        <section className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="relative overflow-hidden rounded-3xl bg-surface border border-outline-variant/20 px-8 py-20 text-center">
+            {/* Decorative blobs */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-primary/6 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary/6 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/3 pointer-events-none" />
+
+            {/* Inline grid decoration */}
+            <div
+              className="absolute inset-0 opacity-[0.03]"
+              style={{
+                backgroundImage: "radial-gradient(circle, currentColor 1px, transparent 1px)",
+                backgroundSize: "32px 32px",
+              }}
+            />
+
+            <div className="relative z-10 max-w-3xl mx-auto">
+              <p className="text-xs font-bold uppercase tracking-widest text-primary mb-4">
+                Ready to grow?
               </p>
-              <div className="flex flex-col sm:flex-row justify-center gap-6">
-                 <Link to="/contact" className="bg-primary text-white px-12 py-6 rounded-2xl font-black uppercase tracking-widest hover:gap-8 transition-all shadow-2xl flex items-center justify-center gap-4">
-                    Get in touch <ArrowRight className="w-6 h-6" />
-                 </Link>
+              <h2 className="text-4xl md:text-6xl font-black tracking-[-0.02em] leading-[0.95] mb-6">
+                Transform your
+                <br />
+                <span className="text-primary">{data.industry.toLowerCase()}</span> business online
+              </h2>
+              <p className="text-on-surface-variant text-lg font-medium mb-10 leading-relaxed">
+                Get a high-converting, professionally managed website that brings in new enquiries
+                every day.
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link
+                  to="/contact"
+                  className="group inline-flex items-center gap-3 px-10 py-5 bg-primary text-white font-bold rounded-2xl hover:brightness-110 active:scale-[0.97] transition-all shadow-2xl shadow-primary/30 text-base"
+                >
+                  Get in Touch
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link
+                  to="/signup"
+                  className="inline-flex items-center gap-3 px-10 py-5 text-on-surface font-bold rounded-2xl border border-outline-variant/60 hover:border-primary/40 hover:bg-surface active:scale-[0.97] transition-all text-base"
+                >
+                  Start for £59/mo
+                </Link>
               </div>
+
+              {/* Trust micro-copy */}
+              <p className="mt-6 text-on-surface-variant text-sm font-medium">
+                No contracts. No upfront cost on the monthly plan. Cancel any time.
+              </p>
             </div>
-            {/* Decoration */}
-            <div className="absolute top-0 right-0 w-[30rem] h-[30rem] bg-primary/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 group-hover:bg-primary/10 transition-colors duration-1000" />
-            <div className="absolute bottom-0 left-0 w-[30rem] h-[30rem] bg-primary/5 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2 group-hover:bg-primary/10 transition-colors duration-1000" />
           </div>
-        </div>
+        </section>
       </main>
 
       <Footer />

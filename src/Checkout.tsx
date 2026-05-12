@@ -55,46 +55,48 @@ const Pricing: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch max-w-5xl mx-auto">
           {/* Monthly Plan */}
           <div className="relative group h-full">
-            <div className="absolute inset-0 bg-surface-container-low rounded-[2.5rem] border-2 border-primary shadow-xl shadow-primary/5 transition-all duration-500 group-hover:scale-[1.01]"></div>
+            <div className="absolute inset-0 bg-white dark:bg-surface-container-high rounded-[2.5rem] border-2 border-primary shadow-2xl shadow-primary/10 transition-all duration-500 group-hover:scale-[1.01] group-hover:shadow-4xl group-hover:shadow-primary/20"></div>
             
-            <div className="absolute -top-4 left-10 bg-primary text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 z-10 border border-white/20 flex items-center gap-2">
-              <Check className="w-3 h-3" strokeWidth={4} /> Recommended
+            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl shadow-primary/30 z-10 border border-white/20 flex items-center gap-2">
+              <Check className="w-3 h-3" strokeWidth={4} /> Most Popular Choice
             </div>
 
-            <div className="relative p-10 flex flex-col h-full">
-              <div className="mb-8">
-                <h3 className="text-2xl font-black mb-3">Monthly Subscription</h3>
-                <p className="text-on-surface-variant font-medium text-sm leading-relaxed">
-                  {isAnnual ? '£47' : '£59'}/month for hosting, SSL, security and performance optimizations.
+            <div className="relative p-10 md:p-12 flex flex-col h-full">
+              <div className="mb-8 text-center">
+                <h3 className="text-3xl font-black mb-3 text-on-surface">Monthly Plan</h3>
+                <p className="text-on-surface-variant font-bold leading-relaxed text-sm">
+                  Everything handled — build, hosting, and support.
                 </p>
               </div>
 
-              <div className="flex flex-col gap-1 mb-8 p-6 rounded-3xl bg-surface/50 border border-outline-variant/10">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-6xl font-black text-on-surface">{isAnnual ? '£47' : '£59'}</span>
-                  <span className="text-on-surface-variant font-bold text-sm uppercase tracking-widest">/month</span>
+              <div className="flex flex-col items-center gap-1 mb-10 p-6 rounded-2xl bg-surface/50 dark:bg-surface/5 border border-outline-variant/20 shadow-sm">
+                <div className="flex items-baseline gap-1">
+                  <span className="text-6xl font-black text-on-surface tracking-tighter">{isAnnual ? '47' : '59'}</span>
+                  <span className="text-on-surface-variant font-black text-xs uppercase tracking-widest ml-2">/month</span>
                 </div>
-                <div className="mt-4 pt-4 border-t border-outline-variant/10">
+                <div className="mt-6 pt-6 border-t border-outline-variant/10 w-full flex justify-center">
                   <PricingToggle isAnnual={isAnnual} onChange={setIsAnnual} />
                 </div>
               </div>
 
               <div className="space-y-4 mb-10 flex-grow">
                 {[
-                  'Hosting',
-                  'SSL',
-                  'Security',
-                  'Performance optimization',
-                  'Upto 5 small updates per month (eg text changes, image swaps, contact info updates)'
+                  'Professional website design and build',
+                  'All content written by our team',
+                  'Local SEO setup from day one',
+                  'Hosting and security — fully managed',
+                  'Up to 5 updates per month',
+                  'Ongoing maintenance and support',
+                  'Cancel anytime — no minimum term'
                 ].map((item, i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Check className="w-3 h-3 text-primary" strokeWidth={4} />
+                  <div key={i} className="flex items-start gap-4">
+                    <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/20">
+                      <Check className="w-3 h-3" strokeWidth={4} />
                     </div>
-                    <span className="text-on-surface font-bold text-sm">{item}</span>
+                    <span className="text-on-surface font-black text-sm leading-tight">{item}</span>
                   </div>
                 ))}
               </div>
@@ -102,7 +104,7 @@ const Pricing: React.FC = () => {
               <button
                 onClick={() => handleSelectPlan(isAnnual ? 'annual' : 'monthly')}
                 disabled={isLoading !== null}
-                className="w-full py-4 rounded-xl bg-primary text-white font-black shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all text-base flex items-center justify-center gap-2 active:scale-95"
+                className="w-full py-5 rounded-2xl bg-primary text-white font-black shadow-xl shadow-primary/30 hover:shadow-primary/50 transition-all text-lg flex items-center justify-center gap-2 active:scale-95"
               >
                 {(isLoading === 'monthly' || isLoading === 'annual') ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Subscribe Now'}
               </button>
@@ -111,34 +113,38 @@ const Pricing: React.FC = () => {
 
           {/* One-Time Payment */}
           <div className="relative group h-full">
-            <div className="absolute inset-0 bg-surface-container-low rounded-[2.5rem] border border-outline-variant/30 shadow-lg transition-all duration-500 group-hover:shadow-xl group-hover:scale-[1.01]"></div>
+            <div className="absolute inset-0 bg-surface-container-low rounded-[2.5rem] border border-outline-variant/30 shadow-2xl shadow-black/5 transition-all duration-500 group-hover:shadow-4xl group-hover:scale-[1.01]"></div>
             
-            <div className="relative p-10 flex flex-col h-full">
-              <div className="mb-8">
-                <h3 className="text-2xl font-black mb-3">One-Time Payment</h3>
-                <p className="text-on-surface-variant font-medium text-sm leading-relaxed">
-                  £349 for your fully built website. Delivered ready to use.
+            <div className="relative p-10 md:p-12 flex flex-col h-full">
+              <div className="mb-8 text-center">
+                <h3 className="text-3xl font-black mb-3 text-on-surface">One-Off Payment</h3>
+                <p className="text-on-surface-variant font-bold leading-relaxed text-sm">
+                  Own your site outright. Delivered ready to use.
                 </p>
               </div>
 
-              <div className="flex items-baseline gap-2 mb-8 p-6 rounded-3xl bg-surface/50 border border-outline-variant/10">
-                <span className="text-6xl font-black text-on-surface">£349</span>
-                <span className="text-on-surface-variant font-bold text-sm uppercase tracking-widest">Fixed</span>
+              <div className="flex flex-col items-center gap-1 mb-10 p-6 rounded-2xl bg-surface/50 border border-outline-variant/20 shadow-sm">
+                <div className="flex items-baseline gap-1">
+                  <span className="text-6xl font-black text-on-surface tracking-tighter">349</span>
+                  <span className="text-on-surface-variant font-black text-xs uppercase tracking-widest ml-2">Fixed</span>
+                </div>
               </div>
 
               <div className="space-y-4 mb-10 flex-grow">
                 {[
-                  'Fully built website',
-                  'No ongoing commitment',
-                  'Full source files available',
-                  'Handover within 7 days',
-                  'Ready to use'
+                  'Professional website design and build',
+                  'All content written by our team',
+                  'Local SEO setup from day one',
+                  'Full ownership of the finished site',
+                  'No monthly fees — ever',
+                  'Hosting not included',
+                  'No ongoing updates or support'
                 ].map((item, i) => (
-                  <div key={i} className="flex items-start gap-3">
+                  <div key={i} className="flex items-start gap-4">
                     <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-surface-container-high flex items-center justify-center">
                       <Check className="w-3 h-3 text-on-surface-variant" strokeWidth={4} />
                     </div>
-                    <span className="text-on-surface font-bold text-sm">{item}</span>
+                    <span className="text-on-surface font-black text-sm leading-tight">{item}</span>
                   </div>
                 ))}
               </div>
@@ -146,7 +152,7 @@ const Pricing: React.FC = () => {
               <button
                 onClick={() => handleSelectPlan('one_time')}
                 disabled={isLoading !== null}
-                className="w-full py-4 rounded-xl bg-on-surface text-surface font-black hover:bg-on-surface-variant transition-all text-base flex items-center justify-center gap-2 active:scale-95"
+                className="w-full py-5 rounded-2xl bg-on-surface text-surface font-black hover:bg-on-surface-variant transition-all text-lg flex items-center justify-center gap-2 active:scale-95 shadow-xl"
               >
                 {isLoading === 'one_time' ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Claim Ownership'}
               </button>

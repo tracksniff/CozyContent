@@ -5,6 +5,7 @@ import AuditTool from "./AuditTool";
 import type { AuditResult } from "./AuditTool";
 import { motion, AnimatePresence } from "framer-motion";
 import { auditContent } from "./auditContent";
+import { Check, ArrowDown, BarChart3, Zap, Search, ShieldCheck, Smartphone, Accessibility } from "lucide-react";
 
 interface AuditPageProps {
   title?: string;
@@ -13,12 +14,12 @@ interface AuditPageProps {
 }
 
 const checks = [
-  { icon: "⚡", label: "Page Speed" },
-  { icon: "🔍", label: "SEO Health" },
-  { icon: "📱", label: "Mobile Experience" },
-  { icon: "🔒", label: "Security & HTTPS" },
-  { icon: "♿", label: "Accessibility" },
-  { icon: "📈", label: "Conversion Rate" },
+  { icon: Zap, label: "Page Speed" },
+  { icon: Search, label: "SEO Health" },
+  { icon: Smartphone, label: "Mobile Experience" },
+  { icon: ShieldCheck, label: "Security & HTTPS" },
+  { icon: Accessibility, label: "Accessibility" },
+  { icon: BarChart3, label: "Conversion Rate" },
 ];
 
 const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) => {
@@ -45,459 +46,169 @@ const AuditPage: React.FC<AuditPageProps> = ({ title, industry, description }) =
   };
 
   return (
-    <div
-      className="min-h-screen bg-surface text-on-surface"
-      style={{
-        fontFamily: "'Plus Jakarta Sans', sans-serif",
-      }}
-    >
-      <style>{`
-        .audit-page * { box-sizing: border-box; }
+    <div className="min-h-screen bg-surface selection:bg-primary/20 selection:text-primary transition-colors duration-300">
+      <Navbar />
 
-        .hero-badge {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          background: var(--color-surface-container-low);
-          border: 1px solid var(--color-outline-variant);
-          border-radius: 100px;
-          padding: 6px 16px;
-          font-size: 13px;
-          font-weight: 500;
-          letter-spacing: 0.04em;
-          color: var(--color-on-surface-variant);
-          margin-bottom: 32px;
-        }
+      {/* Background blobs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/5 rounded-full blur-[120px]" />
+      </div>
 
-        .hero-badge::before {
-          content: '';
-          width: 6px;
-          height: 6px;
-          border-radius: 50%;
-          background: #4ade80;
-          box-shadow: 0 0 8px #4ade80;
-          animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.4; }
-        }
-
-        .hero-title {
-          font-family: 'Plus Jakarta Sans', sans-serif;
-          font-size: clamp(3rem, 8vw, 6.5rem);
-          font-weight: 900;
-          line-height: 1.0;
-          letter-spacing: -0.04em;
-          color: var(--color-on-surface);
-          margin: 0 0 28px;
-        }
-
-        .hero-title em {
-          font-style: italic;
-          color: var(--color-primary);
-        }
-
-        .hero-subtitle {
-          font-size: 18px;
-          line-height: 1.65;
-          color: var(--color-on-surface-variant);
-          font-weight: 400;
-          max-width: 520px;
-          margin: 0 auto 44px;
-        }
-
-        .cta-button {
-          display: inline-flex;
-          align-items: center;
-          gap: 10px;
-          background: var(--color-on-surface);
-          color: var(--color-surface);
-          border: none;
-          cursor: pointer;
-          padding: 16px 36px;
-          border-radius: 4px;
-          font-family: 'Plus Jakarta Sans', sans-serif;
-          font-size: 15px;
-          font-weight: 800;
-          letter-spacing: 0.01em;
-          transition: all 0.2s ease;
-          text-transform: uppercase;
-          letter-spacing: 0.08em;
-        }
-
-        .cta-button:hover {
-          opacity: 0.9;
-          transform: translateY(-2px);
-          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .cta-button svg {
-          width: 16px;
-          height: 16px;
-          transition: transform 0.2s;
-        }
-
-        .cta-button:hover svg {
-          transform: translateY(3px);
-        }
-
-        .divider-line {
-          width: 100%;
-          height: 1px;
-          background: var(--color-outline-variant);
-          margin: 80px 0;
-        }
-
-        .checks-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 1px;
-          background: var(--color-outline-variant);
-          border: 1px solid var(--color-outline-variant);
-          border-radius: 12px;
-          overflow: hidden;
-          margin-bottom: 80px;
-        }
-
-        @media (max-width: 640px) {
-          .checks-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        .check-cell {
-          background: var(--color-surface);
-          padding: 28px 24px;
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-          transition: background 0.2s;
-        }
-
-        .check-cell:hover { background: var(--color-surface-container-low); }
-
-        .check-icon {
-          font-size: 22px;
-          line-height: 1;
-        }
-
-        .check-label {
-          font-size: 14px;
-          font-weight: 500;
-          color: var(--color-on-surface-variant);
-          letter-spacing: 0.01em;
-        }
-
-        .two-col {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 2px;
-          background: var(--color-outline-variant);
-          border-radius: 12px;
-          overflow: hidden;
-          border: 1px solid var(--color-outline-variant);
-          margin-bottom: 80px;
-        }
-
-        @media (max-width: 768px) {
-          .two-col { grid-template-columns: 1fr; }
-        }
-
-        .col-panel {
-          background: var(--color-surface);
-          padding: 48px 40px;
-        }
-
-        .col-panel-label {
-          font-size: 11px;
-          font-weight: 600;
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
-          color: var(--color-on-surface-variant);
-          margin-bottom: 32px;
-        }
-
-        .col-panel-title {
-          font-family: 'Plus Jakarta Sans', sans-serif;
-          font-size: 26px;
-          font-weight: 800;
-          color: var(--color-on-surface);
-          margin: 0 0 28px;
-          line-height: 1.2;
-          letter-spacing: -0.02em;
-        }
-
-        .list-item {
-          display: flex;
-          align-items: baseline;
-          gap: 12px;
-          padding: 10px 0;
-          border-bottom: 1px solid var(--color-outline-variant);
-          color: var(--color-on-surface-variant);
-          font-size: 15px;
-          line-height: 1.5;
-          font-weight: 400;
-        }
-
-        .list-item:last-child { border-bottom: none; }
-
-        .list-dot {
-          width: 4px;
-          height: 4px;
-          border-radius: 50%;
-          background: var(--color-outline-variant);
-          flex-shrink: 0;
-          margin-top: 8px;
-        }
-
-        .list-dot-accent { background: var(--color-primary); }
-
-        .scroll-nudge {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 8px;
-          margin-bottom: 56px;
-        }
-
-        .scroll-nudge-text {
-          font-size: 11px;
-          font-weight: 600;
-          letter-spacing: 0.16em;
-          text-transform: uppercase;
-          color: var(--color-on-surface-variant);
-        }
-
-        .scroll-arrow {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 3px;
-        }
-
-        .scroll-arrow span {
-          display: block;
-          width: 1px;
-          height: 20px;
-          background: linear-gradient(to bottom, var(--color-on-surface-variant), transparent);
-          animation: drip 1.6s ease-in-out infinite;
-        }
-
-        @keyframes drip {
-          0% { transform: scaleY(0); transform-origin: top; opacity: 0; }
-          50% { transform: scaleY(1); transform-origin: top; opacity: 1; }
-          100% { transform: scaleY(1); transform-origin: bottom; opacity: 0; }
-        }
-
-        .stat-row {
-          display: flex;
-          gap: 2px;
-          margin-bottom: 80px;
-          background: var(--color-outline-variant);
-          border: 1px solid var(--color-outline-variant);
-          border-radius: 12px;
-          overflow: hidden;
-        }
-
-        @media (max-width: 640px) {
-          .stat-row { flex-direction: column; }
-        }
-
-        .stat-cell {
-          flex: 1;
-          background: var(--color-surface);
-          padding: 36px 32px;
-        }
-
-        .stat-number {
-          font-family: 'Plus Jakarta Sans', sans-serif;
-          font-size: 48px;
-          font-weight: 900;
-          color: var(--color-on-surface);
-          line-height: 1;
-          margin-bottom: 8px;
-          letter-spacing: -0.04em;
-        }
-
-        .stat-label {
-          font-size: 13px;
-          color: var(--color-on-surface-variant);
-          font-weight: 400;
-          line-height: 1.5;
-        }
-      `}</style>
-
-      <div className="audit-page">
-        <Navbar />
-
-        <main style={{ paddingTop: "120px", paddingBottom: "80px" }}>
-          <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 32px" }}>
-            <AnimatePresence>
-              {!result && (
-                <>
-                  {/* Hero */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 24 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                    style={{ textAlign: "center", marginBottom: "80px" }}
-                  >
-                    <div className="hero-badge">Free · No signup required · Instant results</div>
-
-                    <h1 className="hero-title">
-                      {content?.heroTitle ? (
-                        content.heroTitle
-                      ) : (
-                        <>
-                          Your website
-                          <br />
-                          is <em>losing you money.</em>
-                          <br />
-                          Let's fix that.
-                        </>
-                      )}
-                    </h1>
-
-                    <p className="hero-subtitle">
-                      {content?.heroSubtitle ||
-                        "Paste your URL and get a detailed breakdown of every issue costing you traffic, leads, and revenue."}
-                    </p>
-
-                    <button className="cta-button" onClick={scrollToAudit}>
-                      Run my free audit
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <line x1="12" y1="5" x2="12" y2="19" />
-                        <polyline points="19 12 12 19 5 12" />
-                      </svg>
-                    </button>
-                  </motion.div>
-
-                  {/* Stats row */}
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.2, duration: 0.5 }}
-                    className="stat-row"
-                  >
-                    <div className="stat-cell">
-                      <div className="stat-number">94%</div>
-                      <div className="stat-label">
-                        of first impressions are
-                        <br />
-                        design-related
-                      </div>
-                    </div>
-                    <div className="stat-cell">
-                      <div className="stat-number">3s</div>
-                      <div className="stat-label">
-                        before visitors abandon
-                        <br />a slow-loading page
-                      </div>
-                    </div>
-                    <div className="stat-cell">
-                      <div className="stat-number">68%</div>
-                      <div className="stat-label">
-                        of online experiences
-                        <br />
-                        begin with a search engine
-                      </div>
-                    </div>
-                  </motion.div>
-
-                  {/* What we check grid */}
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                  >
-                    <p
-                      style={{
-                        fontSize: "11px",
-                        fontWeight: 600,
-                        letterSpacing: "0.14em",
-                        textTransform: "uppercase",
-                        color: "var(--color-on-surface-variant)",
-                        marginBottom: "20px",
-                      }}
-                    >
-                      What gets audited
-                    </p>
-                    <div className="checks-grid">
-                      {(content?.whatWeCheck
-                        ? content.whatWeCheck.map((label: string, i: number) => ({
-                            icon: checks[i % checks.length].icon,
-                            label,
-                          }))
-                        : checks
-                      ).map((item: { icon: string; label: string }, i: number) => (
-                        <div key={i} className="check-cell">
-                          <span className="check-icon">{item.icon}</span>
-                          <span className="check-label">{item.label}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </motion.div>
-
-                  {/* Two column: what we check vs common problems */}
-                  {content && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.4 }}
-                      className="two-col"
-                    >
-                      <div className="col-panel">
-                        <div className="col-panel-label">What you'll learn</div>
-                        <div className="col-panel-title">A full picture of your site's health</div>
-                        <div>
-                          {content.whatWeCheck.map((item: string, i: number) => (
-                            <div key={i} className="list-item">
-                              <span className="list-dot list-dot-accent" />
-                              {item}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="col-panel">
-                        <div className="col-panel-label">Common findings</div>
-                        <div className="col-panel-title">
-                          Issues most sites don't know they have
-                        </div>
-                        <div>
-                          {content.commonProblems.map((item: string, i: number) => (
-                            <div key={i} className="list-item">
-                              <span className="list-dot" />
-                              {item}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {/* Scroll nudge */}
-                  <div className="scroll-nudge">
-                    <span className="scroll-nudge-text">
-                      {content?.ctaText || "Start your audit"}
+      <main className="pt-32 pb-24 px-6">
+        <div className="max-w-7xl mx-auto">
+          <AnimatePresence mode="wait">
+            {!result && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="space-y-24"
+              >
+                {/* Hero */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-center"
+                >
+                  <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-8 rounded-full bg-surface-container-low border border-outline-variant/30 shadow-sm">
+                    <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse"></span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">
+                      Free · No signup required · Instant results
                     </span>
-                    <div className="scroll-arrow">
-                      <span />
+                  </div>
+
+                  <h1 className="text-4xl md:text-7xl font-black text-on-surface tracking-tighter leading-[0.95] mb-6">
+                    {content?.heroTitle ? (
+                      content.heroTitle
+                    ) : (
+                      <>
+                        Your website is <br />
+                        <span className="text-primary italic">losing you money.</span>
+                      </>
+                    )}
+                  </h1>
+
+                  <p className="text-lg md:text-xl text-on-surface-variant max-w-2xl mx-auto font-medium leading-relaxed mb-10">
+                    {content?.heroSubtitle ||
+                      "Paste your URL and get a detailed breakdown of every issue costing you traffic, leads, and revenue."}
+                  </p>
+
+                  <button 
+                    onClick={scrollToAudit}
+                    className="group bg-on-surface text-surface px-10 py-5 rounded-2xl font-black uppercase tracking-widest hover:gap-6 transition-all shadow-3xl flex items-center gap-4 mx-auto hover:scale-105 active:scale-95"
+                  >
+                    Run my free audit <ArrowDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
+                  </button>
+                </motion.div>
+
+                {/* Stats row */}
+                <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                  {[
+                    { val: "94%", label: "of first impressions are design-related" },
+                    { val: "3s", label: "before visitors abandon a slow-loading page" },
+                    { val: "68%", label: "of online experiences begin with search" }
+                  ].map((stat, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.1 }}
+                      className="p-8 rounded-3xl bg-surface-container-low border border-outline-variant/30 text-center shadow-xl shadow-black/5 hover:shadow-2xl hover:-translate-y-1 transition-all"
+                    >
+                      <div className="text-5xl font-black text-primary mb-2 tracking-tighter">{stat.val}</div>
+                      <p className="text-sm text-on-surface-variant font-bold uppercase tracking-wider leading-snug px-4">{stat.label}</p>
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* What we check grid */}
+                <div className="max-w-6xl mx-auto">
+                  <div className="text-center mb-12">
+                    <h2 className="text-3xl md:text-5xl font-black text-on-surface tracking-tight mb-4">Standard with Every Audit</h2>
+                    <p className="text-on-surface-variant font-medium max-w-xl mx-auto text-lg">
+                      We analyze the critical factors that influence your website's performance and ranking.
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                    {(content?.whatWeCheck
+                      ? content.whatWeCheck.map((label: string, i: number) => ({
+                          icon: checks[i % checks.length].icon,
+                          label,
+                        }))
+                      : checks
+                    ).map((item: any, i: number) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.05 }}
+                        className="p-6 md:p-8 rounded-2xl bg-surface-container-low border border-outline-variant/30 hover:border-primary/50 transition-all group flex flex-col items-center text-center shadow-lg shadow-black/5 hover:shadow-2xl hover:-translate-y-1"
+                      >
+                        <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                          <item.icon className="w-6 h-6" strokeWidth={2} />
+                        </div>
+                        <h4 className="font-black text-base md:text-lg text-on-surface leading-tight">{item.label}</h4>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Two column: what we check vs common problems */}
+                {content && (
+                  <div className="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto">
+                    <div className="p-8 md:p-12 rounded-[2.5rem] bg-surface-container-low border border-outline-variant/30 shadow-xl">
+                      <h3 className="text-2xl font-black text-on-surface mb-8 tracking-tight">What you'll learn</h3>
+                      <div className="space-y-4">
+                        {content.whatWeCheck.map((item: string, i: number) => (
+                          <div key={i} className="flex items-start gap-4 p-4 rounded-2xl hover:bg-white dark:hover:bg-surface-container-high transition-colors group">
+                            <div className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-1">
+                              <Check className="w-4 h-4" strokeWidth={4} />
+                            </div>
+                            <span className="text-on-surface font-bold text-base md:text-lg leading-snug">{item}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="p-8 md:p-12 rounded-[2.5rem] bg-on-surface dark:bg-surface-container-high text-surface dark:text-on-surface shadow-2xl relative overflow-hidden">
+                      <div className="relative z-10">
+                        <h3 className="text-2xl font-black mb-8 tracking-tight">Common findings</h3>
+                        <div className="space-y-4">
+                          {content.commonProblems.map((item: string, i: number) => (
+                            <div key={i} className="flex items-start gap-4 p-4 rounded-2xl hover:bg-white/5 transition-colors group">
+                              <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center shrink-0 mt-1 shadow-lg shadow-primary/20">
+                                <Check className="w-4 h-4 text-white" strokeWidth={4} />
+                              </div>
+                              <span className="font-bold text-base md:text-lg leading-snug opacity-90">{item}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
                     </div>
                   </div>
-                </>
-              )}
-            </AnimatePresence>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-            <div id="audit-tool">
+          <div id="audit-tool" className="mt-24">
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="bg-white dark:bg-surface-container-low rounded-[2.5rem] md:rounded-[3.5rem] p-1 shadow-3xl border border-outline-variant/20"
+            >
               <AuditTool onResult={setResult} />
-            </div>
+            </motion.div>
           </div>
-        </main>
+        </div>
+      </main>
 
-        <Footer />
-      </div>
+      <Footer />
     </div>
   );
 };

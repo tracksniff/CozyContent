@@ -39,12 +39,12 @@ const Navbar = () => {
   const currentLogo = isDark ? logoDark : logoLight;
 
   const serviceItems = [
-    { label: "Websites for Plumbers", href: "/services/plumbing" },
-    { label: "Websites for Electricians", href: "/services/electrical" },
-    { label: "Websites for Roofers", href: "/services/roofing" },
-    { label: "Websites for Locksmiths", href: "/services/locksmiths" },
-    { label: "Websites for Cleaners", href: "/services/cleaning" },
-    { label: "Websites for Removal Companies", href: "/services/removals" },
+    { label: "Websites for Plumbers", href: "/plumber-web-design" },
+    { label: "Websites for Electricians", href: "/electrician-web-design" },
+    { label: "Websites for Roofers", href: "/roofer-web-design" },
+    { label: "Websites for Locksmiths", href: "/locksmith-web-design" },
+    { label: "Websites for Cleaners", href: "/cleaning-company-web-design" },
+    { label: "Websites for Removal Companies", href: "/removals-web-design" },
   ];
 
   const handleNavClick = () => {
@@ -54,10 +54,10 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-0 w-full z-50 px-4 md:px-6 py-4">
-      <div className="max-w-6xl mx-auto flex justify-between items-center px-4 md:px-6 py-3 rounded-2xl bg-surface/60 dark:bg-surface-container-high/40 backdrop-blur-xl border border-outline-variant/30 dark:border-primary/20 shadow-lg shadow-black/5 transition-all">
+    <nav className="fixed top-0 w-full z-50 px-4 md:px-6 py-3">
+      <div className="max-w-6xl mx-auto flex justify-between items-center px-4 md:px-8 py-2.5 rounded-2xl bg-surface/60 dark:bg-surface-container-high/40 backdrop-blur-xl border border-outline-variant/30 dark:border-primary/20 shadow-lg shadow-black/5 transition-all">
         <Link to="/" className="flex items-center" onClick={handleNavClick}>
-          <div className="h-12 md:h-16 flex items-center justify-center">
+          <div className="h-10 md:h-12 flex items-center justify-center">
             <img
               src={currentLogo}
               alt="Cosy Content Logo"

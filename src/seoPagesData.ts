@@ -3,6 +3,7 @@ export interface SEOPageContentSection {
   subtitle?: string;
   points?: string[];
   description?: string;
+  image?: string;
 }
 
 export interface SEOPageInfo {
@@ -18,7 +19,68 @@ export interface SEOPageInfo {
   sections?: SEOPageContentSection[];
 }
 
-export const seoPagesData: Record<string, SEOPageInfo> = {
+// Plumbers
+import p1 from './assets/plumbers/360_F_103795796_0hf7w5eRmajonHd1bUz5MxyFuU6MeneU.webp';
+import p2 from './assets/plumbers/360_F_120813781_9bGwgW7aSUvXY5oxmhRT9jJ9xIArTvAT.webp';
+import p3 from './assets/plumbers/hands-plumber-work-bathroom-plumbing-repair-service-as-assemble-install-concept-109778934.webp';
+import p4 from './assets/plumbers/hands-plumber-work-bathroom-plumbing-repair-service-as-hands-plumber-work-bathroom-plumbing-repair-service-109188888.webp';
+import p5 from './assets/plumbers/plumber-uses-wrench-repair-water-260nw-2466456603.webp';
+
+// Cleaners
+import c1 from './assets/cleaners/commercial-office-cleaners.webp';
+import c2 from './assets/cleaners/depositphotos_697067642-stock-photo-team-multicultural-cleaners-wipes-tables.webp';
+import c3 from './assets/cleaners/group-of-professional-cleaners-getting-a-brief-on-their-job.webp';
+import c4 from './assets/cleaners/group-of-professional-cleaners-working-at-an-office-wearing-facemasks-during-the-pandemic.webp';
+import c5 from './assets/cleaners/male-female-cleaners-cleaning-office-table-cleaners-cleaning-computer-office-desk-high-angle-view-211309146.webp';
+
+// Electricians
+import e1 from './assets/electritian/electrician-contractor-cable-electrician-contractor-electric-cable-closeup-photo-installing-whole-new-system-129577401.webp';
+import e2 from './assets/electritian/electrician-is-stripping-electrical-wires-in-a-plastic-box-on-a-wooden-wall-to-install-the-electrical-outlet-free-photo.webp';
+import e3 from './assets/electritian/electrician-repairs-electrical-component-using-tools-seated-ground-outdoors-electrician-works-electrical-device-442542824.webp';
+import e4 from './assets/electritian/stock-photo-cropped-view-electrician-using-digital-tablet-blank-screen-switchboard.webp';
+import e5 from './assets/electritian/young-electrician-working-in-a-residential-electrical-installation.webp';
+
+// Locksmiths
+import l1 from './assets/locksmiths/360_F_1828331092_hapQtxiph0sLEddY3BF1EvJjQW6dBbvU.webp';
+import l2 from './assets/locksmiths/360_F_1964339855_TXMPQlheCh7K2iX7hyfnaOi7AYW16oqz.webp';
+import l3 from './assets/locksmiths/360_F_440464916_bUHOThJpEuyUyLWS6cIC4HWkteVsNAup.webp';
+import l4 from './assets/locksmiths/door-lock-service-locksmith-working-in-red-uniform.webp';
+import l5 from './assets/locksmiths/premium_photo-1683134324677-698a7c2d5246.webp';
+
+// Removals
+import r1 from './assets/removals/695f820774ebd4dcd6b9ac8b_23-07_1800GotJunk_LH_00526 1 (3).webp';
+import r2 from './assets/removals/eco-friendly-junk-removal.webp';
+import r3 from './assets/removals/gyspowouvyo4d7iqahmg.webp';
+import r4 from './assets/removals/ra1au6sip49xhlobih7a.webp';
+import r5 from './assets/removals/removals2.webp';
+
+// Roofers
+import ro1 from './assets/roofers/360_F_1038739481_dOYcB2oAd7sRLGkAEWHuELxjQutBQhNW.webp';
+import ro2 from './assets/roofers/360_F_13280377_pABfJ1qwIM4ZQs2enWI01YA5Jbzt2y1i.webp';
+import ro3 from './assets/roofers/dangerous-jobs.webp';
+import ro4 from './assets/roofers/roofers-installing.webp';
+import ro5 from './assets/roofers/roofers-working-roof-house-h-roofers-working-roof-house-393065710.webp';
+
+const industryImages = {
+  Plumbing: [p1, p2, p3, p4, p5],
+  Electrical: [e1, e2, e3, e4, e5],
+  Roofing: [ro1, ro2, ro3, ro4, ro5],
+  Locksmith: [l1, l2, l3, l4, l5],
+  Cleaning: [c1, c2, c3, c4, c5],
+  Removals: [r1, r2, r3, r4, r5]
+};
+
+const attachImages = (pages: Record<string, SEOPageInfo>) => {
+  Object.values(pages).forEach(page => {
+    const images = industryImages[page.industry as keyof typeof industryImages] || [];
+    page.sections?.forEach((section, idx) => {
+      section.image = images[idx % images.length];
+    });
+  });
+  return pages;
+};
+
+export const seoPagesData: Record<string, SEOPageInfo> = attachImages({
   // Plumbing
   "plumber-web-design": {
     url: "plumber-web-design",
@@ -148,51 +210,46 @@ export const seoPagesData: Record<string, SEOPageInfo> = {
     url: "plumber-web-design-bedford",
     keyword: "Web design for plumbers in Bedford",
     metaTitle: "Plumber Website Design Bedford | Affordable & Fast",
-    metaDescription: "Affordable websites for plumbers in Bedford. We build and manage your site so you can focus on jobs.",
+    metaDescription: "Professional website design for plumbers in Bedford. Modern, fast-loading sites from £59 per month.",
     industry: "Plumbing",
     location: "Bedford",
     heroTitle: "Plumber Website Design in Bedford",
-    heroSubtitle: "A website that brings in enquiries — even while you're on a job",
-    checklist: ["No upfront payment required", "We write the content, handle the build, manage the hosting", "Priced for sole traders and small plumbing businesses"],
+    heroSubtitle: "Build local trust and win more jobs across Bedfordshire",
+    checklist: ["No upfront cost", "Fully managed", "High-conversion design"],
     sections: [
       {
-        title: "The Problem with Most Plumbing Websites in Bedford",
-        description: "The honest truth is that most tradespeople's websites in Bedford were built once and forgotten about. They might have seemed fine at the time, but the web has moved on significantly — and a slow, outdated site can actually do more harm than having no site at all. Customers searching for a plumber in Bedford make snap decisions. If your site takes more than three seconds to load, or they can't immediately find a phone number, they're gone — straight to a competitor.",
+        title: "Bedford Plumbers Need a Competitive Edge",
+        description: "The plumbing market in Bedford is competitive. To stand out, you need more than just being good at your trade — you need to be the easiest plumber to hire. If a customer can't find your number or book a quote in seconds, they'll call your competitor.",
         points: [
-          "Slow load times that lose visitors before the page even appears",
-          "No mobile optimisation — difficult to use on a smartphone",
-          "Contact details buried or hard to find",
-          "Missing from local Google searches despite years in business",
-          "No trust signals — no reviews, accreditations, or guarantees highlighted"
+          "Outdated designs that fail to build immediate trust",
+          "Slow loading speeds that annoy potential customers",
+          "Hidden contact details or confusing navigation",
+          "Poor ranking for 'plumber Bedford' or 'boiler repair Bedford'",
+          "Websites that don't display properly on mobile phones"
         ]
       },
       {
-        title: "Everything Included — Nothing Left Out",
-        description: "When we build a website for a Bedford plumber, it's not a template with your name dropped in. Every site is tailored to your business, your service area, and the kind of jobs you want more of.",
+        title: "Our Bedford-Focused Build Strategy",
+        description: "We don't just build a website; we build a platform that speaks to Bedford customers.",
         points: [
-          "Conversion-Led Design: Laid out to guide visitors towards calling or requesting a quote — not just browsing and leaving.",
-          "Written for You: We handle the copywriting. No need to write a word yourself.",
-          "Speed Optimised: Fast-loading pages that keep visitors engaged and satisfy Google's ranking requirements.",
-          "Managed Hosting Included: Your site lives on our reliable hosting infrastructure — no separate bills to worry about.",
-          "Flexible Updates: As your business changes, your website can too. Up to five updates per month included on the monthly plan."
+          "Local Trust Elements: Highlighting your work across Bedford and Kempston.",
+          "Mobile Optimization: Perfect performance for customers searching on the go.",
+          "SEO Foundation: Targeting the specific search terms Bedford customers use.",
+          "Managed Launch: We handle all the technical details so you don't have to.",
+          "Ongoing Support: We're your outsourced web team, always available for changes."
         ]
       },
       {
-        title: "Designed to Rank for Bedford Plumbing Searches",
-        description: "Appearing on the first page of Google for searches like plumber Bedford or emergency plumber Bedford MK40 takes a site built with local SEO in mind — not just one that looks good. Every site we build is structured from the ground up to compete in local search results, covering the areas Bedford plumbers actually serve.",
-        points: [
-          "Technical SEO: Optimised page speed scores, properly structured URLs, Search Console setup.",
-          "Local Visibility: Service area pages covering Bedford and surrounding towns, location signals built into page content.",
-          "Structured Data & Future-Proofing: LocalBusiness and Service schema, FAQ schema for featured snippets, llms.txt for AI search visibility."
-        ]
+        title: "Covering Every Corner of Bedford",
+        description: "Your site will be designed to rank not just in the town center, but in surrounding areas like Great Denham, Biddenham, and Wootton."
       },
       {
-        title: "How We Work With You",
+        title: "How We Get You Live in Bedford",
         points: [
-          "Step 1: Tell us about your business — the areas you cover, the jobs you want more of.",
-          "Step 2: We build it. Design, copy, structure, SEO setup — all done by our team.",
-          "Step 3: You review it. We'll make any changes before anything goes live.",
-          "Step 4: We launch it and manage it. You get on with the plumbing."
+          "Design & Content Phase.",
+          "Client Review.",
+          "Live Launch.",
+          "Continuous Management."
         ]
       }
     ]
@@ -200,52 +257,47 @@ export const seoPagesData: Record<string, SEOPageInfo> = {
   "plumber-web-design-dunstable": {
     url: "plumber-web-design-dunstable",
     keyword: "Web design for plumbers in Dunstable",
-    metaTitle: "Plumber Website Design Dunstable | Get More Leads",
-    metaDescription: "Outdated plumbing website? We design modern sites for plumbers in Dunstable. Fully managed, fast turnaround.",
+    metaTitle: "Plumber Website Design Dunstable | Launch for £59/mo",
+    metaDescription: "Professional website design for plumbers in Dunstable. Fast, reliable and local. From £59 per month.",
     industry: "Plumbing",
     location: "Dunstable",
     heroTitle: "Plumber Website Design in Dunstable",
-    heroSubtitle: "Stop relying on referrals — start getting found on Google",
-    checklist: ["Nothing to pay upfront", "Content written by our team — not AI-generated filler", "Designed specifically to win local plumbing jobs"],
+    heroSubtitle: "Dominate the local Dunstable market with a modern website",
+    checklist: ["No upfront cost", "Managed launch", "Lead-focused design"],
     sections: [
       {
-        title: "Why Word-of-Mouth Alone Isn't Enough in Dunstable",
-        description: "Referrals are great — but they're unpredictable. A slow month can follow a busy one, and there's no way to control the flow. A well-optimised website changes that, giving you a reliable source of new enquiries that doesn't depend on who happens to mention your name.",
+        title: "Dunstable Customers Search Differently",
+        description: "When people in Dunstable need a plumber, they want someone local, reliable, and fast. Your website needs to reflect these values immediately.",
         points: [
-          "No Google presence — nowhere to be found for local searches",
-          "A website that looks amateur compared to local competitors",
-          "Pages that aren't set up for the specific areas you cover",
-          "No clear call-to-action — visitors aren't sure what to do next",
-          "Slow performance that pushes you down in search rankings"
+          "Not appearing for local Dunstable plumbing searches",
+          "Sites that feel generic or corporate rather than local",
+          "Missing trust signals like local reviews or area mentions",
+          "Frustrating mobile experiences for emergency searches",
+          "Lack of clear 'Book a Quote' or 'Call Now' buttons"
         ]
       },
       {
-        title: "A Website That Works as Hard as You Do",
-        description: "Everything we include is chosen because it helps convert visitors into paying customers — nothing is added just to pad things out.",
+        title: "What We Build for Dunstable Trades",
+        description: "We create websites that turn Dunstable locals into long-term clients.",
         points: [
-          "A Design That Builds Confidence: First impressions count. A polished, professional site tells customers you take your work seriously.",
-          "Optimised for Phones: Most people searching for a local plumber in Dunstable are doing it on their mobile.",
-          "Content Written for You: We write all the copy, so you don't have to stare at a blank page wondering what to say.",
-          "No Tech Worries: Hosting, SSL certificates, security updates — all sorted.",
-          "Easy Changes: Need to update your service list or add a new area? Just let us know."
+          "Dunstable-Specific SEO: Targeting LU5 and LU6 postcode areas.",
+          "Speed Optimized: Fast load times for urgent plumbing emergencies.",
+          "Content Managed: We write all the local area and service pages.",
+          "Security First: SSL and secure hosting standard for every site.",
+          "Regular Updates: Your site evolves as your Dunstable business grows."
         ]
       },
       {
-        title: "Getting Found in Dunstable — How We Do It",
-        description: "Dunstable sits within a competitive search area that includes Luton and Houghton Regis. Standing out in local results requires more than just having a website — it requires a site that signals clearly to Google that you're a credible local business.",
-        points: [
-          "On-Page SEO: Pages written around the actual terms Dunstable customers search for, proper title tags and headings.",
-          "Location Relevance: Dedicated coverage for Dunstable and nearby areas like Houghton Regis and Kensworth.",
-          "Technical & Schema: LocalBusiness schema to enhance your Google listing, Core Web Vitals optimisation, llms.txt for AI search compatibility."
-        ]
+        title: "From Houghton Regis to Totternhoe",
+        description: "We ensure your business is visible to customers across Dunstable and its neighboring villages."
       },
       {
-        title: "From Briefing to Live in a Few Simple Steps",
+        title: "The Dunstable Launch Process",
         points: [
-          "First: You tell us about your business — what you do, where you work, and any must-haves.",
-          "Then: We design, write, and build the whole thing. No back-and-forth.",
-          "Next: You get a chance to review and request any changes before we publish.",
-          "After that: It goes live and we take care of everything from there — hosting and updates."
+          "Rapid Build: Live in days, not months.",
+          "Review Stage: You sign off on the design.",
+          "Managed Launch: We handle the DNS and domain setup.",
+          "Ongoing Care: We're always here for updates."
         ]
       }
     ]
@@ -253,52 +305,47 @@ export const seoPagesData: Record<string, SEOPageInfo> = {
   "plumber-web-design-milton-keynes": {
     url: "plumber-web-design-milton-keynes",
     keyword: "Web design for plumbers in Milton Keynes",
-    metaTitle: "Plumber Website Design Milton Keynes | Lead Generation",
-    metaDescription: "Get a high-converting plumber website in Milton Keynes. Fully managed with updates included",
+    metaTitle: "Plumber Website Design Milton Keynes | Lead-Gen Experts",
+    metaDescription: "Professional website design for plumbers in Milton Keynes. High-performance sites from £59 per month.",
     industry: "Plumbing",
     location: "Milton Keynes",
     heroTitle: "Plumber Website Design in Milton Keynes",
-    heroSubtitle: "Tap into one of the UK's fastest-growing markets for tradespeople",
-    checklist: ["Zero upfront cost on our monthly plan", "Tailored to Milton Keynes — not a generic template", "Built to compete in a fast-moving local market"],
+    heroSubtitle: "Modern websites for the UK's fastest growing city",
+    checklist: ["No upfront cost", "SEO-optimized", "Fully managed"],
     sections: [
       {
-        title: "Milton Keynes Is a Competitive Market — Your Website Needs to Reflect That",
-        description: "Because MK attracts so many tradespeople chasing the same pool of new-build and growing-family customers, the bar for what a plumbing website needs to do is higher here than in smaller towns. A basic site that lists your services and has a phone number is no longer enough.",
+        title: "Standing Out in Milton Keynes",
+        description: "Milton Keynes is a modern, fast-paced city. Your website needs to match that energy with a clean, tech-forward design that makes hiring you effortless.",
         points: [
-          "Generic designs that look identical to every other tradesperson in the area",
-          "No coverage of specific MK districts — missing out on hyper-local searches",
-          "Slow page speeds that damage rankings in a competitive local market",
-          "Missing trust signals — no reviews, qualifications, or guarantees mentioned",
-          "Not optimised for the mix of emergency and planned work MK customers search for"
+          "Slow, 'clunky' sites that don't match the MK tech feel",
+          "Invisible on Google for competitive MK plumbing terms",
+          "Failing to capture the growing new-build market in MK",
+          "Confusing navigation on mobile and tablet devices",
+          "Lack of professional, modern branding elements"
         ]
       },
       {
-        title: "What Makes Our MK Plumber Websites Different",
-        description: "We don't use cookie-cutter templates. Every site is built to reflect your specific business, the areas of Milton Keynes you cover, and the type of work you want to attract most.",
+        title: "Our Milton Keynes Build Package",
+        description: "High-spec websites for high-performing plumbers in MK.",
         points: [
-          "District-Level Content: Whether you focus on Central MK or the newer developments, we'll create targeting specific areas.",
-          "Built for Conversions: Designed to make it simple for someone to contact you.",
-          "Speed as Standard: MK customers expect things to work quickly. Your site will load fast on every device.",
-          "Ongoing Management: As new areas of MK develop, your website can grow with it.",
-          "Regular Updates Included: Need to promote a seasonal offer or update your service list? We'll make changes promptly."
+          "MK Grid System Targeting: SEO strategy for all MK areas.",
+          "Lightning Fast Speeds: Built for the fiber-optic speed of MK.",
+          "Professional Copywriting: We tell your MK success story.",
+          "Managed Infrastructure: Cloud-hosting for 100% uptime.",
+          "Priority Updates: Fast changes whenever you need them."
         ]
       },
       {
-        title: "Ranking for Plumbing Searches Across Milton Keynes",
-        description: "MK has one of the most complex postcodes of any town in England — MK1 through MK19 — and customers often search with their specific area in mind. We build sites that capture this by targeting both broad MK searches and specific district-level terms.",
-        points: [
-          "Keyword and Content Strategy: Pages targeting plumber Milton Keynes alongside district-specific terms.",
-          "Technical SEO: Core Web Vitals optimisation for stronger Google rankings, Search Console setup.",
-          "Local Authority Signals: LocalBusiness and Service schema, Breadcrumb and FAQ schema, llms.txt for AI visibility."
-        ]
+        title: "Serving All of Milton Keynes",
+        description: "From Bletchley to Newport Pagnell, we make sure your plumbing services are seen across the entire MK area."
       },
       {
-        title: "Getting Started Is Simple",
+        title: "Getting Your MK Site Live",
         points: [
-          "You brief us: Tell us which parts of MK you cover, what services you offer.",
-          "We build everything: Design, copy, technical setup, and local SEO — our team handles all of it.",
-          "You sign it off: Review the site before it goes live. We'll tweak anything needed.",
-          "We manage it: Once it's live, we take care of the hosting, updates, and maintenance."
+          "Consult & Build.",
+          "Review & Refine.",
+          "Go Live.",
+          "Manage & Update."
         ]
       }
     ]
@@ -306,52 +353,47 @@ export const seoPagesData: Record<string, SEOPageInfo> = {
   "plumber-web-design-st-albans": {
     url: "plumber-web-design-st-albans",
     keyword: "Web design for plumbers in St Albans",
-    metaTitle: "Plumber Website Design St Albans | Modern & Affordable",
-    metaDescription: "We build modern websites for plumbers in St Albans. Improve your online presence and win more jobs.",
+    metaTitle: "Plumber Website Design St Albans | Premium Service",
+    metaDescription: "Professional website design for plumbers in St Albans. High-quality, managed sites from £59 per month.",
     industry: "Plumbing",
     location: "St Albans",
     heroTitle: "Plumber Website Design in St Albans",
-    heroSubtitle: "Win more of the quality work that St Albans homeowners are looking for",
-    checklist: ["No upfront cost — get started today", "Positions you as the go-to plumber in St Albans", "Managed entirely by our team — no time required from you"],
+    heroSubtitle: "A premium online presence for St Albans' best plumbers",
+    checklist: ["No upfront cost", "Premium design", "Local SEO built-in"],
     sections: [
       {
-        title: "The Standard Is Higher in St Albans — Your Website Should Match It",
-        description: "St Albans homeowners are generally discerning. They research before they commit, and they pay close attention to how professional a tradesperson appears online. A poor website doesn't just fail to win work — it actively puts people off.",
+        title: "St Albans Customers Value Quality",
+        description: "In St Albans, first impressions are everything. Your website needs to look premium and established to win high-value bathroom and heating jobs.",
         points: [
-          "Designs that feel outdated — signalling the business hasn't kept pace",
-          "No customer reviews or trust signals featured prominently",
-          "Missing out on searches from surrounding villages like London Colney",
-          "Not ranking for premium service searches such as bathroom installation",
-          "Slow loading times on the high-end devices that AL1 and AL2 customers typically use"
+          "Amateur-looking sites that don't reflect St Albans quality",
+          "Not ranking for 'plumber St Albans' or 'heating engineer AL1'",
+          "Poor mobile experience for affluent, busy customers",
+          "Lack of case studies or professional project galleries",
+          "Slow performance causing high bounce rates"
         ]
       },
       {
-        title: "A Website That Attracts the Work You Actually Want",
-        description: "Not all enquiries are equal. A well-structured website can be built to attract the type of jobs you want more of — whether that's premium bathroom fitting, boiler installations, or reliable ongoing maintenance customers.",
+        title: "The St Albans Premium Package",
+        description: "Websites that reflect the high standards of your St Albans plumbing business.",
         points: [
-          "Polished, Trust-Building Design: A refined, professional look that resonates with St Albans homeowners.",
-          "Tailored Content Strategy: We identify the searches most likely to bring in the jobs you want.",
-          "Review Integration: We'll help you showcase testimonials and ratings in a way that builds trust quickly.",
-          "Fully Handled: From the build to the hosting to updates — entirely managed on your behalf.",
-          "Flexible Monthly Updates: Seasonal promotions, new services, extended coverage areas — just ask."
+          "High-End Design: Elegant, clean, and trustworthy layouts.",
+          "Localized SEO: Targeting St Albans, Harpenden, and villages.",
+          "Managed Hosting: Ultra-secure, fast, and reliable.",
+          "Content Experts: We write professional, persuasive copy.",
+          "Future-Proof: Built to grow as your St Albans business scales."
         ]
       },
       {
-        title: "Ranking in St Albans and the Surrounding AL Postcodes",
-        description: "St Albans sits within a cluster of desirable Hertfordshire postcodes — AL1 through AL4 — each with its own pool of potential customers. We build your site to capture searches across this wider area, not just the town itself.",
-        points: [
-          "Local SEO: Pages covering St Albans and the wider AL postcode area, targeting village areas.",
-          "Technical Performance: Page speed optimised for high standards, secure and properly structured site.",
-          "Long-Term Visibility: Future-proofed with llms.txt, FAQ schema, and regularly updated content."
-        ]
+        title: "Serving AL1, AL2, AL3 and Beyond",
+        description: "We ensure your business is visible to customers across the entire St Albans and District area."
       },
       {
-        title: "Our Process — Straightforward From First Contact to Launch",
+        title: "The St Albans Roadmap",
         points: [
-          "Consultation: A brief conversation about your business, your target customer, and the areas you serve.",
-          "Build: We create the full site — design, copywriting, SEO setup, and technical configuration.",
-          "Review: You're sent a preview. We refine anything you're not completely happy with.",
-          "Launch & manage: We take it live and manage everything from that point forward."
+          "Blueprint: Planning your content.",
+          "Build: Professional development.",
+          "Review: Final sign-off.",
+          "Launch: Managed live date."
         ]
       }
     ]
@@ -359,121 +401,105 @@ export const seoPagesData: Record<string, SEOPageInfo> = {
   "plumber-web-design-watford": {
     url: "plumber-web-design-watford",
     keyword: "Web design for plumbers in Watford",
-    metaTitle: "Plumber Website Design Watford | Done For You",
-    metaDescription: "Done-for-you plumber websites in Watford. We handle everything so you don’t have to.",
+    metaTitle: "Plumber Website Design Watford | Launch for £59/mo",
+    metaDescription: "Professional website design for plumbers in Watford. Fast, local and reliable. From £59 per month.",
     industry: "Plumbing",
     location: "Watford",
     heroTitle: "Plumber Website Design in Watford",
-    heroSubtitle: "Get ahead of the competition in one of Hertfordshire's busiest towns",
-    checklist: ["No upfront cost on the monthly plan", "Built to outrank competitors in Watford search results", "Ongoing management — nothing for you to maintain"],
+    heroSubtitle: "Win more local jobs across Watford and Southwest Herts",
+    checklist: ["No upfront cost", "Lead-generation focus", "Fully managed"],
     sections: [
       {
-        title: "Watford's Plumbing Market Rewards Visibility",
-        description: "The sheer size of Watford's population — and its proximity to London — means there's a constant stream of residents and businesses searching for trustworthy local plumbers. The problem is that so many plumbers are competing for the same searches.",
+        title: "Watford's Busy Market Needs Fast Sites",
+        description: "Watford is a hub of activity. When a pipe bursts or a boiler fails in Watford, customers need to find you and call you instantly. If your site is slow, you're out.",
         points: [
-          "Ranking on page two or three of Google — where customers never scroll",
-          "Websites that look fine on a desktop but break on mobile devices",
-          "No presence in surrounding areas like Bushey, Oxhey, or Rickmansworth",
-          "Calls to action that are too subtle — visitors don't know how to get in touch",
-          "Out-of-date content that makes the business look inactive or unreliable"
+          "Not appearing for Watford-specific plumbing searches",
+          "Frustrating mobile experience for customers in a hurry",
+          "Unprofessional designs that don't build Watford trust",
+          "Hard-to-find contact info on mobile devices",
+          "Generic content that doesn't mention Watford or local areas"
         ]
       },
       {
-        title: "What We Build for Watford Plumbers",
-        description: "Every element of your website is chosen to help you win more local work. Nothing is included for show — it all has a purpose.",
+        title: "Our Watford Success Strategy",
+        description: "We build websites that dominate the Watford plumbing market.",
         points: [
-          "High-Impact Design: A confident, professional look that gives customers in Watford an immediate reason to stay.",
-          "Structured for Leads: Phone numbers, quote forms, and clear descriptions positioned where expected.",
-          "Mobile-Perfect: Built mobile-first from the start to capture searches happening on phones.",
-          "Fully Managed Hosting: Your site is hosted on our fast, secure infrastructure. No technical upkeep.",
-          "Regular Content Updates: Seasonal offers, new services, extended area coverage — all updated promptly."
+          "Watford-Centric SEO: Ranking for WD17, WD18, WD19 and more.",
+          "Call-Driven Design: Buttons and forms that convert.",
+          "Managed Maintenance: We keep your Watford site running fast.",
+          "Local Content: We write about your services in Watford.",
+          "Stress-Free Setup: We handle the tech; you handle the plumbing."
         ]
       },
       {
-        title: "Appearing in Watford's Local Search Results",
-        description: "Watford sits in a dense search area that includes Hemel Hempstead, Harrow, and the wider WD postcode region. Getting your site to rank means going beyond the basics — it means building something Google genuinely trusts as a local authority.",
-        points: [
-          "Local Search Optimisation: Coverage of Watford alongside WD postcodes and surrounding towns like Bushey.",
-          "Technical SEO: Fast load speeds to meet Core Web Vitals, properly structured URLs and metadata.",
-          "Schema & Emerging Search: LocalBusiness, Service, and FAQ schema for richer Google results, llms.txt implementation."
-        ]
+        title: "From Cassiobury to Oxhey",
+        description: "We make sure your plumbing business is visible to every household in the Watford area."
       },
       {
-        title: "How We Get You Live",
+        title: "Getting Live in Watford",
         points: [
-          "Kick-off: You tell us about your Watford plumbing business — areas, services, and priorities.",
-          "We build it: Full design, professional copywriting, local SEO setup, and technical configuration.",
-          "You review it: We send you a preview and make any changes before anything goes live.",
-          "We manage it: Launch, hosting, updates, and maintenance — all handled on an ongoing basis."
+          "1. Strategic Build.",
+          "2. Review Link.",
+          "3. Managed Launch.",
+          "4. Ongoing Care."
         ]
       }
     ]
   },
 
-  // Electricians
+  // Electrical
   "electrician-web-design": {
     url: "electrician-web-design",
     keyword: "Web design for electricians",
-    metaTitle: "Website Design for Electricians | Get More Leads",
-    metaDescription: "We build high-converting websites for electricians built to generate enquiries. Fully managed from £59 per month. Start getting more jobs today.",
+    metaTitle: "Website Design for Electricians | From £59 Per Month",
+    metaDescription: "High-converting websites for electricians. Modern, fast and fully managed from £59 per month. Get more local electrical jobs today.",
     industry: "Electrical",
     heroTitle: "Website Design for Electricians",
-    heroSubtitle: "Get More Electrical Work with a Website That Builds Trust and Converts",
-    checklist: ["No upfront cost on our monthly plan", "Credentials presented prominently", "Built for emergency and planned work"],
+    heroSubtitle: "Build Trust and Win More Local Electrical Contracts",
+    checklist: ["No upfront cost on monthly plan", "Fully managed hosting & updates", "Built for lead generation"],
     sections: [
       {
-        title: "Why Electrical Customers Aren't Choosing You Online",
-        description: "Electrical work is trust-sensitive. Customers are making a safety-critical decision and scrutinise electricians more carefully than almost any other trade. If your website doesn't address that scrutiny, they'll find someone else.",
+        title: "Is Your Electrician Website Underperforming?",
+        description: "In the electrical trade, safety and professionalism are paramount. If your website looks amateur or outdated, customers won't trust you with their home's wiring. A poor online presence is like showing up to a job without the right tools.",
         points: [
-          "NICEIC, NAPIT, or Part P registration not mentioned or buried",
-          "No customer reviews or testimonials to provide social proof",
-          "Generic service pages with no separation between distinct services",
-          "Missing from local search results for the terms customers actually use",
-          "Slow, outdated designs that undermine your professional impression",
-          "Contact information difficult to find, especially for out-of-hours calls"
+          "Outdated designs that fail to convey safety and expertise",
+          "Slow loading times that frustrate potential customers",
+          "Not optimized for mobile — where most emergency searches happen",
+          "No clear way to request a quote or view certifications",
+          "Invisible on Google for local electrical search terms",
+          "Generic content that doesn't mention your local areas"
         ]
       },
       {
-        title: "What You Get with a Cosy Content Electrician Website",
-        description: "Every site we build for electricians is structured around what customers need to see before they'll make contact — credentials, trust signals, and clarity.",
+        title: "What We Build for Local Electricians",
+        description: "We create professional, high-performance websites designed specifically to win more electrical work.",
         points: [
-          "Credentials-First Design: Your registrations and insurance are front and centre.",
-          "Service-Specific Pages: Separate sections for rewires, EICRs, EV chargers, and more.",
-          "Fast & Mobile-First Build: Essential for capturing urgent fault-finding searches.",
-          "Review Integration: Testimonials integrated naturally to build confidence.",
-          "Fully Managed: Hosting, security, and maintenance all handled by our team.",
-          "Content Written for You: Professional copywriting for all your services."
+          "Credible & Trustworthy Design: Layouts that highlight your qualifications and safety standards.",
+          "Fast & Mobile-Responsive: Ensuring you're found by customers searching for emergency electricians on their phones.",
+          "Lead-Focused: Clear calls-to-action, quote forms, and click-to-call buttons.",
+          "Managed Service: We handle all the technical details, security, and hosting.",
+          "Regular Updates: We're here to add new services, project photos, or testimonials whenever you need.",
+          "Professional Copywriting: We write your service pages and location content for you."
         ]
       },
       {
-        title: "Designed with SEO from Day One",
-        description: "Ranking for electrical searches in your area takes a site built with local SEO as a foundation, not an afterthought.",
+        title: "SEO for Electricians from the Ground Up",
+        description: "We ensure your business is visible to people in your area searching for an electrician.",
         points: [
-          "Technical SEO Foundations: Proper site structure and optimized performance.",
-          "Local SEO Setup: Targeting your specific service areas and local searches.",
-          "Smart Schema Markup: LocalBusiness and Service schema for better visibility.",
-          "Future-Ready: llms.txt implementation for visibility in AI-powered search."
+          "Local Search Strategy: Targeting your specific service areas and towns.",
+          "Technical Foundations: Built for speed and search engine visibility.",
+          "Rich Schema Markup: Helping Google understand your services and location.",
+          "Secure & Reliable: SSL certificates and secure hosting included."
         ]
       },
       {
-        title: "How It Works",
-        description: "We keep the process simple. Most electrician websites are live within days:",
+        title: "Our Simple Build Process",
+        description: "Get your new electrician website live without any stress:",
         points: [
-          "1. We build your site: We create a modern electrician website tailored to your business — writing all the content, designing the layout, and setting up the full technical and SEO foundation.",
-          "2. You review it: We share a preview link. If anything needs adjusting before launch, just say the word.",
-          "3. We launch it: Your site goes live and begins generating enquiries. We handle the hosting setup and Google submission.",
-          "4. We manage everything: Hosting, maintenance, security, and updates — all handled by our team on an ongoing basis."
-        ]
-      },
-      {
-        title: "Who This Is For",
-        description: "This service is designed for qualified electricians who want their online presence to match the standard of their actual work. It works best for:",
-        points: [
-          "Electricians with outdated websites that aren't reflecting their qualifications or generating enquiries",
-          "Sole traders who want to look as professional online as they are on the job",
-          "Electricians looking to promote higher-value services like EV charging or smart home installations",
-          "Anyone who wants to reduce reliance on directories and own their own source of leads",
-          "Electrical businesses expanding into new service areas or postcode coverage"
+          "1. Build: We design and write your new site, focusing on your specific electrical services.",
+          "2. Review: You check the preview link and let us know if any tweaks are needed.",
+          "3. Launch: We handle the launch and set up your hosting and Google submission.",
+          "4. Manage: We take care of everything ongoing so you can focus on your jobs."
         ]
       }
     ]
@@ -482,55 +508,46 @@ export const seoPagesData: Record<string, SEOPageInfo> = {
     url: "electrician-web-design-luton",
     keyword: "Web design for electricians in Luton",
     metaTitle: "Electrician Website Design Luton | From £59 per month",
-    metaDescription: "Professional websites for electricians in Luton. Fast, mobile-friendly and built to generate leads. From £59 per month.",
+    metaDescription: "Professional website design for electricians in Luton. Modern, lead-gen sites from £59 per month.",
     industry: "Electrical",
     location: "Luton",
     heroTitle: "Electrician Website Design in Luton",
-    heroSubtitle: "Get found by Luton homeowners looking for a reliable sparky",
-    checklist: ["No upfront cost", "Fully managed", "Convert emergency and planned work"],
+    heroSubtitle: "Professional websites for Luton's best electrical contractors",
+    checklist: ["No upfront cost", "Lead-focused build", "Fully managed"],
     sections: [
       {
-        title: "Why Luton Electricians Lose Work Online",
-        description: "Luton is a busy town, and when homeowners need an electrician, they go straight to Google. If you aren't on the first page, or if your site looks amateur, they'll call the next person on the list.",
+        title: "Why Luton Electricians Need a Modern Website",
+        description: "Luton is a busy, competitive area. To win the best residential and commercial jobs, you need to look more professional than the competition. A DIY website or a tired old page isn't enough to build the trust needed for electrical work.",
         points: [
-          "Outdated designs that don't build trust",
-          "Slow loading times on mobile devices",
-          "No clear emergency contact information",
-          "Invisible to local Luton searches",
-          "Difficult for customers to request a quote"
+          "Not appearing for local Luton electrical searches",
+          "Unprofessional designs that don't convey safety and trust",
+          "Hard-to-use mobile sites for emergency call-outs",
+          "No clear way for Luton customers to contact you",
+          "Sites that load too slowly, causing customers to call someone else"
         ]
       },
       {
-        title: "What Your Luton Electrician Website Will Include",
-        description: "We don't just build a digital business card; we build a lead-generation tool tailored for the electrical trade.",
+        title: "Our Luton Electrician Package",
+        description: "We build websites that generate more work for your Luton electrical business.",
         points: [
-          "Mobile-Optimised Layout: Looks perfect on every smartphone.",
-          "Professional Copywriting: We write the words that sell your services.",
-          "High-Speed Performance: Fast pages for better user experience and rankings.",
-          "Clear Calls to Action: Make it easy for customers to call or message you.",
-          "Fully Managed Service: We handle the tech so you can handle the tools."
+          "Luton-Specific SEO: Targeting the towns and neighborhoods you serve.",
+          "Professional Credibility: Highlighting your NICEIC or similar accreditations.",
+          "Lead-Driven Layout: Built to turn visitors into quote requests.",
+          "Managed Hosting: 100% uptime and high security standard.",
+          "Ongoing Maintenance: We handle the technical side so you don't have to."
         ]
       },
       {
-        title: "Built Around How Luton Customers Search",
-        description: "From emergency call-outs in the middle of the night to planned EICR inspections and rewires, your website will be structured to capture the full range of electrical work in Luton."
+        title: "Serving Luton and Beyond",
+        description: "From Leagrave to Stopsley, we make sure your electrical services are seen by every household in Luton."
       },
       {
-        title: "Local SEO for Luton Electricians",
-        description: "We ensure your business shows up for searches like 'electrician Luton', 'emergency electrician near me', and 'EV charger installation Luton'.",
+        title: "The Luton Launch Roadmap",
         points: [
-          "Technical SEO foundations",
-          "LocalBusiness schema markup",
-          "Google Business Profile optimisation advice"
-        ]
-      },
-      {
-        title: "Our Simple Process",
-        points: [
-          "1. Brief: Tell us about your business.",
-          "2. Build: We design and write everything.",
-          "3. Review: You sign off on the design.",
-          "4. Live: We launch and manage your site."
+          "Phase 1: Build & Content.",
+          "Phase 2: Review & Approve.",
+          "Phase 3: Managed Launch.",
+          "Phase 4: Ongoing Support."
         ]
       }
     ]
@@ -538,47 +555,47 @@ export const seoPagesData: Record<string, SEOPageInfo> = {
   "electrician-web-design-bedford": {
     url: "electrician-web-design-bedford",
     keyword: "Web design for electricians in Bedford",
-    metaTitle: "Electrician Website Design Bedford | Get More Jobs",
-    metaDescription: "Need more electrician leads in Bedford? We design high-converting websites with low upfront cost.",
+    metaTitle: "Electrician Website Design Bedford | Fast & Professional",
+    metaDescription: "Professional website design for electricians in Bedford. Lead-generating sites from £59 per month.",
     industry: "Electrical",
     location: "Bedford",
     heroTitle: "Electrician Website Design in Bedford",
-    heroSubtitle: "A website that works as hard as you do to win Bedford clients",
-    checklist: ["Nothing to pay upfront", "We write every word", "Attract urgent and planned projects"],
+    heroSubtitle: "High-performance websites for Bedfordshire's electricians",
+    checklist: ["No upfront cost", "Managed launch", "Lead-focused design"],
     sections: [
       {
-        title: "Why Bedford Electricians Struggle Online",
-        description: "Many electricians in Bedford rely on word-of-mouth, which is great until it dries up. A professional website ensures a steady stream of enquiries year-round.",
+        title: "The Bedford Electrical Market is Competitive",
+        description: "To win the best jobs in Bedford, your website needs to look professional, load fast, and rank well on Google. Anything less is costing you enquiries.",
         points: [
-          "No presence on Google for Bedford searches",
-          "Websites that don't work on mobile phones",
-          "Poorly explained services leading to bad leads",
-          "Lack of trust signals like reviews and certifications",
-          "Hard-to-find contact details"
+          "Invisible on Google for 'electrician Bedford' searches",
+          "Outdated designs that don't reflect your expertise",
+          "Poor mobile performance for emergency call-outs",
+          "No clear call-to-action for Bedford customers",
+          "Slow loading speeds causing visitors to leave"
         ]
       },
       {
-        title: "Complete Electrician Website Package",
-        description: "Everything you need to stand out in the Bedford electrical market.",
+        title: "Our Bedford Build Strategy",
+        description: "We create electrician websites that dominate the Bedford market.",
         points: [
-          "Bespoke Design: Not a generic template.",
-          "Lead-Focused Content: Written specifically for the electrical trade.",
-          "Managed Hosting: Fast and secure infrastructure included.",
-          "SEO Ready: Built to rank from day one.",
-          "Ongoing Updates: We make changes whenever you need them."
+          "Bedford-Focused SEO: Targeting the MK40, MK41 and MK42 areas.",
+          "Trust-Building Design: Showcasing your skills and certifications.",
+          "Fully Managed: Hosting, security, and updates all handled.",
+          "Lead Generation: Built to convert visitors into booked jobs.",
+          "Local Content: We write about your services in Bedford."
         ]
       },
       {
-        title: "Ranking Across Bedford",
-        description: "We target the specific postcodes and areas you serve in Bedford, ensuring you appear for 'electrician Bedford' and surrounding village searches."
+        title: "Serving Every Part of Bedford",
+        description: "We ensure your business is visible to customers across the entire Bedford area, including surrounding villages."
       },
       {
-        title: "How We Work",
+        title: "Getting Live in Bedford",
         points: [
-          "Step 1: We gather your info.",
-          "Step 2: Our team builds your site.",
-          "Step 3: You review and approve.",
-          "Step 4: Launch and ongoing management."
+          "1. Rapid Development.",
+          "2. Client Sign-off.",
+          "3. Managed Launch.",
+          "4. Ongoing Care."
         ]
       }
     ]
@@ -586,47 +603,47 @@ export const seoPagesData: Record<string, SEOPageInfo> = {
   "electrician-web-design-dunstable": {
     url: "electrician-web-design-dunstable",
     keyword: "Web design for electricians in Dunstable",
-    metaTitle: "Electrician Website Design Dunstable | Affordable & Fast",
-    metaDescription: "Affordable electrician websites in Dunstable. We design, build and manage everything for you. Low upfront cost.",
+    metaTitle: "Electrician Website Design Dunstable | Launch for £59/mo",
+    metaDescription: "Professional website design for electricians in Dunstable. Fast, reliable and local. From £59 per month.",
     industry: "Electrical",
     location: "Dunstable",
     heroTitle: "Electrician Website Design in Dunstable",
-    heroSubtitle: "Put your electrical business in front of Dunstable customers first",
-    checklist: ["No payment required upfront", "All content written for you", "Built to rank locally"],
+    heroSubtitle: "Win more electrical work across Dunstable and LU postcode areas",
+    checklist: ["No upfront cost", "Managed launch", "Lead-focused build"],
     sections: [
       {
-        title: "Solving the Trust Problem for Dunstable Electricians",
-        description: "Homeowners in Dunstable want to know they are hiring a professional. A clean, modern website with your certifications and reviews builds that trust instantly.",
+        title: "Dunstable Electricians Need a Better Online Presence",
+        description: "When people in Dunstable need an electrician, they search online. If your website isn't there, or if it doesn't look professional, you're missing out on jobs.",
         points: [
-          "Amateur looking websites that scare off big jobs",
-          "Slow page speeds that frustrate users",
-          "No mobile optimisation for on-the-go searches",
-          "Missing out on local Dunstable traffic",
-          "Generic content that doesn't showcase your expertise"
+          "Not ranking for 'electrician Dunstable' or 'emergency electrician Dunstable'",
+          "Amateur designs that don't inspire confidence in your safety standards",
+          "Sites that don't work properly on mobile devices",
+          "Missing or hidden contact information for Dunstable customers",
+          "Generic content that doesn't mention your Dunstable service areas"
         ]
       },
       {
-        title: "Everything Your Dunstable Electrical Website Needs",
-        description: "We include everything necessary to turn visitors into quote requests.",
+        title: "What We Build for Dunstable Electrical Businesses",
+        description: "We create websites that turn Dunstable locals into loyal customers.",
         points: [
-          "Conversion-Optimised Layout",
-          "Professional Industry Copywriting",
-          "Fast & Secure Hosting",
-          "Local SEO Setup",
-          "Monthly Maintenance & Updates"
+          "Dunstable-Specific SEO: Targeting the LU5 and LU6 areas.",
+          "Safety-Focused Design: Highlighting your qualifications and experience.",
+          "Fully Managed: Hosting, security, and maintenance all taken care of.",
+          "Lead-Gen Focused: Clear buttons and forms to capture enquiries.",
+          "Local Copywriting: We write your Dunstable-focused content for you."
         ]
       },
       {
-        title: "Ranking in Dunstable",
-        description: "We help you dominate local search for 'electrician Dunstable', 'fuse board upgrade Dunstable', and 'rewires Dunstable'."
+        title: "Covering the Entire Dunstable Area",
+        description: "We make sure your electrical services are visible to every household across Dunstable and the surrounding villages."
       },
       {
-        title: "How We Get You Live",
+        title: "The Dunstable Onboarding Process",
         points: [
-          "Discovery: We learn about your services.",
-          "Creation: We build the full site.",
-          "Approval: You review the draft.",
-          "Growth: We launch and manage it."
+          "Consult & Build.",
+          "Preview & Feedback.",
+          "Launch & SEO Setup.",
+          "Ongoing Management."
         ]
       }
     ]
@@ -634,47 +651,47 @@ export const seoPagesData: Record<string, SEOPageInfo> = {
   "electrician-web-design-milton-keynes": {
     url: "electrician-web-design-milton-keynes",
     keyword: "Web design for electricians in Milton Keynes",
-    metaTitle: "Electrician Website Design Milton Keynes | Fast Setup",
-    metaDescription: "Get a modern electrician website in Milton Keynes quickly. Fully managed and built to convert. Low upfront cost.",
+    metaTitle: "Electrician Website Design Milton Keynes | Lead-Gen Experts",
+    metaDescription: "Professional website design for electricians in Milton Keynes. High-performance sites from £59 per month.",
     industry: "Electrical",
     location: "Milton Keynes",
     heroTitle: "Electrician Website Design in Milton Keynes",
-    heroSubtitle: "Tap into MK's booming demand for electrical services",
-    checklist: ["Zero upfront cost", "Targeting grid squares", "Built for domestic and commercial"],
+    heroSubtitle: "Modern websites for Milton Keynes' best electrical contractors",
+    checklist: ["No upfront cost", "SEO-optimized", "Fully managed"],
     sections: [
       {
-        title: "MK Electricians Need a Website That Goes Further",
-        description: "Milton Keynes is a unique and competitive market. Your website needs to handle everything from domestic repairs to large-scale commercial installs.",
+        title: "Standing Out in the Milton Keynes Electrical Market",
+        description: "Milton Keynes is a fast-growing, high-tech city. Your website needs to reflect that with a clean, modern design that builds trust with both homeowners and commercial clients.",
         points: [
-          "Missing out on specific grid square searches",
-          "Not appearing for new-build electrical work",
-          "Slow performance in a tech-savvy town",
-          "Weak mobile experience",
-          "No clear differentiation from competitors"
+          "Outdated sites that don't match the modern Milton Keynes feel",
+          "Invisible on Google for competitive MK electrical searches",
+          "Failing to capture the growing new-build market in Milton Keynes",
+          "Poor mobile performance for emergency electrical calls",
+          "Lack of clear 'Call Now' or 'Book a Quote' buttons"
         ]
       },
       {
-        title: "What We Build for MK Electricians",
-        description: "Advanced features and professional design for the modern MK market.",
+        title: "Our Milton Keynes Electrical Package",
+        description: "We build high-spec websites for high-performing electricians in Milton Keynes.",
         points: [
-          "High-Impact Visual Design",
-          "Strategic Service Area Targeting",
-          "Ultra-Fast Load Speeds",
-          "Expert Local SEO foundations",
-          "Regular Technical Support"
+          "Milton Keynes Grid Targeting: SEO strategy for all MK areas.",
+          "Modern, Professional Design: Layouts that inspire confidence.",
+          "Fully Managed Infrastructure: Fast, secure, and 100% reliable.",
+          "Lead Generation Focus: Built to convert MK visitors into jobs.",
+          "Ongoing Support: We handle the technical side so you don't have to."
         ]
       },
       {
-        title: "Ranking Across MK's Complex Postcodes",
-        description: "We ensure you are visible from Bletchley to Newport Pagnell and everywhere in between."
+        title: "Serving All of Milton Keynes",
+        description: "From Wolverton to Fenny Stratford, we ensure your electrical business is seen by everyone across Milton Keynes."
       },
       {
-        title: "Straightforward Process",
+        title: "Getting Live in Milton Keynes",
         points: [
-          "1. Strategic briefing.",
-          "2. Professional build.",
-          "3. Quality sign-off.",
-          "4. Managed launch."
+          "1. Build & Design.",
+          "2. Review Link.",
+          "3. Managed Launch.",
+          "4. Ongoing Care."
         ]
       }
     ]
@@ -682,47 +699,47 @@ export const seoPagesData: Record<string, SEOPageInfo> = {
   "electrician-web-design-st-albans": {
     url: "electrician-web-design-st-albans",
     keyword: "Web design for electricians in St Albans",
-    metaTitle: "Electrician Website Design St Albans | Lead Generation",
-    metaDescription: "We create lead-generating websites for electricians in St Albans. Simple pricing, low upfront cost.",
+    metaTitle: "Electrician Website Design St Albans | Premium Service",
+    metaDescription: "Professional website design for electricians in St Albans. High-quality, managed sites from £59 per month.",
     industry: "Electrical",
     location: "St Albans",
     heroTitle: "Electrician Website Design in St Albans",
-    heroSubtitle: "Attract the quality electrical work St Albans homeowners are looking for",
-    checklist: ["No upfront cost", "Built to attract quality work", "Fully managed"],
+    heroSubtitle: "A premium online presence for St Albans' electrical experts",
+    checklist: ["No upfront cost", "Premium design", "Local SEO built-in"],
     sections: [
       {
-        title: "St Albans Customers Expect More",
-        description: "In St Albans, homeowners value quality and professionalism. If your website doesn't look the part, you're missing out on the best jobs in AL1 and AL2.",
+        title: "St Albans Customers Demand High Standards",
+        description: "In St Albans, first impressions are critical. To win high-value residential and commercial contracts, your website must convey absolute professionalism and safety.",
         points: [
-          "Designs that don't match St Albans standards",
-          "No focus on premium electrical services",
-          "Missing local search traffic",
-          "Slow and unresponsive layouts",
-          "Poor trust signals and accreditation visibility"
+          "Amateur-looking sites that don't reflect St Albans quality",
+          "Not ranking for 'electrician St Albans' or 'electrical contractor AL1'",
+          "Poor mobile experience for busy, affluent customers",
+          "Lack of clear information on qualifications and safety standards",
+          "Slow performance causing high bounce rates"
         ]
       },
       {
-        title: "A Website That Attracts St Albans' Best Jobs",
-        description: "We position you as the premium choice for electrical work in St Albans.",
+        title: "The St Albans Electrician Package",
+        description: "Websites that reflect the premium quality of your St Albans electrical business.",
         points: [
-          "Elegant & Professional Design",
-          "Tailored Service Pages (Rewires, Smart Home, EICR)",
-          "Performance Optimisation",
-          "Comprehensive Local SEO",
-          "Continuous Managed Service"
+          "High-End Design: Clean, elegant, and trustworthy layouts.",
+          "St Albans-Focused SEO: Targeting AL1, AL2 and AL3 postcode areas.",
+          "Fully Managed hosting: Secure, reliable, and lightning fast.",
+          "Professional Copywriting: We write your service and area content.",
+          "Continuous Management: We're here for any changes you need."
         ]
       },
       {
-        title: "Ranking in St Albans",
-        description: "Dominate search results for 'electrician St Albans' and 'St Albans electrical contractor'."
+        title: "Serving St Albans and the District",
+        description: "We make sure your electrical business is seen across the entire St Albans area, including Harpenden and neighboring villages."
       },
       {
-        title: "Our Process",
+        title: "The St Albans Roadmap",
         points: [
-          "Consult: Define your ideal jobs.",
-          "Create: We build your high-end site.",
-          "Perfect: You request any final tweaks.",
-          "Manage: We take care of everything ongoing."
+          "Blueprint & Content.",
+          "Build & Design.",
+          "Review & Feedback.",
+          "Launch & SEO Setup."
         ]
       }
     ]
@@ -730,421 +747,393 @@ export const seoPagesData: Record<string, SEOPageInfo> = {
   "electrician-web-design-watford": {
     url: "electrician-web-design-watford",
     keyword: "Web design for electricians in Watford",
-    metaTitle: "Electrician Website Design Watford | Done For You",
-    metaDescription: "Done-for-you websites for electricians in Watford. No hassle, low upfront cost. Start getting more enquiries.",
+    metaTitle: "Electrician Website Design Watford | Launch for £59/mo",
+    metaDescription: "Professional website design for electricians in Watford. Fast, local and reliable. From £59 per month.",
     industry: "Electrical",
     location: "Watford",
     heroTitle: "Electrician Website Design in Watford",
-    heroSubtitle: "Get found by Watford homeowners looking for an electrician",
-    checklist: ["No upfront cost", "Fully managed", "Built for Watford businesses"],
+    heroSubtitle: "Win more electrical work across Watford and Southwest Herts",
+    checklist: ["No upfront cost", "Lead-generation focus", "Fully managed"],
     sections: [
       {
-        title: "Why Watford Electricians Lose Work",
-        description: "Watford is a highly competitive area. To win work here, you need to be visible and look more professional than the competition.",
+        title: "Watford Electricians Need Fast, Lead-Gen Sites",
+        description: "Watford is a busy hub. When an electrical fault occurs, Watford customers need to find you and call you instantly. If your site is slow or hard to use, you're losing jobs.",
         points: [
-          "Low Google rankings in the WD postcode",
-          "Websites that break on mobile",
-          "No clear way to get a quote",
-          "Missing out on emergency call-out traffic",
-          "Outdated design reducing credibility"
+          "Not ranking for Watford-specific electrical searches",
+          "Frustrating mobile experience for customers in a hurry",
+          "Unprofessional designs that don't build Watford trust",
+          "Hidden or hard-to-find contact information on mobile",
+          "Generic content that doesn't mention Watford or local areas"
         ]
       },
       {
-        title: "What Your Watford Electrician Website Will Include",
-        description: "A complete solution designed to generate more electrical leads in Watford.",
+        title: "Our Watford Success Strategy",
+        description: "We build electrical websites that dominate the Watford market.",
         points: [
-          "Modern, Fast-Loading Design",
-          "Mobile-First Build",
-          "Professional Copywriting",
-          "Local SEO Targeting Watford & Bushey",
-          "Reliable Hosting & Support"
+          "Watford-Centric SEO: Ranking for WD17, WD18 and WD19 areas.",
+          "Professional Design: Conveying safety and expertise to Watford clients.",
+          "Fully Managed Infrastructure: Fast, secure, and always live.",
+          "Lead-Driven Design: Built to turn Watford visitors into booked jobs.",
+          "Ongoing Support: We handle the technical side so you don't have to."
         ]
       },
       {
-        title: "Built Around How Watford Customers Search",
-        description: "We target exactly what Watford residents are searching for, from emergency repairs to electric vehicle charger installations."
+        title: "Covering Every Part of Watford",
+        description: "We make sure your electrical business is visible to every household across the entire Watford area."
       },
       {
-        title: "Local SEO for Watford",
-        description: "Appearing for 'electrician Watford' and 'Watford electrical services' is our priority."
-      },
-      {
-        title: "Simple Process",
+        title: "Getting Live in Watford",
         points: [
-          "1. Discovery call.",
-          "2. Full website build.",
-          "3. Review & launch.",
-          "4. 24/7 management."
+          "1. Strategic Development.",
+          "2. Preview & Sign-off.",
+          "3. Managed Launch.",
+          "4. Continuous Management."
         ]
       }
     ]
   },
 
-  // Roofers
+  // Roofing
   "roofer-web-design": {
     url: "roofer-web-design",
-    keyword: "web design for roofers",
-    metaTitle: "Website Design for Roofers | More Enquiries",
-    metaDescription: "We design websites for roofing companies that convert visitors into leads. Modern, fast and fully managed from £59 per month.",
+    keyword: "Web design for roofers",
+    metaTitle: "Website Design for Roofers | From £59 Per Month",
+    metaDescription: "High-converting websites for roofers. Modern, fast and fully managed from £59 per month. Get more local roofing jobs today.",
     industry: "Roofing",
     heroTitle: "Website Design for Roofers",
-    heroSubtitle: "Get More Roofing Jobs with a Website That Actually Converts",
-    checklist: ["No upfront cost on our monthly plan", "Showcase your portfolio", "Built for high-value leads"],
+    heroSubtitle: "Build Local Trust and Generate More Roofing Leads",
+    checklist: ["No upfront cost on monthly plan", "Fully managed hosting & updates", "Built for lead generation"],
     sections: [
       {
-        title: "Why Your Roofing Website Isn't Bringing in Work",
-        description: "Roofing is a high-intent local search category. When someone searches for a roofer, they usually need one soon. If your site is slow, buried on page two, or doesn't build trust quickly, that job goes to someone else.",
+        title: "Is Your Roofing Website Costing You Work?",
+        description: "In the roofing trade, your website is often the first thing a potential customer sees. If it looks amateur or outdated, they'll worry about the quality of your work. A professional online presence is essential to winning high-value roofing contracts.",
         points: [
-          "Invisible in Google local results for the searches that matter most",
-          "Outdated designs that undermine confidence before a customer reads a word",
-          "No mention of insurance or guarantees — the first things customers check for",
-          "Slow load times on mobile, where the majority of roofing searches happen",
-          "No service-specific pages for pitched roofs, flat roofs, or guttering",
-          "Missing from surrounding area searches despite covering those locations"
+          "Outdated designs that fail to convey quality and reliability",
+          "Slow loading times that frustrate potential customers",
+          "Not optimized for mobile — where most emergency searches happen",
+          "No clear way to request a quote or view recent projects",
+          "Invisible on Google for local roofing search terms",
+          "Generic content that doesn't mention your local service areas"
         ]
       },
       {
-        title: "What You Get with a Cosy Content Roofer Website",
-        description: "Every site we build for roofers is designed around how customers make decisions — with urgency and trust at the centre.",
+        title: "What We Build for Local Roofers",
+        description: "We create professional, high-performance websites designed specifically to win more roofing work.",
         points: [
-          "Professional, Trust-Building Design: Credible layouts that communicate reliability.",
-          "Service-Specific Pages: Dedicated sections for pitched roofing, flat roofing, and repairs.",
-          "Fast & Mobile-First: Capturing customers searching during or after weather events.",
-          "Insurance & Guarantee Visibility: Displaying your cover details prominently.",
-          "Fully Managed: Hosting, security, and all technical maintenance handled.",
-          "Content Written for You: Service descriptions, area coverage, and FAQs included."
+          "Professional & Trustworthy Design: Highlighting your skills, experience, and certifications.",
+          "Fast & Mobile-Responsive: Ensuring you're found by customers searching for emergency roof repairs on their phones.",
+          "Lead-Focused: Clear calls-to-action, quote request forms, and click-to-call buttons.",
+          "Fully Managed Service: We handle all the technical details, security, and hosting.",
+          "Regular Updates: We're here to add new project photos, testimonials, or services whenever you need.",
+          "Professional Copywriting: We write your service pages and location content for you."
         ]
       },
       {
-        title: "Designed with SEO from Day One",
-        description: "Ranking for roofing searches requires a website built with local SEO at its core, not added as an afterthought.",
+        title: "Roofing SEO from the Ground Up",
+        description: "We ensure your business is visible to people in your area searching for a roofer.",
         points: [
-          "Technical SEO Foundations: Optimized site structure and performance scores.",
-          "Local SEO Setup: Pages targeting your service areas and local searches.",
-          "Smart Schema Markup: LocalBusiness, Service, and FAQ schema for richer results.",
-          "Future-Ready: llms.txt implementation for visibility in AI and traditional search."
+          "Local Search Strategy: Targeting your specific service areas and towns.",
+          "Technical Foundations: Built for speed and search engine visibility.",
+          "Rich Schema Markup: Helping Google understand your services and location.",
+          "Secure & Reliable: SSL certificates and secure hosting included."
         ]
       },
       {
-        title: "How It Works",
-        description: "We keep the process simple. Most roofing websites are live within days:",
+        title: "Our Stress-Free Build Process",
+        description: "Get your new roofer website live without any hassle:",
         points: [
-          "1. We build your site: We create a modern roofing website tailored to your business — writing all the content, designing the layout, and setting up the full technical and SEO foundation.",
-          "2. You review it: We share a preview link. If anything needs adjusting before launch, just say the word.",
-          "3. We launch it: Your site goes live and begins generating enquiries. We handle the hosting setup and Google submission.",
-          "4. We manage everything: Hosting, maintenance, security, and updates — all handled by our team on an ongoing basis."
-        ]
-      },
-      {
-        title: "Who This Is For",
-        description: "This service is built for roofing businesses serious about growing their online presence. It works particularly well for:",
-        points: [
-          "Roofers with outdated websites that aren't generating a consistent flow of enquiries",
-          "New roofing businesses that need to look established and credible from day one",
-          "Sole traders who want a professional online presence without the hassle of managing it",
-          "Roofers who rely heavily on word-of-mouth and want a more predictable source of work",
-          "Roofing companies looking to expand into new areas or add new service lines online"
+          "1. Build: We design and write your new site, focusing on your specific roofing services.",
+          "2. Review: You check the preview link and let us know if any tweaks are needed.",
+          "3. Launch: We handle the launch and set up your hosting and Google submission.",
+          "4. Manage: We take care of everything ongoing so you can focus on your jobs."
         ]
       }
     ]
   },
   "roofer-web-design-luton": {
     url: "roofer-web-design-luton",
-    keyword: "web design for roofers in Luton",
-    metaTitle: "Roofer Website Design Luton | Get More Enquiries",
-    metaDescription: "We design high-converting roofing websites in Luton. Modern, fast and built to generate leads. Tiny upfront cost.",
+    keyword: "Web design for roofers in Luton",
+    metaTitle: "Roofer Website Design Luton | From £59 per month",
+    metaDescription: "Professional website design for roofers in Luton. Modern, lead-gen sites from £59 per month.",
     industry: "Roofing",
     location: "Luton",
     heroTitle: "Roofer Website Design in Luton",
-    heroSubtitle: "Win more roofing contracts across Luton and Bedfordshire",
-    checklist: ["No upfront cost", "Showcase your portfolio", "Built for high-value leads"],
+    heroSubtitle: "Professional websites for Luton's best roofing contractors",
+    checklist: ["No upfront cost", "Lead-focused build", "Fully managed"],
     sections: [
       {
-        title: "Why Luton Roofers Need a Stronger Online Presence",
-        description: "Roofing is a high-ticket service. Customers in Luton won't just hire anyone; they want to see proof of quality and a professional appearance. If your website is non-existent or outdated, you're handing work to your competitors.",
+        title: "Why Luton Roofers Need a Modern Online Presence",
+        description: "Luton is a busy, competitive area. To win the best residential and commercial roofing jobs, you need to look more professional than the competition. A tired old site or a basic directory listing isn't enough to build the trust needed for roofing work.",
         points: [
-          "Customers can't find you for local roofing searches",
-          "Lack of high-quality project galleries",
-          "Slow loading times on mobile devices",
-          "No trust signals (guarantees, insurance, reviews)",
-          "Difficult for customers to request a free quote"
+          "Not appearing for local Luton roofing searches",
+          "Unprofessional designs that don't convey quality and reliability",
+          "Hard-to-use mobile sites for emergency roof repairs",
+          "No clear way for Luton customers to contact you or request a quote",
+          "Sites that load too slowly, causing customers to call someone else"
         ]
       },
       {
-        title: "What Your Luton Roofing Website Will Do",
-        description: "We build websites that act as your best salesperson, 24/7.",
+        title: "Our Luton Roofer Package",
+        description: "We build websites that generate more work for your Luton roofing business.",
         points: [
-          "Gallery-Focused Design: Highlight your best work.",
-          "Mobile-Optimised: Perfect for local searches on the go.",
-          "Lead-Generation Forms: Easy quote requests for homeowners.",
-          "Local SEO: Rank for 'roofer Luton' and 'roof repairs Luton'.",
-          "Managed Service: We handle all the updates and hosting."
+          "Luton-Specific SEO: Targeting the towns and neighborhoods you serve.",
+          "Trust-Building Design: Showcasing your previous work and customer reviews.",
+          "Lead-Driven Layout: Built to turn visitors into quote requests.",
+          "Managed Hosting: Ultra-secure, fast, and 100% reliable.",
+          "Ongoing Maintenance: We handle the technical side so you don't have to."
         ]
       },
       {
-        title: "Built Around How Luton Customers Search",
-        description: "Whether it's an emergency leak after a storm or a planned re-roof, we ensure your business is the first one they see."
+        title: "Serving Luton and the Surrounding Area",
+        description: "From Marsh Farm to Caddington, we make sure your roofing services are seen by every household across Luton."
       },
       {
-        title: "Local SEO for Luton Roofers",
-        description: "We target the specific roofing services Luton residents need most.",
+        title: "The Luton Launch Roadmap",
         points: [
-          "Technical SEO setup",
-          "Location-specific service pages",
-          "Review and trust badge integration"
-        ]
-      },
-      {
-        title: "Simple Process",
-        points: [
-          "1. Strategic briefing.",
-          "2. Custom build.",
-          "3. Review and sign-off.",
-          "4. Managed launch."
+          "Phase 1: Strategic Build.",
+          "Phase 2: Review Link.",
+          "Phase 3: Managed Launch.",
+          "Phase 4: Ongoing Care."
         ]
       }
     ]
   },
   "roofer-web-design-bedford": {
     url: "roofer-web-design-bedford",
-    keyword: "web design for roofers in Bedford",
-    metaTitle: "Roofer Website Design Bedford | Affordable & Modern",
-    metaDescription: "Professional roofing websites in Bedford. We handle everything so you can focus on jobs. Low upfront cost.",
+    keyword: "Web design for roofers in Bedford",
+    metaTitle: "Roofer Website Design Bedford | Fast & Professional",
+    metaDescription: "Professional website design for roofers in Bedford. Lead-generating sites from £59 per month.",
     industry: "Roofing",
     location: "Bedford",
     heroTitle: "Roofer Website Design in Bedford",
-    heroSubtitle: "A professional website that helps you win more Bedford roofing jobs",
-    checklist: ["Nothing to pay upfront", "Professional project galleries", "Managed hosting and updates"],
+    heroSubtitle: "High-performance websites for Bedfordshire's roofers",
+    checklist: ["No upfront cost", "Managed launch", "Lead-focused design"],
     sections: [
       {
-        title: "Stand Out in the Bedford Roofing Market",
-        description: "With so many roofers operating in Bedford, your website needs to prove why you're the best choice. A professional site builds the trust needed for large contracts.",
+        title: "The Bedford Roofing Market is Competitive",
+        description: "To win the best jobs in Bedford, your website needs to look professional, load fast, and rank well on Google. Anything less is costing you enquiries.",
         points: [
           "Invisible on Google for 'roofer Bedford' searches",
-          "Websites that don't display well on phones",
-          "No easy way for clients to request a quote",
-          "Lack of professional photos of past work",
-          "Outdated information reducing customer confidence"
+          "Outdated designs that don't reflect the quality of your work",
+          "Poor mobile performance for emergency roofing repairs",
+          "No clear call-to-action for Bedford customers",
+          "Slow loading speeds causing visitors to leave"
         ]
       },
       {
-        title: "Complete Roofing Website Solution",
-        description: "Everything you need to grow your roofing business in Bedford.",
+        title: "Our Bedford Build Strategy",
+        description: "We create roofing websites that dominate the Bedford market.",
         points: [
-          "Modern, Fast-Loading Design",
-          "Custom Portfolio Sections",
-          "Managed SEO & Content",
-          "Secure & Reliable Hosting",
-          "Unlimited Minor Updates"
+          "Bedford-Focused SEO: Targeting the MK40, MK41 and MK42 areas.",
+          "Portfolio-Led Design: Highlighting your recent local projects.",
+          "Fully Managed: Hosting, security, and updates all handled.",
+          "Lead Generation: Built to convert visitors into booked jobs.",
+          "Local Content: We write about your services in Bedford."
         ]
       },
       {
-        title: "Ranking Across Bedford",
-        description: "We help you capture local searches across the MK40-MK45 postcode areas."
+        title: "Serving Every Corner of Bedford",
+        description: "We ensure your business is visible to customers across the entire Bedford area, including surrounding villages."
       },
       {
-        title: "How We Work",
+        title: "Getting Live in Bedford",
         points: [
-          "Step 1: Consultation.",
-          "Step 2: Design & Build.",
-          "Step 3: Client Review.",
-          "Step 4: Launch."
+          "1. Rapid Development.",
+          "2. Client Sign-off.",
+          "3. Managed Launch.",
+          "4. Ongoing Care."
         ]
       }
     ]
   },
   "roofer-web-design-dunstable": {
     url: "roofer-web-design-dunstable",
-    keyword: "web design for roofers in Dunstable",
-    metaTitle: "Roofer Website Design Dunstable | Affordable Sites",
-    metaDescription: "Affordable website design for roofers in Dunstable. Upgrade your outdated site and win more work.",
+    keyword: "Web design for roofers in Dunstable",
+    metaTitle: "Roofer Website Design Dunstable | Launch for £59/mo",
+    metaDescription: "Professional website design for roofers in Dunstable. Fast, reliable and local. From £59 per month.",
     industry: "Roofing",
     location: "Dunstable",
     heroTitle: "Roofer Website Design in Dunstable",
-    heroSubtitle: "Get more roofing leads in Dunstable with a professional website",
-    checklist: ["No upfront cost", "Built to rank locally", "Fully managed"],
+    heroSubtitle: "Win more roofing work across Dunstable and LU postcode areas",
+    checklist: ["No upfront cost", "Managed launch", "Lead-focused build"],
     sections: [
       {
-        title: "Why Dunstable Roofers Struggle Online",
-        description: "Many Dunstable roofing companies have slow, outdated sites that fail to convert. We fix that by creating high-performance lead machines.",
+        title: "Dunstable Roofers Need a Better Online Presence",
+        description: "When people in Dunstable need a roofer, they search online. If your website isn't there, or if it doesn't look professional, you're missing out on jobs.",
         points: [
-          "Poor visibility in Dunstable search results",
-          "Websites that look bad on mobile devices",
-          "Missing out on high-value roof replacement jobs",
-          "Weak trust signals and proof of work",
-          "Difficult navigation for potential clients"
+          "Not ranking for 'roofer Dunstable' or 'roof repair Dunstable'",
+          "Amateur designs that don't inspire confidence in your work",
+          "Sites that don't work properly on mobile devices",
+          "Missing or hidden contact information for Dunstable customers",
+          "Generic content that doesn't mention your Dunstable service areas"
         ]
       },
       {
-        title: "What Your Dunstable Roofing Website Includes",
-        description: "A comprehensive package designed for the roofing trade.",
+        title: "What We Build for Dunstable Roofing Businesses",
+        description: "We create websites that turn Dunstable locals into loyal customers.",
         points: [
-          "Lead-Focused Home Page",
-          "High-Resolution Portfolio",
-          "Technical SEO foundations",
-          "Professional Copywriting",
-          "Managed Security & Updates"
+          "Dunstable-Specific SEO: Targeting the LU5 and LU6 areas.",
+          "Trust-Building Design: Showcasing your skills and experience.",
+          "Fully Managed: Hosting, security, and maintenance all taken care of.",
+          "Lead-Gen Focused: Clear buttons and forms to capture enquiries.",
+          "Local Copywriting: We write your Dunstable-focused content for you."
         ]
       },
       {
-        title: "Ranking in Dunstable",
-        description: "We ensure you appear for 'roofer Dunstable' and related search terms."
+        title: "Covering the Entire Dunstable Area",
+        description: "We make sure your roofing services are visible to every household across Dunstable and the surrounding villages."
       },
       {
-        title: "Simple Process",
+        title: "The Dunstable Onboarding Process",
         points: [
-          "1. Discovery.",
-          "2. Build.",
-          "3. Review.",
-          "4. Launch."
+          "Consult & Build.",
+          "Preview & Feedback.",
+          "Launch & SEO Setup.",
+          "Ongoing Management."
         ]
       }
     ]
   },
   "roofer-web-design-milton-keynes": {
     url: "roofer-web-design-milton-keynes",
-    keyword: "web design for roofers in Milton Keynes",
-    metaTitle: "Roofer Website Design Milton Keynes | Fast & Modern",
-    metaDescription: "Modern roofing websites in Milton Keynes built to convert visitors into customers. From £59 per month.",
+    keyword: "Web design for roofers in Milton Keynes",
+    metaTitle: "Roofer Website Design Milton Keynes | Lead-Gen Experts",
+    metaDescription: "Professional website design for roofers in Milton Keynes. High-performance sites from £59 per month.",
     industry: "Roofing",
     location: "Milton Keynes",
     heroTitle: "Roofer Website Design in Milton Keynes",
-    heroSubtitle: "The professional online presence your MK roofing business deserves",
-    checklist: ["Zero upfront cost", "Targeting MK's growth", "Built for high conversion"],
+    heroSubtitle: "Modern websites for Milton Keynes' best roofing contractors",
+    checklist: ["No upfront cost", "SEO-optimized", "Fully managed"],
     sections: [
       {
-        title: "MK Roofers Need a Website That Scales",
-        description: "In a fast-growing city like Milton Keynes, your website needs to capture the constant demand for both domestic and commercial roofing.",
+        title: "Standing Out in the Milton Keynes Roofing Market",
+        description: "Milton Keynes is a fast-growing, modern city. Your website needs to reflect that with a clean, professional design that builds trust with both homeowners and commercial clients.",
         points: [
-          "Missing out on new-build development work",
-          "Slow page speeds in a tech-savvy market",
-          "Poor mobile performance for urgent repairs",
-          "No local authority signals for MK searches",
-          "Difficult quote request process"
+          "Outdated sites that don't match the modern Milton Keynes feel",
+          "Invisible on Google for competitive MK roofing searches",
+          "Failing to capture the growing new-build market in Milton Keynes",
+          "Poor mobile performance for emergency roofing calls",
+          "Lack of clear 'Call Now' or 'Book a Quote' buttons"
         ]
       },
       {
-        title: "What We Build for MK Roofers",
-        description: "High-performance websites tailored for the Milton Keynes market.",
+        title: "Our Milton Keynes Roofer Package",
+        description: "We build high-spec websites for high-performing roofers in Milton Keynes.",
         points: [
-          "Cutting-Edge Visual Design",
-          "Strategic Location Targeting",
-          "Fast-Loading Project Galleries",
-          "Expert Local SEO",
-          "Continuous Support"
+          "Milton Keynes Grid Targeting: SEO strategy for all MK areas.",
+          "Modern, Professional Design: Layouts that inspire confidence.",
+          "Fully Managed Infrastructure: Fast, secure, and always live.",
+          "Lead Generation Focus: Built to convert MK visitors into jobs.",
+          "Ongoing Support: We handle the technical side so you don't have to."
         ]
       },
       {
-        title: "Ranking Across Milton Keynes",
-        description: "We help you dominate search results from Bletchley to Newport Pagnell."
+        title: "Serving All of Milton Keynes",
+        description: "From Bletchley to Newport Pagnell, we ensure your roofing business is seen by everyone across Milton Keynes."
       },
       {
-        title: "Straightforward Process",
+        title: "Getting Live in Milton Keynes",
         points: [
-          "1. Briefing.",
-          "2. Development.",
-          "3. Approval.",
-          "4. Go-live."
+          "1. Build & Design.",
+          "2. Review Link.",
+          "3. Managed Launch.",
+          "4. Ongoing Care."
         ]
       }
     ]
   },
   "roofer-web-design-st-albans": {
     url: "roofer-web-design-st-albans",
-    keyword: "web design for roofers in St Albans",
-    metaTitle: "Roofer Website Design St Albans | More Leads",
-    metaDescription: "We help roofers in St Albans get more leads with professional websites. Simple pricing, fast turnaround.",
+    keyword: "Web design for roofers in St Albans",
+    metaTitle: "Roofer Website Design St Albans | Premium Service",
+    metaDescription: "Professional website design for roofers in St Albans. High-quality, managed sites from £59 per month.",
     industry: "Roofing",
     location: "St Albans",
     heroTitle: "Roofer Website Design in St Albans",
-    heroSubtitle: "Win more of the quality roofing work St Albans homeowners are looking for",
-    checklist: ["No upfront cost", "Premium design for AL postcodes", "Fully managed"],
+    heroSubtitle: "A premium online presence for St Albans' roofing experts",
+    checklist: ["No upfront cost", "Premium design", "Local SEO built-in"],
     sections: [
       {
-        title: "St Albans Homeowners Demand Professionalism",
-        description: "In St Albans, first impressions are everything. Your website needs to look as professional as the work you do to win the best contracts.",
+        title: "St Albans Customers Demand High Standards",
+        description: "In St Albans, first impressions are critical. To win high-value residential and commercial roofing contracts, your website must convey absolute professionalism and quality.",
         points: [
-          "Designs that don't match St Albans standards",
-          "Missing local search traffic in AL1-AL4",
-          "Slow loading times on high-end devices",
-          "Lack of professional project showcases",
-          "Weak trust signals for premium clients"
+          "Amateur-looking sites that don't reflect St Albans quality",
+          "Not ranking for 'roofer St Albans' or 'roofing contractor AL1'",
+          "Poor mobile experience for busy, affluent customers",
+          "Lack of high-quality photos of your previous St Albans projects",
+          "Slow performance causing high bounce rates"
         ]
       },
       {
-        title: "A Website That Attracts St Albans' Best Jobs",
-        description: "We position your roofing business as the premium choice in St Albans.",
+        title: "The St Albans Roofer Package",
+        description: "Websites that reflect the premium quality of your St Albans roofing business.",
         points: [
-          "Elegant, High-End Design",
-          "Detailed Service Showcases",
-          "Optimised for Local Search",
-          "Secure & Fast Hosting",
-          "Personalised Content Strategy"
+          "High-End Design: Clean, elegant, and trustworthy layouts.",
+          "St Albans-Focused SEO: Targeting AL1, AL2 and AL3 postcode areas.",
+          "Fully Managed hosting: Secure, reliable, and lightning fast.",
+          "Professional Copywriting: We write your service and area content.",
+          "Continuous Management: We're here for any changes you need."
         ]
       },
       {
-        title: "Ranking in St Albans",
-        description: "Dominate search results for 'roofer St Albans' and 'roof repairs St Albans'."
+        title: "Serving St Albans and the District",
+        description: "We make sure your roofing business is seen across the entire St Albans area, including Harpenden and neighboring villages."
       },
       {
-        title: "Our Process",
+        title: "The St Albans Roadmap",
         points: [
-          "Consult: Define your niche.",
-          "Create: We build your custom site.",
-          "Perfect: Final adjustments.",
-          "Manage: Ongoing growth and support."
+          "Blueprint & Content.",
+          "Build & Design.",
+          "Review & Feedback.",
+          "Launch & SEO Setup."
         ]
       }
     ]
   },
   "roofer-web-design-watford": {
     url: "roofer-web-design-watford",
-    keyword: "web design for roofers in Watford",
-    metaTitle: "Roofer Website Design Watford | Done For You Service",
-    metaDescription: "Done-for-you roofing websites in Watford. We build, design and manage your site. Low upfront cost.",
+    keyword: "Web design for roofers in Watford",
+    metaTitle: "Roofer Website Design Watford | Launch for £59/mo",
+    metaDescription: "Professional website design for roofers in Watford. Fast, local and reliable. From £59 per month.",
     industry: "Roofing",
     location: "Watford",
     heroTitle: "Roofer Website Design in Watford",
-    heroSubtitle: "Get more roofing enquiries in Watford with a professional website",
-    checklist: ["No upfront cost", "Fully managed", "Built for Watford results"],
+    heroSubtitle: "Win more roofing work across Watford and Southwest Herts",
+    checklist: ["No upfront cost", "Lead-generation focus", "Fully managed"],
     sections: [
       {
-        title: "Why Watford Roofers Lose Work",
-        description: "Watford is a competitive hub. To stay ahead, your roofing business needs a website that ranks well and converts visitors into leads.",
+        title: "Watford Roofers Need Fast, Lead-Gen Sites",
+        description: "Watford is a busy hub. When a roof leak occurs, Watford customers need to find you and call you instantly. If your site is slow or hard to use, you're losing jobs.",
         points: [
-          "Low rankings in WD postcode searches",
-          "Websites that are difficult to use on mobile",
-          "No clear call-to-action for quotes",
-          "Missing out on local Watford traffic",
-          "Outdated portfolio reducing trust"
+          "Not ranking for Watford-specific roofing searches",
+          "Frustrating mobile experience for customers in a hurry",
+          "Unprofessional designs that don't build Watford trust",
+          "Hidden or hard-to-find contact information on mobile",
+          "Generic content that doesn't mention Watford or local areas"
         ]
       },
       {
-        title: "What Your Watford Roofing Website Will Include",
-        description: "A complete lead-generation package for Watford roofing companies.",
+        title: "Our Watford Success Strategy",
+        description: "We build roofing websites that dominate the Watford market.",
         points: [
-          "Modern & Responsive Design",
-          "Professional Gallery System",
-          "Local SEO for Watford & Bushey",
-          "Fast & Secure Infrastructure",
-          "Managed Content Updates"
+          "Watford-Centric SEO: Ranking for WD17, WD18 and WD19 areas.",
+          "Professional Design: Conveying quality and reliability to Watford clients.",
+          "Fully Managed Infrastructure: Fast, secure, and always live.",
+          "Lead-Driven Design: Built to turn Watford visitors into booked jobs.",
+          "Ongoing Support: We handle the technical side so you don't have to."
         ]
       },
       {
-        title: "Built Around How Watford Customers Search",
-        description: "We target the specific roofing services Watford residents are looking for right now."
+        title: "Covering Every Part of Watford",
+        description: "We make sure your roofing business is visible to every household across the entire Watford area."
       },
       {
-        title: "Local SEO for Watford",
-        description: "Ensuring you are the top choice for 'roofer Watford'."
-      },
-      {
-        title: "Simple Process",
+        title: "Getting Live in Watford",
         points: [
-          "1. Briefing.",
-          "2. Full build.",
-          "3. Quality check.",
-          "4. Launch."
+          "1. Strategic Development.",
+          "2. Preview & Sign-off.",
+          "3. Managed Launch.",
+          "4. Continuous Management."
         ]
       }
     ]
@@ -1153,368 +1142,344 @@ export const seoPagesData: Record<string, SEOPageInfo> = {
   // Locksmiths
   "locksmith-web-design": {
     url: "locksmith-web-design",
-    keyword: "web design for locksmiths",
-    metaTitle: "Website Design for Locksmiths | Get More Calls",
-    metaDescription: "Lead-focused websites for locksmiths. Built to capture urgent enquiries and drive more calls. Low upfront cost, fully managed.",
+    keyword: "Web design for locksmiths",
+    metaTitle: "Website Design for Locksmiths | From £59 Per Month",
+    metaDescription: "High-converting websites for locksmiths. Modern, fast and fully managed from £59 per month. Get more local locksmith jobs today.",
     industry: "Locksmith",
     heroTitle: "Website Design for Locksmiths",
-    heroSubtitle: "Be the First Locksmith Customers Call — Day or Night",
-    checklist: ["No upfront cost on our monthly plan", "Built for urgent conversions", "Captures emergency and planned work"],
+    heroSubtitle: "Build Trust and Win More Local Locksmith Jobs",
+    checklist: ["No upfront cost on monthly plan", "Fully managed hosting & updates", "Built for lead generation"],
     sections: [
       {
-        title: "Why Locksmith Customers Aren't Calling You",
-        description: "Locksmith searches are almost always urgent. The customer looks at the first result that seems credible and calls. That decision takes under thirty seconds.",
+        title: "Is Your Locksmith Website Costing You Work?",
+        description: "In the locksmith trade, customers are often in an emergency. If your website doesn't load instantly or looks unprofessional, they'll immediately call the next person on Google. Speed and trust are everything.",
         points: [
-          "No visible pricing or call-out fee information — the biggest trust barrier",
-          "Absent from Google results for emergency and local locksmith searches",
-          "No accreditations or DBS information to verify legitimacy",
-          "Phone number hard to find or not click-to-call on mobile",
-          "Generic designs that look indistinguishable from rogue traders",
-          "No coverage of the surrounding areas customers actually search from"
+          "Outdated designs that fail to convey reliability and trust",
+          "Slow loading times that frustrate emergency customers",
+          "Not optimized for mobile — where most emergency searches happen",
+          "Hard-to-find contact details or 'Call Now' buttons",
+          "Invisible on Google for local locksmith search terms",
+          "Generic content that doesn't build local credibility"
         ]
       },
       {
-        title: "What You Get with a Cosy Content Locksmith Website",
-        description: "Every element of your site is chosen to convert a stressed customer into a phone call as quickly and confidently as possible.",
+        title: "What We Build for Local Locksmiths",
+        description: "We create professional, high-performance websites designed specifically to win more locksmith work.",
         points: [
-          "Click-to-Call Design: Your phone number is unmissable on every page.",
-          "Transparent Pricing: Clear call-out fees displayed openly to build trust.",
-          "Trust Credentials Prominent: DBS status and trade memberships highlighted.",
-          "24/7 Availability Signposting: Capturing the high-value emergency market.",
-          "Fully Managed: Hosting, security, and updates all handled by our team.",
-          "Content Written for You: Service pages, area coverage, and FAQs included."
+          "Emergency-Focused Design: Clear click-to-call buttons and fast-loading pages.",
+          "Trust & Reliability: Highlighting your certifications and local presence.",
+          "Lead-Focused: Built to turn urgent searches into booked call-outs.",
+          "Fully Managed Service: We handle all the technical details, security, and hosting.",
+          "Regular Updates: We're here to add new services, project photos, or testimonials.",
+          "Professional Copywriting: We write your service pages and location content for you."
         ]
       },
       {
-        title: "Designed with SEO from Day One",
-        description: "Appearing at the top of local locksmith searches requires a site built for local SEO and extreme loading speed.",
+        title: "Locksmith SEO from the Ground Up",
+        description: "We ensure your business is visible to people in your area searching for a locksmith.",
         points: [
-          "Technical SEO Foundations: Proper site structure and XML sitemaps.",
-          "Local SEO Setup: Targeting your specific service areas and local searches.",
-          "Smart Schema Markup: LocalBusiness and Service schema for featured results.",
-          "Performance & Security: Secure HTTPS and caching for instant loading."
+          "Local Search Strategy: Targeting your specific service areas and towns.",
+          "Technical Foundations: Built for speed and search engine visibility.",
+          "Rich Schema Markup: Helping Google understand your services and location.",
+          "Secure & Reliable: SSL certificates and secure hosting included."
         ]
       },
       {
-        title: "How It Works",
-        description: "We keep the process simple. Most locksmith websites are live within days:",
+        title: "Our Hassle-Free Build Process",
+        description: "Get your new locksmith website live without any stress:",
         points: [
-          "1. We build your site: We create a modern locksmith website tailored to your business — writing all the content, designing the layout, and setting up the full technical and SEO foundation.",
-          "2. You review it: We share a preview link. If anything needs adjusting before launch, just say the word.",
-          "3. We launch it: Your site goes live and begins generating enquiries. We handle the hosting setup and Google submission.",
-          "4. We manage everything: Hosting, maintenance, security, and updates — all handled by our team on an ongoing basis."
-        ]
-      },
-      {
-        title: "Who This Is For",
-        description: "This service is built for locksmiths who want a reliable, professional online presence that wins work consistently. It's a particularly good fit for:",
-        points: [
-          "Locksmiths offering 24/7 emergency cover who aren't capturing that high-value search traffic",
-          "Locksmith businesses looking to stand out as trustworthy alternatives to rogue trader operations",
-          "Sole traders who want to look professional online without managing a website themselves",
-          "Anyone expanding into commercial locksmith work who needs a web presence to support it",
-          "Locksmiths relying on comparison sites who want to own their own enquiry source"
+          "1. Build: We design and write your new site, focusing on your specific locksmith services.",
+          "2. Review: You check the preview link and let us know if any tweaks are needed.",
+          "3. Launch: We handle the launch and set up your hosting and Google submission.",
+          "4. Manage: We take care of everything ongoing so you can focus on your jobs."
         ]
       }
     ]
   },
   "locksmith-web-design-luton": {
     url: "locksmith-web-design-luton",
-    keyword: "web design for locksmiths in Luton",
-    metaTitle: "Locksmith Website Design Luton | 24/7 Lead Ready",
-    metaDescription: "Professional locksmith websites in Luton designed to capture urgent leads. Fast, modern and mobile-friendly.",
+    keyword: "Web design for locksmiths in Luton",
+    metaTitle: "Locksmith Website Design Luton | From £59 per month",
+    metaDescription: "Professional website design for locksmiths in Luton. Modern, lead-gen sites from £59 per month.",
     industry: "Locksmith",
     location: "Luton",
     heroTitle: "Locksmith Website Design in Luton",
-    heroSubtitle: "Capture urgent emergency calls and planned security work in Luton",
-    checklist: ["No upfront cost", "Mobile-first for emergency calls", "Trust-focused design"],
+    heroSubtitle: "Professional websites for Luton's most reliable locksmiths",
+    checklist: ["No upfront cost", "Emergency-focused build", "Fully managed"],
     sections: [
       {
-        title: "Why Luton Locksmiths Need a Fast Website",
-        description: "When someone is locked out of their home in Luton at 2am, they don't browse — they call the first professional they find. If your website is slow or difficult to use on a phone, you've lost that job.",
+        title: "Why Luton Locksmiths Need a Better Website",
+        description: "Luton is a high-demand area for locksmith services. When someone is locked out in Luton, they want a local, trustworthy professional — fast. If your website is slow or amateurish, you're missing out on jobs.",
         points: [
-          "Slow page speeds that cause visitors to bounce",
-          "No 'Click to Call' button prominent on mobile",
-          "Lack of trust signals (DBS checked, reviews, local address)",
-          "Not appearing for 'emergency locksmith Luton' searches",
-          "Hidden or confusing service lists"
+          "Not appearing for local Luton locksmith searches",
+          "Unprofessional designs that don't convey trust and reliability",
+          "Hard-to-use mobile sites for urgent lockout situations",
+          "No clear 'Call Now' buttons for Luton customers",
+          "Sites that load too slowly, causing customers to call a competitor"
         ]
       },
       {
-        title: "What Your Luton Locksmith Website Will Do",
-        description: "We build websites designed for the speed of the locksmith trade.",
+        title: "Our Luton Locksmith Package",
+        description: "We build websites that generate more work for your Luton locksmith business.",
         points: [
-          "Instant Click-to-Call: Positioned for immediate action.",
-          "Emergency-Focused Layout: Highlight your 24/7 availability.",
-          "Trust-Building Content: Showcase your credentials and reviews.",
-          "Local SEO: Rank for the postcodes you actually cover.",
-          "Fully Managed: We handle everything while you're on the road."
+          "Luton-Specific SEO: Targeting the towns and neighborhoods you serve.",
+          "Trust-Building Layout: Highlighting your local Luton presence and skills.",
+          "Lead-Driven Design: Built to turn urgent visitors into phone calls.",
+          "Managed Hosting: 100% uptime and high security standard.",
+          "Ongoing Maintenance: We handle the technical side so you don't have to."
         ]
       },
       {
-        title: "Built Around How Luton Customers Search",
-        description: "We target both the 'locked out now' emergencies and the 'change my locks' planned work that Luton residents search for daily."
+        title: "Serving Luton and the Surrounding Area",
+        description: "From Biscot to Wigmore, we make sure your locksmith services are seen by every household across Luton."
       },
       {
-        title: "Local SEO for Luton Locksmiths",
-        description: "Dominate search results for 'locksmith Luton' and 'emergency locksmith near me'.",
+        title: "The Luton Launch Process",
         points: [
-          "Optimised for mobile 'near me' searches",
-          "LocalBusiness schema for better Google visibility",
-          "Location-specific pages for Luton districts"
-        ]
-      },
-      {
-        title: "Simple Process",
-        points: [
-          "1. Strategic brief.",
-          "2. Fast-track build.",
-          "3. Quality review.",
-          "4. Live & managed."
+          "Phase 1: Build & Content.",
+          "Phase 2: Review & Approve.",
+          "Phase 3: Managed Launch.",
+          "Phase 4: Ongoing Care."
         ]
       }
     ]
   },
   "locksmith-web-design-bedford": {
     url: "locksmith-web-design-bedford",
-    keyword: "web design for locksmiths in Bedford",
-    metaTitle: "Locksmith Website Design Bedford | Get Calls Fast",
-    metaDescription: "Need more locksmith calls in Bedford? We build high-converting websites with no upfront cost.",
+    keyword: "Web design for locksmiths in Bedford",
+    metaTitle: "Locksmith Website Design Bedford | Fast & Professional",
+    metaDescription: "Professional website design for locksmiths in Bedford. Lead-generating sites from £59 per month.",
     industry: "Locksmith",
     location: "Bedford",
     heroTitle: "Locksmith Website Design in Bedford",
-    heroSubtitle: "A website that turns Bedford residents into immediate calls",
-    checklist: ["Nothing to pay upfront", "High-conversion mobile layout", "We handle the copywriting"],
+    heroSubtitle: "High-performance websites for Bedfordshire's locksmiths",
+    checklist: ["No upfront cost", "Managed launch", "Lead-focused design"],
     sections: [
       {
-        title: "Winning More Work in Bedford",
-        description: "Locksmithing in Bedford is a competitive game. Your website needs to look more trustworthy and be easier to use than the rest.",
+        title: "The Bedford Locksmith Market is Competitive",
+        description: "To win the best jobs in Bedford, your website needs to look professional, load fast, and rank well on Google. Anything less is costing you enquiries.",
         points: [
-          "Poor mobile experience for emergency searches",
-          "Missing out on local Bedford search traffic",
-          "No clear evidence of being a local business",
-          "Slow loading times on mobile networks",
-          "Outdated design that reduces trust"
+          "Invisible on Google for 'locksmith Bedford' searches",
+          "Outdated designs that don't reflect your professional skills",
+          "Poor mobile performance for emergency lockouts",
+          "No clear call-to-action for Bedford customers",
+          "Slow loading speeds causing visitors to leave"
         ]
       },
       {
-        title: "Complete Locksmith Website Package",
-        description: "Everything you need to capture more leads in Bedford.",
+        title: "Our Bedford Build Strategy",
+        description: "We create locksmith websites that dominate the Bedford market.",
         points: [
-          "Lead-Optimised Design",
-          "Professional Security Copywriting",
-          "Fast & Secure Infrastructure",
-          "Managed Google Visibility",
-          "Unlimited Minor Updates"
+          "Bedford-Focused SEO: Targeting the MK40, MK41 and MK42 areas.",
+          "Trust-First Design: Showcasing your expertise and reliability.",
+          "Fully Managed: Hosting, security, and updates all handled.",
+          "Lead Generation: Built to convert visitors into phone calls.",
+          "Local Content: We write about your services in Bedford."
         ]
       },
       {
-        title: "Ranking Across Bedford",
-        description: "We help you rank for 'locksmith Bedford' and surrounding area searches."
+        title: "Serving Every Part of Bedford",
+        description: "We ensure your business is visible to customers across the entire Bedford area, including surrounding villages."
       },
       {
-        title: "How We Work",
+        title: "Getting Live in Bedford",
         points: [
-          "Step 1: Briefing.",
-          "Step 2: Rapid Build.",
-          "Step 3: Review.",
-          "Step 4: Launch."
+          "1. Rapid Development.",
+          "2. Client Sign-off.",
+          "3. Managed Launch.",
+          "4. Ongoing Care."
         ]
       }
     ]
   },
   "locksmith-web-design-dunstable": {
     url: "locksmith-web-design-dunstable",
-    keyword: "web design for locksmiths in Dunstable",
-    metaTitle: "Locksmith Website Design Dunstable | Affordable Sites",
-    metaDescription: "Affordable locksmith websites in Dunstable. Designed to convert visitors into customers. Low upfront cost.",
+    keyword: "Web design for locksmiths in Dunstable",
+    metaTitle: "Locksmith Website Design Dunstable | Launch for £59/mo",
+    metaDescription: "Professional website design for locksmiths in Dunstable. Fast, reliable and local. From £59 per month.",
     industry: "Locksmith",
     location: "Dunstable",
     heroTitle: "Locksmith Website Design in Dunstable",
-    heroSubtitle: "Your professional online presence for Dunstable security services",
-    checklist: ["No upfront cost", "Built to capture urgent calls", "Fully managed"],
+    heroSubtitle: "Win more locksmith work across Dunstable and LU postcode areas",
+    checklist: ["No upfront cost", "Managed launch", "Lead-focused build"],
     sections: [
       {
-        title: "Why Dunstable Locksmiths Need a Modern Site",
-        description: "Most locksmith searches in Dunstable happen on a mobile phone during an emergency. If your site isn't ready for that, you're missing out.",
+        title: "Dunstable Locksmiths Need a Better Online Presence",
+        description: "When people in Dunstable are locked out, they search online. If your website isn't there, or if it doesn't look professional, you're missing out on jobs.",
         points: [
-          "Difficult to use on a smartphone",
-          "Slow performance losing you customers",
-          "Low visibility in Dunstable search results",
-          "No trust signals featured prominently",
-          "Confusing layout for urgent users"
+          "Not ranking for 'locksmith Dunstable' or 'emergency locksmith Dunstable'",
+          "Amateur designs that don't inspire confidence in your skills",
+          "Sites that don't work properly on mobile devices",
+          "Missing or hidden contact information for Dunstable customers",
+          "Generic content that doesn't mention your Dunstable service areas"
         ]
       },
       {
-        title: "What Your Dunstable Locksmith Website Includes",
-        description: "A tailored solution for the locksmith trade.",
+        title: "What We Build for Dunstable Locksmith Businesses",
+        description: "We create websites that turn Dunstable locals into long-term clients.",
         points: [
-          "Urgent CTA Layout",
-          "Trust-Building Elements",
-          "Technical SEO foundations",
-          "Mobile-First Optimisation",
-          "Ongoing Support & Updates"
+          "Dunstable-Specific SEO: Targeting the LU5 and LU6 areas.",
+          "Professional Credibility: Highlighting your expertise and local trust.",
+          "Fully Managed: Hosting, security, and maintenance all taken care of.",
+          "Lead-Gen Focused: Clear 'Call Now' buttons and urgent quote forms.",
+          "Local Copywriting: We write your Dunstable-focused content for you."
         ]
       },
       {
-        title: "Ranking in Dunstable",
-        description: "Ensuring you are the first locksmith Dunstable residents see."
+        title: "Covering the Entire Dunstable Area",
+        description: "We make sure your locksmith services are visible to every household across Dunstable and the surrounding villages."
       },
       {
-        title: "Simple Process",
+        title: "The Dunstable Roadmap",
         points: [
-          "1. Brief.",
-          "2. Build.",
-          "3. Review.",
-          "4. Live."
+          "Consult & Build.",
+          "Preview & Feedback.",
+          "Launch & SEO Setup.",
+          "Ongoing Management."
         ]
       }
     ]
   },
   "locksmith-web-design-milton-keynes": {
     url: "locksmith-web-design-milton-keynes",
-    keyword: "web design for locksmiths in Milton Keynes",
-    metaTitle: "Locksmith Website Design Milton Keynes | Fast Setup",
-    metaDescription: "Get a modern locksmith website in Milton Keynes quickly. Built to generate calls and enquiries.",
+    keyword: "Web design for locksmiths in Milton Keynes",
+    metaTitle: "Locksmith Website Design Milton Keynes | Lead-Gen Experts",
+    metaDescription: "Professional website design for locksmiths in Milton Keynes. High-performance sites from £59 per month.",
     industry: "Locksmith",
     location: "Milton Keynes",
     heroTitle: "Locksmith Website Design in Milton Keynes",
-    heroSubtitle: "The fast-track to more locksmith calls in Milton Keynes",
-    checklist: ["Zero upfront cost", "Targeting the full MK area", "Built for high speed"],
+    heroSubtitle: "Modern websites for Milton Keynes' most reliable locksmiths",
+    checklist: ["No upfront cost", "SEO-optimized", "Fully managed"],
     sections: [
       {
-        title: "MK Locksmiths Need a High-Speed Presence",
-        description: "In a tech-driven town like Milton Keynes, your website needs to be as fast as your response time.",
+        title: "Standing Out in the Milton Keynes Locksmith Market",
+        description: "Milton Keynes is a modern, fast-growing city. Your website needs to reflect that with a clean, professional design that builds trust with both homeowners and commercial clients.",
         points: [
-          "Missing out on district-level searches (Bletchley, Fenny Stratford, etc.)",
-          "Slow loading speeds losing tech-savvy clients",
-          "Poor mobile experience for emergency lockouts",
-          "Lack of local authority in MK search results",
-          "No clear pricing or service indicators"
+          "Outdated sites that don't match the modern Milton Keynes feel",
+          "Invisible on Google for competitive MK locksmith searches",
+          "Failing to capture the growing new-build market in Milton Keynes",
+          "Poor mobile performance for emergency locksmith calls",
+          "Lack of clear 'Call Now' buttons for urgent jobs"
         ]
       },
       {
-        title: "What We Build for MK Locksmiths",
-        description: "High-performance websites for the Milton Keynes security market.",
+        title: "Our Milton Keynes Locksmith Package",
+        description: "We build high-spec websites for high-performing locksmiths in Milton Keynes.",
         points: [
-          "Modern Visual Design",
-          "Strategic Grid-Square Targeting",
-          "Ultra-Fast Load Speeds",
-          "Expert Local SEO foundations",
-          "Continuous Technical Management"
+          "Milton Keynes Grid Targeting: SEO strategy for all MK areas.",
+          "Modern, Professional Design: Layouts that inspire confidence.",
+          "Fully Managed Infrastructure: Fast, secure, and always live.",
+          "Lead Generation Focus: Built to convert MK visitors into calls.",
+          "Ongoing Support: We handle the technical side so you don't have to."
         ]
       },
       {
-        title: "Ranking Across Milton Keynes",
-        description: "We ensure you are visible to every MK postcode resident."
+        title: "Serving All of Milton Keynes",
+        description: "From Bletchley to Newport Pagnell, we ensure your locksmith business is seen by everyone across Milton Keynes."
       },
       {
-        title: "Straightforward Process",
+        title: "Getting Live in Milton Keynes",
         points: [
-          "1. Strategic brief.",
-          "2. Development phase.",
-          "3. Final approval.",
-          "4. Managed launch."
+          "1. Build & Design.",
+          "2. Review Link.",
+          "3. Managed Launch.",
+          "4. Ongoing Care."
         ]
       }
     ]
   },
   "locksmith-web-design-st-albans": {
     url: "locksmith-web-design-st-albans",
-    keyword: "web design for locksmiths in St Albans",
-    metaTitle: "Locksmith Website Design St Albans | Lead Focused",
-    metaDescription: "Lead-focused locksmith websites in St Albans. We design and manage everything for you.",
+    keyword: "Web design for locksmiths in St Albans",
+    metaTitle: "Locksmith Website Design St Albans | Premium Service",
+    metaDescription: "Professional website design for locksmiths in St Albans. High-quality, managed sites from £59 per month.",
     industry: "Locksmith",
     location: "St Albans",
     heroTitle: "Locksmith Website Design in St Albans",
-    heroSubtitle: "Professional security and locksmith websites for St Albans businesses",
-    checklist: ["No upfront cost", "Premium design for AL homeowners", "Fully managed"],
+    heroSubtitle: "A premium online presence for St Albans' locksmith experts",
+    checklist: ["No upfront cost", "Premium design", "Local SEO built-in"],
     sections: [
       {
-        title: "St Albans Residents Value Professionalism",
-        description: "In St Albans, your online appearance is your digital storefront. To win the best security work, you need a site that looks the part.",
+        title: "St Albans Customers Value Quality & Reliability",
+        description: "In St Albans, first impressions are critical. When someone is locked out, they want to see a website that conveys immediate professionalism and local trust.",
         points: [
-          "Designs that don't match St Albans expectations",
-          "Low visibility for 'locksmith St Albans' searches",
-          "Slow loading times on high-end smartphones",
-          "Lack of professional credentials on display",
-          "No focus on high-end security services"
+          "Amateur-looking sites that don't reflect St Albans quality",
+          "Not ranking for 'locksmith St Albans' or 'emergency locksmith AL1'",
+          "Poor mobile experience for busy, affluent customers",
+          "Lack of clear trust signals and professional branding",
+          "Slow performance causing high bounce rates during emergencies"
         ]
       },
       {
-        title: "A Website That Attracts St Albans' Best Work",
-        description: "We position you as the trusted security expert in St Albans.",
+        title: "The St Albans Locksmith Package",
+        description: "Websites that reflect the premium quality of your St Albans locksmith business.",
         points: [
-          "Elegant, Trust-Building Design",
-          "Detailed Service Showcases",
-          "Optimised for Local AL Postcodes",
-          "Secure & Fast Infrastructure",
-          "Personalised Content Strategy"
+          "High-End Design: Clean, elegant, and trustworthy layouts.",
+          "St Albans-Focused SEO: Targeting AL1, AL2 and AL3 postcode areas.",
+          "Fully Managed hosting: Secure, reliable, and lightning fast.",
+          "Professional Copywriting: We write your service and area content.",
+          "Continuous Management: We're here for any changes you need."
         ]
       },
       {
-        title: "Ranking in St Albans",
-        description: "Dominate search results for 'locksmith St Albans' and 'St Albans security'."
+        title: "Serving St Albans and the Surrounding Area",
+        description: "We make sure your locksmith business is visible to customers across the entire St Albans area, including Harpenden and villages."
       },
       {
-        title: "Our Process",
+        title: "The St Albans Roadmap",
         points: [
-          "Consult: Define your service areas.",
-          "Create: We build your high-end site.",
-          "Perfect: Final adjustments.",
-          "Manage: Ongoing support and growth."
+          "Blueprint & Content.",
+          "Build & Design.",
+          "Review & Feedback.",
+          "Launch & SEO Setup."
         ]
       }
     ]
   },
   "locksmith-web-design-watford": {
     url: "locksmith-web-design-watford",
-    keyword: "web design for locksmiths in Watford",
-    metaTitle: "Locksmith Website Design Watford | Done For You",
-    metaDescription: "Done-for-you locksmith websites in Watford. Low upfront cost. Start getting more calls today.",
+    keyword: "Web design for locksmiths in Watford",
+    metaTitle: "Locksmith Website Design Watford | Launch for £59/mo",
+    metaDescription: "Professional website design for locksmiths in Watford. Fast, local and reliable. From £59 per month.",
     industry: "Locksmith",
     location: "Watford",
     heroTitle: "Locksmith Website Design in Watford",
-    heroSubtitle: "Get more locksmith leads in Watford with a professional website",
-    checklist: ["No upfront cost", "Fully managed", "Built for Watford calls"],
+    heroSubtitle: "Win more locksmith work across Watford and Southwest Herts",
+    checklist: ["No upfront cost", "Lead-generation focus", "Fully managed"],
     sections: [
       {
-        title: "Why Watford Locksmiths Lose Calls",
-        description: "Watford is a busy, competitive market. If your site isn't appearing at the top of Google, you're invisible to the hundreds of people searching for a locksmith every month.",
+        title: "Watford Locksmiths Need Fast, Lead-Gen Sites",
+        description: "Watford is a busy hub. When an emergency lockout occurs, Watford customers need to find you and call you instantly. If your site is slow or hard to use, you're losing jobs.",
         points: [
-          "Low rankings in WD postcode searches",
-          "Websites that are difficult to use during an emergency",
-          "No clear 'Call Now' button on mobile",
-          "Missing out on local Watford traffic",
-          "Outdated design reducing credibility"
+          "Not ranking for Watford-specific locksmith searches",
+          "Frustrating mobile experience for customers in a hurry",
+          "Unprofessional designs that don't build Watford trust",
+          "Hidden or hard-to-find contact information on mobile",
+          "Generic content that doesn't mention Watford or local areas"
         ]
       },
       {
-        title: "What Your Watford Locksmith Website Will Include",
-        description: "A complete lead-generation tool for Watford locksmiths.",
+        title: "Our Watford Success Strategy",
+        description: "We build locksmith websites that dominate the Watford market.",
         points: [
-          "Modern & Responsive Design",
-          "Emergency-Focused Layout",
-          "Local SEO for Watford & Bushey",
-          "Fast & Secure Infrastructure",
-          "Managed Content Updates"
+          "Watford-Centric SEO: Ranking for WD17, WD18 and WD19 areas.",
+          "Professional Design: Conveying reliability and expertise to Watford clients.",
+          "Fully Managed Infrastructure: Fast, secure, and always live.",
+          "Lead-Driven Design: Built to turn Watford visitors into phone calls.",
+          "Ongoing Support: We handle the technical side so you don't have to."
         ]
       },
       {
-        title: "Built Around How Watford Customers Search",
-        description: "We target the specific emergency and security services Watford residents need right now."
+        title: "Covering Every Part of Watford",
+        description: "We make sure your locksmith business is visible to every household across the entire Watford area."
       },
       {
-        title: "Local SEO for Watford",
-        description: "Ensuring you are the top choice for 'locksmith Watford'."
-      },
-      {
-        title: "Simple Process",
+        title: "Getting Live in Watford",
         points: [
-          "1. Briefing.",
-          "2. Full build.",
-          "3. Quality check.",
-          "4. Launch."
+          "1. Strategic Development.",
+          "2. Preview & Sign-off.",
+          "3. Managed Launch.",
+          "4. Continuous Management."
         ]
       }
     ]
@@ -1523,368 +1488,344 @@ export const seoPagesData: Record<string, SEOPageInfo> = {
   // Cleaning
   "cleaning-company-web-design": {
     url: "cleaning-company-web-design",
-    keyword: "web design for cleaning companies",
-    metaTitle: "Website Design for Cleaning Companies | More Bookings",
-    metaDescription: "We create websites for cleaning businesses that drive bookings. Simple, affordable and fully managed from £59 per month.",
+    keyword: "Web design for cleaning companies",
+    metaTitle: "Website Design for Cleaning Companies | From £59 Per Month",
+    metaDescription: "High-converting websites for cleaning companies. Modern, fast and fully managed from £59 per month. Get more cleaning contracts today.",
     industry: "Cleaning",
     heroTitle: "Website Design for Cleaning Companies",
-    heroSubtitle: "Fill Your Cleaning Schedule with Regular Clients — Not One-Off Jobs",
-    checklist: ["No upfront cost on our monthly plan", "Built to attract recurring clients", "Covers domestic and commercial"],
+    heroSubtitle: "Build Trust and Win More Local Cleaning Contracts",
+    checklist: ["No upfront cost on monthly plan", "Fully managed hosting & updates", "Built for lead generation"],
     sections: [
       {
-        title: "Why Your Cleaning Website Isn't Attracting the Clients You Want",
-        description: "The cleaning business runs on repeat customers. If your business doesn't look professional online, potential regular clients will start that relationship with a competitor instead.",
+        title: "Is Your Cleaning Website Costing You Clients?",
+        description: "In the cleaning industry, trust and attention to detail are everything. If your website looks messy or outdated, potential clients will assume your cleaning is the same. A professional online presence is essential to winning high-value commercial and residential contracts.",
         points: [
-          "No clear information about what's included in a clean",
-          "Missing trust signals — no DBS checks or insurance visible",
-          "Everything on one generic page — no separation of services",
-          "No easy online quote request or booking path",
-          "Invisible in search for specific high-value service types",
-          "Designs that look identical to dozens of competitors"
+          "Outdated designs that fail to convey cleanliness and professionalism",
+          "Slow loading times that frustrate potential customers",
+          "Not optimized for mobile — where many local searches happen",
+          "No clear way to request a quote or view service packages",
+          "Invisible on Google for local cleaning search terms",
+          "Generic content that doesn't build local credibility"
         ]
       },
       {
-        title: "What You Get with a Cosy Content Cleaning Website",
-        description: "Every part of your site is built to attract the clients you actually want — reliable, recurring customers who stay with you long term.",
+        title: "What We Build for Local Cleaning Businesses",
+        description: "We create professional, high-performance websites designed specifically to win more cleaning work.",
         points: [
-          "Trust-First Design: Insurance and DBS status featured prominently.",
-          "Service-Specific Pages: Dedicated sections for regular, deep, and commercial cleaning.",
-          "Frictionless Enquiry Path: Simple quote forms on every page.",
-          "What's Included Made Clear: Detailed service descriptions to reduce hesitation.",
-          "Fully Managed: Hosting, security, and maintenance all handled.",
-          "Content Written for You: Professional copywriting for all your services."
+          "Clean & Trustworthy Design: Layouts that reflect your high standards and reliability.",
+          "Fast & Mobile-Responsive: Ensuring you're found by customers searching for cleaners on their phones.",
+          "Lead-Focused: Clear calls-to-action, quote forms, and click-to-call buttons.",
+          "Fully Managed Service: We handle all the technical details, security, and hosting.",
+          "Regular Updates: We're here to add new services, testimonials, or areas whenever you need.",
+          "Professional Copywriting: We write your service pages and location content for you."
         ]
       },
       {
-        title: "Designed with SEO from Day One",
-        description: "Ranking consistently for cleaning searches requires more than a good-looking website. We target the terms that bring in the most valuable clients.",
+        title: "Cleaning SEO from the Ground Up",
+        description: "We ensure your business is visible to people in your area searching for a cleaner.",
         points: [
-          "Technical SEO Foundations: Proper site structure for search engines.",
-          "Local SEO Setup: Pages targeting your service areas and local searches.",
-          "Smart Schema Markup: LocalBusiness, Service, and FAQ schema.",
-          "Performance & Security: SSL certificate and fast loading speeds included."
+          "Local Search Strategy: Targeting your specific service areas and towns.",
+          "Technical Foundations: Built for speed and search engine visibility.",
+          "Rich Schema Markup: Helping Google understand your services and location.",
+          "Secure & Reliable: SSL certificates and secure hosting included."
         ]
       },
       {
-        title: "How It Works",
-        description: "We keep the process simple. Most cleaning websites are live within days:",
+        title: "Our Simple Build Process",
+        description: "Get your new cleaning website live without any stress:",
         points: [
-          "1. We build your site: We create a modern cleaning website tailored to your business — writing all the content, designing the layout, and setting up the full technical and SEO foundation.",
-          "2. You review it: We share a preview link. If anything needs adjusting before launch, just say the word.",
-          "3. We launch it: Your site goes live and begins generating enquiries. We handle the hosting setup and Google submission.",
-          "4. We manage everything: Hosting, maintenance, security, and updates — all handled by our team on an ongoing basis."
-        ]
-      },
-      {
-        title: "Who This Is For",
-        description: "This service works particularly well for cleaning businesses who want to build a reliable, growing client base online. It's a good fit for:",
-        points: [
-          "Cleaning companies who want to build a steady base of regular domestic clients",
-          "Cleaners looking to expand into commercial or end-of-tenancy work with a professional presence",
-          "Anyone currently relying on word-of-mouth who wants a more consistent source of leads",
-          "Cleaning businesses spending money on apps or platforms that take a cut of every booking",
-          "Companies ready to own their client pipeline rather than renting access to someone else's platform"
+          "1. Build: We design and write your new site, focusing on your specific cleaning services.",
+          "2. Review: You check the preview link and let us know if any tweaks are needed.",
+          "3. Launch: We handle the launch and set up your hosting and Google submission.",
+          "4. Manage: We take care of everything ongoing so you can focus on your jobs."
         ]
       }
     ]
   },
   "cleaning-company-web-design-luton": {
     url: "cleaning-company-web-design-luton",
-    keyword: "web design for cleaning companies in Luton",
-    metaTitle: "Cleaning Company Website Design Luton | £59 Per Month",
-    metaDescription: "Professional websites for cleaning companies in Luton. Get more bookings with a modern site. Low upfront cost.",
+    keyword: "Web design for cleaning companies in Luton",
+    metaTitle: "Cleaning Company Website Design Luton | From £59 per month",
+    metaDescription: "Professional website design for cleaning companies in Luton. Modern, lead-gen sites from £59 per month.",
     industry: "Cleaning",
     location: "Luton",
     heroTitle: "Cleaning Company Website Design in Luton",
-    heroSubtitle: "Fill your cleaning schedule with regular Luton clients while we handle the tech",
-    checklist: ["No upfront cost", "Built to attract regular clients", "Fully managed"],
+    heroSubtitle: "Professional websites for Luton's best cleaning services",
+    checklist: ["No upfront cost", "Lead-focused build", "Fully managed"],
     sections: [
       {
-        title: "Why Luton Cleaning Companies Struggle Online",
-        description: "Most cleaning businesses in Luton rely on Facebook groups or flyers. While these can work, they don't build a professional brand that attracts high-value regular clients or commercial contracts.",
+        title: "Why Luton Cleaning Businesses Need a Better Website",
+        description: "Luton is a competitive market for cleaning services. To win the best residential and commercial contracts, you need to look more professional than the competition. A DIY site or a basic listing isn't enough to build the trust needed for cleaning work.",
         points: [
-          "No professional presence for potential clients to find",
-          "Websites that are hard to use on mobile phones",
-          "No clear way for clients to book or request a quote",
-          "Missing out on 'cleaning company Luton' search traffic",
-          "Poor trust signals and lack of testimonials"
+          "Not appearing for local Luton cleaning searches",
+          "Unprofessional designs that don't convey quality and reliability",
+          "Hard-to-use mobile sites for customers searching on the go",
+          "No clear way for Luton customers to contact you or request a quote",
+          "Sites that load too slowly, causing customers to call someone else"
         ]
       },
       {
-        title: "What Your Luton Cleaning Website Will Do",
-        description: "We build websites that act as your 24/7 office manager.",
+        title: "Our Luton Cleaning Package",
+        description: "We build websites that generate more work for your Luton cleaning business.",
         points: [
-          "Booking-Focused Design: Make it easy for clients to hire you.",
-          "Mobile-Optimised: Perfect for busy people on the move.",
-          "Professional Copywriting: We explain your services clearly.",
-          "Local SEO: Rank for the areas of Luton you serve.",
-          "Managed Updates: We keep your pricing and services current."
+          "Luton-Specific SEO: Targeting the towns and neighborhoods you serve.",
+          "Trust-Building Layout: Highlighting your reliability and high standards.",
+          "Lead-Driven Design: Built to turn visitors into quote requests.",
+          "Managed Hosting: 100% uptime and high security standard.",
+          "Ongoing Maintenance: We handle the technical side so you don't have to."
         ]
       },
       {
-        title: "Built Around How Luton Customers Search",
-        description: "From weekly domestic cleans to deep end-of-tenancy work, we ensure your business is visible when Luton residents search for help."
+        title: "Serving Luton and the Surrounding Area",
+        description: "From High Town to Bramingham, we make sure your cleaning services are seen by every household and business across Luton."
       },
       {
-        title: "Local SEO for Luton",
-        description: "Dominate search results for 'cleaner Luton' and 'cleaning services Luton'.",
+        title: "The Luton Launch Roadmap",
         points: [
-          "Technical SEO setup",
-          "Location-specific service pages",
-          "Review and trust badge integration"
-        ]
-      },
-      {
-        title: "Simple Process",
-        points: [
-          "1. Strategic briefing.",
-          "2. Custom build.",
-          "3. Quality sign-off.",
-          "4. Managed launch."
+          "Phase 1: Build & Content.",
+          "Phase 2: Review & Approve.",
+          "Phase 3: Managed Launch.",
+          "Phase 4: Ongoing Support."
         ]
       }
     ]
   },
   "cleaning-company-web-design-bedford": {
     url: "cleaning-company-web-design-bedford",
-    keyword: "web design for cleaning companies in Bedford",
-    metaTitle: "Cleaning Website Design Bedford | More Bookings",
-    metaDescription: "We build websites for cleaning businesses in Bedford that generate more bookings.",
+    keyword: "Web design for cleaning companies in Bedford",
+    metaTitle: "Cleaning Company Website Design Bedford | Fast & Professional",
+    metaDescription: "Professional website design for cleaning companies in Bedford. Lead-generating sites from £59 per month.",
     industry: "Cleaning",
     location: "Bedford",
     heroTitle: "Cleaning Company Website Design in Bedford",
-    heroSubtitle: "Attract more regular cleaning clients in Bedford with a professional site",
-    checklist: ["Nothing to pay upfront", "Designed to build a steady pipeline", "Covers Bedford and wider area"],
+    heroSubtitle: "High-performance websites for Bedfordshire's cleaning services",
+    checklist: ["No upfront cost", "Managed launch", "Lead-focused design"],
     sections: [
       {
-        title: "Why Referrals Alone Won't Grow Your Bedford Cleaning Business",
-        description: "Word-of-mouth is great, but a professional website allows you to reach a much wider audience in Bedford and control your growth.",
+        title: "The Bedford Cleaning Market is Competitive",
+        description: "To win the best jobs in Bedford, your website needs to look professional, load fast, and rank well on Google. Anything less is costing you enquiries.",
         points: [
-          "Invisible on Google for local Bedford searches",
-          "Lack of a professional platform to showcase reviews",
-          "No automated way for clients to request quotes",
-          "Slow loading times on mobile devices",
-          "Outdated design that reduces credibility"
+          "Invisible on Google for 'cleaner Bedford' searches",
+          "Outdated designs that don't reflect your attention to detail",
+          "Poor mobile performance for customers searching on their phones",
+          "No clear call-to-action for Bedford customers",
+          "Slow loading speeds causing visitors to leave"
         ]
       },
       {
-        title: "What We Build for Bedford Cleaners",
-        description: "A complete online package designed to win more work.",
+        title: "Our Bedford Build Strategy",
+        description: "We create cleaning websites that dominate the Bedford market.",
         points: [
-          "Modern, Fresh Visual Design",
-          "Lead-Optimised Contact Forms",
-          "Fast & Secure Infrastructure",
-          "Expert Local SEO foundations",
-          "Continuous Technical Support"
+          "Bedford-Focused SEO: Targeting the MK40, MK41 and MK42 areas.",
+          "Service-Driven Design: Highlighting your specific cleaning expertise.",
+          "Fully Managed: Hosting, security, and updates all handled.",
+          "Lead Generation: Built to convert visitors into booked jobs.",
+          "Local Content: We write about your services in Bedford."
         ]
       },
       {
-        title: "Ranking for Cleaning Searches in Bedford",
-        description: "We ensure you appear for 'cleaner Bedford' and 'commercial cleaning Bedford'."
+        title: "Serving Every Part of Bedford",
+        description: "We ensure your business is visible to customers across the entire Bedford area, including surrounding villages."
       },
       {
-        title: "How We Work",
+        title: "Getting Live in Bedford",
         points: [
-          "Step 1: Briefing.",
-          "Step 2: Rapid Build.",
-          "Step 3: Review.",
-          "Step 4: Launch."
+          "1. Rapid Development.",
+          "2. Client Sign-off.",
+          "3. Managed Launch.",
+          "4. Ongoing Care."
         ]
       }
     ]
   },
   "cleaning-company-web-design-dunstable": {
     url: "cleaning-company-web-design-dunstable",
-    keyword: "web design for cleaning companies in Dunstable",
-    metaTitle: "Cleaning Website Design Dunstable | Affordable & Fast",
-    metaDescription: "Affordable websites for cleaning companies in Dunstable. Fully managed and easy to update.",
+    keyword: "Web design for cleaning companies in Dunstable",
+    metaTitle: "Cleaning Company Website Design Dunstable | Launch for £59/mo",
+    metaDescription: "Professional website design for cleaning companies in Dunstable. Fast, reliable and local. From £59 per month.",
     industry: "Cleaning",
     location: "Dunstable",
     heroTitle: "Cleaning Company Website Design in Dunstable",
-    heroSubtitle: "Win the cleaning clients in Dunstable looking for reliable help",
-    checklist: ["No payment required upfront", "Written and managed by our team", "Designed to build recurring revenue"],
+    heroSubtitle: "Win more cleaning work across Dunstable and LU postcode areas",
+    checklist: ["No upfront cost", "Managed launch", "Lead-focused build"],
     sections: [
       {
-        title: "The Hidden Cost of an Underperforming Website",
-        description: "If your Dunstable cleaning business has a site that doesn't rank or convert, you're losing money every day to competitors who are easier to find.",
+        title: "Dunstable Cleaners Need a Better Online Presence",
+        description: "When people in Dunstable need a cleaner, they search online. If your website isn't there, or if it doesn't look professional, you're missing out on jobs.",
         points: [
-          "Low visibility in Dunstable search results",
-          "Difficult navigation for potential clients",
-          "Lack of professional service descriptions",
-          "No mobile optimisation for local searches",
-          "Poor trust signals and missing testimonials"
+          "Not ranking for 'cleaner Dunstable' or 'commercial cleaning Dunstable'",
+          "Amateur designs that don't inspire confidence in your reliability",
+          "Sites that don't work properly on mobile devices",
+          "Missing or hidden contact information for Dunstable customers",
+          "Generic content that doesn't mention your Dunstable service areas"
         ]
       },
       {
-        title: "What a Cosy Content Cleaning Website Does",
-        description: "We create a high-performance platform for your business.",
+        title: "What We Build for Dunstable Cleaning Businesses",
+        description: "We create websites that turn Dunstable locals into loyal clients.",
         points: [
-          "Professional Industry Copywriting",
-          "Booking-Focused Layout",
-          "Technical SEO foundations",
-          "Managed Security & Updates",
-          "Service Area Targeting"
+          "Dunstable-Specific SEO: Targeting the LU5 and LU6 areas.",
+          "Trust-Building Design: Showcasing your standards and experience.",
+          "Fully Managed: Hosting, security, and maintenance all taken care of.",
+          "Lead-Gen Focused: Clear buttons and forms to capture enquiries.",
+          "Local Copywriting: We write your Dunstable-focused content for you."
         ]
       },
       {
-        title: "Getting Found in Dunstable",
-        description: "Ensure you are the first choice for 'cleaning services Dunstable'."
+        title: "Covering the Entire Dunstable Area",
+        description: "We make sure your cleaning services are visible to every household across Dunstable and the surrounding villages."
       },
       {
-        title: "From Brief to Live",
+        title: "The Dunstable Onboarding Process",
         points: [
-          "1. Consultation.",
-          "2. Full Build.",
-          "3. Approval.",
-          "4. Growth."
+          "Consult & Build.",
+          "Preview & Feedback.",
+          "Launch & SEO Setup.",
+          "Ongoing Management."
         ]
       }
     ]
   },
   "cleaning-company-web-design-milton-keynes": {
     url: "cleaning-company-web-design-milton-keynes",
-    keyword: "web design for cleaning companies in Milton Keynes",
-    metaTitle: "Cleaning Website Design Milton Keynes | Fast Setup",
-    metaDescription: "Get a modern cleaning business website in Milton Keynes. Designed to convert visitors into customers.",
+    keyword: "Web design for cleaning companies in Milton Keynes",
+    metaTitle: "Cleaning Company Website Design Milton Keynes | Lead-Gen Experts",
+    metaDescription: "Professional website design for cleaning companies in Milton Keynes. High-performance sites from £59 per month.",
     industry: "Cleaning",
     location: "Milton Keynes",
     heroTitle: "Cleaning Company Website Design in Milton Keynes",
-    heroSubtitle: "MK's growing population means more cleaning clients for your business",
-    checklist: ["Zero upfront cost", "Postcode range coverage", "Built for recurring work"],
+    heroSubtitle: "Modern websites for Milton Keynes' best cleaning services",
+    checklist: ["No upfront cost", "SEO-optimized", "Fully managed"],
     sections: [
       {
-        title: "Milton Keynes Is a Strong Market for Cleaning",
-        description: "With a high concentration of professional families and new businesses, MK is a goldmine for cleaning services if you are visible.",
+        title: "Standing Out in the Milton Keynes Cleaning Market",
+        description: "Milton Keynes is a modern, fast-growing city. Your website needs to reflect that with a clean, professional design that builds trust with both homeowners and commercial clients.",
         points: [
-          "Missing out on specific MK district searches",
-          "Slow page speeds in a tech-savvy city",
-          "Weak mobile experience for busy residents",
-          "No focus on commercial cleaning opportunities",
-          "Poor lead capture and quote request process"
+          "Outdated sites that don't match the modern Milton Keynes feel",
+          "Invisible on Google for competitive MK cleaning searches",
+          "Failing to capture the growing commercial market in Milton Keynes",
+          "Poor mobile performance for customers searching on the go",
+          "Lack of clear 'Book a Quote' or 'Call Now' buttons"
         ]
       },
       {
-        title: "Diversity of Cleaning Demand in MK",
-        description: "Your website will be structured to handle everything from weekly house cleaning to office contracts.",
+        title: "Our Milton Keynes Cleaning Package",
+        description: "We build high-spec websites for high-performing cleaners in Milton Keynes.",
         points: [
-          "Modern & Professional Visuals",
-          "Strategic Service Area Targeting",
-          "Fast-Loading Content",
-          "Expert Local SEO",
-          "Monthly Performance Support"
+          "Milton Keynes Grid Targeting: SEO strategy for all MK areas.",
+          "Modern, Professional Design: Layouts that inspire confidence.",
+          "Fully Managed Infrastructure: Fast, secure, and always live.",
+          "Lead Generation Focus: Built to convert MK visitors into jobs.",
+          "Ongoing Support: We handle the technical side so you don't have to."
         ]
       },
       {
-        title: "Ranking Across Milton Keynes",
-        description: "We help you capture traffic from Bletchley to the new developments."
+        title: "Serving All of Milton Keynes",
+        description: "From Simpson to Willen, we ensure your cleaning business is seen by everyone across Milton Keynes."
       },
       {
-        title: "Getting Started",
+        title: "Getting Live in Milton Keynes",
         points: [
-          "1. Discovery.",
-          "2. Rapid build.",
-          "3. Quality sign-off.",
-          "4. Managed launch."
+          "1. Build & Design.",
+          "2. Review Link.",
+          "3. Managed Launch.",
+          "4. Ongoing Care."
         ]
       }
     ]
   },
   "cleaning-company-web-design-st-albans": {
     url: "cleaning-company-web-design-st-albans",
-    keyword: "web design for cleaning companies in St Albans",
-    metaTitle: "Cleaning Website Design St Albans | More Leads",
-    metaDescription: "We help cleaning companies in St Albans get more leads with professional websites.",
+    keyword: "Web design for cleaning companies in St Albans",
+    metaTitle: "Cleaning Company Website Design St Albans | Premium Service",
+    metaDescription: "Professional website design for cleaning companies in St Albans. High-quality, managed sites from £59 per month.",
     industry: "Cleaning",
     location: "St Albans",
     heroTitle: "Cleaning Company Website Design in St Albans",
-    heroSubtitle: "Attract the St Albans clients who value quality and reliability",
-    checklist: ["No upfront cost", "Designed to attract premium clients", "Fully managed"],
+    heroSubtitle: "A premium online presence for St Albans' cleaning experts",
+    checklist: ["No upfront cost", "Premium design", "Local SEO built-in"],
     sections: [
       {
-        title: "St Albans Clients Are Worth More",
-        description: "In St Albans, homeowners and businesses are willing to pay for quality. Your website needs to reflect that premium standard to win their business.",
+        title: "St Albans Customers Demand High Standards",
+        description: "In St Albans, first impressions are critical. To win high-value residential and commercial cleaning contracts, your website must convey absolute professionalism and trust.",
         points: [
-          "Outdated designs that don't match St Albans standards",
-          "Missing local search traffic in AL postcodes",
-          "Lack of professional trust signals",
-          "Slow loading times on high-end devices",
-          "Generic content that doesn't build confidence"
+          "Amateur-looking sites that don't reflect St Albans quality",
+          "Not ranking for 'cleaner St Albans' or 'commercial cleaning AL1'",
+          "Poor mobile experience for busy, affluent customers",
+          "Lack of clear information on standards and reliability",
+          "Slow performance causing high bounce rates"
         ]
       },
       {
-        title: "Attract St Albans' Best Cleaning Clients",
-        description: "We position your business as the most reliable choice in St Albans.",
+        title: "The St Albans Cleaning Package",
+        description: "Websites that reflect the premium quality of your St Albans cleaning business.",
         points: [
-          "Elegant & Trustworthy Design",
-          "Detailed Service Showcases",
-          "Optimised for Local Search",
-          "Secure & Fast Infrastructure",
-          "Personalised Content Strategy"
+          "High-End Design: Clean, elegant, and trustworthy layouts.",
+          "St Albans-Focused SEO: Targeting AL1, AL2 and AL3 postcode areas.",
+          "Fully Managed hosting: Secure, reliable, and lightning fast.",
+          "Professional Copywriting: We write your service and area content.",
+          "Continuous Management: We're here for any changes you need."
         ]
       },
       {
-        title: "Ranking in St Albans",
-        description: "Dominate search results for 'cleaner St Albans' and 'St Albans cleaning company'."
+        title: "Serving St Albans and the District",
+        description: "We make sure your cleaning business is seen across the entire St Albans area, including Harpenden and neighboring villages."
       },
       {
-        title: "Our Process",
+        title: "The St Albans Roadmap",
         points: [
-          "Consult: Define your niche.",
-          "Create: We build your high-end site.",
-          "Perfect: Final tweaks.",
-          "Manage: Ongoing growth."
+          "Blueprint & Content.",
+          "Build & Design.",
+          "Review & Feedback.",
+          "Launch & SEO Setup."
         ]
       }
     ]
   },
   "cleaning-company-web-design-watford": {
     url: "cleaning-company-web-design-watford",
-    keyword: "web design for cleaning companies in Watford",
-    metaTitle: "Cleaning Website Design Watford | Done For You",
-    metaDescription: "Done-for-you websites for cleaning businesses in Watford. £59 per month, fully managed.",
+    keyword: "Web design for cleaning companies in Watford",
+    metaTitle: "Cleaning Company Website Design Watford | Launch for £59/mo",
+    metaDescription: "Professional website design for cleaning companies in Watford. Fast, local and reliable. From £59 per month.",
     industry: "Cleaning",
     location: "Watford",
     heroTitle: "Cleaning Company Website Design in Watford",
-    heroSubtitle: "Get more regular cleaning clients in Watford with a professional site",
-    checklist: ["No upfront cost", "Built to attract regular clients", "Fully managed"],
+    heroSubtitle: "Win more cleaning work across Watford and Southwest Herts",
+    checklist: ["No upfront cost", "Lead-generation focus", "Fully managed"],
     sections: [
       {
-        title: "Why Watford Cleaning Companies Struggle Online",
-        description: "Watford is a busy hub. If your cleaning business isn't visible on the first page of Google, you're missing out on hundreds of potential regular clients.",
+        title: "Watford Cleaners Need Fast, Lead-Gen Sites",
+        description: "Watford is a busy hub. When someone needs a cleaner, Watford customers need to find you and contact you instantly. If your site is slow or hard to use, you're losing jobs.",
         points: [
-          "Low Google rankings in the WD postcode area",
-          "Websites that are difficult to use on mobile phones",
-          "No clear way for customers to book or request a quote",
-          "Lack of professional brand appearance",
-          "Missing out on commercial cleaning leads"
+          "Not ranking for Watford-specific cleaning searches",
+          "Frustrating mobile experience for customers in a hurry",
+          "Unprofessional designs that don't build Watford trust",
+          "Hidden or hard-to-find contact information on mobile",
+          "Generic content that doesn't mention Watford or local areas"
         ]
       },
       {
-        title: "What Your Watford Cleaning Website Will Do",
-        description: "We build websites designed to grow your recurring revenue.",
+        title: "Our Watford Success Strategy",
+        description: "We build cleaning websites that dominate the Watford market.",
         points: [
-          "Modern & Responsive Design",
-          "Lead-Optimised Layout",
-          "Local SEO for Watford & Bushey",
-          "Fast & Secure Hosting",
-          "Managed Content Updates"
+          "Watford-Centric SEO: Ranking for WD17, WD18 and WD19 areas.",
+          "Professional Design: Conveying reliability and standards to Watford clients.",
+          "Fully Managed Infrastructure: Fast, secure, and always live.",
+          "Lead-Driven Design: Built to turn Watford visitors into booked jobs.",
+          "Ongoing Support: We handle the technical side so you don't have to."
         ]
       },
       {
-        title: "Built Around How Watford Customers Search",
-        description: "From weekly domestic cleans to deep end-of-tenancy work, we ensure your Watford business is the one they find first."
+        title: "Covering Every Part of Watford",
+        description: "We make sure your cleaning business is visible to every household across the entire Watford area."
       },
       {
-        title: "Local SEO for Watford",
-        description: "Appearing for 'cleaner Watford' and 'Watford cleaning services' is our priority."
-      },
-      {
-        title: "Simple Process",
+        title: "Getting Live in Watford",
         points: [
-          "1. Discovery.",
-          "2. Full Build.",
-          "3. Quality sign-off.",
-          "4. Managed launch."
+          "1. Strategic Development.",
+          "2. Preview & Sign-off.",
+          "3. Managed Launch.",
+          "4. Continuous Management."
         ]
       }
     ]
@@ -1893,361 +1834,346 @@ export const seoPagesData: Record<string, SEOPageInfo> = {
   // Removals
   "removals-web-design": {
     url: "removals-web-design",
-    keyword: "web design for removal companies",
-    metaTitle: "Website Design for Removal Companies | Get More Leads",
-    metaDescription: "High-converting websites for removals businesses. We design, build and manage everything. Low upfront cost, start today.",
+    keyword: "Web design for removal companies",
+    metaTitle: "Website Design for Removal Companies | From £59 Per Month",
+    metaDescription: "High-converting websites for removal companies. Modern, fast and fully managed from £59 per month. Get more removals jobs today.",
     industry: "Removals",
     heroTitle: "Website Design for Removal Companies",
-    heroSubtitle: "Win More House Move Bookings with a Website That Earns Trust",
-    checklist: ["No upfront cost on our monthly plan", "Built for trust-heavy decisions", "Covers domestic and commercial moves"],
+    heroSubtitle: "Build Trust and Win More Local Removal Contracts",
+    checklist: ["No upfront cost on monthly plan", "Fully managed hosting & updates", "Built for lead generation"],
     sections: [
       {
-        title: "Why Removal Customers Are Choosing Competitors Over You",
-        description: "Moving house is one of the most considered purchases a household makes. Customers take their time choosing who to trust with their belongings. A website that doesn't stand up to scrutiny loses bookings.",
+        title: "Is Your Removals Website Costing You Jobs?",
+        description: "Moving home is stressful. If your website looks amateur or outdated, potential customers will worry about the safety of their belongings. A professional online presence is essential to winning high-value house and office removal contracts.",
         points: [
-          "No visible insurance or goods-in-transit cover — a major concern",
-          "Customer reviews absent or poorly positioned",
-          "Vague service descriptions leaving customers unsure of coverage",
-          "No dedicated content for different move types (office, man-and-van)",
-          "Missing from searches beyond broad local removal terms",
-          "Complicated quote process losing customers ready to book"
+          "Outdated designs that fail to convey care and reliability",
+          "Slow loading times that frustrate potential customers",
+          "Not optimized for mobile — where many local searches happen",
+          "No clear way to request a quote or view service areas",
+          "Invisible on Google for local removals search terms",
+          "Generic content that doesn't build local credibility"
         ]
       },
       {
-        title: "What You Get with a Cosy Content Removal Company Website",
-        description: "Every element of your site is chosen to build confidence and guide customers smoothly towards a quote request.",
+        title: "What We Build for Local Removal Businesses",
+        description: "We create professional, high-performance websites designed specifically to win more removals work.",
         points: [
-          "Insurance and Credentials Visible: Displaying your cover details prominently.",
-          "Service and Coverage Clarity: Clear info about the move types you handle.",
-          "Review Integration: Local testimonials positioned where they influence decisions.",
-          "Streamlined Quote Request: Capturing what you need without overwhelming the customer.",
-          "Fully Managed: Hosting, security, and maintenance all handled by our team.",
-          "Content Written for You: Service pages, area coverage, and FAQs included."
+          "Trustworthy & Reliable Design: Layouts that highlight your care and professional standards.",
+          "Fast & Mobile-Responsive: Ensuring you're found by customers searching for movers on their phones.",
+          "Lead-Focused: Clear calls-to-action, quote forms, and click-to-call buttons.",
+          "Fully Managed Service: We handle all the technical details, security, and hosting.",
+          "Regular Updates: We're here to add new services, testimonials, or areas whenever you need.",
+          "Professional Copywriting: We write your service pages and location content for you."
         ]
       },
       {
-        title: "Designed with SEO from Day One",
-        description: "Ranking for removal searches requires both strong local SEO and the content depth to rank for specific move types.",
+        title: "Removals SEO from the Ground Up",
+        description: "We ensure your business is visible to people in your area searching for a mover.",
         points: [
-          "Technical SEO Foundations: Proper site structure and XML sitemaps.",
-          "Local SEO Setup: Pages targeting your specific service areas.",
-          "Smart Schema Markup: LocalBusiness, Service, and FAQ schema.",
-          "Performance & Security: SSL certificate and fast loading for better rankings."
+          "Local Search Strategy: Targeting your specific service areas and towns.",
+          "Technical Foundations: Built for speed and search engine visibility.",
+          "Rich Schema Markup: Helping Google understand your services and location.",
+          "Secure & Reliable: SSL certificates and secure hosting included."
         ]
       },
       {
-        title: "How It Works",
-        description: "We keep the process simple. Most removal websites are live within days:",
+        title: "Our Simple Build Process",
+        description: "Get your new removals website live without any stress:",
         points: [
-          "1. We build your site: We create a modern removal website tailored to your business — writing all the content, designing the layout, and setting up the full technical and SEO foundation.",
-          "2. You review it: We share a preview link. If anything needs adjusting before launch, just say the word.",
-          "3. We launch it: Your site goes live and begins generating enquiries. We handle the hosting setup and Google submission.",
-          "4. We manage everything: Hosting, maintenance, security, and updates — all handled by our team on an ongoing basis."
-        ]
-      },
-      {
-        title: "Who This Is For",
-        description: "This service is built for removal companies that want a website working as hard as their team. It works particularly well for:",
-        points: [
-          "Removal companies whose website doesn't reflect their professionalism",
-          "Businesses looking to break into office relocations or specialist services",
-          "Removal operators relying on comparison sites who want to own their own leads",
-          "Van-and-man operators wanting to grow into a full-service removal business",
-          "Companies expanding their coverage area and needing that reflected online"
+          "1. Build: We design and write your new site, focusing on your specific removals services.",
+          "2. Review: You check the preview link and let us know if any tweaks are needed.",
+          "3. Launch: We handle the launch and set up your hosting and Google submission.",
+          "4. Manage: We take care of everything ongoing so you can focus on your jobs."
         ]
       }
     ]
   },
   "removals-web-design-luton": {
     url: "removals-web-design-luton",
-    keyword: "web design for removal companies in Luton",
-    metaTitle: "Removals Website Design Luton | Get More Enquiries",
-    metaDescription: "We build high-converting websites for removal companies in Luton. Get more enquiries today.",
+    keyword: "Web design for removal companies in Luton",
+    metaTitle: "Removals Website Design Luton | From £59 per month",
+    metaDescription: "Professional website design for removal companies in Luton. Modern, lead-gen sites from £59 per month.",
     industry: "Removals",
     location: "Luton",
-    heroTitle: "Removal Company Website Design in Luton",
-    heroSubtitle: "Win more Luton house moves before your competitors even get a look in",
-    checklist: ["No upfront cost", "Built to attract local moves", "Fully managed"],
+    heroTitle: "Removals Website Design in Luton",
+    heroSubtitle: "Professional websites for Luton's best removal services",
+    checklist: ["No upfront cost", "Lead-focused build", "Fully managed"],
     sections: [
       {
-        title: "Why Luton Removal Companies Lose Bookings Online",
-        description: "Removal is a high-consideration purchase. Customers in Luton are handing their entire home over to a team of strangers — so the bar for trust is significant.",
+        title: "Why Luton Removal Businesses Need a Better Website",
+        description: "Luton is a busy, competitive market for removals. To win the best residential and commercial jobs, you need to look more professional than the competition. A DIY site or a basic listing isn't enough to build the trust needed for moving belongings.",
         points: [
-          "No visible insurance or goods-in-transit cover details",
-          "Missing from local search for key removal terms",
-          "No customer reviews or case studies to back up claims",
-          "Unclear service offering for specific move types",
-          "No easy online quote request process"
+          "Not appearing for local Luton removals searches",
+          "Unprofessional designs that don't convey care and reliability",
+          "Hard-to-use mobile sites for customers searching on the go",
+          "No clear way for Luton customers to contact you or request a quote",
+          "Sites that load too slowly, causing customers to call someone else"
         ]
       },
       {
-        title: "What Your Luton Removal Company Website Will Include",
-        description: "Every part of your site is built around what actually converts a removal customer.",
+        title: "Our Luton Removals Package",
+        description: "We build websites that generate more work for your Luton removals business.",
         points: [
-          "Insurance and Credentials Front and Centre",
-          "Service Clarity (Domestic, Office, Man-and-Van)",
-          "Quote Request Made Easy",
-          "Fully Managed Hosting & Security",
-          "Regular Content Updates Included"
+          "Luton-Specific SEO: Targeting the towns and neighborhoods you serve.",
+          "Trust-Building Layout: Highlighting your care and professional standards.",
+          "Lead-Driven Design: Built to turn visitors into quote requests.",
+          "Managed Hosting: 100% uptime and high security standard.",
+          "Ongoing Maintenance: We handle the technical side so you don't have to."
         ]
       },
       {
-        title: "Built Around How Luton Customers Search",
-        description: "Removal searches in Luton cover everything from house moves and office relocations to man and van services and removals to London."
+        title: "Serving Luton and the Surrounding Area",
+        description: "From Round Green to Sundon Park, we make sure your removals services are seen by every household and business across Luton."
       },
       {
-        title: "Local SEO That Keeps Your Booking Calendar Filled",
-        description: "We build your site with local SEO at its core to compete in Luton's local results from day one."
-      },
-      {
-        title: "From Brief to Live — A Straightforward Process",
+        title: "The Luton Launch Roadmap",
         points: [
-          "1. We build your site from a short brief.",
-          "2. You review and request any changes.",
-          "3. We handle the launch and Google submission.",
-          "4. We manage updates and security ongoing."
+          "Phase 1: Build & Content.",
+          "Phase 2: Review & Approve.",
+          "Phase 3: Managed Launch.",
+          "Phase 4: Ongoing Support."
         ]
       }
     ]
   },
   "removals-web-design-bedford": {
     url: "removals-web-design-bedford",
-    keyword: "web design for removal companies in Bedford",
-    metaTitle: "Removals Website Design Bedford | Low-Cost Build",
-    metaDescription: "Affordable websites for removal companies in Bedford. Fully managed and built to convert.",
+    keyword: "Web design for removal companies in Bedford",
+    metaTitle: "Removals Website Design Bedford | Fast & Professional",
+    metaDescription: "Professional website design for removal companies in Bedford. Lead-generating sites from £59 per month.",
     industry: "Removals",
     location: "Bedford",
-    heroTitle: "Removal Company Website Design in Bedford",
-    heroSubtitle: "Be the removal company Bedford families trust with their move",
-    checklist: ["Nothing to pay upfront", "Designed for how customers research", "Covers Bedford and wider area"],
+    heroTitle: "Removals Website Design in Bedford",
+    heroSubtitle: "High-performance websites for Bedfordshire's removal services",
+    checklist: ["No upfront cost", "Managed launch", "Lead-focused design"],
     sections: [
       {
-        title: "What Bedford Removal Customers Are Really Looking For",
-        description: "A removal booking is one of the largest single purchases many households make. Trust is the deciding factor — more than price or availability.",
+        title: "The Bedford Removals Market is Competitive",
+        description: "To win the best jobs in Bedford, your website needs to look professional, load fast, and rank well on Google. Anything less is costing you enquiries.",
         points: [
-          "Insurance and liability cover not clearly mentioned",
-          "No local reviews to build Bedford credibility",
-          "Vague service descriptions for specialist items",
-          "Missing from postcode-specific searches (MK40-MK42)",
-          "Complicated quote process losing customers"
+          "Invisible on Google for 'removals Bedford' searches",
+          "Outdated designs that don't reflect your care and reliability",
+          "Poor mobile performance for customers searching on their phones",
+          "No clear call-to-action for Bedford customers",
+          "Slow loading speeds causing visitors to leave"
         ]
       },
       {
-        title: "A Removal Company Website That Works as Hard as Your Team",
-        description: "We build every element around what Bedford customers need to see before they commit.",
+        title: "Our Bedford Build Strategy",
+        description: "We create removals websites that dominate the Bedford market.",
         points: [
-          "Credentials and Insurance Visible",
-          "Destination and Service Clarity",
-          "Customer Testimonials That Convert",
-          "Streamlined Quote Request Form",
-          "Fully Managed Performance"
+          "Bedford-Focused SEO: Targeting the MK40, MK41 and MK42 areas.",
+          "Service-Driven Design: Highlighting your specific removals expertise.",
+          "Fully Managed: Hosting, security, and updates all handled.",
+          "Lead Generation: Built to convert visitors into booked jobs.",
+          "Local Content: We write about your services in Bedford."
         ]
       },
       {
-        title: "Ranking for Removals Searches Across Bedford",
-        description: "We capture demand from Bedford town centre to surrounding areas like Ampthill and Sandy."
+        title: "Serving Every Part of Bedford",
+        description: "We ensure your business is visible to customers across the entire Bedford area, including surrounding villages."
       },
       {
-        title: "How We Work With Bedford Removal Companies",
+        title: "Getting Live in Bedford",
         points: [
-          "Step 1: Tell us about your services.",
-          "Step 2: We design and write the complete site.",
-          "Step 3: You review the preview.",
-          "Step 4: We launch and manage everything."
+          "1. Rapid Development.",
+          "2. Client Sign-off.",
+          "3. Managed Launch.",
+          "4. Ongoing Care."
         ]
       }
     ]
   },
   "removals-web-design-dunstable": {
     url: "removals-web-design-dunstable",
-    keyword: "web design for removal companies in Dunstable",
-    metaTitle: "Removals Website Design Dunstable | More Bookings",
-    metaDescription: "Get more bookings with a modern removals website in Dunstable. Low upfront cost.",
+    keyword: "Web design for removal companies in Dunstable",
+    metaTitle: "Removals Website Design Dunstable | Launch for £59/mo",
+    metaDescription: "Professional website design for removal companies in Dunstable. Fast, reliable and local. From £59 per month.",
     industry: "Removals",
     location: "Dunstable",
-    heroTitle: "Removal Company Website Design in Dunstable",
-    heroSubtitle: "Every Dunstable house move starts with a search — be ready",
-    checklist: ["No payment required upfront", "Written and managed by our team", "Designed to win domestic and office moves"],
+    heroTitle: "Removals Website Design in Dunstable",
+    heroSubtitle: "Win more removals work across Dunstable and LU postcode areas",
+    checklist: ["No upfront cost", "Managed launch", "Lead-focused build"],
     sections: [
       {
-        title: "The Removal Industry Has a Trust Problem",
-        description: "Customers worry about damaged items or late teams. We build websites that address these fears head-on to win the booking.",
+        title: "Dunstable Removal Businesses Need a Better Online Presence",
+        description: "When people in Dunstable are moving house, they search online. If your website isn't there, or if it doesn't look professional, you're missing out on jobs.",
         points: [
-          "No mention of insurance or goods-in-transit cover",
-          "Generic copy that doesn't build local trust",
-          "No clear coverage information for destinations",
-          "Missing social proof and customer reviews",
-          "No differentiation from budget competitors"
+          "Not ranking for 'removals Dunstable' or 'house removals Dunstable'",
+          "Amateur designs that don't inspire confidence in your reliability",
+          "Sites that don't work properly on mobile devices",
+          "Missing or hidden contact information for Dunstable customers",
+          "Generic content that doesn't mention your Dunstable service areas"
         ]
       },
       {
-        title: "What a Cosy Content Removal Website Does",
-        description: "Your most effective sales tool, answering questions before they're asked.",
+        title: "What We Build for Dunstable Removal Businesses",
+        description: "We create websites that turn Dunstable locals into loyal clients.",
         points: [
-          "Reassurance Architecture (Insurance/Vetting)",
-          "Specific Coverage & Specialist Move Info",
-          "Real Reviews Integrated Naturally",
-          "Simple & Direct Quote Path",
-          "Completely Managed Service"
+          "Dunstable-Specific SEO: Targeting the LU5 and LU6 areas.",
+          "Trust-Building Design: Showcasing your standards and experience.",
+          "Fully Managed: Hosting, security, and maintenance all taken care of.",
+          "Lead-Gen Focused: Clear buttons and forms to capture enquiries.",
+          "Local Copywriting: We write your Dunstable-focused content for you."
         ]
       },
       {
-        title: "Ranking in Dunstable",
-        description: "Capture surrounding demand in Houghton Regis, Caddington, and the wider area."
+        title: "Covering the Entire Dunstable Area",
+        description: "We make sure your removals services are visible to every household across Dunstable and the surrounding villages."
       },
       {
-        title: "From Brief to Live — Quickly and Simply",
+        title: "The Dunstable Roadmap",
         points: [
-          "1. Brief us on your move types.",
-          "2. We build design, copy, and SEO.",
-          "3. Review your preview link.",
-          "4. Launch and managed support."
+          "Consult & Build.",
+          "Preview & Feedback.",
+          "Launch & SEO Setup.",
+          "Ongoing Management."
         ]
       }
     ]
   },
   "removals-web-design-milton-keynes": {
     url: "removals-web-design-milton-keynes",
-    keyword: "web design for removal companies in Milton Keynes",
-    metaTitle: "Removals Website Design Milton Keynes | Fast Setup",
-    metaDescription: "Professional removals websites in Milton Keynes. Designed to generate leads quickly.",
+    keyword: "Web design for removal companies in Milton Keynes",
+    metaTitle: "Removals Website Design Milton Keynes | Lead-Gen Experts",
+    metaDescription: "Professional website design for removal companies in Milton Keynes. High-performance sites from £59 per month.",
     industry: "Removals",
     location: "Milton Keynes",
-    heroTitle: "Removal Company Website Design in Milton Keynes",
-    heroSubtitle: "MK moves more people than almost any other town — capture your share",
-    checklist: ["Zero upfront cost", "Targeting grid square to grid square", "Built for domestic and commercial"],
+    heroTitle: "Removals Website Design in Milton Keynes",
+    heroSubtitle: "Modern websites for Milton Keynes' best removal services",
+    checklist: ["No upfront cost", "SEO-optimized", "Fully managed"],
     sections: [
       {
-        title: "Why MK's Removal Market Demands a Sophisticated Website",
-        description: "In a fast-moving town like Milton Keynes, simply having a website isn't enough to beat the regional competition.",
+        title: "Standing Out in the Milton Keynes Removals Market",
+        description: "Milton Keynes is a modern, fast-growing city. Your website needs to reflect that with a clean, professional design that builds trust with both homeowners and commercial clients.",
         points: [
-          "Only targeting generic MK searches",
-          "No content for the massive new-build market",
-          "Missing searches for relocations to/from London",
-          "Designs that don't stand out in the grid",
-          "Weak trust signals for thorough MK researchers"
+          "Outdated sites that don't match the modern Milton Keynes feel",
+          "Invisible on Google for competitive MK removals searches",
+          "Failing to capture the growing commercial market in Milton Keynes",
+          "Poor mobile performance for customers searching on the go",
+          "Lack of clear 'Book a Quote' or 'Call Now' buttons"
         ]
       },
       {
-        title: "A Website That Covers MK's Removal Market Properly",
-        description: "Depth and structure to capture the full geographic range of Milton Keynes.",
+        title: "Our Milton Keynes Removals Package",
+        description: "We build high-spec websites for high-performing removal companies in Milton Keynes.",
         points: [
-          "District and Estate-Level Targeting",
-          "New-Build Move Specialisation",
-          "Long-Distance and London Move Pages",
-          "Commercial Relocation Coverage",
-          "Fully Managed & Maintained"
+          "Milton Keynes Grid Targeting: SEO strategy for all MK areas.",
+          "Modern, Professional Design: Layouts that inspire confidence.",
+          "Fully Managed Infrastructure: Fast, secure, and always live.",
+          "Lead Generation Focus: Built to convert MK visitors into jobs.",
+          "Ongoing Support: We handle the technical side so you don't have to."
         ]
       },
       {
-        title: "Ranking Across Milton Keynes",
-        description: "Capture removal searches from Bletchley to Newport Pagnell and everywhere in between."
+        title: "Serving All of Milton Keynes",
+        description: "From Tattenhoe to Woburn Sands, we ensure your removals business is seen by everyone across Milton Keynes."
       },
       {
-        title: "Getting Started Is Simple",
+        title: "Getting Live in Milton Keynes",
         points: [
-          "You brief us on your move types.",
-          "We build design, copy, and technical SEO.",
-          "You approve the final site.",
-          "We manage hosting and updates."
+          "1. Build & Design.",
+          "2. Review Link.",
+          "3. Managed Launch.",
+          "4. Ongoing Care."
         ]
       }
     ]
   },
   "removals-web-design-st-albans": {
     url: "removals-web-design-st-albans",
-    keyword: "web design for removal companies in St Albans",
-    metaTitle: "Removals Website Design St Albans | Lead Focused",
-    metaDescription: "Lead-focused websites for removal companies in St Albans. Simple pricing, low upfront cost.",
+    keyword: "Web design for removal companies in St Albans",
+    metaTitle: "Removals Website Design St Albans | Premium Service",
+    metaDescription: "Professional website design for removal companies in St Albans. High-quality, managed sites from £59 per month.",
     industry: "Removals",
     location: "St Albans",
-    heroTitle: "Removal Company Website Design in St Albans",
-    heroSubtitle: "Win the St Albans moves that are worth winning",
-    checklist: ["No upfront cost", "Positioned for quality moves", "Fully managed"],
+    heroTitle: "Removals Website Design in St Albans",
+    heroSubtitle: "A premium online presence for St Albans' removals experts",
+    checklist: ["No upfront cost", "Premium design", "Local SEO built-in"],
     sections: [
       {
-        title: "St Albans Removal Customers Research Carefully",
-        description: "Homeowners in St Albans take moving seriously and judge your business by its digital storefront.",
+        title: "St Albans Customers Demand High Standards",
+        description: "In St Albans, first impressions are critical. To win high-value residential and commercial removals contracts, your website must convey absolute professionalism and care.",
         points: [
-          "Sites that don't match premium St Albans standards",
-          "No evidence of specialist handling capability",
-          "Limited coverage of surrounding AL villages",
-          "Absence from high-value service searches",
-          "Testimonials not used to build deep trust"
+          "Amateur-looking sites that don't reflect St Albans quality",
+          "Not ranking for 'movers St Albans' or 'removals contractor AL1'",
+          "Poor mobile experience for busy, affluent customers",
+          "Lack of clear information on standards and reliability",
+          "Slow performance causing high bounce rates"
         ]
       },
       {
-        title: "A Website That Wins St Albans' Best Removal Bookings",
-        description: "Attract full-service moves, packing contracts, and specialist projects.",
+        title: "The St Albans Removals Package",
+        description: "Websites that reflect the premium quality of your St Albans removals business.",
         points: [
-          "Premium Visual Presentation",
-          "Specialist Service Visibility",
-          "Insurance and Accreditation Prominence",
-          "Testimonials That Persuade",
-          "Fully Managed Performance"
+          "High-End Design: Clean, elegant, and trustworthy layouts.",
+          "St Albans-Focused SEO: Targeting AL1, AL2 and AL3 postcode areas.",
+          "Fully Managed hosting: Secure, reliable, and lightning fast.",
+          "Professional Copywriting: We write your service and area content.",
+          "Continuous Management: We're here for any changes you need."
         ]
       },
       {
-        title: "Ranking in St Albans",
-        description: "Dominate search results for 'removal company St Albans' and AL postcode areas."
+        title: "Serving St Albans and the Surrounding Area",
+        description: "We make sure your removals business is seen across the entire St Albans area, including Harpenden and neighboring villages."
       },
       {
-        title: "Our Process",
+        title: "The St Albans Roadmap",
         points: [
-          "Consult: Define your move types.",
-          "Build: Design, copywriting, and SEO.",
-          "Review: Final quality checks.",
-          "Manage: We take care of the rest."
+          "Blueprint & Content.",
+          "Build & Design.",
+          "Review & Feedback.",
+          "Launch & SEO Setup."
         ]
       }
     ]
   },
   "removals-web-design-watford": {
     url: "removals-web-design-watford",
-    keyword: "web design for removal companies in Watford",
-    metaTitle: "Removals Website Design Watford | Done For You Service",
-    metaDescription: "Done-for-you removal websites in Watford. We handle everything so you don’t have to.",
+    keyword: "Web design for removal companies in Watford",
+    metaTitle: "Removals Website Design Watford | Launch for £59/mo",
+    metaDescription: "Professional website design for removal companies in Watford. Fast, local and reliable. From £59 per month.",
     industry: "Removals",
     location: "Watford",
-    heroTitle: "Removal Company Website Design in Watford",
-    heroSubtitle: "Get ahead in one of Hertfordshire's most active removal markets",
-    checklist: ["No upfront cost", "Built to capture high volume", "Fully managed"],
+    heroTitle: "Removals Website Design in Watford",
+    heroSubtitle: "Win more removals work across Watford and Southwest Herts",
+    checklist: ["No upfront cost", "Lead-generation focus", "Fully managed"],
     sections: [
       {
-        title: "Watford's Removal Market Rewards Visibility",
-        description: "Watford's proximity to London and high population density makes it a prime market for removals.",
+        title: "Watford Removal Businesses Need Fast, Lead-Gen Sites",
+        description: "Watford is a busy hub. When someone needs a mover, Watford customers need to find you and contact you instantly. If your site is slow or hard to use, you're losing jobs.",
         points: [
-          "Only ranking for broad Watford searches",
-          "No targeting of the London-Watford corridor",
-          "Thin service pages lacking depth",
-          "Trust signals absent or poorly positioned",
-          "Poor mobile experience for busy commuters"
+          "Not ranking for Watford-specific removals searches",
+          "Frustrating mobile experience for customers in a hurry",
+          "Unprofessional designs that don't build Watford trust",
+          "Hidden or hard-to-find contact information on mobile",
+          "Generic content that doesn't mention Watford or local areas"
         ]
       },
       {
-        title: "What We Build for Watford Removal Companies",
-        description: "Capture both high-value homeowner moves and frequent rental turnover.",
+        title: "Our Watford Success Strategy",
+        description: "We build removals websites that dominate the Watford market.",
         points: [
-          "London Move Targeting Strategy",
-          "WD Postcode Geographic Coverage",
-          "Trust and Insurance Visibility",
-          "Rental Market & Tenancy Content",
-          "Fully Managed Infrastructure"
+          "Watford-Centric SEO: Ranking for WD17, WD18 and WD19 areas.",
+          "Professional Design: Conveying reliability and standards to Watford clients.",
+          "Fully Managed Infrastructure: Fast, secure, and always live.",
+          "Lead-Driven Design: Built to turn Watford visitors into booked jobs.",
+          "Ongoing Support: We handle the technical side so you don't have to."
         ]
       },
       {
-        title: "Appearing in Watford's Local Search",
-        description: "Rank across Bushey, Croxley Green, and the wider WD postcode area."
+        title: "Covering Every Part of Watford",
+        description: "We make sure your removals business is visible to every household across the entire Watford area."
       },
       {
-        title: "How We Get You Live in Watford",
+        title: "Getting Live in Watford",
         points: [
-          "Kick-off call.",
-          "Professional build phase.",
-          "Client review and sign-off.",
-          "Managed launch and support."
+          "1. Strategic Development.",
+          "2. Preview & Sign-off.",
+          "3. Managed Launch.",
+          "4. Continuous Management."
         ]
       }
     ]
   }
-};
+});
