@@ -15,7 +15,7 @@ const TermsConditions = () => {
           >
             Terms & Conditions
           </motion.h1>
-          <p className="text-on-surface-variant mb-8 md:mb-12 font-bold italic text-sm md:text-base">Last updated: April 02, 2026</p>
+          <p className="text-on-surface-variant mb-8 md:mb-12 font-bold italic text-sm md:text-base">Last updated: May 16, 2026</p>
           
           <div className="prose dark:prose-invert max-w-none space-y-6 md:space-y-8 text-on-surface-variant font-medium leading-relaxed text-sm md:text-base">
             <p>Welcome to Cosy Content Limited!</p>
@@ -53,6 +53,10 @@ const TermsConditions = () => {
                 <p>Due to the nature of digital services: All sales are final unless otherwise stated. No refunds are provided after delivery or access to the website.</p>
               </li>
             </ol>
+
+            <h2 className="text-2xl font-bold text-on-surface mt-12 mb-4">Monthly Plan Cancellation & Hosting</h2>
+            <p>Monthly subscription plans include website hosting, maintenance and management by Cosy Content Limited. If your monthly plan is cancelled, your website may remain live during a grace period of 14 days from the cancellation date. After this period, the website may be suspended or taken offline unless alternative hosting or transfer arrangements have been agreed.</p>
+            <p>Customers wishing to retain their website may contact us during the grace period to discuss transfer options, subject to any applicable setup or migration fees (£49 one-off charge).</p>
 
             <h2 className="text-2xl font-bold text-on-surface mt-12 mb-4">License</h2>
             <p>Unless otherwise stated, Cosy Content Limited and/or its licensors own the intellectual property rights for all material on Cosy Content Limited. All intellectual property rights are reserved.</p>

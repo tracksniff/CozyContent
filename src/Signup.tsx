@@ -71,11 +71,12 @@ interface FilePreview {
   isImage: boolean;
 }
 
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 5;
 
 const Signup: React.FC = () => {
   const location = useLocation();
-  const { planId, billing } = location.state || {};
+  const { planId, billing: initialBilling } = location.state || {};
+  const billing = initialBilling || "monthly";
   const hasPreSelectedPlan = !!planId;
 
   const [step, setStep] = useState(1);
@@ -84,6 +85,11 @@ const Signup: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [mapCenter, setMapCenter] = useState<[number, number]>([51.505, -0.09]);
+
+  // ── agreement states ────────────────────────────────────
+  const [agreedTerms, setAgreedTerms] = useState(false);
+  const [agreedDigitalService, setAgreedDigitalService] = useState(false);
+  const [agreedMonthlyPlan, setAgreedMonthlyPlan] = useState(false);
 
   // ── core form fields ────────────────────────────────────
   const [formData, setFormData] = useState({
@@ -652,9 +658,7 @@ const Signup: React.FC = () => {
             <h2 className="text-4xl font-black text-on-surface tracking-tighter leading-none mb-3">
               Your New <span className="text-primary italic">Website.</span>
             </h2>
-            <p className="text-on-surface-variant font-bold text-sm">
-              Tell us about your business
-            </p>
+            <p className="text-on-surface-variant font-bold text-sm">Tell us about your business</p>
             <div className="flex items-center justify-center gap-2 mt-8">
               {Array.from({ length: TOTAL_STEPS }, (_, i) => i + 1).map((s) => (
                 <div
@@ -1273,12 +1277,155 @@ const Signup: React.FC = () => {
                 <div className="bg-surface p-4 rounded-2xl border border-outline-variant flex items-start gap-3">
                   <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                   <p className="text-[11px] text-on-surface-variant leading-relaxed font-medium">
-                    Almost done! After submitting you&apos;ll be taken to our secure checkout to
-                    choose your plan and launch your project.
+                    Almost done! One last step to review the service terms and finalize your
+                    application.
                   </p>
                 </div>
 
-                <NavButtons isSubmit />
+                <NavButtons onNext={() => setStep(5)} />
+              </div>
+            )}
+
+            {/* ══ STEP 5 — Final Review & Agreements ══════════════════ */}
+            {step === 5 && (
+              <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+                <div className="bg-surface-container p-6 rounded-[2rem] border border-outline-variant/30 space-y-4">
+                  <h3 className="text-lg font-black text-on-surface flex items-center gap-2">
+                    <Info size={18} className="text-primary" /> Custom website service
+                  </h3>
+                  <ul className="space-y-3">
+                    {[
+                      "Delivery target: within 7 days (subject to receiving content/details)",
+                      billing === "monthly" ? "Monthly plan renews until cancelled" : billing === "annual" ? "Yearly plan renews until cancelled" : "One off payment",
+                      "Work starts after payment",
+                      "Refund terms apply once work has started",
+                    ].map((item, idx) => (
+                      <li key={idx} className="flex items-start gap-3 text-sm font-bold text-on-surface-variant">
+                        <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+
+                <div className="space-y-4">
+                  <h3 className="text-sm font-black uppercase tracking-widest text-on-surface-variant ml-1">
+                    Refund Policy
+                  </h3>
+                  <div className="grid gap-3">
+                    <div className="p-4 rounded-2xl bg-surface border border-outline-variant/50">
+                      <p className="text-xs font-black text-on-surface mb-1">Before work starts:</p>
+                      <p className="text-[11px] text-on-surface-variant font-medium leading-relaxed">
+                        Cancellation may be eligible for refund minus payment processing/admin fees.
+                      </p>
+                    </div>
+                    <div className="p-4 rounded-2xl bg-surface border border-outline-variant/50">
+                      <p className="text-xs font-black text-on-surface mb-1">After work starts:</p>
+                      <p className="text-[11px] text-on-surface-variant font-medium leading-relaxed">
+                        Refunds may be partial or unavailable depending on work completed.
+                      </p>
+                    </div>
+                    <div className="p-4 rounded-2xl bg-surface border border-outline-variant/50">
+                      <p className="text-xs font-black text-on-surface mb-1">
+                        Monthly/yearly plans:
+                      </p>
+                      <p className="text-[11px] text-on-surface-variant font-medium leading-relaxed">
+                        Future billing cancellable anytime.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4 pt-2">
+                  <label className="flex items-start gap-3 group cursor-pointer">
+                    <div className="mt-0.5">
+                      <input
+                        type="checkbox"
+                        required
+                        className="sr-only"
+                        checked={agreedTerms}
+                        onChange={(e) => setAgreedTerms(e.target.checked)}
+                      />
+                      <div
+                        className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all ${agreedTerms ? "bg-primary border-primary" : "border-outline-variant group-hover:border-primary/50"}`}
+                      >
+                        {agreedTerms && <Check size={12} className="text-white" strokeWidth={4} />}
+                      </div>
+                    </div>
+                    <span className="text-xs font-bold text-on-surface-variant leading-relaxed">
+                      I accept the{" "}
+                      <Link
+                        to="/terms-conditions"
+                        target="_blank"
+                        className="text-primary hover:underline"
+                      >
+                        Terms & Conditions
+                      </Link>{" "}
+                      and{" "}
+                      <Link
+                        to="/privacy-policy"
+                        target="_blank"
+                        className="text-primary hover:underline"
+                      >
+                        Privacy Policy
+                      </Link>
+                      .
+                    </span>
+                  </label>
+
+                  <label className="flex items-start gap-3 group cursor-pointer">
+                    <div className="mt-0.5">
+                      <input
+                        type="checkbox"
+                        required
+                        className="sr-only"
+                        checked={agreedDigitalService}
+                        onChange={(e) => setAgreedDigitalService(e.target.checked)}
+                      />
+                      <div
+                        className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all ${agreedDigitalService ? "bg-primary border-primary" : "border-outline-variant group-hover:border-primary/50"}`}
+                      >
+                        {agreedDigitalService && (
+                          <Check size={12} className="text-white" strokeWidth={4} />
+                        )}
+                      </div>
+                    </div>
+                    <span className="text-xs font-bold text-on-surface-variant leading-relaxed">
+                      I understand this is a custom digital service and work may begin immediately
+                      after payment; refund eligibility may reduce once work has started.
+                    </span>
+                  </label>
+
+                  <label className="flex items-start gap-3 group cursor-pointer">
+                    <div className="mt-0.5">
+                      <input
+                        type="checkbox"
+                        required
+                        className="sr-only"
+                        checked={agreedMonthlyPlan}
+                        onChange={(e) => setAgreedMonthlyPlan(e.target.checked)}
+                      />
+                      <div
+                        className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all ${agreedMonthlyPlan ? "bg-primary border-primary" : "border-outline-variant group-hover:border-primary/50"}`}
+                      >
+                        {agreedMonthlyPlan && (
+                          <Check size={12} className="text-white" strokeWidth={4} />
+                        )}
+                      </div>
+                    </div>
+                    <span className="text-xs font-bold text-on-surface-variant leading-relaxed">
+                      I understand that monthly plans include hosting and management. If cancelled,
+                      the website may be taken offline after the grace period unless a transfer is
+                      arranged.
+                    </span>
+                  </label>
+                </div>
+
+                <NavButtons
+                  isSubmit
+                  canNext={agreedTerms && agreedDigitalService && agreedMonthlyPlan}
+                />
               </div>
             )}
           </form>
