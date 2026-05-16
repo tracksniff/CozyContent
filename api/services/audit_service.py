@@ -109,10 +109,15 @@ class _CoverPage(Flowable):
         # ── "PERFORMANCE AUDIT" pill ──
         c.setFillColor(colors.HexColor("#1C1C1C"))
         c.roundRect(20 * mm, H - 28 * mm, 72 * mm, 10 * mm, 5 * mm, fill=1, stroke=0)
-        c.setFillColor(ACCENT)
+        c.setFillColor(colors.white)
         c.setFont("Helvetica-Bold", 8)
         current_date = datetime.now().strftime("%B %Y").upper()
         c.drawString(25 * mm, H - 23 * mm, f"PERFORMANCE AUDIT  \u2022  {current_date}")
+
+        # ── website url (above score) ──
+        c.setFillColor(colors.white)
+        c.setFont("Helvetica", 14)
+        c.drawCentredString(W / 2, H / 2 + 76 * mm, self.website_url)
 
         # ── score circle ──
         cx, cy, r = W / 2, H / 2 + 30 * mm, 38 * mm
@@ -121,20 +126,17 @@ class _CoverPage(Flowable):
         c.setStrokeColor(ACCENT)
         c.setLineWidth(3)
         c.circle(cx, cy, r, fill=0, stroke=1)
-        c.setFillColor(ACCENT)
+        c.setFillColor(colors.white)
         c.setFont("Helvetica-Bold", 42)
         c.drawCentredString(cx, cy + 6 * mm, str(self.overall_score))
         c.setFillColor(OFF_WHITE)
         c.setFont("Helvetica", 10)
         c.drawCentredString(cx, cy - 10 * mm, "OVERALL SCORE")
 
-        # ── business name + url ──
+        # ── business name (below score) ──
         c.setFillColor(colors.white)
         c.setFont("Helvetica-Bold", 36)
         c.drawCentredString(W / 2, H / 2 - 12 * mm, self.business_name)
-        c.setFillColor(ACCENT)
-        c.setFont("Helvetica", 13)
-        c.drawCentredString(W / 2, H / 2 - 24 * mm, self.website_url)
 
         # ── score bars ──
         score_items = list(self.scores.items())  # [(label, value), ...]
@@ -217,7 +219,7 @@ class _SectionHeader(Flowable):
         c.setFont("Helvetica-Bold", 14)
         c.drawString(8 * mm, 9 * mm, self._title)
         if self._subtitle:
-            c.setFillColor(ACCENT2)
+            c.setFillColor(colors.white)
             c.setFont("Helvetica", 8)
             c.drawString(8 * mm, 3.5 * mm, self._subtitle)
 
@@ -372,7 +374,7 @@ class _CtaBanner(Flowable):
         c.setFillColor(DARK)
         c.roundRect(0, 0, w, h, 4 * mm, fill=1, stroke=0)
 
-        c.setFillColor(ACCENT)
+        c.setFillColor(colors.white)
         c.setFont("Helvetica-Bold", 15)
         c.drawCentredString(
             w / 2, h - 10 * mm, "Don\u2019t let your website hold you back."
@@ -392,7 +394,7 @@ class _CtaBanner(Flowable):
         col_w = w / 3
         for i, (val, label) in enumerate(stats):
             cx = col_w * i + col_w / 2
-            c.setFillColor(ACCENT)
+            c.setFillColor(colors.white)
             c.setFont("Helvetica-Bold", 13)
             c.drawCentredString(cx, h - 28 * mm, val)
             c.setFillColor(MID_GREY)
@@ -414,7 +416,7 @@ class _CtaBanner(Flowable):
         p_by = 6 * mm
         c.setFillColor(ACCENT)
         c.roundRect(p_bx, p_by, btn_w, btn_h, 2 * mm, fill=1, stroke=0)
-        c.setFillColor(DARK)
+        c.setFillColor(colors.white)
         c.setFont("Helvetica-Bold", 9)
         c.drawCentredString(p_bx + btn_w / 2, p_by + 3 * mm, "VIEW PLANS & PRICING")
         c.linkURL("https://cosycontent.com/pricing", (p_bx, p_by, p_bx + btn_w, p_by + btn_h), relative=1)
