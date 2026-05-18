@@ -341,48 +341,39 @@ def build_design_tokens(branding_colors: dict) -> dict:
     """
 
     primary_hex = branding_colors.get("primary", "#2563EB")
-
     secondary_hex = branding_colors.get("secondary", "#1E3A5F")
-
     accent_hex = branding_colors.get("accent", "#10B981")
+    
+    # New user-selected colors
+    background_hex = branding_colors.get("background", "#FFFFFF")
+    text_hex = branding_colors.get("text", "#333333")
+    text_heading_hex = branding_colors.get("textHeading", "#111111")
 
     primary_hsl = hex_to_hsl(primary_hex)
-
     secondary_hsl = hex_to_hsl(secondary_hex)
-
     accent_hsl = hex_to_hsl(accent_hex)
+    background_hsl = hex_to_hsl(background_hex)
+    text_hsl = hex_to_hsl(text_hex)
+    text_heading_hsl = hex_to_hsl(text_heading_hex)
 
     # Foreground on primary — white if primary is dark, near-black if light
-
     primary_fg = "0 0% 100%" if is_dark(primary_hex) else "220 20% 10%"
-
     accent_fg = "0 0% 100%" if is_dark(accent_hex) else "220 20% 10%"
 
-    # Background: very light tint of secondary
-
+    # Background: very light tint of secondary (fallback if background_hex not provided)
     sec_h = secondary_hsl.split()[0]
-
-    bg_hsl = f"{sec_h} 20% 99%"
-
-    card_hsl = f"{sec_h} 10% 100%"
-
     section_alt_hsl = f"{sec_h} 15% 97%"
-
     border_hsl = f"{sec_h} 15% 92%"
-
     muted_hsl = f"{sec_h} 10% 94%"
-
     muted_fg_hsl = f"{sec_h} 10% 45%"
 
-    foreground_hsl = f"{sec_h} 20% 12%"
-
     return {
-        "--background": bg_hsl,
-        "--foreground": foreground_hsl,
-        "--card": card_hsl,
-        "--card-foreground": foreground_hsl,
-        "--popover": card_hsl,
-        "--popover-foreground": foreground_hsl,
+        "--background": background_hsl,
+        "--foreground": text_hsl,
+        "--card": background_hsl,
+        "--card-foreground": text_hsl,
+        "--popover": background_hsl,
+        "--popover-foreground": text_hsl,
         "--primary": primary_hsl,
         "--primary-foreground": primary_fg,
         "--secondary": section_alt_hsl,
@@ -397,7 +388,8 @@ def build_design_tokens(branding_colors: dict) -> dict:
         "--section-alt": section_alt_hsl,
         "--cta-glow": accent_hsl,
         "--hero-overlay": primary_hsl,
-        "--warm-bg": bg_hsl,
+        "--warm-bg": background_hsl,
+        "--heading": text_heading_hsl,
     }
 
 
@@ -884,6 +876,9 @@ MOBILECTA:      phone number
 INDEX.HTML:     <title>, meta description, og:title, og:description, author. 
                 IMPORTANT: Remove any <link> tag pointing to external favicons (especially lovable.dev). 
                 If a favicon is needed, use '/favicon.png' or none.
+
+COLORS:         Strictly use the provided Brand Colors (Background, Body Text, Heading Text, 
+                Primary, Secondary, Accent). Ensure all text is readable against its background.
 """
 
 
@@ -923,6 +918,9 @@ def edit_files_with_claude(
     primary_hex = branding_colors.get("primary", "#2563EB")
     secondary_hex = branding_colors.get("secondary", "#1E3A5F")
     accent_hex = branding_colors.get("accent", "#10B981")
+    background_hex = branding_colors.get("background", "#FFFFFF")
+    text_hex = branding_colors.get("text", "#333333")
+    text_heading_hex = branding_colors.get("textHeading", "#111111")
 
     industry = application_data.get("industry", "trade services")
 
@@ -930,16 +928,24 @@ def edit_files_with_claude(
 
 ━━━ YOUR MISSION ━━━
 Transform every component to match the DESIGN PERSONALITY below. The output must look like a completely different website, not a recolored version of the same template.
-Each site you generate must be unique in its layout, section ordering, and creative execution. Avoid generic designs; make each one feel bespoke.
+Each site you generate must be unique in its layout, section ordering, and creative execution. Avoid generic designs; make each one feel bespoke and premium.
 
-━━━ BRAND COLORS ━━━
+━━━ BRAND COLORS & READABILITY ━━━
 Use these brand colors for your design (though they are also mapped to CSS variables):
 - Primary: {primary_hex}
 - Secondary: {secondary_hex}
 - Accent: {accent_hex}
+- Main Background: {background_hex}
+- Body Text: {text_hex}
+- Heading Text: {text_heading_hex}
 
-In Tailwind, you SHOULD prefer the abstract classes like `bg-primary`, `text-secondary`, `border-accent`, etc., as they are dynamically linked to these colors. 
-DO NOT use hardcoded color names like `bg-yellow-500` or `text-blue-600` unless they are for small semantic details (like white text on dark backgrounds).
+In Tailwind, you SHOULD prefer abstract classes:
+- `bg-background` for main surfaces
+- `text-foreground` or `text-text` for body text
+- `text-heading` for headings
+- `bg-primary`, `text-secondary`, `border-accent` etc.
+
+IMPORTANT: Ensure EXCELLENT readability. If the user's selected text color has low contrast against a background, you MUST adjust the background (e.g., adding an overlay or using a tinted variant) to ensure the text is perfectly legible.
 
 ━━━ DESIGN PERSONALITY: {design_personality["name"]} ━━━
 {design_personality["instructions"]}
@@ -997,6 +1003,9 @@ Brand Colors to respect:
 Primary: {primary_hex}
 Secondary: {secondary_hex}
 Accent: {accent_hex}
+Background: {background_hex}
+Body Text: {text_hex}
+Heading Text: {text_heading_hex}
 
 Design Personality to apply: {design_personality["name"]}
 Available images to use (replace ALL existing images with these):
@@ -1071,6 +1080,34 @@ Return ALL files as a single raw JSON object. Do NOT include src/index.css."""
 # ─────────────────────────────────────────────────────────
 # Main entry point
 # ─────────────────────────────────────────────────────────
+
+
+def inject_extra_utilities(css_content: str) -> str:
+    """Add extra tailwind utilities for the custom brand tokens."""
+    
+    extra_css = """
+@layer base {
+  :root {
+    /* Custom design tokens added by generation service */
+  }
+}
+
+@layer utilities {
+  .text-heading {
+    color: hsl(var(--heading));
+  }
+  .bg-background {
+    background-color: hsl(var(--background));
+  }
+  .text-foreground {
+    color: hsl(var(--foreground));
+  }
+}
+"""
+    if ".text-heading" not in css_content:
+        css_content += extra_css
+        
+    return css_content
 
 
 def generate_website_code(
@@ -1162,6 +1199,8 @@ def generate_website_code(
     css = inject_fonts(css, fonts_url, display_font, body_font)
 
     css = update_tailwind_config_fonts(css, display_font, body_font)
+
+    css = inject_extra_utilities(css)
 
     template_files["src/index.css"] = css
 
