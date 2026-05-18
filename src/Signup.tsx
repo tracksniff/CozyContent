@@ -45,9 +45,12 @@ const industries = [
 ];
 
 const colorRoles = [
-  { key: "primary" as const, label: "Primary", hint: "Headings & main CTAs" },
-  { key: "secondary" as const, label: "Secondary", hint: "Navbar & dark sections" },
-  { key: "accent" as const, label: "Accent", hint: "Buttons & highlights" },
+  { key: "primary" as const, label: "Primary", hint: "Main Brand Color (Headings & CTAs)" },
+  { key: "secondary" as const, label: "Secondary", hint: "Darker Variant (Navbar & Footers)" },
+  { key: "accent" as const, label: "Accent", hint: "Highlight Color (Buttons & Icons)" },
+  { key: "background" as const, label: "Background", hint: "Page background color" },
+  { key: "text" as const, label: "Body Text", hint: "Standard paragraph text color" },
+  { key: "textHeading" as const, label: "Heading Text", hint: "Large titles & headings color" },
 ];
 
 const isLight = (hex: string): boolean => {
@@ -114,12 +117,18 @@ const Signup: React.FC = () => {
     primary: "#2563EB",
     secondary: "#1E3A5F",
     accent: "#10B981",
+    background: "#FFFFFF",
+    text: "#333333",
+    textHeading: "#111111",
   });
   // raw hex text for the input boxes (without #)
   const [hexDraft, setHexDraft] = useState({
     primary: "2563EB",
     secondary: "1E3A5F",
     accent: "10B981",
+    background: "FFFFFF",
+    text: "333333",
+    textHeading: "111111",
   });
 
   // ── trust badge files & links ────────────────────────────
@@ -138,6 +147,8 @@ const Signup: React.FC = () => {
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
+  const [otherIndustry, setOtherIndustry] = useState("");
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -145,7 +156,13 @@ const Signup: React.FC = () => {
   // ── helpers ──────────────────────────────────────────────
   const handleInput = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
-  ) => setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === "industry" && value !== "Other") {
+      setOtherIndustry("");
+    }
+  };
 
   const makeFilePreviews = (files: File[]): FilePreview[] =>
     files.map((f) => ({
@@ -233,7 +250,13 @@ const Signup: React.FC = () => {
     setIsLoading(true);
     setError("");
     const data = new FormData();
-    Object.entries(formData).forEach(([k, v]) => data.append(k, v));
+    Object.entries(formData).forEach(([k, v]) => {
+      if (k === "industry" && v === "Other") {
+        data.append(k, otherIndustry);
+      } else {
+        data.append(k, v);
+      }
+    });
     data.append("branding_colors", JSON.stringify(brandColors));
 
     // plan selection if pre-selected
@@ -376,14 +399,14 @@ const Signup: React.FC = () => {
     onNext?: () => void;
     isSubmit?: boolean;
   }) => (
-    <div className="flex justify-between pt-4">
+    <div className="flex justify-between items-center pt-4 gap-3">
       {step > 1 ? (
         <button
           type="button"
           onClick={() => setStep((s) => s - 1)}
-          className="px-6 py-4 border border-outline-variant text-on-surface font-black rounded-2xl hover:bg-surface transition-all flex items-center gap-2"
+          className="px-4 sm:px-6 py-4 border border-outline-variant text-on-surface font-black rounded-2xl hover:bg-surface transition-all flex items-center gap-2 text-sm sm:text-base"
         >
-          <ArrowLeft size={18} /> Back
+          <ArrowLeft size={18} /> <span className="hidden sm:inline">Back</span>
         </button>
       ) : (
         <span />
@@ -392,11 +415,12 @@ const Signup: React.FC = () => {
         <button
           type="submit"
           disabled={isLoading}
-          className="px-10 py-4 bg-primary text-white font-black rounded-2xl hover:brightness-110 transition-all shadow-md flex items-center gap-2 disabled:opacity-70"
+          className="px-6 sm:px-10 py-4 bg-primary text-white font-black rounded-2xl hover:brightness-110 transition-all shadow-md flex items-center gap-2 disabled:opacity-70 text-sm sm:text-base"
         >
           {isLoading ? (
             <>
-              <Loader2 size={18} className="animate-spin" /> Submitting…
+              <Loader2 size={18} className="animate-spin" /> <span className="hidden sm:inline">Submitting…</span>
+              <span className="sm:hidden">Wait...</span>
             </>
           ) : (
             "Review Pricing"
@@ -407,7 +431,7 @@ const Signup: React.FC = () => {
           type="button"
           onClick={onNext}
           disabled={canNext === false}
-          className="px-10 py-4 bg-primary text-white font-black rounded-2xl hover:brightness-110 transition-all shadow-md flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-6 sm:px-10 py-4 bg-primary text-white font-black rounded-2xl hover:brightness-110 transition-all shadow-md flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
         >
           Next <ArrowRight size={18} />
         </button>
@@ -517,8 +541,8 @@ const Signup: React.FC = () => {
   }) => (
     <div className="mt-3 rounded-2xl border border-outline-variant overflow-hidden">
       {/* upload row */}
-      <div className="px-4 py-3 bg-surface-container-low border-b border-outline-variant flex items-center gap-3">
-        <label className="flex items-center gap-2 px-4 py-2 rounded-xl border border-outline-variant bg-surface hover:border-primary hover:bg-primary/5 transition-all cursor-pointer text-xs font-black uppercase tracking-widest text-on-surface-variant hover:text-primary">
+      <div className="px-4 py-3 bg-surface-container-low border-b border-outline-variant flex flex-col sm:flex-row items-start sm:items-center gap-3">
+        <label className="flex items-center gap-2 px-4 py-2 rounded-xl border border-outline-variant bg-surface hover:border-primary hover:bg-primary/5 transition-all cursor-pointer text-xs font-black uppercase tracking-widest text-on-surface-variant hover:text-primary shrink-0">
           <Upload size={14} /> Upload files
           <input
             type="file"
@@ -560,8 +584,8 @@ const Signup: React.FC = () => {
       {showMap && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
           <div className="bg-surface w-full max-w-4xl rounded-[2.5rem] border border-outline-variant shadow-2xl overflow-hidden flex flex-col h-[80vh]">
-            <div className="p-6 border-b border-outline-variant flex items-center justify-between bg-surface-container-low">
-              <h3 className="text-xl font-bold flex items-center gap-2">
+            <div className="p-4 sm:p-6 border-b border-outline-variant flex items-center justify-between bg-surface-container-low">
+              <h3 className="text-lg sm:text-xl font-bold flex items-center gap-2">
                 <MapPin className="text-primary" />
                 {mapTarget === "city_location" ? "Select Your Main Location" : "Pick Service Areas"}
               </h3>
@@ -572,7 +596,7 @@ const Signup: React.FC = () => {
                 <X size={20} />
               </button>
             </div>
-            <div className="p-6 bg-surface-container-low flex gap-3 border-b border-outline-variant">
+            <div className="p-4 sm:p-6 bg-surface-container-low flex flex-col sm:flex-row gap-3 border-b border-outline-variant">
               <div className="relative flex-grow">
                 <Search
                   className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant"
@@ -594,7 +618,7 @@ const Signup: React.FC = () => {
               <button
                 onClick={searchLocation}
                 disabled={isSearching}
-                className="px-6 py-3 bg-primary text-white font-bold rounded-xl hover:brightness-110 transition-all flex items-center gap-2"
+                className="px-6 py-3 bg-primary text-white font-bold rounded-xl hover:brightness-110 transition-all flex items-center justify-center gap-2"
               >
                 {isSearching ? <Loader2 size={18} className="animate-spin" /> : "Search"}
               </button>
@@ -610,14 +634,14 @@ const Signup: React.FC = () => {
                 <MapEvents />
                 <ChangeView center={mapCenter} />
               </MapContainer>
-              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1000] bg-surface/90 backdrop-blur px-6 py-3 rounded-full border border-outline-variant shadow-lg text-sm font-bold text-on-surface-variant text-center min-w-[300px]">
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1000] bg-surface/90 backdrop-blur px-6 py-3 rounded-full border border-outline-variant shadow-lg text-sm font-bold text-on-surface-variant text-center min-w-[280px] max-w-[90vw]">
                 {mapTarget === "city_location"
                   ? "Click to pick your spot"
                   : "Click to add an area to your list"}
               </div>
             </div>
-            <div className="p-6 bg-surface border-t border-outline-variant flex items-center justify-between">
-              <div className="flex-grow mr-4 truncate">
+            <div className="p-4 sm:p-6 bg-surface border-t border-outline-variant flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+              <div className="flex-grow truncate">
                 <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1">
                   {mapTarget === "city_location" ? "Selected Location" : "Areas List"}
                 </p>
@@ -652,10 +676,10 @@ const Signup: React.FC = () => {
           </div>
         </div>
 
-        <div className="p-10 md:p-12 pt-12 bg-surface-container-low rounded-[2.5rem] border border-outline-variant shadow-2xl relative overflow-hidden">
+        <div className="p-6 md:p-12 pt-12 bg-surface-container-low rounded-[2.5rem] border border-outline-variant shadow-2xl relative overflow-hidden">
           {/* Progress header */}
           <div className="text-center mb-10">
-            <h2 className="text-4xl font-black text-on-surface tracking-tighter leading-none mb-3">
+            <h2 className="text-3xl md:text-4xl font-black text-on-surface tracking-tighter leading-none mb-3">
               Your New <span className="text-primary italic">Website.</span>
             </h2>
             <p className="text-on-surface-variant font-bold text-sm">Tell us about your business</p>
@@ -759,6 +783,20 @@ const Signup: React.FC = () => {
                     ))}
                   </select>
                 </div>
+                {formData.industry === "Other" && (
+                  <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+                    <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
+                      Please specify your industry *
+                    </label>
+                    <input
+                      required
+                      placeholder="e.g. Photography"
+                      className={inputCls}
+                      value={otherIndustry}
+                      onChange={(e) => setOtherIndustry(e.target.value)}
+                    />
+                  </div>
+                )}
                 <div>
                   <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
                     Tagline / USP <span className="normal-case font-normal">(Optional)</span>
@@ -811,6 +849,7 @@ const Signup: React.FC = () => {
                       formData.company_name &&
                       formData.phone_number &&
                       formData.industry &&
+                      (formData.industry !== "Other" || otherIndustry) &&
                       formData.email
                     )
                   }
@@ -976,7 +1015,7 @@ const Signup: React.FC = () => {
                   </p>
 
                   {/* Colour swatches + hex inputs */}
-                  <div className="grid grid-cols-3 gap-3 mb-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
                     {colorRoles.map(({ key, label, hint }) => {
                       const hexVal = hexDraft[key];
                       const hexValid = isValidHex(hexVal);
@@ -991,12 +1030,12 @@ const Signup: React.FC = () => {
                               onChange={(e) => handleColorSwatch(key, e.target.value)}
                             />
                             <div
-                              className="rounded-2xl p-4 flex flex-col gap-2 transition-all duration-200 group-hover:scale-[1.03] group-hover:shadow-xl"
+                              className="rounded-2xl p-4 sm:p-3 md:p-4 flex flex-col gap-2 transition-all duration-200 group-hover:scale-[1.03] group-hover:shadow-xl"
                               style={{ backgroundColor: brandColors[key] }}
                             >
                               <div className="flex items-center justify-between">
                                 <span
-                                  className="text-[9px] font-black uppercase tracking-widest"
+                                  className="text-[10px] sm:text-[9px] font-black uppercase tracking-widest"
                                   style={{
                                     color: isLight(brandColors[key])
                                       ? "rgba(0,0,0,0.65)"
@@ -1008,7 +1047,7 @@ const Signup: React.FC = () => {
                                 <div className="w-3.5 h-3.5 rounded-full border-2 border-white/40 bg-white/20 group-hover:bg-white/40 transition-all" />
                               </div>
                               <span
-                                className="text-[8px] leading-tight"
+                                className="text-[9px] sm:text-[8px] leading-tight"
                                 style={{
                                   color: isLight(brandColors[key])
                                     ? "rgba(0,0,0,0.45)"
@@ -1106,12 +1145,25 @@ const Signup: React.FC = () => {
                       }}
                     >
                       <div className="flex items-center gap-1.5">
-                        <div className="w-2 h-2 rounded-full bg-white/50" />
-                        <div className="h-1.5 w-20 rounded-full bg-white/50" />
+                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: brandColors.accent }} />
+                        <div className="h-1.5 w-20 rounded-full" style={{ backgroundColor: isLight(brandColors.primary) ? "rgba(0,0,0,0.4)" : "rgba(255,255,255,0.4)" }} />
                       </div>
-                      <div className="h-5 w-3/4 rounded-lg bg-white/90" />
-                      <div className="h-2.5 w-full rounded-lg bg-white/50" />
-                      <div className="h-2 w-5/6 rounded-lg bg-white/35" />
+                      {/* Using Heading Color in Hero (on primary bg) */}
+                      <div 
+                        className="h-5 w-3/4 rounded-lg flex items-center px-2" 
+                        style={{ backgroundColor: isLight(brandColors.primary) ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.1)" }}
+                      >
+                         <div className="h-2 w-full rounded" style={{ backgroundColor: brandColors.textHeading }} />
+                      </div>
+                      {/* Using Body Text Color in Hero (on primary bg) */}
+                      <div 
+                        className="h-2.5 w-full rounded-lg" 
+                        style={{ backgroundColor: brandColors.text, opacity: 0.8 }}
+                      />
+                      <div 
+                        className="h-2 w-5/6 rounded-lg" 
+                        style={{ backgroundColor: brandColors.text, opacity: 0.6 }}
+                      />
                       <div className="flex items-center gap-3 mt-2">
                         <div
                           className="h-8 w-28 rounded-xl text-[9px] flex items-center justify-center font-black shadow-md"
@@ -1122,32 +1174,27 @@ const Signup: React.FC = () => {
                         >
                           Get a Free Quote
                         </div>
-                        <div className="h-8 w-20 rounded-xl border border-white/50 flex items-center justify-center text-[9px] font-bold text-white">
+                        <div 
+                          className="h-8 w-20 rounded-xl border flex items-center justify-center text-[9px] font-bold"
+                          style={{ 
+                            borderColor: brandColors.text,
+                            color: brandColors.text
+                          }}
+                        >
                           Learn More
                         </div>
                       </div>
-                      <div className="mt-3 flex gap-2">
-                        {[
-                          { v: "500+", l: "Jobs Done" },
-                          { v: "4.9★", l: "Rating" },
-                          { v: "24/7", l: "Available" },
-                        ].map((s) => (
-                          <div
-                            key={s.l}
-                            className="flex-1 bg-white/15 backdrop-blur-sm rounded-xl p-2 flex flex-col items-center gap-0.5"
-                          >
-                            <span className="text-[10px] font-black text-white">{s.v}</span>
-                            <span className="text-[7px] text-white/60">{s.l}</span>
-                          </div>
-                        ))}
-                      </div>
                     </div>
                     {/* services row */}
-                    <div className="px-4 py-4 bg-white grid grid-cols-3 gap-2">
+                    <div 
+                      className="px-4 py-4 grid grid-cols-1 sm:grid-cols-3 gap-2"
+                      style={{ backgroundColor: brandColors.background }}
+                    >
                       {[1, 2, 3].map((i) => (
                         <div
                           key={i}
-                          className="rounded-xl p-2.5 flex flex-col gap-1.5 border border-gray-100 shadow-sm"
+                          className="rounded-xl p-2.5 flex flex-col gap-1.5 border shadow-sm"
+                          style={{ borderColor: `${brandColors.text}15` }}
                         >
                           <div
                             className="w-6 h-6 rounded-lg flex items-center justify-center"
@@ -1158,8 +1205,16 @@ const Signup: React.FC = () => {
                               style={{ backgroundColor: brandColors.primary }}
                             />
                           </div>
-                          <div className="h-2 w-full rounded bg-gray-200" />
-                          <div className="h-1.5 w-3/4 rounded bg-gray-100" />
+                          {/* Explicitly showing Heading Color */}
+                          <div 
+                            className="h-2 w-full rounded" 
+                            style={{ backgroundColor: brandColors.textHeading }}
+                          />
+                          {/* Explicitly showing Body Text Color */}
+                          <div 
+                            className="h-1.5 w-3/4 rounded" 
+                            style={{ backgroundColor: brandColors.text, opacity: 0.7 }}
+                          />
                         </div>
                       ))}
                     </div>
@@ -1354,7 +1409,7 @@ const Signup: React.FC = () => {
                       </div>
                     </div>
                     <span className="text-xs font-bold text-on-surface-variant leading-relaxed">
-                      I accept the{" "}
+                      Tick this box to accept the{" "}
                       <Link
                         to="/terms-conditions"
                         target="_blank"
@@ -1392,7 +1447,7 @@ const Signup: React.FC = () => {
                       </div>
                     </div>
                     <span className="text-xs font-bold text-on-surface-variant leading-relaxed">
-                      I understand this is a custom digital service and work may begin immediately
+                      Tick this box to confirm you understand this is a custom digital service and work may begin immediately
                       after payment; refund eligibility may reduce once work has started.
                     </span>
                   </label>
@@ -1415,7 +1470,7 @@ const Signup: React.FC = () => {
                       </div>
                     </div>
                     <span className="text-xs font-bold text-on-surface-variant leading-relaxed">
-                      I understand that monthly plans include hosting and management. If cancelled,
+                      Tick this box to confirm you understand that monthly plans include hosting and management. If cancelled,
                       the website may be taken offline after the grace period unless a transfer is
                       arranged.
                     </span>

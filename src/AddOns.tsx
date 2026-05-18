@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Package, Zap, ArrowRight, ShieldCheck, Clock, Check, Star } from 'lucide-react';
 import Sidebar from './Sidebar';
 import { useAuth } from './AuthContext';
@@ -7,6 +8,7 @@ import toast from 'react-hot-toast';
 
 const AddOns: React.FC = () => {
   const { token, user } = useAuth();
+  const navigate = useNavigate();
   const [loadingPack, setLoadingPack] = useState<string | null>(null);
 
   const packs = [
@@ -91,7 +93,6 @@ const AddOns: React.FC = () => {
                         <div className="space-y-2.5">
                             {[
                                 'Same-day response times',
-                                'Direct WhatsApp support',
                                 'Advanced monitoring',
                                 'Priority bug fixing'
                             ].map((feature, i) => (
@@ -171,7 +172,12 @@ const AddOns: React.FC = () => {
           <div className="mt-8 md:mt-10 bg-surface-container-low p-6 rounded-2xl border border-outline-variant border-dashed text-center">
             <h3 className="text-base md:text-lg font-black text-on-surface mb-1.5">Need a custom amount?</h3>
             <p className="text-xs md:text-sm font-medium text-on-surface-variant mb-4 md:mb-6">We offer tailored packages for large portfolios and complex updates.</p>
-            <button className="text-primary font-black uppercase tracking-widest hover:brightness-125 transition-all text-[10px] md:text-xs">Contact Support</button>
+            <button 
+              onClick={() => navigate('/contact')}
+              className="text-primary font-black uppercase tracking-widest hover:brightness-125 transition-all text-[10px] md:text-xs"
+            >
+              Contact Support
+            </button>
           </div>
         </div>
       </main>

@@ -48,20 +48,33 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
     location: localStorage.getItem('audit_location') || '',
   });
 
+  const [otherIndustry, setOtherIndustry] = useState('');
+
   const setResult = (res: AuditResult | null) => {
     setResultState(res);
     if (onResult) onResult(res);
   };
 
+  const handleIndustryChange = (val: string) => {
+    setFormData({ ...formData, industry: val });
+    if (val !== 'Other') {
+      setOtherIndustry('');
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    Object.entries(formData).forEach(([k, v]) => localStorage.setItem(`audit_${k}`, v));
+    const submissionData = { ...formData };
+    if (submissionData.industry === 'Other') {
+      submissionData.industry = otherIndustry;
+    }
+    Object.entries(submissionData).forEach(([k, v]) => localStorage.setItem(`audit_${k}`, v));
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/audits/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(submissionData),
       });
       if (!response.ok) throw new Error('Failed');
       const data = await response.json();
@@ -366,7 +379,7 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
                   required
                   className="audit-input"
                   value={formData.industry}
-                  onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
+                  onChange={(e) => handleIndustryChange(e.target.value)}
                   style={{ background: 'var(--color-surface-container-low)', border: '1px solid var(--color-outline-variant)', borderRadius: '6px', padding: '14px 18px', color: formData.industry ? 'var(--color-on-surface)' : 'var(--color-on-surface-variant)', fontSize: '15px', fontFamily: "'Plus Jakarta Sans', sans-serif", outline: 'none', transition: 'border-color 0.15s', width: '100%', appearance: 'none', cursor: 'pointer' }}
                 >
                   <option value="" disabled>Select your industry</option>
@@ -375,6 +388,19 @@ const AuditTool: React.FC<AuditToolProps> = ({ onResult }) => {
                   ))}
                 </select>
               </div>
+
+              {formData.industry === 'Other' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', gridColumn: '1 / -1' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--color-on-surface-variant)' }}>Please specify your industry</label>
+                  <input
+                    required type="text" placeholder="e.g. Photography"
+                    className="audit-input"
+                    value={otherIndustry}
+                    onChange={(e) => setOtherIndustry(e.target.value)}
+                    style={{ background: 'var(--color-surface-container-low)', border: '1px solid var(--color-outline-variant)', borderRadius: '6px', padding: '14px 18px', color: 'var(--color-on-surface)', fontSize: '15px', fontFamily: "'Plus Jakarta Sans', sans-serif", outline: 'none', transition: 'border-color 0.15s', width: '100%' }}
+                  />
+                </div>
+              )}
             </div>
 
             <button
