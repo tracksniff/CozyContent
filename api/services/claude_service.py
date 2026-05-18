@@ -128,10 +128,10 @@ DESIGN_PERSONALITIES = {
         "name": "Bold Industrial",
         "instructions": (
             "Make this site look bold, industrial, and high-energy:\n"
-            "- Hero: Full-width dark background (bg-gray-950 or bg-zinc-900) with a background image and a semi-transparent dark overlay. "
-            "Place CTA buttons in bright yellow/amber.\n"
+            "- Hero: Full-width dark background (using the Secondary brand color) with a background image and a semi-transparent dark overlay. "
+            "Place CTA buttons in the bright Accent brand color.\n"
             "- Headings: Very large and bold (text-5xl lg:text-7xl font-black uppercase tracking-tight).\n"
-            "- Services section: Dark cards (bg-zinc-800 or bg-gray-800) with colored top border (border-t-4 border-primary).\n"
+            "- Services section: Dark cards using Secondary color with colored top border (border-t-4 border-primary).\n"
             "- WhyUs section: Alternate between dark and light panels instead of all-light.\n"
             "- Use high-contrast, industrial feel throughout — fewer soft shadows, more hard edges.\n"
             "- Stats/numbers should be very large and prominent.\n"
@@ -141,12 +141,12 @@ DESIGN_PERSONALITIES = {
         "name": "Professional Trustworthy",
         "instructions": (
             "Make this site look professional, dependable, and clean:\n"
-            "- Hero: Split-panel layout — left half solid brand color background with text, right side large image. "
+            "- Hero: Split-panel layout — left half solid Primary brand color background with text, right side large image. "
             "Use rounded-2xl on the image.\n"
             "- Trust badges very prominent below the headline.\n"
             "- Services: White cards with a colored left border (border-l-4 border-primary) and subtle shadow.\n"
             "- WhyUs: Clean light-gray alternating rows with icon + text layout.\n"
-            "- Footer: Dark navy background with white text.\n"
+            "- Footer: Dark Secondary color background with white text.\n"
         ),
     },
     "beauty": {
@@ -154,75 +154,74 @@ DESIGN_PERSONALITIES = {
         "instructions": (
             "Make this site look luxurious, elegant, and softly minimal:\n"
             "- Hero: Light/white background with a very soft blurred background image and gentle overlay. "
-            "Centered layout with generous whitespace. CTA button with rounded-full and elegant font.\n"
+            "Centered layout with generous whitespace. CTA button with rounded-full and elegant font using Accent color.\n"
             "- Typography: Larger letter-spacing (tracking-wide) on headings, thinner font weights for body text.\n"
             "- Services: Horizontal cards with image on left, soft shadow (shadow-sm), rounded-2xl corners.\n"
-            "- WhyUs: All-white with soft pastel accent colors, no harsh contrast.\n"
+            "- WhyUs: All-white with soft Accent accent colors, no harsh contrast.\n"
             "- Use lots of padding (py-24 or py-32) for each section — never cramped.\n"
-            "- Background: Use warm off-white (bg-rose-50, bg-pink-50, or bg-stone-50) for alternate sections.\n"
+            "- Background: Use very light tints of Primary or Secondary color for alternate sections.\n"
         ),
     },
     "restaurant": {
         "name": "Warm and Inviting",
         "instructions": (
             "Make this site feel warm, appetising, and welcoming:\n"
-            "- Hero: Full-bleed food/interior photograph with a warm amber/brown gradient overlay "
-            "(from-amber-900/70 to-transparent). Centered large white text.\n"
-            "- Services section: Display services like a menu — each item with an appetising description and a warm card background (bg-amber-50).\n"
-            "- Use warm amber/orange accent colors for all buttons and highlights.\n"
-            "- WhyUs: Warm cream/stone background (bg-stone-100) with warm-toned icons.\n"
-            "- Review cards: Warm background (bg-orange-50) with quotation mark styling.\n"
-            "- Footer: Deep warm dark background (bg-stone-900 or bg-amber-950).\n"
+            "- Hero: Full-bleed food/interior photograph with a warm gradient overlay using the Secondary brand color. Centered large white text.\n"
+            "- Services section: Display services like a menu — each item with an appetising description and a warm card background (light tint of Primary).\n"
+            "- Use Accent colors for all buttons and highlights.\n"
+            "- WhyUs: Warm cream/stone background with warm-toned icons.\n"
+            "- Review cards: Warm background with quotation mark styling.\n"
+            "- Footer: Deep dark background using Secondary brand color.\n"
         ),
     },
     "legal": {
         "name": "Authoritative and Premium",
         "instructions": (
             "Make this site feel authoritative, premium, and sophisticated:\n"
-            "- Hero: Dark navy or charcoal background (bg-slate-900 or bg-zinc-900) — no background image, "
-            "just strong typography with a subtle gradient. Gold/yellow accent color for CTA and highlights.\n"
+            "- Hero: Dark background (using Secondary brand color) — no background image, "
+            "just strong typography with a subtle gradient. Use Accent color for CTA and highlights.\n"
             "- Headings: Classic serif feel — use font-bold tracking-tight, never compressed.\n"
-            "- Services: Elegant dark cards (bg-slate-800) with gold top border and muted text.\n"
-            "- WhyUs: Very minimal — dark background with white text and thin gold dividers.\n"
-            "- Testimonials: Full-width dark quote blocks with large quotation marks and client name in gold.\n"
-            "- Footer: Dark (bg-slate-950) with subtle gold line separator.\n"
+            "- Services: Elegant dark cards using a slightly lighter Secondary shade with Primary top border.\n"
+            "- WhyUs: Very minimal — dark background with white text and thin Accent color dividers.\n"
+            "- Testimonials: Full-width dark quote blocks with large quotation marks and client name in Accent color.\n"
+            "- Footer: Very dark Secondary color with subtle Accent line separator.\n"
         ),
     },
     "tech": {
         "name": "Modern Tech Startup",
         "instructions": (
             "Make this site feel cutting-edge, modern, and digital:\n"
-            "- Hero: Dark background with a gradient overlay (from primary to a darker shade). "
+            "- Hero: Dark background with a gradient overlay (from Primary to Secondary). "
             "Add gradient text for the main headline using bg-gradient-to-r from-white to-primary bg-clip-text text-transparent.\n"
             "- Services: Dark glassmorphism-style cards (bg-white/5 backdrop-blur border border-white/10) on a dark background.\n"
-            "- WhyUs: Dark section (bg-gray-950) with subtle grid pattern and glowing accent elements.\n"
+            "- WhyUs: Dark section with subtle grid pattern and Primary/Accent glowing elements.\n"
             "- Use rounded-2xl and smooth transitions throughout.\n"
-            "- Stats: Large glowing numbers on dark background.\n"
-            "- Footer: Very dark (bg-gray-950) with subtle gradient border at top.\n"
+            "- Stats: Large glowing numbers in Primary color on dark background.\n"
+            "- Footer: Very dark background using Secondary color.\n"
         ),
     },
     "medical": {
         "name": "Clean and Caring",
         "instructions": (
             "Make this site feel clean, trustworthy, and professional:\n"
-            "- Hero: Bright, welcoming — white or very light blue-gray background with a professional team photograph. "
-            "CTA in soft rounded buttons (rounded-full).\n"
-            "- Services: Clean white cards with a soft blue-green left border, rounded corners, minimal shadows.\n"
-            "- WhyUs: Very light section (bg-blue-50 or bg-teal-50) with clean icon layout.\n"
+            "- Hero: Bright, welcoming — white or very light Secondary tint background with a professional team photograph. "
+            "CTA in soft Primary color rounded buttons (rounded-full).\n"
+            "- Services: Clean white cards with a soft Primary or Accent left border, rounded corners, minimal shadows.\n"
+            "- WhyUs: Very light section (light tint of Primary) with clean icon layout.\n"
             "- Trust/credentials badges are extremely prominent — place them near the top of the hero.\n"
             "- Use generous whitespace — never crowded.\n"
-            "- Footer: Soft dark blue (bg-slate-800) with clean layout.\n"
+            "- Footer: Soft dark Secondary color with clean layout.\n"
         ),
     },
     "construction": {
         "name": "Strong and Reliable",
         "instructions": (
             "Make this site feel strong, reliable, and heavy-duty:\n"
-            "- Hero: Full-bleed construction site image with a bold dark overlay. "
-            "Very large bold uppercase headline. Bright accent color CTA button.\n"
-            "- Stats section: Giant numbers (text-6xl font-black) with dark background — make this a hero-like centerpiece.\n"
-            "- Services: Bold cards with construction imagery, dark borders.\n"
-            "- WhyUs: Dark and strong — alternate between very dark and medium-dark sections.\n"
+            "- Hero: Full-bleed construction site image with a bold dark Secondary overlay. "
+            "Very large bold uppercase headline. Bright Accent color CTA button.\n"
+            "- Stats section: Giant numbers (text-6xl font-black) with dark Secondary background — make this a hero-like centerpiece.\n"
+            "- Services: Bold cards with construction imagery, dark borders using Primary color.\n"
+            "- WhyUs: Dark and strong — alternate between dark Secondary and Primary sections.\n"
             "- Typography throughout is heavy: font-bold or font-black, minimal light weights.\n"
         ),
     },
@@ -231,9 +230,9 @@ DESIGN_PERSONALITIES = {
         "instructions": (
             "Make this site feel fresh, bright, and immaculately clean:\n"
             "- Hero: Bright white or very light background with a clean, organized image. "
-            "Fresh accent colors (bright teal or sky blue). CTA with clear contrast.\n"
-            "- Services: White cards with a fresh teal/blue top border, very clean layout.\n"
-            "- WhyUs: Light sky-blue (bg-sky-50) or mint (bg-teal-50) background with checklist-style features.\n"
+            "Fresh Primary or Accent colors for highlights. CTA with clear contrast.\n"
+            "- Services: White cards with a fresh Primary/Accent top border, very clean layout.\n"
+            "- WhyUs: Light Secondary tint background with checklist-style features.\n"
             "- Use clean dividers and lots of whitespace.\n"
             "- Overall feel: pristine, organized, trustworthy.\n"
         ),
@@ -242,8 +241,8 @@ DESIGN_PERSONALITIES = {
         "name": "Modern Professional",
         "instructions": (
             "Make this site feel modern, professional, and visually distinct:\n"
-            "- Hero: Full-width with a brand-colored gradient overlay on an image. Strong CTA.\n"
-            "- Services: Bold cards with colored top borders and icon.\n"
+            "- Hero: Full-width with a brand-colored (Primary/Secondary) gradient overlay on an image. Strong CTA.\n"
+            "- Services: Bold cards with Primary top borders and icon.\n"
             "- WhyUs: Alternating light/dark sections for variety.\n"
             "- Overall: Clean, modern, with good use of brand colors throughout.\n"
         ),
@@ -882,7 +881,9 @@ FOOTERSECTION:  company name, description paragraph, phone number, locations tex
 
 MOBILECTA:      phone number
 
-INDEX.HTML:     <title>, meta description, og:title, og:description, author
+INDEX.HTML:     <title>, meta description, og:title, og:description, author. 
+                IMPORTANT: Remove any <link> tag pointing to external favicons (especially lovable.dev). 
+                If a favicon is needed, use '/favicon.png' or none.
 """
 
 
@@ -918,12 +919,27 @@ def edit_files_with_claude(
         f"  Image {i+1}: {url}" for i, url in enumerate(image_urls)
     )
 
+    branding_colors = application_data.get("branding_colors", {})
+    primary_hex = branding_colors.get("primary", "#2563EB")
+    secondary_hex = branding_colors.get("secondary", "#1E3A5F")
+    accent_hex = branding_colors.get("accent", "#10B981")
+
     industry = application_data.get("industry", "trade services")
 
     system_prompt = f"""You are an expert React/TypeScript developer and UI/UX designer. Your task is to COMPLETELY REDESIGN this plumber website template into a visually unique, professional website for a different business — it must look NOTHING like the original template.
 
 ━━━ YOUR MISSION ━━━
 Transform every component to match the DESIGN PERSONALITY below. The output must look like a completely different website, not a recolored version of the same template.
+Each site you generate must be unique in its layout, section ordering, and creative execution. Avoid generic designs; make each one feel bespoke.
+
+━━━ BRAND COLORS ━━━
+Use these brand colors for your design (though they are also mapped to CSS variables):
+- Primary: {primary_hex}
+- Secondary: {secondary_hex}
+- Accent: {accent_hex}
+
+In Tailwind, you SHOULD prefer the abstract classes like `bg-primary`, `text-secondary`, `border-accent`, etc., as they are dynamically linked to these colors. 
+DO NOT use hardcoded color names like `bg-yellow-500` or `text-blue-600` unless they are for small semantic details (like white text on dark backgrounds).
 
 ━━━ DESIGN PERSONALITY: {design_personality["name"]} ━━━
 {design_personality["instructions"]}
@@ -934,7 +950,7 @@ Transform every component to match the DESIGN PERSONALITY below. The output must
 3. ALL image references — replace any src attributes or backgroundImage style values with URLs from the provided image list.
 4. Section backgrounds — make sections look different from the original. Use dark sections, gradients, or colored backgrounds where the personality calls for it.
 5. Typography scale — adjust text sizes, weights, and letter-spacing to match the personality.
-6. Layout structure within components — you CAN reorder elements, change grid columns, add/remove divs to restructure the visual layout. Keep the same overall components but redesign them internally.
+6. Layout structure within components — you MUST reorder elements, change grid columns, add/remove divs to restructure the visual layout significantly.
 
 ━━━ PROVIDED IMAGES (use these to replace ALL existing images) ━━━
 {image_list_str}
@@ -958,6 +974,7 @@ Distribute images across components — hero gets Image 1, team/about gets Image
 7. Every file value must be the COMPLETE file content — never a diff or snippet.
 8. Return valid TSX — no syntax errors, no unclosed tags.
 9. Icons: you may ONLY use icon names that already appear in the original file's JSX. Do NOT introduce new icon component names — if an icon isn't in the original file, don't use it.
+10. FAVICON: Explicitly check index.html and remove any link tags pointing to Lovable or external AI favicon URLs.
 
 ━━━ OUTPUT FORMAT ━━━
 Return a SINGLE raw JSON object. Keys = file paths. Values = complete file content.
@@ -975,6 +992,11 @@ Years of Experience: {application_data.get("years_experience", "10+")}
 Trust Badges: {application_data.get("trust_badges", "Fully insured, certified professionals")}
 Service Areas: {application_data.get("service_areas", application_data["city_location"])}
 Tagline / USP: {application_data.get("tagline", "Fast, reliable, professional service")}
+
+Brand Colors to respect:
+Primary: {primary_hex}
+Secondary: {secondary_hex}
+Accent: {accent_hex}
 
 Design Personality to apply: {design_personality["name"]}
 Available images to use (replace ALL existing images with these):
