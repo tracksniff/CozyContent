@@ -801,6 +801,39 @@ class AuditViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         audit = serializer.save()
+
+        # Create/Retrieve Stripe Customer
+        if audit.email:
+            try:
+                # Check if customer already exists in Stripe
+                customers = stripe.Customer.list(email=audit.email, limit=1).data
+                if customers:
+                    customer = customers[0]
+                else:
+                    customer = stripe.Customer.create(
+                        email=audit.email,
+                        name=audit.name or audit.business_name,
+                        metadata={
+                            "source": "audit_tool",
+                            "audit_id": audit.id,
+                            "business_name": audit.business_name,
+                            "website": audit.website_url
+                        }
+                    )
+                
+                audit.stripe_customer_id = customer.id
+                audit.save()
+
+                # Sync with User model if user exists
+                try:
+                    user = User.objects.get(email=audit.email)
+                    if not user.stripe_customer_id:
+                        user.stripe_customer_id = customer.id
+                        user.save()
+                except User.DoesNotExist:
+                    pass
+            except Exception as e:
+                logger.error(f"Stripe customer sync failed for audit {audit.id}: {str(e)}")
         
         # Run audit synchronously for now to provide "instant" results
         from .services.audit_service import perform_audit
