@@ -11,7 +11,6 @@ import {
   Info,
   MapPin,
   Search,
-  Palette,
   Plus,
   FileText,
   Link2,
