@@ -50,9 +50,6 @@ const Footer = () => {
           <div>
             <h4 className="font-bold mb-4 md:mb-6 text-[10px] md:text-xs tracking-widest uppercase text-on-surface-variant">Navigation</h4>
             <ul className="space-y-3 md:space-y-4 text-on-surface-variant font-medium text-sm md:text-base">
-              <li><Link to="/#services" className="hover:text-primary transition-colors">Services</Link></li>
-              <li><Link to="/#pricing" className="hover:text-primary transition-colors">Pricing</Link></li>
-              <li><Link to="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
               <li><Link to="/our-brands" className="hover:text-primary transition-colors">Our Brands</Link></li>
               <li><Link to="/audit" className="hover:text-primary transition-colors font-bold">Free Website Audit</Link></li>
               <li><a href="https://cosycontent.com/blog/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Blog</a></li>

@@ -16,6 +16,7 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import PricingToggle from "./PricingToggle";
 import type { SEOPageInfo } from "./seoPagesData";
+import CoverageMap from "./CoverageMap";
 
 interface GenericSEOPageProps {
   data: SEOPageInfo;
@@ -470,56 +471,102 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
           </div>
         </section>
 
-        {/* ── AREAS WE SERVE ────────────────────────────────────── */}
-        {!data.location && (
-          <section className="max-w-7xl mx-auto px-6 lg:px-8 mb-28">
-            <div className="text-center mb-12">
-              <p className="text-xs font-bold uppercase tracking-widest text-primary mb-3">
-                Coverage
-              </p>
-              <h2 className="text-4xl font-black tracking-tight mb-4">Areas We Serve</h2>
-              <p className="text-on-surface-variant font-medium max-w-2xl mx-auto">
-                We build professional {data.industry} websites for businesses across Luton and the
-                wider region. Each location page is individually written with unique local content.
-              </p>
+        {/* ── COVERAGE / AREAS WE SERVE ─────────────────────────── */}
+        <section className="max-w-7xl mx-auto px-6 lg:px-8 mb-28">
+          {data.location ? (
+            <div className="flex flex-col lg:flex-row gap-12 items-center">
+              <div className="lg:w-1/2">
+                <p className="text-xs font-bold uppercase tracking-widest text-primary mb-3">
+                  Service Area
+                </p>
+                <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-6">
+                  Serving {data.location} and Surroundings
+                </h2>
+                <p className="text-on-surface-variant font-medium text-lg leading-relaxed mb-8">
+                  We provide professional {data.industry.toLowerCase()} web design services across 
+                  the entire {data.location} area. Our websites are built to help local businesses 
+                  like yours dominate the local search results and win more jobs.
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                  {[
+                    "Local SEO targeting",
+                    "Google Maps integration",
+                    "Area-specific content",
+                    "Mobile-first design"
+                  ].map((item, idx) => (
+                    <div key={idx} className="flex items-center gap-3">
+                      <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Check className="w-3.5 h-3.5 text-primary" strokeWidth={3} />
+                      </div>
+                      <span className="text-sm font-bold">{item}</span>
+                    </div>
+                  ))}
+                </div>
+                <Link
+                  to="/contact"
+                  className="inline-flex items-center gap-2 text-primary font-black hover:gap-4 transition-all"
+                >
+                  Check coverage in your area <ArrowRight className="w-5 h-5" />
+                </Link>
+              </div>
+              <div className="lg:w-1/2 w-full">
+                <CoverageMap locationName={data.location} />
+              </div>
             </div>
+          ) : (
+            <>
+              <div className="text-center mb-12">
+                <p className="text-xs font-bold uppercase tracking-widest text-primary mb-3">
+                  Coverage
+                </p>
+                <h2 className="text-4xl font-black tracking-tight mb-4">Areas We Serve</h2>
+                <p className="text-on-surface-variant font-medium max-w-2xl mx-auto">
+                  We build professional {data.industry} websites for businesses across Luton and the
+                  wider region. Each location page is individually written with unique local content.
+                </p>
+              </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              {["Luton", "Bedford", "Dunstable", "Milton Keynes", "St Albans", "Watford"].map(
-                (city) => {
-                  const industryToSlug: Record<string, string> = {
-                    Plumbing: "plumber-web-design",
-                    Electrical: "electrician-web-design",
-                    Roofing: "roofer-web-design",
-                    Locksmith: "locksmith-web-design",
-                    Cleaning: "cleaning-company-web-design",
-                    Removals: "removals-web-design",
-                  };
-                  const slug = industryToSlug[data.industry];
-                  const citySlug = city.toLowerCase().replace(" ", "-");
-                  const targetUrl = `${slug}-${citySlug}`;
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12">
+                {["Luton", "Bedford", "Dunstable", "Milton Keynes", "St Albans", "Watford"].map(
+                  (city) => {
+                    const industryToSlug: Record<string, string> = {
+                      Plumbing: "plumber-web-design",
+                      Electrical: "electrician-web-design",
+                      Roofing: "roofer-web-design",
+                      Locksmith: "locksmith-web-design",
+                      Cleaning: "cleaning-company-web-design",
+                      Removals: "removals-web-design",
+                    };
+                    const slug = industryToSlug[data.industry];
+                    const citySlug = city.toLowerCase().replace(" ", "-");
+                    const targetUrl = `${slug}-${citySlug}`;
 
-                  return (
-                    <Link
-                      key={city}
-                      to={`/${targetUrl}`}
-                      className="group flex items-center justify-center p-6 bg-surface rounded-2xl border border-outline-variant/30 hover:border-primary/40 hover:bg-surface hover:shadow-lg hover:shadow-primary/5 transition-all duration-200"
-                    >
-                      <span className="font-bold text-sm text-center group-hover:text-primary transition-colors">
-                        {city}
-                      </span>
-                    </Link>
-                  );
-                },
-              )}
-            </div>
+                    return (
+                      <Link
+                        key={city}
+                        to={`/${targetUrl}`}
+                        className="group flex items-center justify-center p-6 bg-surface rounded-2xl border border-outline-variant/30 hover:border-primary/40 hover:bg-surface hover:shadow-lg hover:shadow-primary/5 transition-all duration-200"
+                      >
+                        <span className="font-bold text-sm text-center group-hover:text-primary transition-colors">
+                          {city}
+                        </span>
+                      </Link>
+                    );
+                  },
+                )}
+              </div>
 
-            <p className="mt-8 text-on-surface-variant text-center text-sm font-medium">
-              Every area page is individually written — no duplicate content — designed to rank
-              specifically for that town.
-            </p>
-          </section>
-        )}
+              <div className="mb-8">
+                <CoverageMap />
+              </div>
+
+              <p className="mt-8 text-on-surface-variant text-center text-sm font-medium">
+                Every area page is individually written — no duplicate content — designed to rank
+                specifically for that town.
+              </p>
+            </>
+          )}
+        </section>
 
         {/* ── FINAL CTA ─────────────────────────────────────────── */}
         <section className="max-w-7xl mx-auto px-6 lg:px-8">
