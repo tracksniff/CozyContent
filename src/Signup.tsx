@@ -15,6 +15,11 @@ import {
   Plus,
   FileText,
   Link2,
+  Smartphone,
+  Laptop,
+  CheckCircle2,
+  AlertTriangle,
+  Wand2,
 } from "lucide-react";
 import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -44,6 +49,25 @@ const industries = [
   "Other",
 ];
 
+const industryPresets = [
+  {
+    name: "Classic Trade",
+    colors: { primary: "#00696D", secondary: "#1B1C1C", accent: "#FEBB0C", background: "#FBF9F8", text: "#3D4949", textHeading: "#1B1C1C" }
+  },
+  {
+    name: "Modern Emergency",
+    colors: { primary: "#E11D48", secondary: "#1E293B", accent: "#F59E0B", background: "#FFFFFF", text: "#475569", textHeading: "#0F172A" }
+  },
+  {
+    name: "Eco-Clean",
+    colors: { primary: "#059669", secondary: "#064E3B", accent: "#FCD34D", background: "#F0FDF4", text: "#374151", textHeading: "#111827" }
+  },
+  {
+    name: "High-Tech Electric",
+    colors: { primary: "#2563EB", secondary: "#1E3A8A", accent: "#FBDF24", background: "#F8FAFC", text: "#334155", textHeading: "#0F172A" }
+  }
+];
+
 const colorRoles = [
   { key: "primary" as const, label: "Primary", hint: "Main Brand Color (Headings & CTAs)" },
   { key: "secondary" as const, label: "Secondary", hint: "Darker Variant (Navbar & Footers)" },
@@ -58,6 +82,18 @@ const isLight = (hex: string): boolean => {
   const g = parseInt(hex.slice(3, 5), 16);
   const b = parseInt(hex.slice(5, 7), 16);
   return (r * 299 + g * 587 + b * 114) / 1000 > 128;
+};
+
+const getLuminance = (hex: string) => {
+  const rgb = hex.match(/[A-Za-z0-9]{2}/g)!.map(x => parseInt(x, 16) / 255);
+  const [r, g, b] = rgb.map(v => v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4));
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+};
+
+const getContrastRatio = (hex1: string, hex2: string) => {
+  const l1 = getLuminance(hex1);
+  const l2 = getLuminance(hex2);
+  return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
 };
 
 const isValidHex = (h: string) => /^[0-9A-Fa-f]{6}$/.test(h);
@@ -152,6 +188,43 @@ const Signup: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  const [previewMode, setPreviewMode] = useState<"desktop" | "mobile">("desktop");
+
+  const calculateSafePairing = (key: keyof typeof brandColors) => {
+    const bg = brandColors.background;
+    if (key === "text" || key === "textHeading") {
+      handleColorSwatch(key, isLight(bg) ? "#111111" : "#FFFFFF");
+    } else if (key === "accent") {
+      const pri = brandColors.primary;
+      handleColorSwatch(key, isLight(pri) ? "#1E293B" : "#FBBF24");
+    }
+  };
+
+  const extractColorsFromLogo = () => {
+    if (!logoPreview) return;
+    const img = new Image();
+    img.crossOrigin = "Anonymous";
+    img.src = logoPreview;
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+      const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+      const counts: Record<string, number> = {};
+      for (let i = 0; i < data.length; i += 40) {
+        if (data[i + 3] < 128) continue;
+        const hex = "#" + ((1 << 24) + (data[i] << 16) + (data[i + 1] << 8) + data[i + 2]).toString(16).slice(1).toUpperCase();
+        counts[hex] = (counts[hex] || 0) + 1;
+      }
+      const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+      if (sorted[0]) handleColorSwatch("primary", sorted[0][0]);
+      if (sorted[1]) handleColorSwatch("secondary", sorted[1][0]);
+    };
+  };
 
   // ── helpers ──────────────────────────────────────────────
   const handleInput = (
@@ -837,6 +910,50 @@ const Signup: React.FC = () => {
                     />
                   </div>
                 </div>
+
+                <div className="pt-2 border-t border-outline-variant/30">
+                  <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-3 ml-1">
+                    Company Logo <span className="normal-case font-normal">(Optional)</span>
+                  </label>
+                  <div className="flex items-center gap-4">
+                    {logoPreview ? (
+                      <div className="relative w-16 h-16 flex-shrink-0 rounded-xl overflow-hidden border border-outline-variant bg-surface shadow-sm">
+                        <img
+                          src={logoPreview}
+                          alt="Logo"
+                          className="w-full h-full object-contain p-2"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setCompanyLogo(null);
+                            setLogoPreview("");
+                          }}
+                          className="absolute top-0.5 right-0.5 p-1 bg-red-500 text-white rounded-full shadow"
+                        >
+                          <X size={8} />
+                        </button>
+                      </div>
+                    ) : (
+                      <label className="w-16 h-16 flex-shrink-0 rounded-xl border-2 border-dashed border-outline-variant flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-primary hover:bg-primary/5 transition-all group">
+                        <Upload size={16} className="text-on-surface-variant group-hover:text-primary" />
+                        <span className="text-[8px] font-black uppercase tracking-widest text-on-surface-variant group-hover:text-primary">
+                          Logo
+                        </span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleLogoChange}
+                        />
+                      </label>
+                    )}
+                    <p className="text-[10px] text-on-surface-variant font-medium leading-relaxed">
+                      Upload your logo now to automatically extract your brand colors in the next steps.
+                    </p>
+                  </div>
+                </div>
+
                 <p className="text-[10px] text-on-surface-variant flex items-center gap-1 ml-1 font-medium -mt-2">
                   <Info size={12} className="text-primary shrink-0" /> Your email is used for
                   account setup and secure payment.
@@ -1006,23 +1123,70 @@ const Signup: React.FC = () => {
             {step === 3 && (
               <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
                 <div>
-                  <p className="text-xs font-black uppercase tracking-widest text-on-surface-variant mb-1 ml-1">
-                    Brand Colours
-                  </p>
-                  <p className="text-[11px] text-on-surface-variant font-medium mb-4 ml-1">
-                    Click any swatch to open the colour picker, or type a hex code directly. The
-                    preview updates live.
-                  </p>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                    <div>
+                      <p className="text-xs font-black uppercase tracking-widest text-on-surface-variant mb-1 ml-1">
+                        Brand Branding
+                      </p>
+                      <p className="text-[11px] text-on-surface-variant font-medium ml-1">
+                        Select a professional preset or customize your own colors.
+                      </p>
+                    </div>
+                    {logoPreview && (
+                      <button
+                        type="button"
+                        onClick={extractColorsFromLogo}
+                        className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-sm"
+                      >
+                        <Wand2 size={14} /> Extract from Logo
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Industry Presets */}
+                  <div className="mb-8 overflow-x-auto pb-2 scrollbar-hide">
+                    <div className="flex gap-3">
+                      {industryPresets.map((p) => (
+                        <button
+                          key={p.name}
+                          type="button"
+                          onClick={() => {
+                            Object.entries(p.colors).forEach(([key, val]) => handleColorSwatch(key as any, val));
+                          }}
+                          className="flex-shrink-0 flex flex-col items-center gap-2 group"
+                        >
+                          <div className="flex -space-x-2">
+                            <div className="w-8 h-8 rounded-full border-2 border-surface shadow-sm" style={{ backgroundColor: p.colors.primary }} />
+                            <div className="w-8 h-8 rounded-full border-2 border-surface shadow-sm" style={{ backgroundColor: p.colors.secondary }} />
+                            <div className="w-8 h-8 rounded-full border-2 border-surface shadow-sm" style={{ backgroundColor: p.colors.accent }} />
+                          </div>
+                          <span className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant group-hover:text-primary transition-colors">
+                            {p.name}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
                   {/* Colour swatches + hex inputs */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
                     {colorRoles.map(({ key, label, hint }) => {
                       const hexVal = hexDraft[key];
                       const hexValid = isValidHex(hexVal);
+                      
+                      // Contrast Check Logic
+                      let contrastError = null;
+                      if (key === "text" || key === "textHeading") {
+                        const ratio = getContrastRatio(brandColors[key], brandColors.background);
+                        if (ratio < 4.5) contrastError = "Low Contrast";
+                      } else if (key === "accent") {
+                        const ratio = getContrastRatio(brandColors[key], brandColors.primary);
+                        if (ratio < 3) contrastError = "Hard to read on buttons";
+                      }
+
                       return (
                         <div key={key} className="flex flex-col gap-2">
-                          {/* swatch (click → native picker) */}
-                          <label className="cursor-pointer group" title={hint}>
+                          <label className="cursor-pointer group relative" title={hint}>
                             <input
                               type="color"
                               className="sr-only"
@@ -1030,12 +1194,12 @@ const Signup: React.FC = () => {
                               onChange={(e) => handleColorSwatch(key, e.target.value)}
                             />
                             <div
-                              className="rounded-2xl p-4 sm:p-3 md:p-4 flex flex-col gap-2 transition-all duration-200 group-hover:scale-[1.03] group-hover:shadow-xl"
+                              className="rounded-2xl p-4 flex flex-col gap-2 transition-all duration-200 group-hover:scale-[1.03] group-hover:shadow-xl border border-outline-variant/10"
                               style={{ backgroundColor: brandColors[key] }}
                             >
                               <div className="flex items-center justify-between">
                                 <span
-                                  className="text-[10px] sm:text-[9px] font-black uppercase tracking-widest"
+                                  className="text-[10px] font-black uppercase tracking-widest"
                                   style={{
                                     color: isLight(brandColors[key])
                                       ? "rgba(0,0,0,0.65)"
@@ -1044,10 +1208,14 @@ const Signup: React.FC = () => {
                                 >
                                   {label}
                                 </span>
-                                <div className="w-3.5 h-3.5 rounded-full border-2 border-white/40 bg-white/20 group-hover:bg-white/40 transition-all" />
+                                {contrastError ? (
+                                  <AlertTriangle size={14} className="text-red-500 animate-pulse" />
+                                ) : (
+                                  <CheckCircle2 size={14} className="opacity-40" style={{ color: isLight(brandColors[key]) ? "black" : "white" }} />
+                                )}
                               </div>
                               <span
-                                className="text-[9px] sm:text-[8px] leading-tight"
+                                className="text-[9px] leading-tight"
                                 style={{
                                   color: isLight(brandColors[key])
                                     ? "rgba(0,0,0,0.45)"
@@ -1058,180 +1226,151 @@ const Signup: React.FC = () => {
                               </span>
                             </div>
                           </label>
-                          {/* hex text input */}
-                          <div
-                            className={`flex items-center gap-1.5 px-3 py-2 bg-surface border rounded-xl transition-all ${hexValid ? "border-outline-variant focus-within:border-primary" : "border-red-400"}`}
-                          >
-                            <span className="text-xs font-black text-on-surface-variant font-mono">
-                              #
-                            </span>
-                            <input
-                              type="text"
-                              maxLength={6}
-                              value={hexVal}
-                              onChange={(e) => handleHexDraft(key, e.target.value)}
-                              className="flex-1 bg-transparent outline-none font-mono text-xs font-bold uppercase text-on-surface tracking-wider w-0 min-w-0"
-                              placeholder="2563EB"
-                            />
-                            {hexValid && (
-                              <div
-                                className="w-4 h-4 rounded-full border border-outline-variant shrink-0"
-                                style={{ backgroundColor: brandColors[key] }}
+
+                          <div className="flex items-center gap-2">
+                            <div
+                              className={`flex-1 flex items-center gap-1.5 px-3 py-2 bg-surface border rounded-xl transition-all ${hexValid ? "border-outline-variant focus-within:border-primary" : "border-red-400"}`}
+                            >
+                              <span className="text-[10px] font-black text-on-surface-variant font-mono">#</span>
+                              <input
+                                type="text"
+                                maxLength={6}
+                                value={hexVal}
+                                onChange={(e) => handleHexDraft(key, e.target.value)}
+                                className="flex-1 bg-transparent outline-none font-mono text-xs font-bold uppercase text-on-surface tracking-wider"
+                                placeholder="2563EB"
                               />
+                            </div>
+                            {(key === "accent" || key === "text" || key === "textHeading") && (
+                              <button
+                                type="button"
+                                onClick={() => calculateSafePairing(key)}
+                                className="p-2 bg-surface border border-outline-variant rounded-xl hover:text-primary transition-all shadow-sm"
+                                title="Auto-match for readability"
+                              >
+                                <Wand2 size={14} />
+                              </button>
                             )}
                           </div>
+                          
+                          {contrastError && (
+                            <p className="text-[9px] font-bold text-red-500 flex items-center gap-1 px-1">
+                              <AlertTriangle size={10} /> {contrastError} — text may be unreadable
+                            </p>
+                          )}
                         </div>
                       );
                     })}
                   </div>
 
-                  {/* Live mini-site preview */}
-                  <div
-                    className="rounded-2xl overflow-hidden border border-outline-variant shadow-md select-none"
-                    aria-hidden="true"
-                  >
-                    {/* window chrome */}
-                    <div className="px-3 py-2 bg-surface-container-low border-b border-outline-variant flex items-center gap-2">
-                      <div className="flex gap-1.5">
-                        <div className="w-2.5 h-2.5 rounded-full bg-red-400/70" />
-                        <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/70" />
-                        <div className="w-2.5 h-2.5 rounded-full bg-green-400/70" />
-                      </div>
-                      <div className="flex-1 flex justify-center">
-                        <div className="h-4 w-40 rounded-full bg-outline-variant/40 flex items-center justify-center">
-                          <span className="text-[7px] text-on-surface-variant font-medium">
-                            your-website.com
-                          </span>
-                        </div>
-                      </div>
-                      <span className="text-[8px] text-on-surface-variant font-black uppercase tracking-widest opacity-50">
-                        Live Preview
-                      </span>
-                    </div>
-                    {/* navbar */}
-                    <div
-                      className="px-4 py-2.5 flex items-center justify-between"
-                      style={{ backgroundColor: brandColors.secondary }}
-                    >
-                      <div className="flex items-center gap-2">
-                        <div className="w-5 h-5 rounded bg-white/30" />
-                        <div className="flex flex-col gap-0.5">
-                          <div className="h-1.5 w-16 rounded-full bg-white/70" />
-                          <div className="h-1 w-10 rounded-full bg-white/40" />
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="hidden sm:flex gap-2">
-                          {[1, 2, 3].map((i) => (
-                            <div key={i} className="h-1.5 w-7 rounded-full bg-white/30" />
-                          ))}
-                        </div>
-                        <div
-                          className="h-6 w-16 rounded-full text-[8px] flex items-center justify-center font-black"
-                          style={{
-                            backgroundColor: brandColors.accent,
-                            color: isLight(brandColors.accent) ? "#111" : "white",
-                          }}
-                        >
-                          Call Now
-                        </div>
-                      </div>
-                    </div>
-                    {/* hero */}
-                    <div
-                      className="px-5 py-8 flex flex-col gap-2.5"
-                      style={{
-                        background: `linear-gradient(135deg, ${brandColors.primary}f2 0%, ${brandColors.secondary}e8 100%)`,
-                      }}
-                    >
-                      <div className="flex items-center gap-1.5">
-                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: brandColors.accent }} />
-                        <div className="h-1.5 w-20 rounded-full" style={{ backgroundColor: isLight(brandColors.primary) ? "rgba(0,0,0,0.4)" : "rgba(255,255,255,0.4)" }} />
-                      </div>
-                      {/* Using Heading Color in Hero (on primary bg) */}
-                      <div 
-                        className="h-5 w-3/4 rounded-lg flex items-center px-2" 
-                        style={{ backgroundColor: isLight(brandColors.primary) ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.1)" }}
+                  {/* Preview Toggle & Display */}
+                  <div className="mb-4 flex items-center justify-between px-1">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Live Site Preview</p>
+                    <div className="flex bg-surface-container-low p-1 rounded-lg border border-outline-variant/30">
+                      <button
+                        type="button"
+                        onClick={() => setPreviewMode("desktop")}
+                        className={`p-1.5 rounded-md transition-all ${previewMode === "desktop" ? "bg-white shadow-sm text-primary" : "text-on-surface-variant/60 hover:text-on-surface-variant"}`}
                       >
-                         <div className="h-2 w-full rounded" style={{ backgroundColor: brandColors.textHeading }} />
-                      </div>
-                      {/* Using Body Text Color in Hero (on primary bg) */}
-                      <div 
-                        className="h-2.5 w-full rounded-lg" 
-                        style={{ backgroundColor: brandColors.text, opacity: 0.8 }}
-                      />
-                      <div 
-                        className="h-2 w-5/6 rounded-lg" 
-                        style={{ backgroundColor: brandColors.text, opacity: 0.6 }}
-                      />
-                      <div className="flex items-center gap-3 mt-2">
-                        <div
-                          className="h-8 w-28 rounded-xl text-[9px] flex items-center justify-center font-black shadow-md"
-                          style={{
-                            backgroundColor: brandColors.accent,
-                            color: isLight(brandColors.accent) ? "#111" : "white",
-                          }}
-                        >
-                          Get a Free Quote
-                        </div>
-                        <div 
-                          className="h-8 w-20 rounded-xl border flex items-center justify-center text-[9px] font-bold"
-                          style={{ 
-                            borderColor: brandColors.text,
-                            color: brandColors.text
-                          }}
-                        >
-                          Learn More
-                        </div>
-                      </div>
-                    </div>
-                    {/* services row */}
-                    <div 
-                      className="px-4 py-4 grid grid-cols-1 sm:grid-cols-3 gap-2"
-                      style={{ backgroundColor: brandColors.background }}
-                    >
-                      {[1, 2, 3].map((i) => (
-                        <div
-                          key={i}
-                          className="rounded-xl p-2.5 flex flex-col gap-1.5 border shadow-sm"
-                          style={{ borderColor: `${brandColors.text}15` }}
-                        >
-                          <div
-                            className="w-6 h-6 rounded-lg flex items-center justify-center"
-                            style={{ backgroundColor: `${brandColors.primary}25` }}
-                          >
-                            <div
-                              className="w-2.5 h-2.5 rounded"
-                              style={{ backgroundColor: brandColors.primary }}
-                            />
-                          </div>
-                          {/* Explicitly showing Heading Color */}
-                          <div 
-                            className="h-2 w-full rounded" 
-                            style={{ backgroundColor: brandColors.textHeading }}
-                          />
-                          {/* Explicitly showing Body Text Color */}
-                          <div 
-                            className="h-1.5 w-3/4 rounded" 
-                            style={{ backgroundColor: brandColors.text, opacity: 0.7 }}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                    {/* footer strip */}
-                    <div
-                      className="px-4 py-3 flex items-center justify-between"
-                      style={{ backgroundColor: brandColors.secondary }}
-                    >
-                      <div className="h-1.5 w-20 rounded-full bg-white/30" />
-                      <div className="h-1.5 w-16 rounded-full bg-white/20" />
+                        <Laptop size={14} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setPreviewMode("mobile")}
+                        className={`p-1.5 rounded-md transition-all ${previewMode === "mobile" ? "bg-white shadow-sm text-primary" : "text-on-surface-variant/60 hover:text-on-surface-variant"}`}
+                      >
+                        <Smartphone size={14} />
+                      </button>
                     </div>
                   </div>
 
-                  <p className="mt-2.5 text-[10px] text-on-surface-variant font-medium ml-1 flex items-center gap-1">
-                    <Palette size={11} className="text-primary shrink-0" />
-                    Live preview — click any swatch or type a hex code above to update it
-                  </p>
+                  <div className={`mx-auto transition-all duration-500 overflow-hidden ${previewMode === "mobile" ? "max-w-[280px]" : "w-full"}`}>
+                    <div
+                      className="rounded-2xl overflow-hidden border border-outline-variant shadow-md select-none"
+                      aria-hidden="true"
+                    >
+                      {/* window chrome */}
+                      <div className="px-3 py-2 bg-surface-container-low border-b border-outline-variant flex items-center gap-2">
+                        <div className="flex gap-1">
+                          <div className="w-1.5 h-1.5 rounded-full bg-red-400" />
+                          <div className="w-1.5 h-1.5 rounded-full bg-yellow-400" />
+                          <div className="w-1.5 h-1.5 rounded-full bg-green-400" />
+                        </div>
+                        <div className="flex-1 flex justify-center">
+                          <div className="h-3 w-32 rounded-full bg-outline-variant/40 flex items-center justify-center">
+                            <span className="text-[6px] text-on-surface-variant font-medium">your-website.com</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="overflow-y-auto max-h-[300px] scrollbar-hide">
+                        {/* navbar */}
+                        <div
+                          className="px-4 py-2 flex items-center justify-between"
+                          style={{ backgroundColor: brandColors.secondary }}
+                        >
+                          <div className="flex items-center gap-2">
+                            {logoPreview ? (
+                                <img src={logoPreview} className="w-5 h-5 object-contain" />
+                            ) : (
+                                <div className="w-4 h-4 rounded bg-white/30" />
+                            )}
+                            <div className="h-1.5 w-12 rounded-full bg-white/70" />
+                          </div>
+                          <div
+                            className="h-5 w-14 rounded-full text-[7px] flex items-center justify-center font-black"
+                            style={{
+                              backgroundColor: brandColors.accent,
+                              color: isLight(brandColors.accent) ? "#111" : "white",
+                            }}
+                          >
+                            Call Now
+                          </div>
+                        </div>
+
+                        {/* hero */}
+                        <div
+                          className="px-5 py-8 flex flex-col gap-2.5 text-center items-center"
+                          style={{
+                            background: `linear-gradient(135deg, ${brandColors.primary}f2 0%, ${brandColors.secondary}e8 100%)`,
+                          }}
+                        >
+                          <div className="h-1.5 w-20 rounded-full" style={{ backgroundColor: isLight(brandColors.primary) ? "rgba(0,0,0,0.2)" : "rgba(255,255,255,0.2)" }} />
+                          <div className="h-4 w-5/6 rounded flex items-center justify-center px-2" >
+                             <div className="h-2 w-full rounded" style={{ backgroundColor: brandColors.textHeading }} />
+                          </div>
+                          <div className="h-1.5 w-full rounded" style={{ backgroundColor: brandColors.text, opacity: 0.8 }} />
+                          <div className="h-1.5 w-3/4 rounded" style={{ backgroundColor: brandColors.text, opacity: 0.6 }} />
+                          
+                          <div className="mt-2 flex flex-col gap-2 w-full max-w-[140px]">
+                            <div
+                              className="h-7 w-full rounded-lg text-[8px] flex items-center justify-center font-black shadow-md"
+                              style={{
+                                backgroundColor: brandColors.accent,
+                                color: isLight(brandColors.accent) ? "#111" : "white",
+                              }}
+                            >
+                              Get a Free Quote
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* content */}
+                        <div className="p-4" style={{ backgroundColor: brandColors.background }}>
+                            <div className="h-2 w-16 mb-4 rounded" style={{ backgroundColor: brandColors.textHeading }} />
+                            <div className="grid grid-cols-1 gap-3">
+                                {[1,2].map(i => (
+                                    <div key={i} className="p-3 rounded-xl border" style={{ borderColor: `${brandColors.text}20` }}>
+                                        <div className="w-6 h-6 rounded mb-2" style={{ backgroundColor: `${brandColors.primary}20` }} />
+                                        <div className="h-1.5 w-20 mb-1.5 rounded" style={{ backgroundColor: brandColors.textHeading }} />
+                                        <div className="h-1 w-full rounded" style={{ backgroundColor: brandColors.text, opacity: 0.5 }} />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <NavButtons onNext={() => setStep(4)} />
@@ -1241,51 +1380,6 @@ const Signup: React.FC = () => {
             {/* ══ STEP 4 — Media ══════════════════════════════════════ */}
             {step === 4 && (
               <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-                {/* Logo */}
-                <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-3 ml-1">
-                    Company Logo <span className="normal-case font-normal">(Optional)</span>
-                  </label>
-                  <div className="flex items-start gap-4">
-                    {logoPreview ? (
-                      <div className="relative w-20 h-20 flex-shrink-0 rounded-2xl overflow-hidden border border-outline-variant bg-surface">
-                        <img
-                          src={logoPreview}
-                          alt="Logo"
-                          className="w-full h-full object-contain p-2"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setCompanyLogo(null);
-                            setLogoPreview("");
-                          }}
-                          className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full shadow"
-                        >
-                          <X size={10} />
-                        </button>
-                      </div>
-                    ) : (
-                      <label className="w-20 h-20 flex-shrink-0 rounded-2xl border-2 border-dashed border-outline-variant flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-primary hover:bg-primary/5 transition-all">
-                        <Upload size={20} className="text-on-surface-variant" />
-                        <span className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant">
-                          Logo
-                        </span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={handleLogoChange}
-                        />
-                      </label>
-                    )}
-                    <p className="text-xs text-on-surface-variant font-medium leading-relaxed pt-1">
-                      Upload your company logo — it&apos;ll appear in the navbar and footer. PNG or
-                      SVG with a transparent background works best.
-                    </p>
-                  </div>
-                </div>
-
                 {/* Photos */}
                 <div>
                   <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-3 ml-1">
