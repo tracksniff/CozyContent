@@ -191,6 +191,12 @@ const Navbar = () => {
             ) : (
               <>
                 <Link
+                  to="/login"
+                  className="text-on-surface-variant hover:text-primary px-4 py-2.5 text-sm font-bold transition-colors"
+                >
+                  Log in
+                </Link>
+                <Link
                   to="/signup"
                   className="bg-on-surface text-surface px-5 py-2.5 rounded-xl text-sm font-bold hover:shadow-lg transition-all shadow-md active:scale-95"
                 >
@@ -299,13 +305,22 @@ const Navbar = () => {
                     Dashboard
                   </Link>
                 ) : (
-                  <Link
-                    to="/signup"
-                    onClick={handleNavClick}
-                    className="w-full bg-on-surface text-surface py-3.5 rounded-xl text-center font-black text-sm"
-                  >
-                    Get Started
-                  </Link>
+                  <div className="flex flex-col gap-3">
+                    <Link
+                      to="/login"
+                      onClick={handleNavClick}
+                      className="w-full border border-outline-variant text-on-surface py-3.5 rounded-xl text-center font-black text-sm"
+                    >
+                      Log in
+                    </Link>
+                    <Link
+                      to="/signup"
+                      onClick={handleNavClick}
+                      className="w-full bg-on-surface text-surface py-3.5 rounded-xl text-center font-black text-sm"
+                    >
+                      Get Started
+                    </Link>
+                  </div>
                 )}
               </div>
             </div>

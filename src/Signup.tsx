@@ -1397,7 +1397,7 @@ const Signup: React.FC = () => {
                             color: isLight(brandColors.accent) ? "#111" : "#fff",
                           }}
                         >
-                          Get a free quote
+                          Get Started
                         </div>
                       </div>
 

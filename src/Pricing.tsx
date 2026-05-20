@@ -150,8 +150,6 @@ const PricingPage: React.FC = () => {
             </p>
           </motion.div>
 
-          <PricingToggle isAnnual={isAnnual} onChange={setIsAnnual} />
-
           <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto mb-24">
             {plans.map((plan, idx) => (
               <motion.div 
@@ -196,6 +194,12 @@ const PricingPage: React.FC = () => {
                     </AnimatePresence>
                     <span className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-2">{plan.period}</span>
                   </div>
+
+                  {plan.hasToggle && (
+                    <div className="mt-6 pt-6 border-t border-outline-variant/10 w-full flex justify-center relative z-10">
+                      <PricingToggle isAnnual={isAnnual} onChange={setIsAnnual} />
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-4 mb-10 flex-grow">

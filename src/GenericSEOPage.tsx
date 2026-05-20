@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { 
   ArrowRight, 
@@ -8,8 +8,7 @@ import {
   Clock, 
   Phone, 
   ExternalLink,
-  Sparkles,
-  Check
+  Sparkles
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "./Navbar";
@@ -89,10 +88,15 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
   const [activeSection, setActiveSection] = useState<number | null>(null);
   const [isAnnual, setIsAnnual] = useState(true);
   const config = industryConfig[data.industry] || industryConfig["Cleaning"];
+  const pricingRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+
+  const scrollToPricing = () => {
+    pricingRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const plans = [
     {
@@ -188,18 +192,18 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
               {/* CTA buttons */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link
-                  to="/contact"
+                  to="/signup"
                   className="group inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold rounded-2xl hover:brightness-110 active:scale-[0.97] transition-all shadow-lg shadow-primary/25 text-base"
                 >
-                  Get a Free Quote
+                  Get Started
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <Link
-                  to="/signup"
+                <button
+                  onClick={scrollToPricing}
                   className="inline-flex items-center gap-3 px-8 py-4 bg-surface text-on-surface font-bold rounded-2xl border border-outline-variant/50 hover:border-primary/40 hover:bg-surface active:scale-[0.97] transition-all text-base"
                 >
                   View Pricing
-                </Link>
+                </button>
               </div>
 
               {/* Stats row */}
@@ -376,7 +380,7 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
         )}
 
         {/* ── PRICING ─────────────────────────────────────────── */}
-        <section className="max-w-7xl mx-auto px-6 lg:px-8 mb-28">
+        <section ref={pricingRef} className="max-w-7xl mx-auto px-6 lg:px-8 mb-28 scroll-mt-24">
           <div className="text-center mb-12">
             <p className="text-xs font-bold uppercase tracking-widest text-primary mb-3">Pricing</p>
             <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-4">
@@ -386,8 +390,6 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
               Choose the perfect plan for your trade business. No setup fees, no hidden costs.
             </p>
           </div>
-
-          <PricingToggle isAnnual={isAnnual} onChange={setIsAnnual} />
 
           <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
             {plans.map((plan, idx) => (
@@ -433,6 +435,12 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
                     </AnimatePresence>
                     <span className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-2">{plan.period}</span>
                   </div>
+
+                  {plan.hasToggle && (
+                    <div className="mt-6 pt-6 border-t border-outline-variant/10 w-full flex justify-center relative z-10">
+                      <PricingToggle isAnnual={isAnnual} onChange={setIsAnnual} />
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-4 mb-10 flex-grow">
@@ -590,10 +598,10 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link
-                  to="/contact"
+                  to="/signup"
                   className="group inline-flex items-center gap-3 px-10 py-5 bg-primary text-white font-bold rounded-2xl hover:brightness-110 active:scale-[0.97] transition-all shadow-2xl shadow-primary/30 text-base"
                 >
-                  Get in Touch
+                  Get Started
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link

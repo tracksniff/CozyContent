@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface PricingToggleProps {
   isAnnual: boolean;
@@ -7,7 +7,7 @@ interface PricingToggleProps {
 }
 
 const PricingToggle: React.FC<PricingToggleProps> = ({ isAnnual, onChange }) => (
-  <div className="flex flex-col items-center gap-4 mb-16">
+  <div className="flex flex-col items-center gap-4">
     <div className="flex items-center gap-4 p-1.5 bg-surface-container-high rounded-full border border-outline-variant/30">
       <button
         onClick={() => onChange(false)}
@@ -28,18 +28,21 @@ const PricingToggle: React.FC<PricingToggleProps> = ({ isAnnual, onChange }) => 
         }`}
       >
         Annual
-        {isAnnual && (
-          <motion.span 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="absolute -top-10 left-1/2 -translate-x-1/2 bg-secondary text-white text-[10px] py-1 px-3 rounded-full whitespace-nowrap font-bold"
-          >
-            Save 20%
-          </motion.span>
-        )}
+        <AnimatePresence>
+          {isAnnual && (
+            <motion.span 
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 5 }}
+              className="absolute -top-8 left-1/2 -translate-x-1/2 bg-secondary text-white text-[9px] py-0.5 px-2 rounded-full whitespace-nowrap font-black uppercase tracking-tighter"
+            >
+              Save 20%
+            </motion.span>
+          )}
+        </AnimatePresence>
       </button>
     </div>
-    <p className="text-xs font-bold text-on-surface-variant/60 uppercase tracking-widest">
+    <p className="text-[10px] font-black text-on-surface-variant/40 uppercase tracking-widest">
       {isAnnual ? 'Billed annually' : 'Billed monthly'}
     </p>
   </div>
