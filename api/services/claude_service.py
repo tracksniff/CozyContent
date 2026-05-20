@@ -14,6 +14,8 @@ import tempfile
 
 import colorsys
 
+import random
+
 
 logger = logging.getLogger(__name__)
 
@@ -120,6 +122,19 @@ INDUSTRY_IMAGE_SETS = {
 
 
 # ─────────────────────────────────────────────────────────
+# Layout Strategies — narrative flow variations
+# ─────────────────────────────────────────────────────────
+
+LAYOUT_STRATEGIES = [
+    "Trust-First Narrative: Place 'Why Us' and 'Reviews' immediately after the Hero to establish authority before listing services.",
+    "Services-Focused Narrative: Keep 'Services' right under the Hero, followed by 'How It Works' to drive conversion quickly.",
+    "Social-Proof Narrative: Move 'Meet the Team' and 'Reviews' higher up to humanise the brand early in the page.",
+    "Outcome-Focused Narrative: Lead with 'How It Works' and 'Why Us' to show the benefits before the technical details.",
+    "Modern Minimal Narrative: Use large spacing and reorder sections to create a more experimental, non-linear flow.",
+]
+
+
+# ─────────────────────────────────────────────────────────
 # Design personalities — visual style guide per industry
 # ─────────────────────────────────────────────────────────
 
@@ -127,124 +142,101 @@ DESIGN_PERSONALITIES = {
     "electrical": {
         "name": "Bold Industrial",
         "instructions": (
-            "Make this site look bold, industrial, and high-energy:\n"
-            "- Hero: Full-width dark background (using the Secondary brand color) with a background image and a semi-transparent dark overlay. "
-            "Place CTA buttons in the bright Accent brand color.\n"
-            "- Headings: Very large and bold (text-5xl lg:text-7xl font-black uppercase tracking-tight).\n"
-            "- Services section: Dark cards using Secondary color with colored top border (border-t-4 border-primary).\n"
-            "- WhyUs section: Alternate between dark and light panels instead of all-light.\n"
-            "- Use high-contrast, industrial feel throughout — fewer soft shadows, more hard edges.\n"
-            "- Stats/numbers should be very large and prominent.\n"
+            "Theme: Industrial Power & High Contrast.\n"
+            "- Visuals: Bold, raw, and high-energy. Use thick borders (border-4), hard edges (rounded-none or rounded-md), and high-contrast color pairings.\n"
+            "- Hero: Experiment with 'Split-screen' or 'Dark-Focused' layouts. Use large, heavy typography (font-black tracking-tighter).\n"
+            "- Rhythm: Use strong block-color sections (Primary/Secondary) to create a powerful, punchy flow. Avoid soft shadows; use hard 'neo-brutalist' shadows instead.\n"
+            "- Accents: Use the Accent color for glowing effects and high-visibility status indicators.\n"
         ),
     },
     "plumbing": {
         "name": "Professional Trustworthy",
         "instructions": (
-            "Make this site look professional, dependable, and clean:\n"
-            "- Hero: Split-panel layout — left half solid Primary brand color background with text, right side large image. "
-            "Use rounded-2xl on the image.\n"
-            "- Trust badges very prominent below the headline.\n"
-            "- Services: White cards with a colored left border (border-l-4 border-primary) and subtle shadow.\n"
-            "- WhyUs: Clean light-gray alternating rows with icon + text layout.\n"
-            "- Footer: Dark Secondary color background with white text.\n"
+            "Theme: Dependable Cleanliness & Technical Precision.\n"
+            "- Visuals: Clean, structured, and reassuring. Use medium rounded corners (rounded-xl) and subtle shadows to create depth.\n"
+            "- Hero: Use a 'Content-First' approach with clear trust badges and a strong, friendly call-to-action.\n"
+            "- Rhythm: Clean, alternating sections with a focus on 'Step-by-step' processes and clear feature lists.\n"
+            "- Accents: Use the Primary color for icons and structural highlights to build brand recognition.\n"
         ),
     },
     "beauty": {
         "name": "Elegant Minimal",
         "instructions": (
-            "Make this site look luxurious, elegant, and softly minimal:\n"
-            "- Hero: Light/white background with a very soft blurred background image and gentle overlay. "
-            "Centered layout with generous whitespace. CTA button with rounded-full and elegant font using Accent color.\n"
-            "- Typography: Larger letter-spacing (tracking-wide) on headings, thinner font weights for body text.\n"
-            "- Services: Horizontal cards with image on left, soft shadow (shadow-sm), rounded-2xl corners.\n"
-            "- WhyUs: All-white with soft Accent accent colors, no harsh contrast.\n"
-            "- Use lots of padding (py-24 or py-32) for each section — never cramped.\n"
-            "- Background: Use very light tints of Primary or Secondary color for alternate sections.\n"
+            "Theme: Luxurious Serenity & Soft Whitespace.\n"
+            "- Visuals: High-end, airy, and sophisticated. Use extremely generous padding (py-32), rounded-full for buttons, and delicate dividers.\n"
+            "- Hero: Centered-focus layout with a large, beautiful background image and soft, layered typography.\n"
+            "- Rhythm: Flowing, spacious layout. Use very subtle background tints (bg-primary/5) rather than solid dark blocks.\n"
+            "- Typography: Use tracking-widest and light font weights for a premium, boutique feel.\n"
         ),
     },
     "restaurant": {
         "name": "Warm and Inviting",
         "instructions": (
-            "Make this site feel warm, appetising, and welcoming:\n"
-            "- Hero: Full-bleed food/interior photograph with a warm gradient overlay using the Secondary brand color. Centered large white text.\n"
-            "- Services section: Display services like a menu — each item with an appetising description and a warm card background (light tint of Primary).\n"
-            "- Use Accent colors for all buttons and highlights.\n"
-            "- WhyUs: Warm cream/stone background with warm-toned icons.\n"
-            "- Review cards: Warm background with quotation mark styling.\n"
-            "- Footer: Deep dark background using Secondary brand color.\n"
+            "Theme: Artisanal Texture & Rich Warmth.\n"
+            "- Visuals: Appetising, textured, and welcoming. Use warm gradients, rounded-3xl corners, and textured backgrounds (if possible via CSS).\n"
+            "- Hero: Full-bleed imagery with centered, high-impact headings and a clear reservation/order CTA.\n"
+            "- Rhythm: A 'Menu-like' structure for services and features. Use layered elements and overlapping images to create an artisanal feel.\n"
+            "- Accents: Use the Secondary color for deep, rich backgrounds and the Accent color for highlights.\n"
         ),
     },
     "legal": {
         "name": "Authoritative and Premium",
         "instructions": (
-            "Make this site feel authoritative, premium, and sophisticated:\n"
-            "- Hero: Dark background (using Secondary brand color) — no background image, "
-            "just strong typography with a subtle gradient. Use Accent color for CTA and highlights.\n"
-            "- Headings: Classic serif feel — use font-bold tracking-tight, never compressed.\n"
-            "- Services: Elegant dark cards using a slightly lighter Secondary shade with Primary top border.\n"
-            "- WhyUs: Very minimal — dark background with white text and thin Accent color dividers.\n"
-            "- Testimonials: Full-width dark quote blocks with large quotation marks and client name in Accent color.\n"
-            "- Footer: Very dark Secondary color with subtle Accent line separator.\n"
+            "Theme: Sophisticated Authority & Classic Excellence.\n"
+            "- Visuals: Stately, serious, and high-end. Use serif-style typography, thin elegant dividers, and a predominantly dark color palette.\n"
+            "- Hero: Large, bold typography on a dark Secondary background. Use the Accent color sparingly for 'prestige' highlights.\n"
+            "- Rhythm: A focused, linear narrative that emphasizes credentials and expert fields. Use wide layouts with large text blocks.\n"
+            "- Details: Sharp corners and gold/accent borders (border-l-2).\n"
         ),
     },
     "tech": {
         "name": "Modern Tech Startup",
         "instructions": (
-            "Make this site feel cutting-edge, modern, and digital:\n"
-            "- Hero: Dark background with a gradient overlay (from Primary to Secondary). "
-            "Add gradient text for the main headline using bg-gradient-to-r from-white to-primary bg-clip-text text-transparent.\n"
-            "- Services: Dark glassmorphism-style cards (bg-white/5 backdrop-blur border border-white/10) on a dark background.\n"
-            "- WhyUs: Dark section with subtle grid pattern and Primary/Accent glowing elements.\n"
-            "- Use rounded-2xl and smooth transitions throughout.\n"
-            "- Stats: Large glowing numbers in Primary color on dark background.\n"
-            "- Footer: Very dark background using Secondary color.\n"
+            "Theme: Digital Innovation & Glassmorphism.\n"
+            "- Visuals: Sleek, vibrant, and futuristic. Use glassmorphism effects (bg-white/10 backdrop-blur), neon glows, and dark backgrounds.\n"
+            "- Hero: Gradient headlines (text-transparent bg-clip-text) and large, modern typography with interactive-feeling buttons.\n"
+            "- Rhythm: Non-standard grids, asymmetric layouts, and varied section heights. Incorporate grid patterns or subtle tech motifs.\n"
+            "- Details: Use rounded-2xl throughout and smooth hover transitions.\n"
         ),
     },
     "medical": {
         "name": "Clean and Caring",
         "instructions": (
-            "Make this site feel clean, trustworthy, and professional:\n"
-            "- Hero: Bright, welcoming — white or very light Secondary tint background with a professional team photograph. "
-            "CTA in soft Primary color rounded buttons (rounded-full).\n"
-            "- Services: Clean white cards with a soft Primary or Accent left border, rounded corners, minimal shadows.\n"
-            "- WhyUs: Very light section (light tint of Primary) with clean icon layout.\n"
-            "- Trust/credentials badges are extremely prominent — place them near the top of the hero.\n"
-            "- Use generous whitespace — never crowded.\n"
-            "- Footer: Soft dark Secondary color with clean layout.\n"
+            "Theme: Bright Clinical & Friendly Professionalism.\n"
+            "- Visuals: Pristine, safe, and welcoming. Use a lot of white space, soft Primary blue/green tones, and rounded-full pill shapes.\n"
+            "- Hero: Professional and friendly, using team photography and very clear 'Book Now' CTAs above the fold.\n"
+            "- Rhythm: Simple, clear, and easy to navigate. Use distinct panels for services and expertise badges.\n"
+            "- Details: Avoid harsh contrast; use soft shadows and light-tinted borders.\n"
         ),
     },
     "construction": {
         "name": "Strong and Reliable",
         "instructions": (
-            "Make this site feel strong, reliable, and heavy-duty:\n"
-            "- Hero: Full-bleed construction site image with a bold dark Secondary overlay. "
-            "Very large bold uppercase headline. Bright Accent color CTA button.\n"
-            "- Stats section: Giant numbers (text-6xl font-black) with dark Secondary background — make this a hero-like centerpiece.\n"
-            "- Services: Bold cards with construction imagery, dark borders using Primary color.\n"
-            "- WhyUs: Dark and strong — alternate between dark Secondary and Primary sections.\n"
-            "- Typography throughout is heavy: font-bold or font-black, minimal light weights.\n"
+            "Theme: Heavy-Duty Structural & Bold Scale.\n"
+            "- Visuals: Strong, large-scale, and impactful. Use massive typography (text-7xl), bold block colors, and industrial-style iconography.\n"
+            "- Hero: Full-width construction imagery with heavy-weight headlines and high-visibility CTAs.\n"
+            "- Rhythm: Strong, alternating blocks of Primary and Secondary colors. Use large-format imagery as section dividers.\n"
+            "- Details: Hard corners and prominent, bold borders.\n"
         ),
     },
     "cleaning": {
         "name": "Fresh and Spotless",
         "instructions": (
-            "Make this site feel fresh, bright, and immaculately clean:\n"
-            "- Hero: Bright white or very light background with a clean, organized image. "
-            "Fresh Primary or Accent colors for highlights. CTA with clear contrast.\n"
-            "- Services: White cards with a fresh Primary/Accent top border, very clean layout.\n"
-            "- WhyUs: Light Secondary tint background with checklist-style features.\n"
-            "- Use clean dividers and lots of whitespace.\n"
-            "- Overall feel: pristine, organized, trustworthy.\n"
+            "Theme: Sparkling Freshness & Organized Space.\n"
+            "- Visuals: Bright, high-contrast, and impeccably organized. Use a lot of whitespace and fresh Primary/Accent highlights.\n"
+            "- Hero: Bright and airy with a clean 'Before/After' or high-quality service image. Clear, simple headlines.\n"
+            "- Rhythm: Very orderly grid layouts and checklist-style feature lists. Use light-colored sections with clean horizontal dividers.\n"
+            "- Details: Rounded-xl corners and thin, precise borders.\n"
         ),
     },
     "default": {
         "name": "Modern Professional",
         "instructions": (
-            "Make this site feel modern, professional, and visually distinct:\n"
-            "- Hero: Full-width with a brand-colored (Primary/Secondary) gradient overlay on an image. Strong CTA.\n"
-            "- Services: Bold cards with Primary top borders and icon.\n"
-            "- WhyUs: Alternating light/dark sections for variety.\n"
-            "- Overall: Clean, modern, with good use of brand colors throughout.\n"
+            "Theme: Clean Modernism & Versatile Layout.\n"
+            "- Visuals: Balanced, professional, and visually engaging. Use a mix of rounded corners and clean lines.\n"
+            "- Hero: Dynamic layout (Split or Centered) with strong brand integration.\n"
+            "- Rhythm: Engaging flow with varied section types and clear content hierarchy.\n"
+            "- Details: Modern shadows and smooth transitions.\n"
         ),
     },
 }
@@ -344,7 +336,6 @@ def build_design_tokens(branding_colors: dict) -> dict:
     secondary_hex = branding_colors.get("secondary", "#1E3A5F")
     accent_hex = branding_colors.get("accent", "#10B981")
     
-    # New user-selected colors
     background_hex = branding_colors.get("background", "#FFFFFF")
     text_hex = branding_colors.get("text", "#333333")
     text_heading_hex = branding_colors.get("textHeading", "#111111")
@@ -356,16 +347,24 @@ def build_design_tokens(branding_colors: dict) -> dict:
     text_hsl = hex_to_hsl(text_hex)
     text_heading_hsl = hex_to_hsl(text_heading_hex)
 
-    # Foreground on primary — white if primary is dark, near-black if light
-    primary_fg = "0 0% 100%" if is_dark(primary_hex) else "220 20% 10%"
-    accent_fg = "0 0% 100%" if is_dark(accent_hex) else "220 20% 10%"
+    # ── CALCULATE FOREGROUNDS (Contrast) ───────────────────────
+    # White foreground if background is dark, near-black if light
+    def get_fg(hex_c):
+        return "0 0% 100%" if is_dark(hex_c) else "0 0% 10%"
 
-    # Background: very light tint of secondary (fallback if background_hex not provided)
-    sec_h = secondary_hsl.split()[0]
-    section_alt_hsl = f"{sec_h} 15% 97%"
-    border_hsl = f"{sec_h} 15% 92%"
-    muted_hsl = f"{sec_h} 10% 94%"
-    muted_fg_hsl = f"{sec_h} 10% 45%"
+    primary_fg = get_fg(primary_hex)
+    secondary_fg = get_fg(secondary_hex)
+    accent_fg = get_fg(accent_hex)
+    background_fg = text_hsl # Use user's chosen text color for main background
+
+    # ── CALCULATE TINTS (Soft variants) ────────────────────────
+    def get_tint(hsl_str, lum=97):
+        parts = hsl_str.split()
+        return f"{parts[0]} {parts[1]} {lum}%"
+
+    primary_tint = get_tint(primary_hsl)
+    secondary_tint = get_tint(secondary_hsl)
+    background_alt = get_tint(background_hsl, 95) if not is_dark(background_hex) else get_tint(background_hsl, 15)
 
     return {
         "--background": background_hsl,
@@ -376,18 +375,18 @@ def build_design_tokens(branding_colors: dict) -> dict:
         "--popover-foreground": text_hsl,
         "--primary": primary_hsl,
         "--primary-foreground": primary_fg,
-        "--secondary": section_alt_hsl,
-        "--secondary-foreground": primary_hsl,
-        "--muted": muted_hsl,
-        "--muted-foreground": muted_fg_hsl,
+        "--secondary": secondary_hsl,
+        "--secondary-foreground": secondary_fg,
+        "--muted": background_alt,
+        "--muted-foreground": text_hsl,
         "--accent": accent_hsl,
         "--accent-foreground": accent_fg,
-        "--border": border_hsl,
-        "--input": border_hsl,
+        "--border": primary_hsl, # Use primary for borders (will be low alpha in tailwind)
+        "--input": primary_hsl,
         "--ring": primary_hsl,
-        "--section-alt": section_alt_hsl,
+        "--section-alt": secondary_tint,
         "--cta-glow": accent_hsl,
-        "--hero-overlay": primary_hsl,
+        "--hero-overlay": secondary_hsl,
         "--warm-bg": background_hsl,
         "--heading": text_heading_hsl,
     }
@@ -802,6 +801,7 @@ LAYOUT & SPACING
 • Sections must breathe — use py-20 to py-32, never py-8 or less
 • Content width: max-w-7xl mx-auto with px-6 sm:px-8 side padding
 • All grids: start grid-cols-1, expand md:grid-cols-2, lg:grid-cols-3 (mobile-first)
+• EXPERIMENT with asymmetrical layouts, overlapping elements, and varied section widths.
 
 TYPOGRAPHY HIERARCHY
 • One display size per section: text-4xl–text-7xl font-black for hero/section headings
@@ -825,10 +825,11 @@ IMAGES
 • Hero background: use background-image with bg-center bg-cover bg-no-repeat
 • Add a gradient overlay on background images for text readability
 
-VISUAL RHYTHM
-• Sections must alternate visually: light → slightly-off-white → dark → light
-• Never have 3 consecutive sections with the same background colour
-• The hero MUST use a background image or strong gradient — never plain white/light
+VISUAL RHYTHM & UNIQUENESS
+• Every site must have a UNIQUE visual rhythm. Avoid the generic 'light-dark-light' pattern.
+• Use diverse background treatments: solid brand colors, subtle patterns, gradients, or high-quality imagery.
+• Reorder sections in Index.tsx to find the most compelling narrative flow for the specific industry.
+• The hero MUST use a background image or strong gradient — never plain white/light.
 
 MICRO-INTERACTIONS
 • All interactive elements: transition-all duration-200
@@ -924,11 +925,17 @@ def edit_files_with_claude(
 
     industry = application_data.get("industry", "trade services")
 
+    # Pick a random layout strategy for this generation
+    layout_strategy = random.choice(LAYOUT_STRATEGIES)
+
     system_prompt = f"""You are an expert React/TypeScript developer and UI/UX designer. Your task is to COMPLETELY REDESIGN this plumber website template into a visually unique, professional website for a different business — it must look NOTHING like the original template.
 
 ━━━ YOUR MISSION ━━━
 Transform every component to match the DESIGN PERSONALITY below. The output must look like a completely different website, not a recolored version of the same template.
 Each site you generate must be unique in its layout, section ordering, and creative execution. Avoid generic designs; make each one feel bespoke and premium.
+
+━━━ LAYOUT STRATEGY: {layout_strategy} ━━━
+You MUST apply this layout strategy when redesigning the Index.tsx file. Reorder the components to match this narrative flow.
 
 ━━━ BRAND COLORS & READABILITY ━━━
 Use these brand colors for your design (though they are also mapped to CSS variables):
