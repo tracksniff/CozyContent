@@ -18,7 +18,13 @@ const AuthCallback: React.FC = () => {
       login(access);
       // We might also want to store the refresh token if the context supports it
       localStorage.setItem('refresh_token', refresh);
-      navigate('/dashboard');
+      
+      const next = params.get('next');
+      if (next) {
+        window.location.href = next;
+      } else {
+        navigate('/dashboard');
+      }
     } else {
       const error = params.get('error') || 'Authentication failed';
       navigate(`/login?error=${encodeURIComponent(error)}`);
