@@ -112,12 +112,12 @@ const AddOns: React.FC = () => {
                         <button 
                             onClick={() => handlePurchase('priority_monthly')}
                             disabled={!!loadingPack}
-                            className="w-full py-2.5 bg-yellow-400 text-black rounded-lg font-black hover:brightness-105 shadow-xl shadow-yellow-400/20 transition-all flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 text-xs md:text-sm uppercase tracking-widest"
+                            className="w-full py-2.5 bg-yellow-400 text-black rounded-lg font-black hover:brightness-105 shadow-xl shadow-yellow-400/20 transition-all flex items-center justify-center active:scale-95 disabled:opacity-50 text-xs md:text-sm uppercase tracking-widest"
                         >
                             {loadingPack === 'priority_monthly' ? (
                                 <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
                             ) : (
-                                <>Go Priority <ArrowRight size={14} /></>
+                                "Go Priority"
                             )}
                         </button>
                     </div>
@@ -154,12 +154,12 @@ const AddOns: React.FC = () => {
                         <button 
                             onClick={() => handlePurchase(pack.id)}
                             disabled={!!loadingPack}
-                            className="w-full py-2.5 bg-primary text-white rounded-lg font-black hover:brightness-110 shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 text-xs md:text-sm uppercase tracking-widest"
+                            className="w-full py-2.5 bg-primary text-white rounded-lg font-black hover:brightness-110 shadow-lg shadow-primary/20 transition-all flex items-center justify-center active:scale-95 disabled:opacity-50 text-xs md:text-sm uppercase tracking-widest"
                         >
                             {loadingPack === pack.id ? (
                                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                             ) : (
-                                <>Purchase Now <ArrowRight size={14} /></>
+                                "Purchase Now"
                             )}
                         </button>
                         <p className="text-[8px] md:text-[9px] font-black text-on-surface-variant uppercase tracking-widest text-center mt-3 opacity-40">Updates never expire</p>

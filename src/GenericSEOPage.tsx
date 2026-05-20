@@ -193,14 +193,13 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link
                   to="/signup"
-                  className="group inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold rounded-2xl hover:brightness-110 active:scale-[0.97] transition-all shadow-lg shadow-primary/25 text-base"
+                  className="group inline-flex items-center px-8 py-4 bg-primary text-white font-bold rounded-2xl hover:brightness-110 active:scale-[0.97] transition-all shadow-lg shadow-primary/25 text-base"
                 >
                   Get Started
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <button
                   onClick={scrollToPricing}
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-surface text-on-surface font-bold rounded-2xl border border-outline-variant/50 hover:border-primary/40 hover:bg-surface active:scale-[0.97] transition-all text-base"
+                  className="inline-flex items-center px-8 py-4 bg-surface text-on-surface font-bold rounded-2xl border border-outline-variant/50 hover:border-primary/40 hover:bg-surface active:scale-[0.97] transition-all text-base"
                 >
                   View Pricing
                 </button>
@@ -367,7 +366,6 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
                       <h3 className="text-xl font-black group-hover:text-primary transition-colors">
                         {demo.name}
                       </h3>
-                      <ArrowRight className="w-5 h-5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-primary" />
                     </div>
                     <p className="text-sm text-on-surface-variant font-medium">
                       High-converting {data.industry.toLowerCase()} website demo
@@ -455,14 +453,14 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
                 <Link 
                   to="/signup" 
                   state={{ planId: plan.id, planType: plan.type, billing: plan.hasToggle ? (isAnnual ? 'annual' : 'monthly') : 'one_time' }}
-                  className={`group/btn py-4 rounded-xl font-black text-center transition-all flex items-center justify-center gap-2 text-lg relative overflow-hidden ${
+                  className={`group/btn py-4 rounded-xl font-black text-center transition-all flex items-center justify-center text-lg relative overflow-hidden ${
                     plan.popular 
                       ? 'bg-primary text-white hover:shadow-2xl hover:shadow-primary/30 active:scale-[0.98]' 
                       : 'bg-on-surface text-surface hover:bg-on-surface-variant active:scale-[0.98]'
                   }`}
                 >
-                  <span className="relative z-10 flex items-center gap-2 transition-all group-hover/btn:gap-4">
-                    {plan.cta} <ArrowRight className="w-5 h-5" />
+                  <span className="relative z-10 flex items-center transition-all">
+                    {plan.cta}
                   </span>
                   <div className="absolute inset-0 bg-white/10 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
                 </Link>
@@ -502,9 +500,9 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
                 </div>
                 <Link
                   to="/contact"
-                  className="inline-flex items-center gap-2 text-primary font-black hover:gap-4 transition-all"
+                  className="inline-flex items-center text-primary font-black transition-all"
                 >
-                  Check coverage in your area <ArrowRight className="w-5 h-5" />
+                  Check coverage in your area
                 </Link>
               </div>
               <div className="lg:w-1/2 w-full">
@@ -599,14 +597,13 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link
                   to="/signup"
-                  className="group inline-flex items-center gap-3 px-10 py-5 bg-primary text-white font-bold rounded-2xl hover:brightness-110 active:scale-[0.97] transition-all shadow-2xl shadow-primary/30 text-base"
+                  className="group inline-flex items-center px-10 py-5 bg-primary text-white font-bold rounded-2xl hover:brightness-110 active:scale-[0.97] transition-all shadow-2xl shadow-primary/30 text-base"
                 >
                   Get Started
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link
                   to="/signup"
-                  className="inline-flex items-center gap-3 px-10 py-5 text-on-surface font-bold rounded-2xl border border-outline-variant/60 hover:border-primary/40 hover:bg-surface active:scale-[0.97] transition-all text-base"
+                  className="inline-flex items-center px-10 py-5 text-on-surface font-bold rounded-2xl border border-outline-variant/60 hover:border-primary/40 hover:bg-surface active:scale-[0.97] transition-all text-base"
                 >
                   Start for £59/mo
                 </Link>

@@ -200,19 +200,17 @@ const Checkout: React.FC = () => {
                   <button
                     onClick={() => handleSelectPlan(plan.type === 'monthly' ? (isAnnual ? 'annual' : 'monthly') : 'one_time')}
                     disabled={isLoading !== null}
-                    className={`group/btn py-4 rounded-xl font-black text-center transition-all flex items-center justify-center gap-2 text-lg relative overflow-hidden ${
+                    className={`group/btn py-4 rounded-xl font-black text-center transition-all flex items-center justify-center text-lg relative overflow-hidden ${
                       plan.popular 
                         ? 'bg-primary text-white hover:shadow-2xl hover:shadow-primary/30 active:scale-[0.98]' 
                         : 'bg-on-surface text-surface hover:bg-on-surface-variant active:scale-[0.98]'
                     } disabled:opacity-70 disabled:cursor-not-allowed`}
                   >
-                    <span className="relative z-10 flex items-center gap-2 transition-all group-hover/btn:gap-4">
+                    <span className="relative z-10 flex items-center transition-all">
                       {currentLoading ? (
                         <Loader2 className="w-5 h-5 animate-spin" />
                       ) : (
-                        <>
-                          {plan.cta} <ArrowRight className="w-5 h-5" />
-                        </>
+                        plan.cta
                       )}
                     </span>
                     <div className="absolute inset-0 bg-white/10 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
@@ -223,8 +221,8 @@ const Checkout: React.FC = () => {
           </div>
 
           <div className="text-center">
-             <Link to="/signup" className="inline-flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors font-bold text-sm">
-               <ArrowLeft size={16} /> Back to Application
+             <Link to="/signup" className="inline-flex items-center text-on-surface-variant hover:text-primary transition-colors font-bold text-sm">
+               Back to Application
              </Link>
           </div>
         </div>

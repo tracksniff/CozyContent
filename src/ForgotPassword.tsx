@@ -57,9 +57,9 @@ const ForgotPassword: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center bg-surface transition-colors duration-300 p-6">
       <Link 
         to="/login" 
-        className="absolute top-8 left-8 flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors font-bold text-sm"
+        className="absolute top-8 left-8 flex items-center text-on-surface-variant hover:text-primary transition-colors font-bold text-sm"
       >
-        <ArrowLeft size={16} /> Back to Login
+        Back to Login
       </Link>
 
       <div className="w-full max-w-md relative">
