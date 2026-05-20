@@ -48,32 +48,38 @@ const industries = [
   "Other",
 ];
 
-const industryPresets = [
+const COLOR_PRESETS = [
   {
-    name: "Classic Trade",
-    colors: { primary: "#00696D", secondary: "#1B1C1C", accent: "#FEBB0C", background: "#FBF9F8", text: "#3D4949", textHeading: "#1B1C1C" }
+    name: "Classic trade",
+    colors: { primary: "#00696D", secondary: "#1B1C1C", accent: "#FEBB0C", background: "#FBF9F8", text: "#3D4949", textHeading: "#1B1C1C" },
   },
   {
-    name: "Modern Emergency",
-    colors: { primary: "#E11D48", secondary: "#1E293B", accent: "#F59E0B", background: "#FFFFFF", text: "#475569", textHeading: "#0F172A" }
+    name: "Modern emergency",
+    colors: { primary: "#E11D48", secondary: "#1E293B", accent: "#F59E0B", background: "#FFFFFF", text: "#475569", textHeading: "#0F172A" },
   },
   {
-    name: "Eco-Clean",
-    colors: { primary: "#059669", secondary: "#064E3B", accent: "#FCD34D", background: "#F0FDF4", text: "#374151", textHeading: "#111827" }
+    name: "Eco clean",
+    colors: { primary: "#059669", secondary: "#064E3B", accent: "#FCD34D", background: "#F0FDF4", text: "#374151", textHeading: "#111827" },
   },
   {
-    name: "High-Tech Electric",
-    colors: { primary: "#2563EB", secondary: "#1E3A8A", accent: "#FBDF24", background: "#F8FAFC", text: "#334155", textHeading: "#0F172A" }
-  }
+    name: "High-tech electric",
+    colors: { primary: "#2563EB", secondary: "#1E3A8A", accent: "#FBDF24", background: "#F8FAFC", text: "#334155", textHeading: "#0F172A" },
+  },
+  {
+    name: "Luxury craft",
+    colors: { primary: "#92400E", secondary: "#1C1917", accent: "#D97706", background: "#FFFBEB", text: "#44403C", textHeading: "#1C1917" },
+  },
 ];
 
-const colorRoles = [
-  { key: "primary" as const, label: "Primary", hint: "Main Brand Color (Headings & CTAs)" },
-  { key: "secondary" as const, label: "Secondary", hint: "Darker Variant (Navbar & Footers)" },
-  { key: "accent" as const, label: "Accent", hint: "Highlight Color (Buttons & Icons)" },
-  { key: "background" as const, label: "Background", hint: "Page background color" },
-  { key: "text" as const, label: "Body Text", hint: "Standard paragraph text color" },
-  { key: "textHeading" as const, label: "Heading Text", hint: "Large titles & headings color" },
+type BrandColorKey = "primary" | "secondary" | "accent" | "background" | "text" | "textHeading";
+
+const COLOR_ROLES: { key: BrandColorKey; label: string; hint: string }[] = [
+  { key: "primary",     label: "Primary",    hint: "Headings & CTAs" },
+  { key: "secondary",   label: "Secondary",  hint: "Navbar & footer" },
+  { key: "accent",      label: "Accent",     hint: "Buttons & highlights" },
+  { key: "background",  label: "Background", hint: "Page background" },
+  { key: "text",        label: "Body text",  hint: "Paragraph text" },
+  { key: "textHeading", label: "Headings",   hint: "Titles & h-tags" },
 ];
 
 const isLight = (hex: string): boolean => {
@@ -189,6 +195,7 @@ const Signup: React.FC = () => {
   const navigate = useNavigate();
 
   const [previewMode, setPreviewMode] = useState<"desktop" | "mobile">("desktop");
+  const [selectedColorKey, setSelectedColorKey] = useState<BrandColorKey>("primary");
 
   const calculateSafePairing = (key: keyof typeof brandColors) => {
     const bg = brandColors.background;
@@ -1118,255 +1125,343 @@ const Signup: React.FC = () => {
               </div>
             )}
 
-            {/* ══ STEP 3 — Brand Colours ══════════════════════════════ */}
             {step === 3 && (
               <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+
+                {/* ── Presets ─────────────────────────────────────── */}
                 <div>
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                    <div>
-                      <p className="text-xs font-black uppercase tracking-widest text-on-surface-variant mb-1 ml-1">
-                        Brand Branding
-                      </p>
-                      <p className="text-[11px] text-on-surface-variant font-medium ml-1">
-                        Select a professional preset or customize your own colors.
-                      </p>
-                    </div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-3">
+                    Style presets
+                  </p>
+                  <div className="flex gap-4 flex-wrap">
+                    {COLOR_PRESETS.map((preset) => (
+                      <button
+                        key={preset.name}
+                        type="button"
+                        onClick={() => {
+                          Object.entries(preset.colors).forEach(([k, v]) =>
+                            handleColorSwatch(k as any, v)
+                          );
+                        }}
+                        className="group flex flex-col items-center gap-2"
+                      >
+                        <div className="flex">
+                          {(["primary", "secondary", "accent"] as const).map((k, j) => (
+                            <div
+                              key={k}
+                              className="w-7 h-7 rounded-full border-[2.5px] border-surface shadow-sm transition-transform group-hover:scale-110"
+                              style={{
+                                backgroundColor: preset.colors[k],
+                                marginLeft: j === 0 ? 0 : "-8px",
+                                zIndex: 3 - j,
+                                position: "relative",
+                              }}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-[10px] font-bold text-on-surface-variant group-hover:text-primary transition-colors whitespace-nowrap">
+                          {preset.name}
+                        </span>
+                      </button>
+                    ))}
+
+                    {/* Extract from logo */}
                     {logoPreview && (
                       <button
                         type="button"
                         onClick={extractColorsFromLogo}
-                        className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-sm"
+                        className="group flex flex-col items-center gap-2"
                       >
-                        <Wand2 size={14} /> Extract from Logo
+                        <div className="w-[52px] h-7 rounded-full border-2 border-dashed border-outline-variant flex items-center justify-center bg-surface hover:border-primary transition-all">
+                          <img src={logoPreview} className="w-5 h-5 object-contain rounded-full" />
+                        </div>
+                        <span className="text-[10px] font-bold text-on-surface-variant group-hover:text-primary transition-colors whitespace-nowrap flex items-center gap-1">
+                          <Wand2 size={10} /> From logo
+                        </span>
                       </button>
                     )}
                   </div>
+                </div>
 
-                  {/* Industry Presets */}
-                  <div className="mb-8 overflow-x-auto pb-2 scrollbar-hide">
-                    <div className="flex gap-3">
-                      {industryPresets.map((p) => (
+                {/* ── Role cards grid ─────────────────────────────── */}
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-3">
+                    Color roles — click to edit
+                  </p>
+                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                    {COLOR_ROLES.map(({ key, label, hint }) => {
+                      const hex = brandColors[key];
+                      const fg = isLight(hex) ? "rgba(0,0,0,0.7)" : "rgba(255,255,255,0.85)";
+                      const isSelected = selectedColorKey === key;
+
+                      let contrastOk = true;
+                      if (key === "text" || key === "textHeading") {
+                        contrastOk = getContrastRatio(hex, brandColors.background) >= 4.5;
+                      } else if (key === "accent") {
+                        contrastOk = getContrastRatio(hex, brandColors.primary) >= 3;
+                      }
+
+                      return (
                         <button
-                          key={p.name}
+                          key={key}
                           type="button"
-                          onClick={() => {
-                            Object.entries(p.colors).forEach(([key, val]) => handleColorSwatch(key as any, val));
+                          onClick={() => setSelectedColorKey(key)}
+                          className="rounded-2xl p-3 text-left transition-all duration-150 hover:-translate-y-0.5"
+                          style={{
+                            backgroundColor: hex,
+                            outline: isSelected ? `3px solid ${hex}` : "none",
+                            outlineOffset: "2px",
+                            boxShadow: isSelected ? `0 0 0 5px ${hex}33` : undefined,
                           }}
-                          className="flex-shrink-0 flex flex-col items-center gap-2 group"
                         >
-                          <div className="flex -space-x-2">
-                            <div className="w-8 h-8 rounded-full border-2 border-surface shadow-sm" style={{ backgroundColor: p.colors.primary }} />
-                            <div className="w-8 h-8 rounded-full border-2 border-surface shadow-sm" style={{ backgroundColor: p.colors.secondary }} />
-                            <div className="w-8 h-8 rounded-full border-2 border-surface shadow-sm" style={{ backgroundColor: p.colors.accent }} />
+                          <div className="flex items-center justify-between mb-1">
+                            <span
+                              className="text-[9px] font-black uppercase tracking-widest"
+                              style={{ color: fg, opacity: 0.8 }}
+                            >
+                              {label}
+                            </span>
+                            <span style={{ color: fg }}>
+                              {contrastOk
+                                ? <CheckCircle2 size={11} style={{ opacity: 0.7 }} />
+                                : <AlertTriangle size={11} className="animate-pulse text-red-400" />
+                              }
+                            </span>
                           </div>
-                          <span className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant group-hover:text-primary transition-colors">
-                            {p.name}
+                          <span
+                            className="text-[9px] leading-tight block"
+                            style={{ color: fg, opacity: 0.55 }}
+                          >
+                            {hint}
                           </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* ── Single focused editor ────────────────────────── */}
+                <div className="bg-surface border border-outline-variant rounded-2xl p-5">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-4">
+                    Editing:{" "}
+                    <span className="text-primary">
+                      {COLOR_ROLES.find((r) => r.key === selectedColorKey)?.label}
+                    </span>
+                  </p>
+
+                  <div className="flex items-center gap-4">
+                    {/* Big color swatch / native picker trigger */}
+                    <label
+                      className="relative w-14 h-14 rounded-xl cursor-pointer shrink-0 border border-outline-variant/30 shadow-inner overflow-hidden transition-transform hover:scale-105"
+                      style={{ backgroundColor: brandColors[selectedColorKey] }}
+                    >
+                      <input
+                        type="color"
+                        className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                        value={brandColors[selectedColorKey]}
+                        onChange={(e) => handleColorSwatch(selectedColorKey, e.target.value)}
+                      />
+                    </label>
+
+                    {/* Hex input */}
+                    <div className="flex-1">
+                      <div className={`flex items-center gap-2 px-4 py-3 bg-surface-container-low border rounded-xl transition-all ${isValidHex(hexDraft[selectedColorKey]) ? "border-outline-variant focus-within:border-primary" : "border-red-400"}`}>
+                        <span className="text-sm font-black text-on-surface-variant font-mono">#</span>
+                        <input
+                          type="text"
+                          maxLength={6}
+                          value={hexDraft[selectedColorKey]}
+                          onChange={(e) => handleHexDraft(selectedColorKey, e.target.value)}
+                          className="flex-1 bg-transparent outline-none font-mono text-sm font-bold uppercase tracking-wider text-on-surface"
+                          placeholder="2563EB"
+                        />
+                      </div>
+
+                      {/* Contrast feedback */}
+                      {(selectedColorKey === "text" || selectedColorKey === "textHeading") && (() => {
+                        const ratio = getContrastRatio(brandColors[selectedColorKey], brandColors.background);
+                        const pass = ratio >= 4.5;
+                        return (
+                          <p className={`text-[10px] font-bold mt-2 flex items-center gap-1 ${pass ? "text-emerald-600" : "text-red-500"}`}>
+                            {pass ? <CheckCircle2 size={11} /> : <AlertTriangle size={11} />}
+                            {pass ? "Good" : "Low"} contrast vs background ({ratio.toFixed(1)}:1 — need 4.5)
+                          </p>
+                        );
+                      })()}
+
+                      {selectedColorKey === "accent" && (() => {
+                        const ratio = getContrastRatio(brandColors.accent, brandColors.primary);
+                        const pass = ratio >= 3;
+                        return (
+                          <p className={`text-[10px] font-bold mt-2 flex items-center gap-1 ${pass ? "text-emerald-600" : "text-red-500"}`}>
+                            {pass ? <CheckCircle2 size={11} /> : <AlertTriangle size={11} />}
+                            {pass ? "Readable" : "Hard to read"} on primary buttons ({ratio.toFixed(1)}:1)
+                          </p>
+                        );
+                      })()}
+                    </div>
+
+                    {/* Auto-fix wand for text/accent */}
+                    {(selectedColorKey === "accent" || selectedColorKey === "text" || selectedColorKey === "textHeading") && (
+                      <button
+                        type="button"
+                        onClick={() => calculateSafePairing(selectedColorKey)}
+                        title="Auto-fix for readability"
+                        className="shrink-0 p-3 border border-outline-variant rounded-xl hover:border-primary hover:text-primary transition-all text-on-surface-variant bg-surface"
+                      >
+                        <Wand2 size={16} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* ── Preview ─────────────────────────────────────── */}
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">
+                      Live site preview
+                    </p>
+                    <div className="flex bg-surface-container-low p-1 rounded-lg border border-outline-variant/30">
+                      {(["desktop", "mobile"] as const).map((m) => (
+                        <button
+                          key={m}
+                          type="button"
+                          onClick={() => setPreviewMode(m)}
+                          className={`p-1.5 rounded-md transition-all flex items-center gap-1 text-[10px] font-bold px-2 ${previewMode === m ? "bg-white shadow-sm text-primary" : "text-on-surface-variant/60 hover:text-on-surface-variant"}`}
+                        >
+                          {m === "desktop" ? <Laptop size={13} /> : <Smartphone size={13} />}
+                          <span className="hidden sm:inline capitalize">{m}</span>
                         </button>
                       ))}
                     </div>
                   </div>
 
-                  {/* Colour swatches + hex inputs */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-                    {colorRoles.map(({ key, label, hint }) => {
-                      const hexVal = hexDraft[key];
-                      const hexValid = isValidHex(hexVal);
-                      
-                      // Contrast Check Logic
-                      let contrastError = null;
-                      if (key === "text" || key === "textHeading") {
-                        const ratio = getContrastRatio(brandColors[key], brandColors.background);
-                        if (ratio < 4.5) contrastError = "Low Contrast";
-                      } else if (key === "accent") {
-                        const ratio = getContrastRatio(brandColors[key], brandColors.primary);
-                        if (ratio < 3) contrastError = "Hard to read on buttons";
-                      }
-
-                      return (
-                        <div key={key} className="flex flex-col gap-2">
-                          <label className="cursor-pointer group relative" title={hint}>
-                            <input
-                              type="color"
-                              className="sr-only"
-                              value={brandColors[key]}
-                              onChange={(e) => handleColorSwatch(key, e.target.value)}
-                            />
-                            <div
-                              className="rounded-2xl p-4 flex flex-col gap-2 transition-all duration-200 group-hover:scale-[1.03] group-hover:shadow-xl border border-outline-variant/10"
-                              style={{ backgroundColor: brandColors[key] }}
-                            >
-                              <div className="flex items-center justify-between">
-                                <span
-                                  className="text-[10px] font-black uppercase tracking-widest"
-                                  style={{
-                                    color: isLight(brandColors[key])
-                                      ? "rgba(0,0,0,0.65)"
-                                      : "rgba(255,255,255,0.75)",
-                                  }}
-                                >
-                                  {label}
-                                </span>
-                                {contrastError ? (
-                                  <AlertTriangle size={14} className="text-red-500 animate-pulse" />
-                                ) : (
-                                  <CheckCircle2 size={14} className="opacity-40" style={{ color: isLight(brandColors[key]) ? "black" : "white" }} />
-                                )}
-                              </div>
-                              <span
-                                className="text-[9px] leading-tight"
-                                style={{
-                                  color: isLight(brandColors[key])
-                                    ? "rgba(0,0,0,0.45)"
-                                    : "rgba(255,255,255,0.5)",
-                                }}
-                              >
-                                {hint}
-                              </span>
-                            </div>
-                          </label>
-
-                          <div className="flex items-center gap-2">
-                            <div
-                              className={`flex-1 flex items-center gap-1.5 px-3 py-2 bg-surface border rounded-xl transition-all ${hexValid ? "border-outline-variant focus-within:border-primary" : "border-red-400"}`}
-                            >
-                              <span className="text-[10px] font-black text-on-surface-variant font-mono">#</span>
-                              <input
-                                type="text"
-                                maxLength={6}
-                                value={hexVal}
-                                onChange={(e) => handleHexDraft(key, e.target.value)}
-                                className="flex-1 bg-transparent outline-none font-mono text-xs font-bold uppercase text-on-surface tracking-wider"
-                                placeholder="2563EB"
-                              />
-                            </div>
-                            {(key === "accent" || key === "text" || key === "textHeading") && (
-                              <button
-                                type="button"
-                                onClick={() => calculateSafePairing(key)}
-                                className="p-2 bg-surface border border-outline-variant rounded-xl hover:text-primary transition-all shadow-sm"
-                                title="Auto-match for readability"
-                              >
-                                <Wand2 size={14} />
-                              </button>
-                            )}
-                          </div>
-                          
-                          {contrastError && (
-                            <p className="text-[9px] font-bold text-red-500 flex items-center gap-1 px-1">
-                              <AlertTriangle size={10} /> {contrastError} — text may be unreadable
-                            </p>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* Preview Toggle & Display */}
-                  <div className="mb-4 flex items-center justify-between px-1">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Live Site Preview</p>
-                    <div className="flex bg-surface-container-low p-1 rounded-lg border border-outline-variant/30">
-                      <button
-                        type="button"
-                        onClick={() => setPreviewMode("desktop")}
-                        className={`p-1.5 rounded-md transition-all ${previewMode === "desktop" ? "bg-white shadow-sm text-primary" : "text-on-surface-variant/60 hover:text-on-surface-variant"}`}
-                      >
-                        <Laptop size={14} />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setPreviewMode("mobile")}
-                        className={`p-1.5 rounded-md transition-all ${previewMode === "mobile" ? "bg-white shadow-sm text-primary" : "text-on-surface-variant/60 hover:text-on-surface-variant"}`}
-                      >
-                        <Smartphone size={14} />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className={`mx-auto transition-all duration-500 overflow-hidden ${previewMode === "mobile" ? "max-w-[280px]" : "w-full"}`}>
-                    <div
-                      className="rounded-2xl overflow-hidden border border-outline-variant shadow-md select-none"
-                      aria-hidden="true"
-                    >
-                      {/* window chrome */}
-                      <div className="px-3 py-2 bg-surface-container-low border-b border-outline-variant flex items-center gap-2">
-                        <div className="flex gap-1">
-                          <div className="w-1.5 h-1.5 rounded-full bg-red-400" />
-                          <div className="w-1.5 h-1.5 rounded-full bg-yellow-400" />
-                          <div className="w-1.5 h-1.5 rounded-full bg-green-400" />
-                        </div>
-                        <div className="flex-1 flex justify-center">
-                          <div className="h-3 w-32 rounded-full bg-outline-variant/40 flex items-center justify-center">
-                            <span className="text-[6px] text-on-surface-variant font-medium">your-website.com</span>
-                          </div>
+                  <div
+                    className={`mx-auto transition-all duration-500 overflow-hidden rounded-2xl border border-outline-variant shadow-md`}
+                    style={{ maxWidth: previewMode === "mobile" ? "280px" : "100%" }}
+                  >
+                    {/* Browser chrome */}
+                    <div className="px-3 py-2 bg-surface-container-low border-b border-outline-variant flex items-center gap-2">
+                      <div className="flex gap-1">
+                        <div className="w-2 h-2 rounded-full bg-red-400" />
+                        <div className="w-2 h-2 rounded-full bg-yellow-400" />
+                        <div className="w-2 h-2 rounded-full bg-green-400" />
+                      </div>
+                      <div className="flex-1 flex justify-center">
+                        <div className="h-3.5 w-36 rounded-full bg-outline-variant/30 flex items-center justify-center">
+                          <span className="text-[8px] text-on-surface-variant">your-website.com</span>
                         </div>
                       </div>
-                      
-                      <div className="overflow-y-auto max-h-[300px] scrollbar-hide">
-                        {/* navbar */}
-                        <div
-                          className="px-4 py-2 flex items-center justify-between"
-                          style={{ backgroundColor: brandColors.secondary }}
-                        >
-                          <div className="flex items-center gap-2">
-                            {logoPreview ? (
-                                <img src={logoPreview} className="w-5 h-5 object-contain" />
-                            ) : (
-                                <div className="w-4 h-4 rounded bg-white/30" />
-                            )}
-                            <div className="h-1.5 w-12 rounded-full bg-white/70" />
-                          </div>
-                          <div
-                            className="h-5 w-14 rounded-full text-[7px] flex items-center justify-center font-black"
-                            style={{
-                              backgroundColor: brandColors.accent,
-                              color: isLight(brandColors.accent) ? "#111" : "white",
-                            }}
-                          >
-                            Call Now
-                          </div>
-                        </div>
+                    </div>
 
-                        {/* hero */}
+                    {/* Site preview */}
+                    <div className="overflow-y-auto max-h-[320px]" aria-hidden>
+                      {/* Navbar */}
+                      <div
+                        className="px-4 py-2.5 flex items-center justify-between"
+                        style={{ backgroundColor: brandColors.secondary }}
+                      >
+                        <div className="flex items-center gap-2">
+                          {logoPreview
+                            ? <img src={logoPreview} className="w-5 h-5 object-contain" />
+                            : <div className="w-4 h-4 rounded bg-white/30" />
+                          }
+                          <div className="h-1.5 w-14 rounded-full bg-white/60" />
+                        </div>
                         <div
-                          className="px-5 py-8 flex flex-col gap-2.5 text-center items-center"
+                          className="h-6 w-16 rounded-full text-[8px] flex items-center justify-center font-black"
                           style={{
-                            background: `linear-gradient(135deg, ${brandColors.primary}f2 0%, ${brandColors.secondary}e8 100%)`,
+                            backgroundColor: brandColors.accent,
+                            color: isLight(brandColors.accent) ? "#111" : "#fff",
                           }}
                         >
-                          <div className="h-1.5 w-20 rounded-full" style={{ backgroundColor: isLight(brandColors.primary) ? "rgba(0,0,0,0.2)" : "rgba(255,255,255,0.2)" }} />
-                          <div className="h-4 w-5/6 rounded flex items-center justify-center px-2" >
-                             <div className="h-2 w-full rounded" style={{ backgroundColor: brandColors.textHeading }} />
-                          </div>
-                          <div className="h-1.5 w-full rounded" style={{ backgroundColor: brandColors.text, opacity: 0.8 }} />
-                          <div className="h-1.5 w-3/4 rounded" style={{ backgroundColor: brandColors.text, opacity: 0.6 }} />
-                          
-                          <div className="mt-2 flex flex-col gap-2 w-full max-w-[140px]">
+                          Call now
+                        </div>
+                      </div>
+
+                      {/* Hero */}
+                      <div
+                        className="px-5 py-10 flex flex-col gap-2.5 items-center text-center"
+                        style={{
+                          background: `linear-gradient(135deg, ${brandColors.primary} 0%, ${brandColors.secondary} 100%)`,
+                        }}
+                      >
+                        <div className="h-1.5 w-20 rounded-full bg-white/20" />
+                        <div className="h-3 w-3/4 rounded bg-white/80" />
+                        <div className="h-1.5 w-full rounded bg-white/40" />
+                        <div className="h-1.5 w-2/3 rounded bg-white/25" />
+                        <div
+                          className="mt-3 h-8 w-28 rounded-lg text-[9px] flex items-center justify-center font-black shadow"
+                          style={{
+                            backgroundColor: brandColors.accent,
+                            color: isLight(brandColors.accent) ? "#111" : "#fff",
+                          }}
+                        >
+                          Get a free quote
+                        </div>
+                      </div>
+
+                      {/* Body */}
+                      <div className="p-4" style={{ backgroundColor: brandColors.background }}>
+                        <div
+                          className="h-2 w-20 rounded mb-3"
+                          style={{ backgroundColor: brandColors.textHeading, opacity: 0.85 }}
+                        />
+                        <div className="grid grid-cols-2 gap-2.5 mb-3">
+                          {[1, 2, 3, 4].map((i) => (
                             <div
-                              className="h-7 w-full rounded-lg text-[8px] flex items-center justify-center font-black shadow-md"
+                              key={i}
+                              className="p-3 rounded-xl"
                               style={{
-                                backgroundColor: brandColors.accent,
-                                color: isLight(brandColors.accent) ? "#111" : "white",
+                                backgroundColor: `${brandColors.primary}12`,
+                                border: `0.5px solid ${brandColors.primary}30`,
                               }}
                             >
-                              Get a Free Quote
+                              <div
+                                className="w-5 h-5 rounded mb-2"
+                                style={{ backgroundColor: `${brandColors.primary}30` }}
+                              />
+                              <div
+                                className="h-1.5 w-3/4 rounded mb-1.5"
+                                style={{ backgroundColor: brandColors.textHeading, opacity: 0.75 }}
+                              />
+                              <div
+                                className="h-1 w-full rounded"
+                                style={{ backgroundColor: brandColors.text, opacity: 0.4 }}
+                              />
                             </div>
-                          </div>
+                          ))}
                         </div>
+                        {/* Testimonial strip */}
+                        <div
+                          className="p-3 rounded-xl"
+                          style={{
+                            backgroundColor: `${brandColors.primary}10`,
+                            border: `0.5px solid ${brandColors.primary}25`,
+                          }}
+                        >
+                          <div
+                            className="h-1.5 w-1/2 rounded mb-2"
+                            style={{ backgroundColor: brandColors.textHeading, opacity: 0.7 }}
+                          />
+                          <div
+                            className="h-1 w-full rounded mb-1"
+                            style={{ backgroundColor: brandColors.text, opacity: 0.4 }}
+                          />
+                          <div
+                            className="h-1 w-2/3 rounded"
+                            style={{ backgroundColor: brandColors.text, opacity: 0.3 }}
+                          />
+                        </div>
+                      </div>
 
-                        {/* content */}
-                        <div className="p-4" style={{ backgroundColor: brandColors.background }}>
-                            <div className="h-2 w-16 mb-4 rounded" style={{ backgroundColor: brandColors.textHeading }} />
-                            <div className="grid grid-cols-1 gap-3">
-                                {[1,2].map(i => (
-                                    <div key={i} className="p-3 rounded-xl border" style={{ borderColor: `${brandColors.text}20` }}>
-                                        <div className="w-6 h-6 rounded mb-2" style={{ backgroundColor: `${brandColors.primary}20` }} />
-                                        <div className="h-1.5 w-20 mb-1.5 rounded" style={{ backgroundColor: brandColors.textHeading }} />
-                                        <div className="h-1 w-full rounded" style={{ backgroundColor: brandColors.text, opacity: 0.5 }} />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+                      {/* Footer */}
+                      <div
+                        className="px-4 py-3 flex items-center justify-between"
+                        style={{ backgroundColor: brandColors.secondary }}
+                      >
+                        <div className="h-1.5 w-20 rounded-full bg-white/30" />
+                        <div className="h-1.5 w-12 rounded-full bg-white/20" />
                       </div>
                     </div>
                   </div>
