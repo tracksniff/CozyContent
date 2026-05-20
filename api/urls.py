@@ -16,6 +16,7 @@ from .views import (
     SiteRequestViewSet,
     LoginView,
 )
+from .auth_views import google_login, google_authorize
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
@@ -36,6 +37,8 @@ urlpatterns = [
     path("forgot-password/request/", RequestPasswordResetOTPView.as_view(), name="forgot_password_request"),
     path("forgot-password/verify/", VerifyPasswordResetOTPView.as_view(), name="forgot_password_verify"),
     path("change-password/", ChangePasswordView.as_view(), name="change_password"),
+    path("google/login/", google_login, name="google_login"),
+    path("google/authorize/", google_authorize, name="google_authorize"),
     path("create-checkout-session/", CreateCheckoutSessionView.as_view(), name="create_checkout_session"),
     path("stripe-webhook/", StripeWebhookView.as_view(), name="stripe_webhook"),
     path("stripe-webhook", StripeWebhookView.as_view(), name="stripe_webhook_no_slash"),
