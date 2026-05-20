@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { 
-  ArrowRight, 
   Shield, 
   Star, 
   Zap, 

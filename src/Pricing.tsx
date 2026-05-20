@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { 
   Check, 
   Sparkles, 
-  ArrowRight, 
   Minus, 
   Layout, 
   FileText, 
@@ -396,8 +395,8 @@ const PricingPage: React.FC = () => {
                 ))}
               </div>
 
-              <Link to="/contact" className="inline-flex items-center gap-4 bg-primary text-white px-10 py-5 rounded-2xl font-black uppercase tracking-widest hover:gap-8 transition-all shadow-3xl shadow-primary/40 text-lg hover:scale-105 active:scale-95">
-                Get started today <ArrowRight className="w-6 h-6" />
+              <Link to="/contact" className="inline-flex items-center gap-4 bg-primary text-white px-10 py-5 rounded-2xl font-black uppercase tracking-widest transition-all shadow-3xl shadow-primary/40 text-lg hover:scale-105 active:scale-95">
+                Get started today
               </Link>
             </div>
             {/* Dark Mode Gradient Decor */}

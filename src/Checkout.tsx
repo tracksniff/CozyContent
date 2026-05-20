@@ -3,10 +3,8 @@ import { useLocation, Link } from 'react-router-dom';
 import axios from 'axios';
 import { 
   Check, 
-  ArrowLeft, 
   Loader2, 
-  Sparkles, 
-  ArrowRight
+  Sparkles
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import logo from './assets/PNG/Cosy Content Ltd -05.png';

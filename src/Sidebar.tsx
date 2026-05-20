@@ -5,8 +5,6 @@ import {
   Globe,
   Settings,
   LogOut,
-  ChevronLeft,
-  ChevronRight,
   User,
   Shield,
   Users as UsersIcon,
@@ -257,8 +255,8 @@ const Sidebar: React.FC = () => {
             onClick={() => setIsCollapsed(!isCollapsed)}
             className="hidden lg:flex w-full items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-xl transition-all group"
           >
-            {isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
             {!isCollapsed && <span className="font-bold text-sm tracking-tight">Collapse</span>}
+            {isCollapsed && <span className="font-bold text-sm tracking-tight mx-auto">»</span>}
           </button>
 
           <button

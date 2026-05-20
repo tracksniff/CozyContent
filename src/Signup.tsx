@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import {
-  ArrowLeft,
-  ArrowRight,
   Upload,
   X,
   Check,
@@ -485,7 +483,8 @@ const Signup: React.FC = () => {
           onClick={() => setStep((s) => s - 1)}
           className="px-4 sm:px-6 py-4 border border-outline-variant text-on-surface font-black rounded-2xl hover:bg-surface transition-all flex items-center gap-2 text-sm sm:text-base"
         >
-          <ArrowLeft size={18} /> <span className="hidden sm:inline">Back</span>
+          <span className="hidden sm:inline">Back</span>
+          <span className="sm:hidden">Back</span>
         </button>
       ) : (
         <span />
@@ -512,7 +511,7 @@ const Signup: React.FC = () => {
           disabled={canNext === false}
           className="px-6 sm:px-10 py-4 bg-primary text-white font-black rounded-2xl hover:brightness-110 transition-all shadow-md flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
         >
-          Next <ArrowRight size={18} />
+          Next
         </button>
       )}
     </div>
@@ -745,7 +744,7 @@ const Signup: React.FC = () => {
         to="/"
         className="absolute top-8 left-8 flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors font-bold text-sm"
       >
-        <ArrowLeft size={16} /> Back to Home
+        Back to Home
       </Link>
 
       <div className="w-full max-w-2xl relative">

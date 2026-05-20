@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Sun, Moon, Monitor, Menu, X, ChevronDown } from "lucide-react";
+import { Sun, Moon, Monitor, Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useTheme } from "./ThemeContext";
@@ -85,11 +85,7 @@ const Navbar = () => {
               onClick={() => setShowServicesMenu(!showServicesMenu)}
               className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary ${location.pathname.startsWith("/services/") && !location.pathname.includes("/services/plumbing/") ? "text-primary" : "text-on-surface-variant"}`}
             >
-              Services{" "}
-              <ChevronDown
-                size={14}
-                className={`transition-transform duration-200 ${showServicesMenu ? "rotate-180" : ""}`}
-              />
+              Services
             </button>
 
             <AnimatePresence>
@@ -241,10 +237,6 @@ const Navbar = () => {
                   className="flex items-center justify-between text-base font-bold text-on-surface-variant py-2"
                 >
                   Services
-                  <ChevronDown
-                    size={18}
-                    className={`transition-transform duration-300 ${showMobileServices ? "rotate-180" : ""}`}
-                  />
                 </button>
                 <AnimatePresence>
                   {showMobileServices && (

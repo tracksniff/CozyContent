@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { 
   CheckCircle, 
-  ArrowLeft,
   Zap,
   Clock,
   ExternalLink
@@ -76,7 +75,7 @@ const RequestChanges: React.FC = () => {
           {/* Header */}
           <div className="mb-8 md:mb-10">
             <Link to="/dashboard" className="inline-flex items-center gap-1.5 text-on-surface-variant hover:text-primary font-bold text-[10px] md:text-xs mb-4 transition-colors group">
-              <ArrowLeft size={12} className="group-hover:-translate-x-1 transition-transform" /> Back to Dashboard
+              Back to Dashboard
             </Link>
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div>

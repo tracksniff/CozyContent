@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeft, Mail, Lock, CheckCircle, ShieldCheck } from 'lucide-react';
+import { Mail, Lock, CheckCircle, ShieldCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
 import logo from './assets/PNG/Cosy Content Ltd -04.png';
 

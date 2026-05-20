@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Package, Zap, ArrowRight, ShieldCheck, Clock, Check, Star } from 'lucide-react';
+import { Package, Zap, ShieldCheck, Clock, Check, Star } from 'lucide-react';
 import Sidebar from './Sidebar';
 import { useAuth } from './AuthContext';
 import axios from 'axios';
