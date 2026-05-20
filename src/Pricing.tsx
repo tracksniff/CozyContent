@@ -218,14 +218,14 @@ const PricingPage: React.FC = () => {
                 <Link 
                   to="/signup" 
                   state={{ planId: plan.id, planType: plan.type, billing: plan.hasToggle ? (isAnnual ? 'annual' : 'monthly') : 'one_time' }}
-                  className={`group/btn py-4 rounded-xl font-black text-center transition-all flex items-center justify-center gap-2 text-lg relative overflow-hidden ${
+                  className={`group/btn py-4 rounded-xl font-black text-center transition-all flex items-center justify-center text-lg relative overflow-hidden ${
                     plan.popular 
                       ? 'bg-primary text-white hover:shadow-2xl hover:shadow-primary/30 active:scale-[0.98]' 
                       : 'bg-on-surface text-surface hover:bg-on-surface-variant active:scale-[0.98]'
                   }`}
                 >
-                  <span className="relative z-10 flex items-center gap-2 transition-all group-hover/btn:gap-4">
-                    {plan.cta} <ArrowRight className="w-5 h-5" />
+                  <span className="relative z-10 flex items-center transition-all">
+                    {plan.cta}
                   </span>
                   <div className="absolute inset-0 bg-white/10 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
                 </Link>
