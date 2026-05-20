@@ -671,6 +671,7 @@ def perform_audit(audit_id):
 
     try:
         report = AuditReport.objects.get(id=audit_id)
+        from ..utils import create_brevo_contact
         url = report.website_url
         if not url.startswith("http"):
             url = "https://" + url
@@ -691,6 +692,20 @@ def perform_audit(audit_id):
             )
             report.stripe_customer_id = customer.id
             report.save()
+            
+            # Create/Update Brevo Contact
+            create_brevo_contact(
+                report.email,
+                first_name=report.name.split(' ')[0] if report.name else None,
+                last_name=' '.join(report.name.split(' ')[1:]) if report.name and ' ' in report.name else None,
+                attributes={
+                    "BUSINESS_NAME": report.business_name,
+                    "WEBSITE": report.website_url,
+                    "INDUSTRY": report.industry,
+                    "LOCATION": report.location,
+                    "SOURCE": "Audit Tool"
+                }
+            )
         except Exception as e:
             logger.error(f"Stripe Customer creation failed: {e}")
 

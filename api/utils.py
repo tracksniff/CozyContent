@@ -310,3 +310,45 @@ def send_github_transfer_email(user_email, company_name):
         return response.status_code == 201
     except:
         return False
+
+def create_brevo_contact(email, first_name=None, last_name=None, attributes=None):
+    """
+    Create or update a contact in Brevo.
+    """
+    logger.info(f"Attempting to create/update Brevo contact for {email}")
+    brevo_api_key = os.getenv("BREVO_API_KEY")
+    if not brevo_api_key:
+        logger.error("BREVO_API_KEY not found")
+        return False
+
+    url = "https://api.brevo.com/v3/contacts"
+    headers = {
+        "accept": "application/json",
+        "api-key": brevo_api_key,
+        "content-type": "application/json",
+    }
+
+    # Prepare attributes
+    contact_attributes = attributes or {}
+    if first_name:
+        contact_attributes["FIRSTNAME"] = first_name
+    if last_name:
+        contact_attributes["LASTNAME"] = last_name
+
+    payload = {
+        "email": email,
+        "attributes": contact_attributes,
+        "updateEnabled": True
+    }
+
+    try:
+        response = requests.post(url, json=payload, headers=headers)
+        if response.status_code in [201, 204]:
+            logger.info(f"Successfully created/updated Brevo contact for {email}")
+            return True
+        else:
+            logger.error(f"Failed to create Brevo contact: {response.status_code} - {response.text}")
+            return False
+    except Exception as e:
+        logger.error(f"Error creating Brevo contact: {str(e)}")
+        return False

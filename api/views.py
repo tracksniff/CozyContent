@@ -36,7 +36,7 @@ from django.http import HttpResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from .utils import send_welcome_email, send_otp_email
+from .utils import send_welcome_email, send_otp_email, create_brevo_contact
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 logger = logging.getLogger(__name__)
@@ -509,12 +509,14 @@ class StripeWebhookView(generics.GenericAPIView):
                         random.choices(string.ascii_letters + string.digits, k=12)
                     )
                     user = User.objects.create_user(
-                        email=email, 
+                        email=email,
                         password=temp_password,
                         first_name=first_name,
                         last_name=last_name
                     )
+                    create_brevo_contact(email, first_name, last_name)
                     sent = send_welcome_email(email, temp_password)
+
                     if sent:
                         logger.info(f"Welcome email sent to {email}")
                     else:
@@ -826,6 +828,20 @@ class AuditViewSet(viewsets.ModelViewSet):
                 
                 audit.stripe_customer_id = customer.id
                 audit.save()
+
+                # Sync with Brevo
+                create_brevo_contact(
+                    audit.email, 
+                    first_name=audit.name.split(' ')[0] if audit.name else None,
+                    last_name=' '.join(audit.name.split(' ')[1:]) if audit.name and ' ' in audit.name else None,
+                    attributes={
+                        "BUSINESS_NAME": audit.business_name,
+                        "WEBSITE": audit.website_url,
+                        "INDUSTRY": audit.industry,
+                        "LOCATION": audit.location,
+                        "SOURCE": "Audit Lead"
+                    }
+                )
 
                 # Sync with User model if user exists
                 try:
