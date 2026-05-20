@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import LandingPage from './LandingPage';
 import Login from './Login';
 import Signup from './Signup';
+import AuthCallback from './AuthCallback';
 import ForgotPassword from './ForgotPassword';
 import Checkout from './Checkout';
 import Pricing from './Pricing';
@@ -106,6 +107,7 @@ function App() {
             />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/pricing" element={<Pricing />} />
