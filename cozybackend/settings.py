@@ -191,6 +191,14 @@ STRIPE_PRIORITY_MONTHLY_PRICE_ID = os.getenv('STRIPE_PRIORITY_MONTHLY_PRICE_ID',
 FRONTEND_URL = os.getenv('FRONTEND_URL', 'https://cosycontent.com').rstrip('/')
 BACKEND_URL = os.getenv('BACKEND_URL', 'https://api.cosycontent.com').rstrip('/')
 
+# --- Production Security Settings ---
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+
 # --- Default Auto Field ---
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
