@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import {
+  ChevronDown,
   Upload,
   X,
   Check,
@@ -17,13 +18,14 @@ import {
   CheckCircle2,
   AlertTriangle,
   Wand2,
+  Pipette,
 } from "lucide-react";
 import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import logo from "./assets/PNG/Cosy Content Ltd -04.png";
 
-// @ts-ignore
+// @ts-expect-error - Leaflet icon property deletion
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
@@ -113,7 +115,77 @@ interface FilePreview {
   isImage: boolean;
 }
 
-const TOTAL_STEPS = 5;
+interface FormSectionProps {
+  id: number;
+  title: string;
+  required?: boolean;
+  isOpen: boolean;
+  onToggle: (id: number) => void;
+  children: React.ReactNode;
+}
+
+const FormSection: React.FC<FormSectionProps> = ({
+  id,
+  title,
+  required,
+  isOpen,
+  onToggle,
+  children,
+}) => {
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isOpen && sectionRef.current) {
+      const rect = sectionRef.current.getBoundingClientRect();
+      const isFullyVisible = rect.top >= 0 && rect.bottom <= window.innerHeight;
+
+      if (!isFullyVisible) {
+        sectionRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    }
+  }, [isOpen]);
+
+  return (
+    <div
+      ref={sectionRef}
+      className="border border-outline-variant rounded-[2rem] overflow-hidden bg-surface scroll-mt-6"
+    >
+      <button
+        type="button"
+        onClick={() => onToggle(id)}
+        className="w-full px-6 py-5 flex items-center justify-between bg-surface-container-low hover:bg-surface-container transition-colors"
+      >
+        <div className="flex items-center gap-3 text-left">
+          <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary text-sm font-black">
+            {id}
+          </span>
+          <div>
+            <h3 className="text-base font-black text-on-surface flex items-center gap-2">
+              {title}
+              {required && (
+                <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+                  Required
+                </span>
+              )}
+            </h3>
+          </div>
+        </div>
+        <ChevronDown
+          size={20}
+          className={`text-on-surface-variant transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+        />
+      </button>
+      {isOpen && (
+        <div className="p-6 border-t border-outline-variant animate-in fade-in slide-in-from-top-2 duration-300">
+          {children}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const Signup: React.FC = () => {
   const location = useLocation();
@@ -121,7 +193,17 @@ const Signup: React.FC = () => {
   const billing = initialBilling || "monthly";
   const hasPreSelectedPlan = !!planId;
 
-  const [step, setStep] = useState(1);
+  const [expandedSections, setExpandedSections] = useState<Record<number, boolean>>({
+    1: true,
+    2: true,
+    3: false,
+    4: false,
+    5: true,
+  });
+
+  const toggleSection = (id: number) => {
+    setExpandedSections((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
   const [showMap, setShowMap] = useState(false);
   const [mapTarget, setMapTarget] = useState<"city_location" | "service_areas">("city_location");
   const [searchQuery, setSearchQuery] = useState("");
@@ -429,7 +511,9 @@ const Signup: React.FC = () => {
               }));
             }
           }
-        } catch {}
+        } catch (err) {
+          console.error("Reverse geocoding error:", err);
+        }
       },
     });
     return null;
@@ -460,62 +544,12 @@ const Signup: React.FC = () => {
           }));
         }
       }
-    } catch {
+    } catch (err) {
+      console.error("Geocoding error:", err);
     } finally {
       setIsSearching(false);
     }
   };
-
-  // ── reusable nav buttons ─────────────────────────────────
-  const NavButtons = ({
-    canNext,
-    onNext,
-    isSubmit,
-  }: {
-    canNext?: boolean;
-    onNext?: () => void;
-    isSubmit?: boolean;
-  }) => (
-    <div className="flex justify-between items-center pt-4 gap-3">
-      {step > 1 ? (
-        <button
-          type="button"
-          onClick={() => setStep((s) => s - 1)}
-          className="px-4 sm:px-6 py-4 border border-outline-variant text-on-surface font-black rounded-2xl hover:bg-surface transition-all flex items-center gap-2 text-sm sm:text-base"
-        >
-          <span className="hidden sm:inline">Back</span>
-          <span className="sm:hidden">Back</span>
-        </button>
-      ) : (
-        <span />
-      )}
-      {isSubmit ? (
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="px-6 sm:px-10 py-4 bg-primary text-white font-black rounded-2xl hover:brightness-110 transition-all shadow-md flex items-center gap-2 disabled:opacity-70 text-sm sm:text-base"
-        >
-          {isLoading ? (
-            <>
-              <Loader2 size={18} className="animate-spin" /> <span className="hidden sm:inline">Submitting…</span>
-              <span className="sm:hidden">Wait...</span>
-            </>
-          ) : (
-            "Review Pricing"
-          )}
-        </button>
-      ) : (
-        <button
-          type="button"
-          onClick={onNext}
-          disabled={canNext === false}
-          className="px-6 sm:px-10 py-4 bg-primary text-white font-black rounded-2xl hover:brightness-110 transition-all shadow-md flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
-        >
-          Next
-        </button>
-      )}
-    </div>
-  );
 
   // ── file chip row (shared by certs + testimonials) ───────
   const FileChips = ({
@@ -702,7 +736,7 @@ const Signup: React.FC = () => {
               </button>
             </div>
             <div className="flex-grow relative z-0">
-              {/* @ts-ignore */}
+              {/* @ts-expect-error - MapContainer type incompatibility */}
               <MapContainer center={mapCenter} zoom={13} style={{ height: "100%", width: "100%" }}>
                 <TileLayer
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -755,250 +789,139 @@ const Signup: React.FC = () => {
         </div>
 
         <div className="p-6 md:p-12 pt-12 bg-surface-container-low rounded-[2.5rem] border border-outline-variant shadow-2xl relative overflow-hidden">
-          {/* Progress header */}
+          {/* Header */}
           <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-black text-on-surface tracking-tighter leading-none mb-3">
               Your New <span className="text-primary italic">Website.</span>
             </h2>
             <p className="text-on-surface-variant font-bold text-sm">Tell us about your business</p>
-            <div className="flex items-center justify-center gap-2 mt-8">
-              {Array.from({ length: TOTAL_STEPS }, (_, i) => i + 1).map((s) => (
-                <div
-                  key={s}
-                  className={`h-1.5 rounded-full transition-all duration-500 ${s <= step ? "w-10 bg-primary shadow-lg shadow-primary/20" : "w-4 bg-outline-variant/30"}`}
-                />
-              ))}
-            </div>
-            <p className="mt-4 text-[10px] text-primary font-black uppercase tracking-[0.2em]">
-              Step {step} of {TOTAL_STEPS}
-            </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-8">
+          <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="text-red-500 text-[10px] font-black uppercase tracking-widest text-center bg-red-500/5 p-4 rounded-2xl border border-red-500/20">
+              <div className="text-red-500 text-[10px] font-black uppercase tracking-widest text-center bg-red-500/5 p-4 rounded-2xl border border-red-500/20 mb-6">
                 {error}
               </div>
             )}
 
-            {/* ══ STEP 1 — Business Identity ══════════════════════════ */}
-            {step === 1 && (
-              <div className="space-y-5 animate-in fade-in slide-in-from-right-4 duration-300">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <div>
-                    <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
-                      First Name *
-                    </label>
-                    <input
-                      name="first_name"
-                      required
-                      placeholder="John"
-                      className={inputCls}
-                      value={formData.first_name}
-                      onChange={handleInput}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
-                      Last Name *
-                    </label>
-                    <input
-                      name="last_name"
-                      required
-                      placeholder="Doe"
-                      className={inputCls}
-                      value={formData.last_name}
-                      onChange={handleInput}
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <div>
-                    <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
-                      Company Name *
-                    </label>
-                    <input
-                      name="company_name"
-                      required
-                      placeholder="e.g. Acme Plumbing"
-                      className={inputCls}
-                      value={formData.company_name}
-                      onChange={handleInput}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
-                      Phone Number *
-                    </label>
-                    <input
-                      name="phone_number"
-                      type="tel"
-                      required
-                      placeholder="e.g. 0161 123 4567"
-                      className={inputCls}
-                      value={formData.phone_number}
-                      onChange={handleInput}
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
-                    Industry *
-                  </label>
-                  <select
-                    name="industry"
-                    required
-                    className={`${inputCls} appearance-none`}
-                    value={formData.industry}
-                    onChange={handleInput}
-                  >
-                    <option value="">Select an industry…</option>
-                    {industries.map((ind) => (
-                      <option key={ind} value={ind}>
-                        {ind}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                {formData.industry === "Other" && (
-                  <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-                    <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
-                      Please specify your industry *
-                    </label>
-                    <input
-                      required
-                      placeholder="e.g. Photography"
-                      className={inputCls}
-                      value={otherIndustry}
-                      onChange={(e) => setOtherIndustry(e.target.value)}
-                    />
-                  </div>
-                )}
-                <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
-                    Tagline / USP <span className="normal-case font-normal">(Optional)</span>
-                  </label>
-                  <input
-                    name="tagline"
-                    placeholder="e.g. Manchester's most trusted emergency plumbers"
-                    className={inputCls}
-                    value={formData.tagline}
-                    onChange={handleInput}
-                  />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <div>
-                    <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
-                      Email Address *
-                    </label>
-                    <input
-                      name="email"
-                      type="email"
-                      required
-                      placeholder="you@example.com"
-                      className={inputCls}
-                      value={formData.email}
-                      onChange={handleInput}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
-                      Current Website <span className="normal-case font-normal">(Optional)</span>
-                    </label>
-                    <input
-                      name="website_url"
-                      placeholder="https://example.com"
-                      className={inputCls}
-                      value={formData.website_url}
-                      onChange={handleInput}
-                    />
-                  </div>
-                </div>
-
-                <div className="pt-2 border-t border-outline-variant/30">
-                  <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-3 ml-1">
-                    Company Logo <span className="normal-case font-normal">(Optional)</span>
-                  </label>
-                  <div className="flex items-center gap-4">
-                    {logoPreview ? (
-                      <div className="relative w-16 h-16 flex-shrink-0 rounded-xl overflow-hidden border border-outline-variant bg-surface shadow-sm">
-                        <img
-                          src={logoPreview}
-                          alt="Logo"
-                          className="w-full h-full object-contain p-2"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setCompanyLogo(null);
-                            setLogoPreview("");
-                          }}
-                          className="absolute top-0.5 right-0.5 p-1 bg-red-500 text-white rounded-full shadow"
-                        >
-                          <X size={8} />
-                        </button>
-                      </div>
-                    ) : (
-                      <label className="w-16 h-16 flex-shrink-0 rounded-xl border-2 border-dashed border-outline-variant flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-primary hover:bg-primary/5 transition-all group">
-                        <Upload size={16} className="text-on-surface-variant group-hover:text-primary" />
-                        <span className="text-[8px] font-black uppercase tracking-widest text-on-surface-variant group-hover:text-primary">
-                          Logo
-                        </span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={handleLogoChange}
-                        />
+            {/* ── Form Sections ── */}
+            <div className="space-y-4">
+              {/* SECTION 1: Business Basics */}
+              <FormSection
+                id={1}
+                title="Business Basics"
+                required
+                isOpen={expandedSections[1]}
+                onToggle={toggleSection}
+              >
+                <div className="space-y-5">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                      <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
+                        First Name *
                       </label>
-                    )}
-                    <p className="text-[10px] text-on-surface-variant font-medium leading-relaxed">
-                      Upload your logo now to automatically extract your brand colors in the next steps.
-                    </p>
+                      <input
+                        name="first_name"
+                        required
+                        placeholder="John"
+                        className={inputCls}
+                        value={formData.first_name}
+                        onChange={handleInput}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
+                        Last Name *
+                      </label>
+                      <input
+                        name="last_name"
+                        required
+                        placeholder="Doe"
+                        className={inputCls}
+                        value={formData.last_name}
+                        onChange={handleInput}
+                      />
+                    </div>
                   </div>
-                </div>
 
-                <p className="text-[10px] text-on-surface-variant flex items-center gap-1 ml-1 font-medium -mt-2">
-                  <Info size={12} className="text-primary shrink-0" /> Your email is used for
-                  account setup and secure payment.
-                </p>
-                <NavButtons
-                  canNext={
-                    !!(
-                      formData.first_name &&
-                      formData.last_name &&
-                      formData.company_name &&
-                      formData.phone_number &&
-                      formData.industry &&
-                      (formData.industry !== "Other" || otherIndustry) &&
-                      formData.email
-                    )
-                  }
-                  onNext={() => setStep(2)}
-                />
-              </div>
-            )}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                      <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
+                        Company Name *
+                      </label>
+                      <input
+                        name="company_name"
+                        required
+                        placeholder="e.g. Acme Plumbing"
+                        className={inputCls}
+                        value={formData.company_name}
+                        onChange={handleInput}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
+                        Phone Number *
+                      </label>
+                      <input
+                        name="phone_number"
+                        type="tel"
+                        required
+                        placeholder="e.g. 0161 123 4567"
+                        className={inputCls}
+                        value={formData.phone_number}
+                        onChange={handleInput}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
+                      Industry *
+                    </label>
+                    <select
+                      name="industry"
+                      required
+                      className={`${inputCls} appearance-none`}
+                      value={formData.industry}
+                      onChange={handleInput}
+                    >
+                      <option value="">Select an industry…</option>
+                      {industries.map((ind) => (
+                        <option key={ind} value={ind}>
+                          {ind}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  {formData.industry === "Other" && (
+                    <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+                      <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
+                        Please specify your industry *
+                      </label>
+                      <input
+                        required
+                        placeholder="e.g. Photography"
+                        className={inputCls}
+                        value={otherIndustry}
+                        onChange={(e) => setOtherIndustry(e.target.value)}
+                      />
+                    </div>
+                  )}
 
-            {/* ══ STEP 2 — Services & Details ═════════════════════════ */}
-            {step === 2 && (
-              <div className="space-y-5 animate-in fade-in slide-in-from-right-4 duration-300">
-                <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
-                    Services Provided *
-                  </label>
-                  <textarea
-                    name="services_list"
-                    required
-                    rows={3}
-                    placeholder="e.g. Emergency Callouts, Boiler Repairs, Drain Unblocking, Bathroom Fitting…"
-                    className={inputCls}
-                    value={formData.services_list}
-                    onChange={handleInput}
-                  />
-                </div>
+                  <div>
+                    <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
+                      Services Provided *
+                    </label>
+                    <textarea
+                      name="services_list"
+                      required
+                      rows={3}
+                      placeholder="e.g. Emergency Callouts, Boiler Repairs, Drain Unblocking, Bathroom Fitting…"
+                      className={inputCls}
+                      value={formData.services_list}
+                      onChange={handleInput}
+                    />
+                  </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="relative">
                     <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
                       City / Location *
@@ -1024,652 +947,621 @@ const Signup: React.FC = () => {
                       </button>
                     </div>
                   </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                      <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
+                        Email Address *
+                      </label>
+                      <input
+                        name="email"
+                        type="email"
+                        required
+                        placeholder="you@example.com"
+                        className={inputCls}
+                        value={formData.email}
+                        onChange={handleInput}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
+                        Current Website <span className="normal-case font-normal">(Optional)</span>
+                      </label>
+                      <input
+                        name="website_url"
+                        placeholder="https://example.com"
+                        className={inputCls}
+                        value={formData.website_url}
+                        onChange={handleInput}
+                      />
+                    </div>
+                  </div>
+
+                  <p className="text-[10px] text-on-surface-variant flex items-center gap-1 ml-1 font-medium -mt-2">
+                    <Info size={12} className="text-primary shrink-0" /> Your email is used for
+                    account setup and secure payment.
+                  </p>
+                </div>
+              </FormSection>
+
+              {/* SECTION 2: Branding */}
+              <FormSection
+                id={2}
+                title="Branding"
+                required
+                isOpen={expandedSections[2]}
+                onToggle={toggleSection}
+              >
+                <div className="space-y-6">
+                  <div className="pt-2">
+                    <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-3 ml-1">
+                      Upload Logo <span className="normal-case font-normal">(Optional)</span>
+                    </label>
+                    <div className="flex items-center gap-4">
+                      {logoPreview ? (
+                        <div className="relative w-16 h-16 flex-shrink-0 rounded-xl overflow-hidden border border-outline-variant bg-surface shadow-sm">
+                          <img
+                            src={logoPreview}
+                            alt="Logo"
+                            className="w-full h-full object-contain p-2"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setCompanyLogo(null);
+                              setLogoPreview("");
+                            }}
+                            className="absolute top-0.5 right-0.5 p-1 bg-red-500 text-white rounded-full shadow"
+                          >
+                            <X size={8} />
+                          </button>
+                        </div>
+                      ) : (
+                        <label className="w-16 h-16 flex-shrink-0 rounded-xl border-2 border-dashed border-outline-variant flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-primary hover:bg-primary/5 transition-all group">
+                          <Upload size={16} className="text-on-surface-variant group-hover:text-primary" />
+                          <span className="text-[8px] font-black uppercase tracking-widest text-on-surface-variant group-hover:text-primary">
+                            Logo
+                          </span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={handleLogoChange}
+                          />
+                        </label>
+                      )}
+                      <p className="text-[10px] text-on-surface-variant font-medium leading-relaxed">
+                        Upload your logo now to automatically extract your brand colors.
+                      </p>
+                    </div>
+                  </div>
+
                   <div>
                     <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
-                      Years of Experience{" "}
-                      <span className="normal-case font-normal">(Optional)</span>
+                      Tagline / USP <span className="normal-case font-normal">(Optional)</span>
                     </label>
                     <input
-                      name="years_experience"
-                      placeholder="e.g. 15+"
+                      name="tagline"
+                      placeholder="e.g. Manchester's most trusted emergency plumbers"
                       className={inputCls}
-                      value={formData.years_experience}
+                      value={formData.tagline}
                       onChange={handleInput}
                     />
                   </div>
-                </div>
 
-                {/* ── Certifications & Trust Badges ── */}
-                <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
-                    Certifications &amp; Trust Badges{" "}
-                    <span className="normal-case font-normal">(Optional)</span>
-                  </label>
-                  <input
-                    name="trust_badges"
-                    placeholder="e.g. Gas Safe Registered, NICEIC Approved, Fully Insured"
-                    className={inputCls}
-                    value={formData.trust_badges}
-                    onChange={handleInput}
-                  />
-                  <EvidenceBlock
-                    label="Or paste links to your accreditation / registration pages"
-                    previews={certPreviews}
-                    links={certLinks}
-                    onFiles={handleCertFiles}
-                    onRemoveFile={removeCertFile}
-                    onUpdateLink={updateCertLink}
-                    onAddLink={addCertLink}
-                    onRemoveLink={removeCertLink}
-                    linkPlaceholder="https://www.gassaferegister.co.uk/find-an-engineer/…"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
-                    Service Areas <span className="normal-case font-normal">(Optional)</span>
-                  </label>
-                  <div className="relative">
-                    <input
-                      name="service_areas"
-                      placeholder="e.g. Manchester, Salford, Trafford, Oldham, Bury"
-                      className={`${inputCls} pr-12`}
-                      value={formData.service_areas}
-                      onChange={handleInput}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setMapTarget("service_areas");
-                        setShowMap(true);
-                      }}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-primary/10 text-primary rounded-xl hover:bg-primary hover:text-white transition-all"
-                    >
-                      <MapPin size={20} />
-                    </button>
-                  </div>
-                </div>
-
-                {/* ── Customer Testimonials ── */}
-                <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
-                    Customer Testimonials{" "}
-                    <span className="normal-case font-normal">(Optional)</span>
-                  </label>
-                  <textarea
-                    name="testimonials"
-                    rows={3}
-                    placeholder={'e.g. "Amazing service, very professional" – Sarah T., Manchester'}
-                    className={inputCls}
-                    value={formData.testimonials}
-                    onChange={handleInput}
-                  />
-                  <EvidenceBlock
-                    label="Or paste links to your reviews (Google, Trustpilot, Facebook…)"
-                    previews={testiPreviews}
-                    links={testiLinks}
-                    onFiles={handleTestiFiles}
-                    onRemoveFile={removeTestiFile}
-                    onUpdateLink={updateTestiLink}
-                    onAddLink={addTestiLink}
-                    onRemoveLink={removeTestiLink}
-                    linkPlaceholder="https://g.page/r/your-google-review-link"
-                  />
-                </div>
-
-                <NavButtons
-                  canNext={!!(formData.services_list && formData.city_location)}
-                  onNext={() => setStep(3)}
-                />
-              </div>
-            )}
-
-            {step === 3 && (
-              <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-
-                {/* ── Presets ─────────────────────────────────────── */}
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-3">
-                    Style presets
-                  </p>
-                  <div className="flex gap-4 flex-wrap">
-                    {COLOR_PRESETS.map((preset) => (
-                      <button
-                        key={preset.name}
-                        type="button"
-                        onClick={() => {
-                          Object.entries(preset.colors).forEach(([k, v]) =>
-                            handleColorSwatch(k as any, v)
-                          );
-                        }}
-                        className="group flex flex-col items-center gap-2"
-                      >
-                        <div className="flex">
-                          {(["primary", "secondary", "accent"] as const).map((k, j) => (
-                            <div
-                              key={k}
-                              className="w-7 h-7 rounded-full border-[2.5px] border-surface shadow-sm transition-transform group-hover:scale-110"
-                              style={{
-                                backgroundColor: preset.colors[k],
-                                marginLeft: j === 0 ? 0 : "-8px",
-                                zIndex: 3 - j,
-                                position: "relative",
-                              }}
-                            />
-                          ))}
-                        </div>
-                        <span className="text-[10px] font-bold text-on-surface-variant group-hover:text-primary transition-colors whitespace-nowrap">
-                          {preset.name}
-                        </span>
-                      </button>
-                    ))}
-
-                    {/* Extract from logo */}
-                    {logoPreview && (
-                      <button
-                        type="button"
-                        onClick={extractColorsFromLogo}
-                        className="group flex flex-col items-center gap-2"
-                      >
-                        <div className="w-[52px] h-7 rounded-full border-2 border-dashed border-outline-variant flex items-center justify-center bg-surface hover:border-primary transition-all">
-                          <img src={logoPreview} className="w-5 h-5 object-contain rounded-full" />
-                        </div>
-                        <span className="text-[10px] font-bold text-on-surface-variant group-hover:text-primary transition-colors whitespace-nowrap flex items-center gap-1">
-                          <Wand2 size={10} /> From logo
-                        </span>
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                {/* ── Role cards grid ─────────────────────────────── */}
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-3">
-                    Color roles — click to edit
-                  </p>
-                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-                    {COLOR_ROLES.map(({ key, label, hint }) => {
-                      const hex = brandColors[key];
-                      const fg = isLight(hex) ? "rgba(0,0,0,0.7)" : "rgba(255,255,255,0.85)";
-                      const isSelected = selectedColorKey === key;
-
-                      let contrastOk = true;
-                      if (key === "text" || key === "textHeading") {
-                        contrastOk = getContrastRatio(hex, brandColors.background) >= 4.5;
-                      } else if (key === "accent") {
-                        contrastOk = getContrastRatio(hex, brandColors.primary) >= 3;
-                      }
-
-                      return (
+                  {/* ── Presets ─────────────────────────────────────── */}
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-3">
+                      Style presets
+                    </p>
+                    <div className="flex gap-4 flex-wrap">
+                      {COLOR_PRESETS.map((preset) => (
                         <button
-                          key={key}
+                          key={preset.name}
                           type="button"
-                          onClick={() => setSelectedColorKey(key)}
-                          className="rounded-2xl p-3 text-left transition-all duration-150 hover:-translate-y-0.5"
-                          style={{
-                            backgroundColor: hex,
-                            outline: isSelected ? `3px solid ${hex}` : "none",
-                            outlineOffset: "2px",
-                            boxShadow: isSelected ? `0 0 0 5px ${hex}33` : undefined,
+                          onClick={() => {
+                            Object.entries(preset.colors).forEach(([k, v]) =>
+                              handleColorSwatch(k as BrandColorKey, v)
+                            );
                           }}
+                          className="group flex flex-col items-center gap-2"
                         >
-                          <div className="flex items-center justify-between mb-1">
-                            <span
-                              className="text-[9px] font-black uppercase tracking-widest"
-                              style={{ color: fg, opacity: 0.8 }}
-                            >
-                              {label}
-                            </span>
-                            <span style={{ color: fg }}>
-                              {contrastOk
-                                ? <CheckCircle2 size={11} style={{ opacity: 0.7 }} />
-                                : <AlertTriangle size={11} className="animate-pulse text-red-400" />
-                              }
-                            </span>
+                          <div className="flex">
+                            {(["primary", "secondary", "accent"] as const).map((k, j) => (
+                              <div
+                                key={k}
+                                className="w-7 h-7 rounded-full border-[2.5px] border-surface shadow-sm transition-transform group-hover:scale-110"
+                                style={{
+                                  backgroundColor: preset.colors[k],
+                                  marginLeft: j === 0 ? 0 : "-8px",
+                                  zIndex: 3 - j,
+                                  position: "relative",
+                                }}
+                              />
+                            ))}
                           </div>
-                          <span
-                            className="text-[9px] leading-tight block"
-                            style={{ color: fg, opacity: 0.55 }}
-                          >
-                            {hint}
+                          <span className="text-[10px] font-bold text-on-surface-variant group-hover:text-primary transition-colors whitespace-nowrap">
+                            {preset.name}
                           </span>
                         </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* ── Single focused editor ────────────────────────── */}
-                <div className="bg-surface border border-outline-variant rounded-2xl p-5">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-4">
-                    Editing:{" "}
-                    <span className="text-primary">
-                      {COLOR_ROLES.find((r) => r.key === selectedColorKey)?.label}
-                    </span>
-                  </p>
-
-                  <div className="flex items-center gap-4">
-                    {/* Big color swatch / native picker trigger */}
-                    <label
-                      className="relative w-14 h-14 rounded-xl cursor-pointer shrink-0 border border-outline-variant/30 shadow-inner overflow-hidden transition-transform hover:scale-105"
-                      style={{ backgroundColor: brandColors[selectedColorKey] }}
-                    >
-                      <input
-                        type="color"
-                        className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
-                        value={brandColors[selectedColorKey]}
-                        onChange={(e) => handleColorSwatch(selectedColorKey, e.target.value)}
-                      />
-                    </label>
-
-                    {/* Hex input */}
-                    <div className="flex-1">
-                      <div className={`flex items-center gap-2 px-4 py-3 bg-surface-container-low border rounded-xl transition-all ${isValidHex(hexDraft[selectedColorKey]) ? "border-outline-variant focus-within:border-primary" : "border-red-400"}`}>
-                        <span className="text-sm font-black text-on-surface-variant font-mono">#</span>
-                        <input
-                          type="text"
-                          maxLength={6}
-                          value={hexDraft[selectedColorKey]}
-                          onChange={(e) => handleHexDraft(selectedColorKey, e.target.value)}
-                          className="flex-1 bg-transparent outline-none font-mono text-sm font-bold uppercase tracking-wider text-on-surface"
-                          placeholder="2563EB"
-                        />
-                      </div>
-
-                      {/* Contrast feedback */}
-                      {(selectedColorKey === "text" || selectedColorKey === "textHeading") && (() => {
-                        const ratio = getContrastRatio(brandColors[selectedColorKey], brandColors.background);
-                        const pass = ratio >= 4.5;
-                        return (
-                          <p className={`text-[10px] font-bold mt-2 flex items-center gap-1 ${pass ? "text-emerald-600" : "text-red-500"}`}>
-                            {pass ? <CheckCircle2 size={11} /> : <AlertTriangle size={11} />}
-                            {pass ? "Good" : "Low"} contrast vs background ({ratio.toFixed(1)}:1 — need 4.5)
-                          </p>
-                        );
-                      })()}
-
-                      {selectedColorKey === "accent" && (() => {
-                        const ratio = getContrastRatio(brandColors.accent, brandColors.primary);
-                        const pass = ratio >= 3;
-                        return (
-                          <p className={`text-[10px] font-bold mt-2 flex items-center gap-1 ${pass ? "text-emerald-600" : "text-red-500"}`}>
-                            {pass ? <CheckCircle2 size={11} /> : <AlertTriangle size={11} />}
-                            {pass ? "Readable" : "Hard to read"} on primary buttons ({ratio.toFixed(1)}:1)
-                          </p>
-                        );
-                      })()}
-                    </div>
-
-                    {/* Auto-fix wand for text/accent */}
-                    {(selectedColorKey === "accent" || selectedColorKey === "text" || selectedColorKey === "textHeading") && (
-                      <button
-                        type="button"
-                        onClick={() => calculateSafePairing(selectedColorKey)}
-                        title="Auto-fix for readability"
-                        className="shrink-0 p-3 border border-outline-variant rounded-xl hover:border-primary hover:text-primary transition-all text-on-surface-variant bg-surface"
-                      >
-                        <Wand2 size={16} />
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                {/* ── Preview ─────────────────────────────────────── */}
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">
-                      Live site preview
-                    </p>
-                    <div className="flex bg-surface-container-low p-1 rounded-lg border border-outline-variant/30">
-                      {(["desktop", "mobile"] as const).map((m) => (
-                        <button
-                          key={m}
-                          type="button"
-                          onClick={() => setPreviewMode(m)}
-                          className={`p-1.5 rounded-md transition-all flex items-center gap-1 text-[10px] font-bold px-2 ${previewMode === m ? "bg-white shadow-sm text-primary" : "text-on-surface-variant/60 hover:text-on-surface-variant"}`}
-                        >
-                          {m === "desktop" ? <Laptop size={13} /> : <Smartphone size={13} />}
-                          <span className="hidden sm:inline capitalize">{m}</span>
-                        </button>
                       ))}
-                    </div>
-                  </div>
 
-                  <div
-                    className={`mx-auto transition-all duration-500 overflow-hidden rounded-2xl border border-outline-variant shadow-md`}
-                    style={{ maxWidth: previewMode === "mobile" ? "280px" : "100%" }}
-                  >
-                    {/* Browser chrome */}
-                    <div className="px-3 py-2 bg-surface-container-low border-b border-outline-variant flex items-center gap-2">
-                      <div className="flex gap-1">
-                        <div className="w-2 h-2 rounded-full bg-red-400" />
-                        <div className="w-2 h-2 rounded-full bg-yellow-400" />
-                        <div className="w-2 h-2 rounded-full bg-green-400" />
-                      </div>
-                      <div className="flex-1 flex justify-center">
-                        <div className="h-3.5 w-36 rounded-full bg-outline-variant/30 flex items-center justify-center">
-                          <span className="text-[8px] text-on-surface-variant">your-website.com</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Site preview */}
-                    <div className="overflow-y-auto max-h-[320px]" aria-hidden>
-                      {/* Navbar */}
-                      <div
-                        className="px-4 py-2.5 flex items-center justify-between"
-                        style={{ backgroundColor: brandColors.secondary }}
-                      >
-                        <div className="flex items-center gap-2">
-                          {logoPreview
-                            ? <img src={logoPreview} className="w-5 h-5 object-contain" />
-                            : <div className="w-4 h-4 rounded bg-white/30" />
-                          }
-                          <div className="h-1.5 w-14 rounded-full bg-white/60" />
-                        </div>
-                        <div
-                          className="h-6 w-16 rounded-full text-[8px] flex items-center justify-center font-black"
-                          style={{
-                            backgroundColor: brandColors.accent,
-                            color: isLight(brandColors.accent) ? "#111" : "#fff",
-                          }}
-                        >
-                          Call now
-                        </div>
-                      </div>
-
-                      {/* Hero */}
-                      <div
-                        className="px-5 py-10 flex flex-col gap-2.5 items-center text-center"
-                        style={{
-                          background: `linear-gradient(135deg, ${brandColors.primary} 0%, ${brandColors.secondary} 100%)`,
-                        }}
-                      >
-                        <div className="h-1.5 w-20 rounded-full bg-white/20" />
-                        <div className="h-3 w-3/4 rounded bg-white/80" />
-                        <div className="h-1.5 w-full rounded bg-white/40" />
-                        <div className="h-1.5 w-2/3 rounded bg-white/25" />
-                        <div
-                          className="mt-3 h-8 w-28 rounded-lg text-[9px] flex items-center justify-center font-black shadow"
-                          style={{
-                            backgroundColor: brandColors.accent,
-                            color: isLight(brandColors.accent) ? "#111" : "#fff",
-                          }}
-                        >
-                          Get Started
-                        </div>
-                      </div>
-
-                      {/* Body */}
-                      <div className="p-4" style={{ backgroundColor: brandColors.background }}>
-                        <div
-                          className="h-2 w-20 rounded mb-3"
-                          style={{ backgroundColor: brandColors.textHeading, opacity: 0.85 }}
-                        />
-                        <div className="grid grid-cols-2 gap-2.5 mb-3">
-                          {[1, 2, 3, 4].map((i) => (
-                            <div
-                              key={i}
-                              className="p-3 rounded-xl"
-                              style={{
-                                backgroundColor: `${brandColors.primary}12`,
-                                border: `0.5px solid ${brandColors.primary}30`,
-                              }}
-                            >
-                              <div
-                                className="w-5 h-5 rounded mb-2"
-                                style={{ backgroundColor: `${brandColors.primary}30` }}
-                              />
-                              <div
-                                className="h-1.5 w-3/4 rounded mb-1.5"
-                                style={{ backgroundColor: brandColors.textHeading, opacity: 0.75 }}
-                              />
-                              <div
-                                className="h-1 w-full rounded"
-                                style={{ backgroundColor: brandColors.text, opacity: 0.4 }}
-                              />
-                            </div>
-                          ))}
-                        </div>
-                        {/* Testimonial strip */}
-                        <div
-                          className="p-3 rounded-xl"
-                          style={{
-                            backgroundColor: `${brandColors.primary}10`,
-                            border: `0.5px solid ${brandColors.primary}25`,
-                          }}
-                        >
-                          <div
-                            className="h-1.5 w-1/2 rounded mb-2"
-                            style={{ backgroundColor: brandColors.textHeading, opacity: 0.7 }}
-                          />
-                          <div
-                            className="h-1 w-full rounded mb-1"
-                            style={{ backgroundColor: brandColors.text, opacity: 0.4 }}
-                          />
-                          <div
-                            className="h-1 w-2/3 rounded"
-                            style={{ backgroundColor: brandColors.text, opacity: 0.3 }}
-                          />
-                        </div>
-                      </div>
-
-                      {/* Footer */}
-                      <div
-                        className="px-4 py-3 flex items-center justify-between"
-                        style={{ backgroundColor: brandColors.secondary }}
-                      >
-                        <div className="h-1.5 w-20 rounded-full bg-white/30" />
-                        <div className="h-1.5 w-12 rounded-full bg-white/20" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <NavButtons onNext={() => setStep(4)} />
-              </div>
-            )}
-
-            {/* ══ STEP 4 — Media ══════════════════════════════════════ */}
-            {step === 4 && (
-              <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-                {/* Photos */}
-                <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-3 ml-1">
-                    Photos &amp; Media <span className="normal-case font-normal">(Optional)</span>
-                  </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-3">
-                    {imagePreviews.map((src, i) => (
-                      <div
-                        key={i}
-                        className="relative aspect-square rounded-2xl overflow-hidden border border-outline-variant group"
-                      >
-                        <img src={src} alt="" className="w-full h-full object-cover" />
+                      {/* Extract from logo */}
+                      {logoPreview && (
                         <button
                           type="button"
-                          onClick={() => removeImage(i)}
-                          className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow"
+                          onClick={extractColorsFromLogo}
+                          className="group flex flex-col items-center gap-2"
                         >
-                          <X size={14} />
+                          <div className="w-[52px] h-7 rounded-full border-2 border-dashed border-outline-variant flex items-center justify-center bg-surface hover:border-primary transition-all">
+                            <img src={logoPreview} className="w-5 h-5 object-contain rounded-full" />
+                          </div>
+                          <span className="text-[10px] font-bold text-on-surface-variant group-hover:text-primary transition-colors whitespace-nowrap flex items-center gap-1">
+                            <Wand2 size={10} /> From logo
+                          </span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* ── Role cards grid ─────────────────────────────── */}
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-3">
+                      Color roles — click to edit
+                    </p>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      {COLOR_ROLES.map(({ key, label, hint }) => {
+                        const hex = brandColors[key];
+                        const fg = isLight(hex) ? "rgba(0,0,0,0.7)" : "rgba(255,255,255,0.85)";
+                        const isSelected = selectedColorKey === key;
+
+                        let contrastOk = true;
+                        if (key === "text" || key === "textHeading") {
+                          contrastOk = getContrastRatio(hex, brandColors.background) >= 4.5;
+                        } else if (key === "accent") {
+                          contrastOk = getContrastRatio(hex, brandColors.primary) >= 3;
+                        }
+
+                        return (
+                          <button
+                            key={key}
+                            type="button"
+                            onClick={() => setSelectedColorKey(key)}
+                            className="rounded-2xl p-4 text-left transition-all duration-150 hover:-translate-y-0.5 border border-outline-variant/30"
+                            style={{
+                              backgroundColor: hex,
+                              outline: isSelected ? `3px solid ${hex}` : "none",
+                              outlineOffset: "2px",
+                              boxShadow: isSelected ? `0 0 0 5px ${hex}33` : undefined,
+                            }}
+                          >
+                            <div className="flex items-center justify-between mb-2">
+                              <span
+                                className="text-[10px] font-black uppercase tracking-widest"
+                                style={{ color: fg, opacity: 0.9 }}
+                              >
+                                {label}
+                              </span>
+                              <span style={{ color: fg }}>
+                                {contrastOk
+                                  ? <CheckCircle2 size={12} style={{ opacity: 0.8 }} />
+                                  : <AlertTriangle size={12} className="animate-pulse text-red-400" />
+                                }
+                              </span>
+                            </div>
+                            <span
+                              className="text-[10px] leading-tight block font-medium"
+                              style={{ color: fg, opacity: 0.6 }}
+                            >
+                              {hint}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* ── Single focused editor ────────────────────────── */}
+                  <div className="bg-surface-container-low border border-outline-variant rounded-2xl p-4 sm:p-5">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-4">
+                      Editing:{" "}
+                      <span className="text-primary">
+                        {COLOR_ROLES.find((r) => r.key === selectedColorKey)?.label}
+                      </span>
+                    </p>
+
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <div className="flex flex-col items-center gap-1.5 shrink-0">
+                        <label
+                          className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl cursor-pointer border border-outline-variant/30 shadow-inner overflow-hidden transition-transform hover:scale-105 flex items-center justify-center group"
+                          style={{ backgroundColor: brandColors[selectedColorKey] }}
+                        >
+                          <Pipette 
+                            size={18} 
+                            className={`transition-opacity duration-200 ${isLight(brandColors[selectedColorKey]) ? "text-black/40" : "text-white/40"} group-hover:opacity-100 opacity-0`} 
+                          />
+                          <input
+                            type="color"
+                            className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                            value={brandColors[selectedColorKey]}
+                            onChange={(e) => handleColorSwatch(selectedColorKey, e.target.value)}
+                          />
+                        </label>
+                        <span className="text-[7px] sm:text-[8px] font-black uppercase tracking-widest text-on-surface-variant">
+                          Pick
+                        </span>
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <div className={`flex items-center gap-1.5 px-3 py-2.5 sm:px-4 sm:py-3 bg-surface border rounded-xl transition-all ${isValidHex(hexDraft[selectedColorKey]) ? "border-outline-variant focus-within:border-primary" : "border-red-400"}`}>
+                          <span className="text-sm font-black text-on-surface-variant font-mono">#</span>
+                          <input
+                            type="text"
+                            maxLength={6}
+                            value={hexDraft[selectedColorKey]}
+                            onChange={(e) => handleHexDraft(selectedColorKey, e.target.value)}
+                            className="w-full bg-transparent outline-none font-mono text-sm font-bold uppercase tracking-wider text-on-surface"
+                            placeholder="2563EB"
+                          />
+                        </div>
+                        {(selectedColorKey === "text" || selectedColorKey === "textHeading") && (() => {
+                          const ratio = getContrastRatio(brandColors[selectedColorKey], brandColors.background);
+                          const pass = ratio >= 4.5;
+                          return (
+                            <p className={`text-[9px] sm:text-[10px] font-bold mt-2 flex items-center gap-1 ${pass ? "text-emerald-600" : "text-red-500"}`}>
+                              {pass ? <CheckCircle2 size={10} /> : <AlertTriangle size={10} />}
+                              {pass ? "Good" : "Low"} contrast ({ratio.toFixed(1)}:1)
+                            </p>
+                          );
+                        })()}
+                      </div>
+
+                      {(selectedColorKey === "accent" || selectedColorKey === "text" || selectedColorKey === "textHeading") && (
+                        <button
+                          type="button"
+                          onClick={() => calculateSafePairing(selectedColorKey)}
+                          className="shrink-0 p-2.5 sm:p-3 border border-outline-variant rounded-xl hover:border-primary hover:text-primary transition-all text-on-surface-variant bg-surface"
+                        >
+                          <Wand2 size={16} />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* ── Preview ─────────────────────────────────────── */}
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">
+                        Live site preview
+                      </p>
+                      <div className="flex bg-surface-container-low p-1 rounded-lg border border-outline-variant/30">
+                        {(["desktop", "mobile"] as const).map((m) => (
+                          <button
+                            key={m}
+                            type="button"
+                            onClick={() => setPreviewMode(m)}
+                            className={`p-1.5 rounded-md transition-all flex items-center gap-1 text-[10px] font-bold px-2 ${previewMode === m ? "bg-white shadow-sm text-primary" : "text-on-surface-variant/60 hover:text-on-surface-variant"}`}
+                          >
+                            {m === "desktop" ? <Laptop size={13} /> : <Smartphone size={13} />}
+                            <span className="hidden sm:inline capitalize">{m}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div
+                      className="mx-auto transition-all duration-500 overflow-hidden rounded-2xl border border-outline-variant shadow-md"
+                      style={{ maxWidth: previewMode === "mobile" ? "280px" : "100%" }}
+                    >
+                      {/* Browser chrome */}
+                      <div className="px-3 py-2 bg-surface-container-low border-b border-outline-variant flex items-center gap-2">
+                        <div className="flex gap-1">
+                          <div className="w-2 h-2 rounded-full bg-red-400" />
+                          <div className="w-2 h-2 rounded-full bg-yellow-400" />
+                          <div className="w-2 h-2 rounded-full bg-green-400" />
+                        </div>
+                        <div className="flex-1 flex justify-center">
+                          <div className="h-3.5 w-36 rounded-full bg-outline-variant/30 flex items-center justify-center">
+                            <span className="text-[8px] text-on-surface-variant">your-website.com</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Site preview container */}
+                      <div className="overflow-y-auto max-h-[320px]" aria-hidden>
+                        <div className="px-4 py-2.5 flex items-center justify-between" style={{ backgroundColor: brandColors.secondary }}>
+                          <div className="flex items-center gap-2">
+                            {logoPreview ? <img src={logoPreview} className="w-5 h-5 object-contain" /> : <div className="w-4 h-4 rounded bg-white/30" />}
+                            <div className="h-1.5 w-14 rounded-full bg-white/60" />
+                          </div>
+                          <div className="h-6 w-16 rounded-full text-[8px] flex items-center justify-center font-black" style={{ backgroundColor: brandColors.accent, color: isLight(brandColors.accent) ? "#111" : "#fff" }}>Call now</div>
+                        </div>
+                        <div className="px-5 py-10 flex flex-col gap-2.5 items-center text-center" style={{ background: `linear-gradient(135deg, ${brandColors.primary} 0%, ${brandColors.secondary} 100%)` }}>
+                          <div className="h-1.5 w-20 rounded-full bg-white/20" />
+                          <div className="h-3 w-3/4 rounded bg-white/80" />
+                          <div className="h-1.5 w-full rounded bg-white/40" />
+                          <div className="mt-3 h-8 w-28 rounded-lg text-[9px] flex items-center justify-center font-black shadow" style={{ backgroundColor: brandColors.accent, color: isLight(brandColors.accent) ? "#111" : "#fff" }}>Get Started</div>
+                        </div>
+                        <div className="p-4" style={{ backgroundColor: brandColors.background }}>
+                          <div className="h-2 w-20 rounded mb-3" style={{ backgroundColor: brandColors.textHeading, opacity: 0.85 }} />
+                          <div className="grid grid-cols-2 gap-2.5 mb-3">
+                            {[1, 2, 3, 4].map((i) => (
+                              <div key={i} className="p-3 rounded-xl" style={{ backgroundColor: `${brandColors.primary}12`, border: `0.5px solid ${brandColors.primary}30` }}>
+                                <div className="w-5 h-5 rounded mb-2" style={{ backgroundColor: `${brandColors.primary}30` }} />
+                                <div className="h-1.5 w-3/4 rounded mb-1.5" style={{ backgroundColor: brandColors.textHeading, opacity: 0.75 }} />
+                                <div className="h-1 w-full rounded" style={{ backgroundColor: brandColors.text, opacity: 0.4 }} />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="px-4 py-3 flex items-center justify-between" style={{ backgroundColor: brandColors.secondary }}>
+                          <div className="h-1.5 w-20 rounded-full bg-white/30" />
+                          <div className="h-1.5 w-12 rounded-full bg-white/20" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </FormSection>
+
+              {/* SECTION 3: Trust & Credibility */}
+              <FormSection
+                id={3}
+                title="Trust & Credibility"
+                isOpen={expandedSections[3]}
+                onToggle={toggleSection}
+              >
+                <div className="space-y-5">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                      <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
+                        Years of Experience
+                      </label>
+                      <input
+                        name="years_experience"
+                        placeholder="e.g. 15+"
+                        className={inputCls}
+                        value={formData.years_experience}
+                        onChange={handleInput}
+                      />
+                    </div>
+                    <div className="relative">
+                      <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
+                        Service Areas
+                      </label>
+                      <div className="relative">
+                        <input
+                          name="service_areas"
+                          placeholder="e.g. Manchester, Salford…"
+                          className={`${inputCls} pr-12`}
+                          value={formData.service_areas}
+                          onChange={handleInput}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setMapTarget("service_areas");
+                            setShowMap(true);
+                          }}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-primary/10 text-primary rounded-xl hover:bg-primary hover:text-white transition-all"
+                        >
+                          <MapPin size={20} />
                         </button>
                       </div>
-                    ))}
-                    <label className="aspect-square rounded-2xl border-2 border-dashed border-outline-variant flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-primary hover:bg-primary/5 transition-all group">
-                      <Upload
-                        size={24}
-                        className="text-on-surface-variant group-hover:text-primary transition-colors"
-                      />
-                      <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant group-hover:text-primary transition-colors">
-                        Add Photo
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
+                      Certifications &amp; Trust Badges
+                    </label>
+                    <input
+                      name="trust_badges"
+                      placeholder="e.g. Gas Safe Registered, NICEIC Approved…"
+                      className={inputCls}
+                      value={formData.trust_badges}
+                      onChange={handleInput}
+                    />
+                    <EvidenceBlock
+                      label="Or paste links to accreditation pages"
+                      previews={certPreviews}
+                      links={certLinks}
+                      onFiles={handleCertFiles}
+                      onRemoveFile={removeCertFile}
+                      onUpdateLink={updateCertLink}
+                      onAddLink={addCertLink}
+                      onRemoveLink={removeCertLink}
+                      linkPlaceholder="https://www.gassaferegister.co.uk/…"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
+                      Customer Testimonials
+                    </label>
+                    <textarea
+                      name="testimonials"
+                      rows={3}
+                      placeholder={'e.g. "Amazing service, very professional" – Sarah T.'}
+                      className={inputCls}
+                      value={formData.testimonials}
+                      onChange={handleInput}
+                    />
+                    <EvidenceBlock
+                      label="Or paste links to your reviews"
+                      previews={testiPreviews}
+                      links={testiLinks}
+                      onFiles={handleTestiFiles}
+                      onRemoveFile={removeTestiFile}
+                      onUpdateLink={updateTestiLink}
+                      onAddLink={addTestiLink}
+                      onRemoveLink={removeTestiLink}
+                      linkPlaceholder="https://g.page/r/…"
+                    />
+                  </div>
+                </div>
+              </FormSection>
+
+              {/* SECTION 4: Content & Files */}
+              <FormSection
+                id={4}
+                title="Content & Files"
+                isOpen={expandedSections[4]}
+                onToggle={toggleSection}
+              >
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-3 ml-1">
+                      Photos &amp; Media
+                    </label>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-3">
+                      {imagePreviews.map((src, i) => (
+                        <div key={i} className="relative aspect-square rounded-2xl overflow-hidden border border-outline-variant group">
+                          <img src={src} alt="" className="w-full h-full object-cover" />
+                          <button
+                            type="button"
+                            onClick={() => removeImage(i)}
+                            className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ))}
+                      <label className="aspect-square rounded-2xl border-2 border-dashed border-outline-variant flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-primary hover:bg-primary/5 transition-all group">
+                        <Upload size={24} className="text-on-surface-variant group-hover:text-primary" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant group-hover:text-primary">Add File</span>
+                        <input
+                          type="file"
+                          multiple
+                          accept="image/*,.pdf,.doc,.docx,.mp4,.mov"
+                          className="hidden"
+                          onChange={handleImagesChange}
+                        />
+                      </label>
+                    </div>
+                    <p className="text-[10px] text-on-surface-variant font-medium">
+                      Upload photos, work examples, or any documents you want included on your site.
+                    </p>
+                  </div>
+                </div>
+              </FormSection>
+
+              {/* SECTION 5: Terms & Conditions */}
+              <FormSection
+                id={5}
+                title="Terms & Conditions"
+                required
+                isOpen={expandedSections[5]}
+                onToggle={toggleSection}
+              >
+                <div className="space-y-6">
+                  <div className="bg-surface-container p-6 rounded-[2rem] border border-outline-variant/30 space-y-4">
+                    <h3 className="text-lg font-black text-on-surface flex items-center gap-2">
+                      <Info size={18} className="text-primary" /> Custom website service
+                    </h3>
+                    <ul className="space-y-3">
+                      {[
+                        "Delivery target: within 7 days",
+                        billing === "monthly" ? "Monthly plan renews until cancelled" : billing === "annual" ? "Yearly plan renews until cancelled" : "One off payment",
+                        "Work starts after payment",
+                        "Refund terms apply once work has started",
+                      ].map((item, idx) => (
+                        <li key={idx} className="flex items-start gap-3 text-sm font-bold text-on-surface-variant">
+                          <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="space-y-4 pt-2">
+                    <label className="flex items-start gap-3 group cursor-pointer">
+                      <div className="mt-0.5">
+                        <input
+                          type="checkbox"
+                          required
+                          className="sr-only"
+                          checked={agreedTerms}
+                          onChange={(e) => setAgreedTerms(e.target.checked)}
+                        />
+                        <div className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all ${agreedTerms ? "bg-primary border-primary" : "border-outline-variant group-hover:border-primary/50"}`}>
+                          {agreedTerms && <Check size={12} className="text-white" strokeWidth={4} />}
+                        </div>
+                      </div>
+                      <span className="text-xs font-bold text-on-surface-variant leading-relaxed">
+                        I accept the <Link to="/terms-conditions" target="_blank" className="text-primary hover:underline">Terms & Conditions</Link> and <Link to="/privacy-policy" target="_blank" className="text-primary hover:underline">Privacy Policy</Link>.
                       </span>
-                      <input
-                        type="file"
-                        multiple
-                        accept="image/*"
-                        className="hidden"
-                        onChange={handleImagesChange}
-                      />
+                    </label>
+
+                    <label className="flex items-start gap-3 group cursor-pointer">
+                      <div className="mt-0.5">
+                        <input
+                          type="checkbox"
+                          required
+                          className="sr-only"
+                          checked={agreedDigitalService}
+                          onChange={(e) => setAgreedDigitalService(e.target.checked)}
+                        />
+                        <div className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all ${agreedDigitalService ? "bg-primary border-primary" : "border-outline-variant group-hover:border-primary/50"}`}>
+                          {agreedDigitalService && <Check size={12} className="text-white" strokeWidth={4} />}
+                        </div>
+                      </div>
+                      <span className="text-xs font-bold text-on-surface-variant leading-relaxed">
+                        I understand this is a custom digital service and work may begin immediately after payment.
+                      </span>
+                    </label>
+
+                    <label className="flex items-start gap-3 group cursor-pointer">
+                      <div className="mt-0.5">
+                        <input
+                          type="checkbox"
+                          required
+                          className="sr-only"
+                          checked={agreedMonthlyPlan}
+                          onChange={(e) => setAgreedMonthlyPlan(e.target.checked)}
+                        />
+                        <div className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all ${agreedMonthlyPlan ? "bg-primary border-primary" : "border-outline-variant group-hover:border-primary/50"}`}>
+                          {agreedMonthlyPlan && <Check size={12} className="text-white" strokeWidth={4} />}
+                        </div>
+                      </div>
+                      <span className="text-xs font-bold text-on-surface-variant leading-relaxed">
+                        I understand that monthly plans include hosting and management.
+                      </span>
                     </label>
                   </div>
-                  <p className="text-[10px] text-on-surface-variant font-medium">
-                    Team photos, premises, work examples — these will appear throughout your site.
-                  </p>
                 </div>
+              </FormSection>
+            </div>
 
-                <div className="bg-surface p-4 rounded-2xl border border-outline-variant flex items-start gap-3">
-                  <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                  <p className="text-[11px] text-on-surface-variant leading-relaxed font-medium">
-                    Almost done! One last step to review the service terms and finalize your
-                    application.
-                  </p>
-                </div>
-
-                <NavButtons onNext={() => setStep(5)} />
-              </div>
-            )}
-
-            {/* ══ STEP 5 — Final Review & Agreements ══════════════════ */}
-            {step === 5 && (
-              <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-                <div className="bg-surface-container p-6 rounded-[2rem] border border-outline-variant/30 space-y-4">
-                  <h3 className="text-lg font-black text-on-surface flex items-center gap-2">
-                    <Info size={18} className="text-primary" /> Custom website service
-                  </h3>
-                  <ul className="space-y-3">
-                    {[
-                      "Delivery target: within 7 days (subject to receiving content/details)",
-                      billing === "monthly" ? "Monthly plan renews until cancelled" : billing === "annual" ? "Yearly plan renews until cancelled" : "One off payment",
-                      "Work starts after payment",
-                      "Refund terms apply once work has started",
-                    ].map((item, idx) => (
-                      <li key={idx} className="flex items-start gap-3 text-sm font-bold text-on-surface-variant">
-                        <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-
-                <div className="space-y-4">
-                  <h3 className="text-sm font-black uppercase tracking-widest text-on-surface-variant ml-1">
-                    Refund Policy
-                  </h3>
-                  <div className="grid gap-3">
-                    <div className="p-4 rounded-2xl bg-surface border border-outline-variant/50">
-                      <p className="text-xs font-black text-on-surface mb-1">Before work starts:</p>
-                      <p className="text-[11px] text-on-surface-variant font-medium leading-relaxed">
-                        Cancellation may be eligible for refund minus payment processing/admin fees.
-                      </p>
-                    </div>
-                    <div className="p-4 rounded-2xl bg-surface border border-outline-variant/50">
-                      <p className="text-xs font-black text-on-surface mb-1">After work starts:</p>
-                      <p className="text-[11px] text-on-surface-variant font-medium leading-relaxed">
-                        Refunds may be partial or unavailable depending on work completed.
-                      </p>
-                    </div>
-                    <div className="p-4 rounded-2xl bg-surface border border-outline-variant/50">
-                      <p className="text-xs font-black text-on-surface mb-1">
-                        Monthly/yearly plans:
-                      </p>
-                      <p className="text-[11px] text-on-surface-variant font-medium leading-relaxed">
-                        Future billing cancellable anytime.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-4 pt-2">
-                  <label className="flex items-start gap-3 group cursor-pointer">
-                    <div className="mt-0.5">
-                      <input
-                        type="checkbox"
-                        required
-                        className="sr-only"
-                        checked={agreedTerms}
-                        onChange={(e) => setAgreedTerms(e.target.checked)}
-                      />
-                      <div
-                        className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all ${agreedTerms ? "bg-primary border-primary" : "border-outline-variant group-hover:border-primary/50"}`}
-                      >
-                        {agreedTerms && <Check size={12} className="text-white" strokeWidth={4} />}
-                      </div>
-                    </div>
-                    <span className="text-xs font-bold text-on-surface-variant leading-relaxed">
-                      Tick this box to accept the{" "}
-                      <Link
-                        to="/terms-conditions"
-                        target="_blank"
-                        className="text-primary hover:underline"
-                      >
-                        Terms & Conditions
-                      </Link>{" "}
-                      and{" "}
-                      <Link
-                        to="/privacy-policy"
-                        target="_blank"
-                        className="text-primary hover:underline"
-                      >
-                        Privacy Policy
-                      </Link>
-                      .
-                    </span>
-                  </label>
-
-                  <label className="flex items-start gap-3 group cursor-pointer">
-                    <div className="mt-0.5">
-                      <input
-                        type="checkbox"
-                        required
-                        className="sr-only"
-                        checked={agreedDigitalService}
-                        onChange={(e) => setAgreedDigitalService(e.target.checked)}
-                      />
-                      <div
-                        className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all ${agreedDigitalService ? "bg-primary border-primary" : "border-outline-variant group-hover:border-primary/50"}`}
-                      >
-                        {agreedDigitalService && (
-                          <Check size={12} className="text-white" strokeWidth={4} />
-                        )}
-                      </div>
-                    </div>
-                    <span className="text-xs font-bold text-on-surface-variant leading-relaxed">
-                      Tick this box to confirm you understand this is a custom digital service and work may begin immediately
-                      after payment; refund eligibility may reduce once work has started.
-                    </span>
-                  </label>
-
-                  <label className="flex items-start gap-3 group cursor-pointer">
-                    <div className="mt-0.5">
-                      <input
-                        type="checkbox"
-                        required
-                        className="sr-only"
-                        checked={agreedMonthlyPlan}
-                        onChange={(e) => setAgreedMonthlyPlan(e.target.checked)}
-                      />
-                      <div
-                        className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all ${agreedMonthlyPlan ? "bg-primary border-primary" : "border-outline-variant group-hover:border-primary/50"}`}
-                      >
-                        {agreedMonthlyPlan && (
-                          <Check size={12} className="text-white" strokeWidth={4} />
-                        )}
-                      </div>
-                    </div>
-                    <span className="text-xs font-bold text-on-surface-variant leading-relaxed">
-                      Tick this box to confirm you understand that monthly plans include hosting and management. If cancelled,
-                      the website may be taken offline after the grace period unless a transfer is
-                      arranged.
-                    </span>
-                  </label>
-                </div>
-
-                <NavButtons
-                  isSubmit
-                  canNext={agreedTerms && agreedDigitalService && agreedMonthlyPlan}
-                />
-              </div>
-            )}
+            {/* Submission Button */}
+            <div className="pt-8">
+              <button
+                type="submit"
+                disabled={isLoading || !(
+                  formData.first_name &&
+                  formData.last_name &&
+                  formData.company_name &&
+                  formData.phone_number &&
+                  formData.industry &&
+                  (formData.industry !== "Other" || otherIndustry) &&
+                  formData.email &&
+                  formData.services_list &&
+                  formData.city_location &&
+                  agreedTerms &&
+                  agreedDigitalService &&
+                  agreedMonthlyPlan
+                )}
+                className="w-full py-5 bg-primary text-white font-black rounded-2xl hover:brightness-110 transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed text-lg"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 size={24} className="animate-spin" /> Submitting…
+                  </>
+                ) : (
+                  "Review Pricing"
+                )}
+              </button>
+            </div>
           </form>
 
           <div className="mt-10 pt-8 border-t border-outline-variant text-center">
