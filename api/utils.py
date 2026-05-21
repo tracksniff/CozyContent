@@ -352,3 +352,50 @@ def create_brevo_contact(email, first_name=None, last_name=None, attributes=None
     except Exception as e:
         logger.error(f"Error creating Brevo contact: {str(e)}")
         return False
+
+def send_request_approval_email(site_request):
+    """
+    Notify admin that a change request has been approved.
+    """
+    logger.info(f"Notifying admin about approved change request for {site_request.website.name}")
+    brevo_api_key = os.getenv("BREVO_API_KEY")
+    brevo_sender_email = os.getenv("BREVO_SENDER_EMAIL", "system@cosycontent.com")
+    brevo_sender_name = os.getenv("BREVO_SENDER_NAME", "Cosy Content System")
+
+    if not brevo_api_key:
+        return False
+
+    recipient_email = "crispusgikonyo@gmail.com"
+    subject = f"Approved: Update Request for {site_request.website.name}"
+    
+    html_content = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9fafb; padding: 20px;">
+        <div style="max-width: 600px; margin: 0 auto; padding: 40px; background-color: white; border-radius: 12px; border: 1px solid #e5e7eb;">
+            {get_email_header()}
+            <h2 style="color: #00696D;">Change Request Approved</h2>
+            <p><strong>Website:</strong> {site_request.website.name} ({site_request.website.url})</p>
+            <p><strong>User:</strong> {site_request.user.email}</p>
+            <p><strong>Details of Changes Requested:</strong></p>
+            <div style="padding: 15px; background: #f4f4f4; border-radius: 5px; margin: 20px 0;">{site_request.details}</div>
+            <p>The changes above have been approved and will be implemented.</p>
+            {get_email_footer()}
+        </div>
+    </body>
+    </html>
+    """
+
+    payload = {
+        "sender": {"name": brevo_sender_name, "email": brevo_sender_email},
+        "to": [{"email": recipient_email}],
+        "subject": subject,
+        "htmlContent": html_content,
+    }
+    headers = {"accept": "application/json", "api-key": brevo_api_key, "content-type": "application/json"}
+
+    try:
+        response = requests.post("https://api.brevo.com/v3/smtp/email", json=payload, headers=headers)
+        return response.status_code == 201
+    except:
+        return False
+

@@ -1,8 +1,31 @@
 from django.contrib import admin
 from .models import (
     User, Website, ClientApplication, 
-    ApplicationImage, Feedback, Attachment, PasswordResetOTP
+    ApplicationImage, Feedback, Attachment, PasswordResetOTP,
+    SiteRequest
 )
+import requests
+import os
+
+from .utils import send_welcome_email, send_otp_email, create_brevo_contact, send_request_approval_email
+
+@admin.register(SiteRequest)
+class SiteRequestAdmin(admin.ModelAdmin):
+    list_display = ('website', 'user', 'status', 'is_priority', 'created_at')
+    list_filter = ('status', 'is_priority', 'created_at')
+    search_fields = ('website__name', 'user__email', 'details')
+    actions = ['approve_requests', 'reject_requests']
+
+    def approve_requests(self, request, queryset):
+        for site_request in queryset:
+            site_request.status = 'completed'
+            site_request.save()
+            send_request_approval_email(site_request)
+        self.message_user(request, f"{queryset.count()} requests approved and notifications sent.")
+
+    def reject_requests(self, request, queryset):
+        queryset.update(status='denied')
+        self.message_user(request, f"{queryset.count()} requests rejected.")
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):

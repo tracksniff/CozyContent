@@ -36,7 +36,7 @@ from django.http import HttpResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from .utils import send_welcome_email, send_otp_email, create_brevo_contact
+from .utils import send_welcome_email, send_otp_email, create_brevo_contact, send_request_approval_email
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 logger = logging.getLogger(__name__)
@@ -675,6 +675,21 @@ class SiteRequestViewSet(viewsets.ModelViewSet):
             json=payload, 
             headers={"api-key": brevo_api_key, "content-type": "application/json"}
         )
+
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAdminUser])
+    def approve(self, request, pk=None):
+        site_request = self.get_object()
+        site_request.status = 'completed'
+        site_request.save()
+        send_request_approval_email(site_request)
+        return Response({"success": True, "message": "Request approved and notification sent."})
+
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAdminUser])
+    def reject(self, request, pk=None):
+        site_request = self.get_object()
+        site_request.status = 'denied'
+        site_request.save()
+        return Response({"success": True, "message": "Request rejected."})
 
 
 class RequestPasswordResetOTPView(APIView):

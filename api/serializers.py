@@ -10,9 +10,10 @@ class AuditReportSerializer(serializers.ModelSerializer):
 
 class SiteRequestSerializer(serializers.ModelSerializer):
     website_name = serializers.CharField(source='website.name', read_only=True)
+    user_email = serializers.EmailField(source='user.email', read_only=True)
     class Meta:
         model = SiteRequest
-        fields = ('id', 'website', 'website_name', 'details', 'status', 'is_priority', 'created_at', 'updated_at')
+        fields = ('id', 'website', 'website_name', 'user_email', 'details', 'status', 'is_priority', 'created_at', 'updated_at')
         read_only_fields = ('id', 'status', 'created_at', 'updated_at')
 
 class FeedbackSerializer(serializers.ModelSerializer):
