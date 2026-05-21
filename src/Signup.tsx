@@ -133,8 +133,14 @@ const FormSection: React.FC<FormSectionProps> = ({
   children,
 }) => {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const isInitialMount = useRef(true);
 
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
     if (isOpen && sectionRef.current) {
       const rect = sectionRef.current.getBoundingClientRect();
       const isFullyVisible = rect.top >= 0 && rect.bottom <= window.innerHeight;
@@ -189,6 +195,11 @@ const FormSection: React.FC<FormSectionProps> = ({
 
 const Signup: React.FC = () => {
   const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const { planId, billing: initialBilling } = location.state || {};
   const billing = initialBilling || "monthly";
   const hasPreSelectedPlan = !!planId;
@@ -1505,6 +1516,21 @@ const Signup: React.FC = () => {
                         "Delivery target: within 7 days",
                         billing === "monthly" ? "Monthly plan renews until cancelled" : billing === "annual" ? "Yearly plan renews until cancelled" : "One off payment",
                         "Work starts after payment",
+                      ].map((item, idx) => (
+                        <li key={idx} className="flex items-start gap-3 text-sm font-bold text-on-surface-variant">
+                          <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="bg-surface-container p-6 rounded-[2rem] border border-outline-variant/30 space-y-4">
+                    <h3 className="text-lg font-black text-on-surface flex items-center gap-2">
+                      <AlertTriangle size={18} className="text-primary" /> Refund & Cancellation Policy
+                    </h3>
+                    <ul className="space-y-3">
+                      {[
                         "Before work starts: Cancellation may be eligible for refund minus payment processing/admin fees",
                         "After work starts: Refunds may be partial or unavailable depending on work completed",
                         "Monthly/yearly plans: Future billing cancellable anytime",
