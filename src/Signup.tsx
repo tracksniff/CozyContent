@@ -830,7 +830,7 @@ const Signup: React.FC = () => {
             )}
 
             <a
-              href={`${import.meta.env.VITE_API_URL}/api/google/login/`}
+              href={`${import.meta.env.VITE_API_URL}/api/google/login/?action=signup`}
               className="w-full py-4 px-6 bg-surface border border-outline-variant text-on-surface font-black rounded-2xl hover:bg-surface-container transition-all flex justify-center items-center gap-3 text-sm uppercase tracking-widest shadow-sm mb-6"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
