@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import Sidebar from './Sidebar';
 import { useNavigate } from 'react-router-dom';
-import { Globe, Search, ExternalLink, Trash2, UserPlus, Edit3 } from 'lucide-react';
+import { Globe, Search, ExternalLink, Trash2, UserPlus, Edit3, Settings } from 'lucide-react';
 import axios from 'axios';
+import DNSModal from './DNSModal';
 
 const Websites: React.FC = () => {
   const navigate = useNavigate();
   const [websites, setWebsites] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedSiteForDNS, setSelectedSiteForDNS] = useState<any | null>(null);
   const { token, user, loading: authLoading } = useAuth();
 
   const fetchWebsites = async () => {
@@ -148,6 +150,17 @@ const Websites: React.FC = () => {
                           {new Date(site.created_at).toLocaleDateString()}
                       </span>
                     </div>
+                    
+                    {/* Setup DNS Button for Monthly Users */}
+                    {site.hosting_type === 'PLATFORM' && ['monthly', 'annual', 'priority_monthly'].includes(site.plan_type) && (user?.is_staff || user?.plan_type?.includes('monthly')) && (
+                      <button
+                        onClick={() => setSelectedSiteForDNS(site)}
+                        className="w-full py-2 bg-primary/10 border border-primary/20 rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest text-primary hover:bg-primary hover:text-white transition-all flex items-center justify-center gap-1.5"
+                      >
+                        <Settings size={10} className="md:size-[12px]" /> Setup DNS
+                      </button>
+                    )}
+
                     {(user?.is_staff || user?.plan_type === 'monthly' || user?.plan_type === 'annual' || user?.plan_type === 'priority_monthly') && (
                       <button
                         onClick={() => navigate('/request-changes')}
@@ -163,6 +176,14 @@ const Websites: React.FC = () => {
           )}
         </div>
       </main>
+
+      {selectedSiteForDNS && (
+        <DNSModal 
+          site={selectedSiteForDNS} 
+          onClose={() => setSelectedSiteForDNS(null)} 
+          onUpdate={fetchWebsites}
+        />
+      )}
     </div>
   );
 };

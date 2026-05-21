@@ -9,13 +9,27 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import Sidebar from './Sidebar';
+import toast from 'react-hot-toast';
 
 const RequestChanges: React.FC = () => {
   const [websites, setWebsites] = useState<any[]>([]);
   const [siteRequests, setSiteRequests] = useState<any[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isProcessingRequest, setIsProcessingRequest] = useState<{ [key: number]: boolean }>({});
   const { user, token } = useAuth();
   const navigate = useNavigate();
+
+  const fetchSiteRequests = async () => {
+    if (!token) return;
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/site-requests/`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setSiteRequests(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
     if (!token) return;
@@ -25,21 +39,52 @@ const RequestChanges: React.FC = () => {
       headers: { Authorization: `Bearer ${token}` }
     }).then(res => setWebsites(res.data));
 
-    // Fetch site requests
-    axios.get(`${import.meta.env.VITE_API_URL}/api/site-requests/`, {
-      headers: { Authorization: `Bearer ${token}` }
-    }).then(res => setSiteRequests(res.data));
+    fetchSiteRequests();
   }, [token]);
+
+  const handleApproveRequest = async (requestId: number) => {
+    if (!token) return;
+    setIsProcessingRequest({ ...isProcessingRequest, [requestId]: true });
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/site-requests/${requestId}/approve/`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Request approved and notification sent!');
+      fetchSiteRequests();
+    } catch (err) {
+      toast.error('Failed to approve request.');
+    } finally {
+      setIsProcessingRequest({ ...isProcessingRequest, [requestId]: false });
+    }
+  };
+
+  const handleRejectRequest = async (requestId: number) => {
+    if (!token) return;
+    setIsProcessingRequest({ ...isProcessingRequest, [requestId]: true });
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/site-requests/${requestId}/reject/`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Request rejected.');
+      fetchSiteRequests();
+    } catch (err) {
+      toast.error('Failed to reject request.');
+    } finally {
+      setIsProcessingRequest({ ...isProcessingRequest, [requestId]: false });
+    }
+  };
 
   const handleEditRequest = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
 
-    const totalRemaining = (user.monthly_requests_remaining || 0) + (user.purchased_requests_remaining || 0);
-    if (totalRemaining <= 0) {
-      alert('You have no remaining requests. Please purchase an update pack.');
-      navigate('/add-ons');
-      return;
+    if (!user.is_staff) {
+      const totalRemaining = (user.monthly_requests_remaining || 0) + (user.purchased_requests_remaining || 0);
+      if (totalRemaining <= 0) {
+        toast.error('You have no remaining requests. Please purchase an update pack.');
+        navigate('/add-ons');
+        return;
+      }
     }
 
     setIsSubmitting(true);
@@ -51,16 +96,11 @@ const RequestChanges: React.FC = () => {
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      alert('Edit request sent! We will process it shortly.');
-      
-      // Refresh requests
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/site-requests/`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setSiteRequests(res.data);
+      toast.success('Edit request sent! We will process it shortly.');
+      fetchSiteRequests();
       target.reset();
     } catch (err) {
-      alert('Failed to send request.');
+      toast.error('Failed to send request.');
     } finally {
       setIsSubmitting(false);
     }
@@ -180,6 +220,26 @@ const RequestChanges: React.FC = () => {
                           </span>
                         </div>
                         <p className="text-[11px] md:text-xs text-on-surface font-medium line-clamp-2 mb-2 md:mb-3">{req.details}</p>
+                        
+                        {user?.is_staff && req.status === 'pending' && (
+                          <div className="flex gap-2 mb-3">
+                            <button
+                              onClick={(e) => { e.preventDefault(); handleApproveRequest(req.id); }}
+                              disabled={isProcessingRequest[req.id]}
+                              className="flex-1 py-1.5 bg-primary text-white text-[9px] font-black uppercase tracking-widest rounded-lg hover:brightness-110 transition-all flex items-center justify-center gap-1.5"
+                            >
+                              {isProcessingRequest[req.id] ? <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : 'Approve'}
+                            </button>
+                            <button
+                              onClick={(e) => { e.preventDefault(); handleRejectRequest(req.id); }}
+                              disabled={isProcessingRequest[req.id]}
+                              className="flex-1 py-1.5 bg-red-500/10 text-red-500 text-[9px] font-black uppercase tracking-widest rounded-lg hover:bg-red-500 hover:text-white transition-all"
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        )}
+
                         <div className="flex items-center justify-between">
                           <span className="text-[8px] md:text-[9px] font-bold text-on-surface-variant opacity-60">
                             {new Date(req.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}

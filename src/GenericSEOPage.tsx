@@ -210,19 +210,18 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
 
               {/* Checklist pills */}
               <div className="flex flex-wrap justify-center gap-3 mb-12">
-                {(data.checklist || ["Fast Delivery", "Fully Managed", "SEO Optimised"]).map(
-                  (item, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-center gap-2.5 px-5 py-2.5 bg-surface rounded-full border border-outline-variant/40 text-sm font-semibold"
-                    >
-                      <div className="w-2 h-2 rounded-full bg-blue-600 shadow-[0_0_8px_rgba(37,99,235,0.4)]" />
-                      {item}
-                    </div>
-                  ),
-                )}
+              {(data.checklist || ["Fast Delivery", "Fully Managed", "SEO Optimised"]).map(
+              (item, idx) => (
+              <div
+              key={idx}
+              className="flex items-center gap-2.5 px-5 py-2.5 bg-surface rounded-full border border-outline-variant/40 text-sm font-semibold"
+              >
+              <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(0,105,109,0.4)]" />
+              {item}
               </div>
-
+              ),
+              )}
+              </div>
               {/* CTA buttons */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link
@@ -290,7 +289,7 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
                       />
                       {/* Section bullet badge */}
                       <div className="absolute top-5 left-5 w-9 h-9 rounded-xl bg-black/40 backdrop-blur-sm flex items-center justify-center">
-                        <div className="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.6)]" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_10px_rgba(0,105,109,0.6)]" />
                       </div>
                     </div>
                   )}
@@ -302,8 +301,8 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
                     {/* If no image, show section number differently */}
                     {!section.image && (
                       <div className="lg:shrink-0 mb-4 lg:mb-0">
-                        <div className="w-12 h-12 rounded-2xl bg-blue-600/10 flex items-center justify-center">
-                          <div className="w-3 h-3 rounded-full bg-blue-600 shadow-[0_0_12px_rgba(37,99,235,0.5)]" />
+                        <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                          <div className="w-3 h-3 rounded-full bg-primary shadow-[0_0_12px_rgba(0,105,109,0.5)]" />
                         </div>
                       </div>
                     )}
@@ -335,7 +334,7 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
                                 key={pIdx}
                                 className="flex items-start gap-3 p-3 rounded-xl hover:bg-surface transition-colors"
                               >
-                                <div className="mt-2 w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0 shadow-[0_0_8px_rgba(37,99,235,0.4)]" />
+                                <div className="mt-2 w-1.5 h-1.5 rounded-full bg-primary shrink-0 shadow-[0_0_8px_rgba(0,105,109,0.4)]" />
                                 <span className="text-sm leading-relaxed">
                                   {label && (
                                     <span className="font-bold text-on-surface">{label}: </span>
@@ -478,7 +477,7 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
                 <div className="space-y-4 mb-10 flex-grow">
                   {plan.features.map((feature, fIdx) => (
                     <div key={fIdx} className="flex items-start gap-3">
-                      <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0 shadow-[0_0_8px_rgba(37,99,235,0.4)]" />
+                      <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary shrink-0 shadow-[0_0_8px_rgba(0,105,109,0.4)]" />
                       <span className="text-sm font-bold text-on-surface leading-tight">{feature}</span>
                     </div>
                   ))}
@@ -527,7 +526,7 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
                     "Mobile-first design"
                   ].map((item, idx) => (
                     <div key={idx} className="flex items-center gap-3">
-                      <div className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0 shadow-[0_0_8px_rgba(37,99,235,0.4)]" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary shrink-0 shadow-[0_0_8px_rgba(0,105,109,0.4)]" />
                       <span className="text-sm font-bold">{item}</span>
                     </div>
                   ))}

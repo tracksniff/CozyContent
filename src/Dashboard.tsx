@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import axios from 'axios';
 import { 
   Trash2, 
@@ -17,10 +18,12 @@ import {
   Upload, 
   MessageSquare, 
   Send, 
-  Edit3 
+  Edit3,
+  Settings
 } from 'lucide-react';
 import Sidebar from './Sidebar';
 import toast from 'react-hot-toast';
+import DNSModal from './DNSModal';
 
 const funMessages = [
   "Consulting our system...",
@@ -39,16 +42,51 @@ const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const [websites, setWebsites] = useState<any[]>([]);
   const [applications, setApplications] = useState<any[]>([]);
+  const [siteRequests, setSiteRequests] = useState<any[]>([]);
   const [fetchingWebsites, setFetchingWebsites] = useState(true);
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [isRedeploying, setIsRedeploying] = useState<{ [key: number]: boolean }>({});
+  const [isProcessingRequest, setIsProcessingRequest] = useState<{ [key: number]: boolean }>({});
   const [feedback, setFeedback] = useState<{ [key: number]: string }>({});
   const [githubUsernames, setGithubUsernames] = useState<{ [key: number]: string }>({});
+  const [selectedSiteForDNS, setSelectedSiteForDNS] = useState<any | null>(null);
   
   const { token, user, loading: authLoading } = useAuth();
   const location = useLocation();
+
+  const handleApproveRequest = async (requestId: number) => {
+    if (!token) return;
+    setIsProcessingRequest({ ...isProcessingRequest, [requestId]: true });
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/site-requests/${requestId}/approve/`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Request approved and notification sent!');
+      fetchData();
+    } catch (err) {
+      toast.error('Failed to approve request.');
+    } finally {
+      setIsProcessingRequest({ ...isProcessingRequest, [requestId]: false });
+    }
+  };
+
+  const handleRejectRequest = async (requestId: number) => {
+    if (!token) return;
+    setIsProcessingRequest({ ...isProcessingRequest, [requestId]: true });
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/site-requests/${requestId}/reject/`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Request rejected.');
+      fetchData();
+    } catch (err) {
+      toast.error('Failed to reject request.');
+    } finally {
+      setIsProcessingRequest({ ...isProcessingRequest, [requestId]: false });
+    }
+  };
 
   const handleRedeployVercel = async (websiteId: number) => {
     if (!token) return;
@@ -134,16 +172,20 @@ const Dashboard: React.FC = () => {
   const fetchData = async () => {
     if (!token) return;
     try {
-      const [sitesRes, appsRes] = await Promise.all([
+      const [sitesRes, appsRes, requestsRes] = await Promise.all([
         axios.get(`${import.meta.env.VITE_API_URL}/api/websites/`, {
           headers: { Authorization: `Bearer ${token}` }
         }),
         axios.get(`${import.meta.env.VITE_API_URL}/api/applications/`, {
           headers: { Authorization: `Bearer ${token}` }
+        }),
+        axios.get(`${import.meta.env.VITE_API_URL}/api/site-requests/`, {
+          headers: { Authorization: `Bearer ${token}` }
         })
       ]);
       setWebsites(sitesRes.data);
       setApplications(appsRes.data);
+      setSiteRequests(requestsRes.data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -269,10 +311,102 @@ const Dashboard: React.FC = () => {
                     </p>
                  </div>
                  
-                 <p className="mt-8 text-on-surface-variant text-sm font-medium max-w-md">
+                 <div className="w-full max-w-md mt-12 mb-4">
+                    <div className="flex justify-between items-end mb-2">
+                        <span className="text-primary font-black text-[10px] uppercase tracking-[0.2em]">Build Progress</span>
+                        <span className="text-on-surface font-black text-lg tracking-tighter">{processingApps[0].progress}%</span>
+                    </div>
+                    <div className="w-full bg-outline-variant/20 h-3 rounded-full overflow-hidden relative border border-outline-variant/10">
+                        <motion.div 
+                          className="absolute inset-y-0 left-0 bg-primary shadow-[0_0_15px_rgba(0,105,109,0.5)]"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${processingApps[0].progress}%` }}
+                          transition={{ duration: 1, ease: "easeOut" }}
+                        />
+                    </div>
+                 </div>
+                 
+                 <p className="mt-4 text-on-surface-variant text-sm font-medium max-w-md">
                    Our system is currently building your custom code, setting up your GitHub repo, and launching your brand. It should take about a minute!
                  </p>
                </div>
+            </div>
+          )}
+
+          {/* Admin: Pending Change Requests */}
+          {user?.is_staff && siteRequests.filter(req => req.status === 'pending').length > 0 && (
+            <div className="mb-12">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="h-10 w-1.5 bg-secondary rounded-full"></div>
+                <h2 className="text-2xl md:text-3xl font-black text-on-surface tracking-tight uppercase">Pending Change Requests</h2>
+              </div>
+              <div className="grid grid-cols-1 gap-6">
+                {siteRequests.filter(req => req.status === 'pending').map((req) => (
+                  <div key={req.id} className="bg-surface-container-low p-8 rounded-[2rem] border border-secondary/20 shadow-xl shadow-black/5 flex flex-col md:flex-row justify-between gap-6">
+                    <div className="flex-grow">
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="text-xs font-black uppercase tracking-widest text-secondary">{req.website_name}</span>
+                        {req.is_priority && (
+                          <span className="bg-yellow-500/10 text-yellow-600 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest flex items-center gap-1">
+                            <Zap size={10} fill="currentColor" /> Priority
+                          </span>
+                        )}
+                      </div>
+                      <h3 className="text-lg font-black text-on-surface mb-4">{req.user_email}</h3>
+                      <div className="bg-white dark:bg-surface p-6 rounded-2xl border border-outline-variant/30 text-sm font-medium text-on-surface-variant leading-relaxed">
+                        {req.details}
+                      </div>
+                    </div>
+                    <div className="flex md:flex-col gap-3 justify-end shrink-0">
+                      <button
+                        onClick={() => handleApproveRequest(req.id)}
+                        disabled={isProcessingRequest[req.id]}
+                        className="bg-primary text-white px-8 py-3 rounded-xl font-black text-sm hover:scale-105 transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2"
+                      >
+                        {isProcessingRequest[req.id] ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <><CheckCircle2 size={18} /> Approve</>}
+                      </button>
+                      <button
+                        onClick={() => handleRejectRequest(req.id)}
+                        disabled={isProcessingRequest[req.id]}
+                        className="bg-red-500/10 text-red-500 px-8 py-3 rounded-xl font-black text-sm hover:bg-red-500 hover:text-white transition-all flex items-center justify-center gap-2"
+                      >
+                         <Trash2 size={18} /> Reject
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* DNS Setup Required (Monthly Customers) */}
+          {!user?.is_staff && websites.filter(site => site.hosting_type === 'PLATFORM' && !site.custom_domain && ['monthly', 'annual', 'priority_monthly'].includes(site.plan_type)).length > 0 && (
+            <div className="mb-12">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="h-10 w-1.5 bg-primary rounded-full"></div>
+                <h2 className="text-2xl md:text-3xl font-black text-on-surface tracking-tight uppercase">Setup Required</h2>
+              </div>
+              <div className="grid grid-cols-1 gap-4">
+                {websites.filter(site => site.hosting_type === 'PLATFORM' && !site.custom_domain && ['monthly', 'annual', 'priority_monthly'].includes(site.plan_type)).map((site) => (
+                  <div key={site.id} className="bg-primary/5 border border-primary/20 p-6 md:p-8 rounded-[2rem] flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div className="flex items-center gap-6 text-center md:text-left flex-col md:flex-row">
+                      <div className="w-16 h-16 bg-white dark:bg-surface rounded-2xl flex items-center justify-center text-primary shadow-xl shadow-primary/10">
+                         <Globe size={32} />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-black text-on-surface mb-1">Link your domain for {site.name}</h3>
+                        <p className="text-sm font-medium text-on-surface-variant">Your website is ready, but it needs a custom domain to go live.</p>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => setSelectedSiteForDNS(site)}
+                      className="bg-primary text-white px-8 py-4 rounded-xl font-black text-sm hover:scale-105 transition-all shadow-xl shadow-primary/20 flex items-center gap-2 whitespace-nowrap"
+                    >
+                      <Settings size={18} /> Configure DNS Now
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
@@ -476,6 +610,15 @@ const Dashboard: React.FC = () => {
                       )}
                     </div>
 
+                    {site.hosting_type === 'PLATFORM' && ['monthly', 'annual', 'priority_monthly'].includes(site.plan_type) && (user?.is_staff || user?.plan_type?.includes('monthly')) && (
+                      <button
+                        onClick={() => setSelectedSiteForDNS(site)}
+                        className="mt-4 w-full py-3 bg-primary/10 border border-primary/20 rounded-xl text-[10px] font-black uppercase tracking-widest text-primary hover:bg-primary hover:text-white transition-all flex items-center justify-center gap-2 shadow-sm"
+                      >
+                        <Settings size={14} /> Setup DNS
+                      </button>
+                    )}
+
                     {(user?.is_staff || user?.plan_type?.includes('monthly')) && (
                       <button
                         onClick={() => navigate('/request-changes')}
@@ -491,6 +634,14 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </main>
+
+      {selectedSiteForDNS && (
+        <DNSModal 
+          site={selectedSiteForDNS} 
+          onClose={() => setSelectedSiteForDNS(null)} 
+          onUpdate={fetchData}
+        />
+      )}
     </div>
   );
 };
