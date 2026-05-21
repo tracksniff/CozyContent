@@ -197,8 +197,7 @@ const Signup: React.FC = () => {
     1: true,
     2: true,
     3: false,
-    4: false,
-    5: true,
+    4: true,
   });
 
   const toggleSection = (id: number) => {
@@ -1354,114 +1353,106 @@ const Signup: React.FC = () => {
                 </div>
               </FormSection>
 
-              {/* SECTION 3: Trust & Credibility */}
+              {/* SECTION 3: Trust, Credibility & Media */}
               <FormSection
                 id={3}
-                title="Trust & Credibility"
+                title="Trust, Credibility & Media"
                 isOpen={expandedSections[3]}
                 onToggle={toggleSection}
               >
-                <div className="space-y-5">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div>
-                      <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
-                        Years of Experience
-                      </label>
-                      <input
-                        name="years_experience"
-                        placeholder="e.g. 15+"
-                        className={inputCls}
-                        value={formData.years_experience}
-                        onChange={handleInput}
-                      />
-                    </div>
-                    <div className="relative">
-                      <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
-                        Service Areas
-                      </label>
-                      <div className="relative">
+                <div className="space-y-8">
+                  <div className="space-y-5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      <div>
+                        <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
+                          Years of Experience
+                        </label>
                         <input
-                          name="service_areas"
-                          placeholder="e.g. Manchester, Salford…"
-                          className={`${inputCls} pr-12`}
-                          value={formData.service_areas}
+                          name="years_experience"
+                          placeholder="e.g. 15+"
+                          className={inputCls}
+                          value={formData.years_experience}
                           onChange={handleInput}
                         />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setMapTarget("service_areas");
-                            setShowMap(true);
-                          }}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-primary/10 text-primary rounded-xl hover:bg-primary hover:text-white transition-all"
-                        >
-                          <MapPin size={20} />
-                        </button>
                       </div>
+                      <div className="relative">
+                        <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
+                          Service Areas
+                        </label>
+                        <div className="relative">
+                          <input
+                            name="service_areas"
+                            placeholder="e.g. Manchester, Salford…"
+                            className={`${inputCls} pr-12`}
+                            value={formData.service_areas}
+                            onChange={handleInput}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setMapTarget("service_areas");
+                              setShowMap(true);
+                            }}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-primary/10 text-primary rounded-xl hover:bg-primary hover:text-white transition-all"
+                          >
+                            <MapPin size={20} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
+                        Certifications &amp; Trust Badges
+                      </label>
+                      <input
+                        name="trust_badges"
+                        placeholder="e.g. Gas Safe Registered, NICEIC Approved…"
+                        className={inputCls}
+                        value={formData.trust_badges}
+                        onChange={handleInput}
+                      />
+                      <EvidenceBlock
+                        label="Or paste links to accreditation pages"
+                        previews={certPreviews}
+                        links={certLinks}
+                        onFiles={handleCertFiles}
+                        onRemoveFile={removeCertFile}
+                        onUpdateLink={updateCertLink}
+                        onAddLink={addCertLink}
+                        onRemoveLink={removeCertLink}
+                        linkPlaceholder="https://www.gassaferegister.co.uk/…"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
+                        Customer Testimonials
+                      </label>
+                      <textarea
+                        name="testimonials"
+                        rows={3}
+                        placeholder={'e.g. "Amazing service, very professional" – Sarah T.'}
+                        className={inputCls}
+                        value={formData.testimonials}
+                        onChange={handleInput}
+                      />
+                      <EvidenceBlock
+                        label="Or paste links to your reviews"
+                        previews={testiPreviews}
+                        links={testiLinks}
+                        onFiles={handleTestiFiles}
+                        onRemoveFile={removeTestiFile}
+                        onUpdateLink={updateTestiLink}
+                        onAddLink={addTestiLink}
+                        onRemoveLink={removeTestiLink}
+                        linkPlaceholder="https://g.page/r/…"
+                      />
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
-                      Certifications &amp; Trust Badges
-                    </label>
-                    <input
-                      name="trust_badges"
-                      placeholder="e.g. Gas Safe Registered, NICEIC Approved…"
-                      className={inputCls}
-                      value={formData.trust_badges}
-                      onChange={handleInput}
-                    />
-                    <EvidenceBlock
-                      label="Or paste links to accreditation pages"
-                      previews={certPreviews}
-                      links={certLinks}
-                      onFiles={handleCertFiles}
-                      onRemoveFile={removeCertFile}
-                      onUpdateLink={updateCertLink}
-                      onAddLink={addCertLink}
-                      onRemoveLink={removeCertLink}
-                      linkPlaceholder="https://www.gassaferegister.co.uk/…"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-2 ml-1">
-                      Customer Testimonials
-                    </label>
-                    <textarea
-                      name="testimonials"
-                      rows={3}
-                      placeholder={'e.g. "Amazing service, very professional" – Sarah T.'}
-                      className={inputCls}
-                      value={formData.testimonials}
-                      onChange={handleInput}
-                    />
-                    <EvidenceBlock
-                      label="Or paste links to your reviews"
-                      previews={testiPreviews}
-                      links={testiLinks}
-                      onFiles={handleTestiFiles}
-                      onRemoveFile={removeTestiFile}
-                      onUpdateLink={updateTestiLink}
-                      onAddLink={addTestiLink}
-                      onRemoveLink={removeTestiLink}
-                      linkPlaceholder="https://g.page/r/…"
-                    />
-                  </div>
-                </div>
-              </FormSection>
-
-              {/* SECTION 4: Content & Files */}
-              <FormSection
-                id={4}
-                title="Content & Files"
-                isOpen={expandedSections[4]}
-                onToggle={toggleSection}
-              >
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-3 ml-1">
+                  <div className="pt-4 border-t border-outline-variant/30">
+                    <label className="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-4 ml-1">
                       Photos &amp; Media
                     </label>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-3">
@@ -1496,12 +1487,12 @@ const Signup: React.FC = () => {
                 </div>
               </FormSection>
 
-              {/* SECTION 5: Terms & Conditions */}
+              {/* SECTION 4: Terms & Conditions */}
               <FormSection
-                id={5}
+                id={4}
                 title="Terms & Conditions"
                 required
-                isOpen={expandedSections[5]}
+                isOpen={expandedSections[4]}
                 onToggle={toggleSection}
               >
                 <div className="space-y-6">
@@ -1514,7 +1505,9 @@ const Signup: React.FC = () => {
                         "Delivery target: within 7 days",
                         billing === "monthly" ? "Monthly plan renews until cancelled" : billing === "annual" ? "Yearly plan renews until cancelled" : "One off payment",
                         "Work starts after payment",
-                        "Refund terms apply once work has started",
+                        "Before work starts: Cancellation may be eligible for refund minus payment processing/admin fees",
+                        "After work starts: Refunds may be partial or unavailable depending on work completed",
+                        "Monthly/yearly plans: Future billing cancellable anytime",
                       ].map((item, idx) => (
                         <li key={idx} className="flex items-start gap-3 text-sm font-bold text-on-surface-variant">
                           <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
