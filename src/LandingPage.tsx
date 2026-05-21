@@ -355,7 +355,7 @@ const LandingPage = () => {
               </h2>
             </div>
             <a 
-              href={import.meta.env.VITE_GOOGLE_REVIEWS_URL || "#"} 
+              href="https://g.page/r/CcL50VdU9y65EAE/review" 
               target="_blank" 
               rel="noopener noreferrer"
               className="flex items-center gap-3 bg-white dark:bg-surface-container-high px-6 py-4 rounded-2xl border border-outline-variant/30 shadow-sm hover:border-primary/50 transition-all hover:scale-105"
@@ -420,7 +420,7 @@ const LandingPage = () => {
                     </div>
                   </div>
                   <a 
-                    href={import.meta.env.VITE_GOOGLE_REVIEWS_URL || "#"}
+                    href="https://g.page/r/CcL50VdU9y65EAE/review"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-2 bg-surface-container-low rounded-xl border border-outline-variant/20 hover:border-primary/50 transition-all group/link"
