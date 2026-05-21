@@ -15,8 +15,12 @@ logger = logging.getLogger(__name__)
 
 def google_login(request):
     next_url = request.GET.get('next')
+    action = request.GET.get('action') # 'login' or 'signup'
+    
     if next_url:
         request.session['auth_next_url'] = next_url
+    if action:
+        request.session['auth_action'] = action
     
     redirect_uri = request.build_absolute_uri(reverse('google_authorize'))
     return oauth.google.authorize_redirect(request, redirect_uri, nonce=secrets.token_hex(16))
@@ -24,19 +28,31 @@ def google_login(request):
 def google_authorize(request):
     try:
         next_url = request.session.pop('auth_next_url', None)
+        action = request.session.pop('auth_action', 'login')
+        
         token = oauth.google.authorize_access_token(request)
         user_info = token.get('userinfo')
         if not user_info:
             user_info = oauth.google.userinfo(token=token)
         
         email = user_info.get('email')
+        first_name = user_info.get('given_name', '')
+        last_name = user_info.get('family_name', '')
+
         if not email:
             error_redirect = next_url if next_url else f"{settings.FRONTEND_URL}/login"
             return redirect(f"{error_redirect}?error=Email not provided by Google")
 
         try:
             user = User.objects.get(email=email)
-            # User exists, login
+            
+            # If user exists but they clicked "Sign up", don't log them in, 
+            # just fill the form (per user request).
+            if action == 'signup':
+                signup_url = f"{settings.FRONTEND_URL}/signup?email={email}&first_name={first_name}&last_name={last_name}"
+                return redirect(signup_url)
+
+            # User exists and action is 'login', perform login
             refresh = RefreshToken.for_user(user)
             
             # Update social token
@@ -60,16 +76,8 @@ def google_authorize(request):
             return redirect(callback_url)
 
         except User.DoesNotExist:
-            # User does not exist, redirect to signup or original page with pre-filled data
-            first_name = user_info.get('given_name', '')
-            last_name = user_info.get('family_name', '')
-            
-            base_url = next_url if next_url else f"{settings.FRONTEND_URL}/signup"
-            # Handle potential existing query params in next_url
-            sep = '&' if '?' in base_url else '?'
-            signup_url = f"{base_url}{sep}email={email}&first_name={first_name}&last_name={last_name}"
-            if first_name and last_name:
-                signup_url += f"&name={first_name} {last_name}"
+            # User does not exist, redirect to signup with pre-filled data
+            signup_url = f"{settings.FRONTEND_URL}/signup?email={email}&first_name={first_name}&last_name={last_name}"
             return redirect(signup_url)
 
     except Exception as e:
