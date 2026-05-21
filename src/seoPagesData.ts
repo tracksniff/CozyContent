@@ -202,7 +202,7 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
       "Professional website design for plumbers in Luton. Modern, fast-loading sites from £59 per month.",
     industry: "Plumbing",
     location: "Luton",
-    heroTitle: "Plumber Website Design in Luton",
+    heroTitle: "Plumber Website Design Luton",
     heroSubtitle: "Turn Google searches into booked jobs — without lifting a finger",
     checklist: [
       "No upfront cost",
@@ -265,10 +265,10 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
     keyword: "Web design for plumbers in Bedford",
     metaTitle: "Plumber Website Design Bedford | Affordable & Fast",
     metaDescription:
-      "Professional website design for plumbers in Bedford. Modern, fast-loading sites from £59 per month.",
+      "Affordable websites for plumbers in Bedford. We build and manage your site so you can focus on jobs.",
     industry: "Plumbing",
     location: "Bedford",
-    heroTitle: "Plumber Website Design in Bedford",
+    heroTitle: "Plumber Website Design Bedford",
     heroSubtitle: "Build local trust and win more jobs across Bedfordshire",
     checklist: ["No upfront cost", "Fully managed", "High-conversion design"],
     sections: [
@@ -315,12 +315,12 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "plumber-web-design-dunstable": {
     url: "plumber-web-design-dunstable",
     keyword: "Web design for plumbers in Dunstable",
-    metaTitle: "Plumber Website Design Dunstable | Launch for £59/mo",
+    metaTitle: "Plumber Website Design Dunstable | Get More Leads",
     metaDescription:
-      "Professional website design for plumbers in Dunstable. Fast, reliable and local. From £59 per month.",
+      "Outdated plumbing website? We design modern sites for plumbers in Dunstable. Fully managed, fast turnaround.",
     industry: "Plumbing",
     location: "Dunstable",
-    heroTitle: "Plumber Website Design in Dunstable",
+    heroTitle: "Plumber Website Design Dunstable",
     heroSubtitle: "Dominate the local Dunstable market with a modern website",
     checklist: ["No upfront cost", "Managed launch", "Lead-focused design"],
     sections: [
@@ -366,12 +366,12 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "plumber-web-design-milton-keynes": {
     url: "plumber-web-design-milton-keynes",
     keyword: "Web design for plumbers in Milton Keynes",
-    metaTitle: "Plumber Website Design Milton Keynes | Lead-Gen Experts",
+    metaTitle: "Plumber Website Design Milton Keynes | ",
     metaDescription:
-      "Professional website design for plumbers in Milton Keynes. High-performance sites from £59 per month.",
+      "Get a high-converting plumber website in Milton Keynes. Fully managed with updates included",
     industry: "Plumbing",
     location: "Milton Keynes",
-    heroTitle: "Plumber Website Design in Milton Keynes",
+    heroTitle: "Plumber Website Design Milton Keynes",
     heroSubtitle: "Modern websites for the UK's fastest growing city",
     checklist: ["No upfront cost", "SEO-optimized", "Fully managed"],
     sections: [
@@ -412,12 +412,12 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "plumber-web-design-st-albans": {
     url: "plumber-web-design-st-albans",
     keyword: "Web design for plumbers in St Albans",
-    metaTitle: "Plumber Website Design St Albans | Premium Service",
+    metaTitle: "Plumber Website Design St Albans | Modern & Affordable",
     metaDescription:
-      "Professional website design for plumbers in St Albans. High-quality, managed sites from £59 per month.",
+      "We build modern websites for plumbers in St Albans. Improve your online presence and win more jobs.",
     industry: "Plumbing",
     location: "St Albans",
-    heroTitle: "Plumber Website Design in St Albans",
+    heroTitle: "Plumber Website Design St Albans",
     heroSubtitle: "A premium online presence for St Albans' best plumbers",
     checklist: ["No upfront cost", "Premium design", "Local SEO built-in"],
     sections: [
@@ -464,12 +464,12 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "plumber-web-design-watford": {
     url: "plumber-web-design-watford",
     keyword: "Web design for plumbers in Watford",
-    metaTitle: "Plumber Website Design Watford | Launch for £59/mo",
+    metaTitle: "Plumber Website Design Watford | Done For You",
     metaDescription:
-      "Professional website design for plumbers in Watford. Fast, local and reliable. From £59 per month.",
+      "Done-for-you plumber websites in Watford. We handle everything so you don’t have to.",
     industry: "Plumbing",
     location: "Watford",
-    heroTitle: "Plumber Website Design in Watford",
+    heroTitle: "Plumber Website Design Watford",
     heroSubtitle: "Win more local jobs across Watford and Southwest Herts",
     checklist: ["No upfront cost", "Lead-generation focus", "Fully managed"],
     sections: [
@@ -517,9 +517,9 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "electrician-web-design": {
     url: "electrician-web-design",
     keyword: "Web design for electricians",
-    metaTitle: "Website Design for Electricians | From £59 Per Month",
+    metaTitle: "Website Design for Electricians | Get More Leads",
     metaDescription:
-      "High-converting websites for electricians. Modern, fast and fully managed from £59 per month. Get more local electrical jobs today.",
+      "We build high-converting websites for electricians built to generate enquiries. Fully managed from £59 per month. Start getting more jobs today.",
     industry: "Electrical",
     heroTitle: "Website Design for Electricians",
     heroSubtitle: "Build Trust and Win More Local Electrical Contracts",
@@ -583,10 +583,10 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
     keyword: "Web design for electricians in Luton",
     metaTitle: "Electrician Website Design Luton | From £59 per month",
     metaDescription:
-      "Professional website design for electricians in Luton. Modern, lead-gen sites from £59 per month.",
+      "Professional websites for electricians in Luton. Fast, mobile-friendly and built to generate leads. From £59 per month.",
     industry: "Electrical",
     location: "Luton",
-    heroTitle: "Electrician Website Design in Luton",
+    heroTitle: "Electrician Website Design Luton",
     heroSubtitle: "Professional websites for Luton's best electrical contractors",
     checklist: ["No upfront cost", "Lead-focused build", "Fully managed"],
     sections: [
@@ -633,12 +633,12 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "electrician-web-design-bedford": {
     url: "electrician-web-design-bedford",
     keyword: "Web design for electricians in Bedford",
-    metaTitle: "Electrician Website Design Bedford | Fast & Professional",
+    metaTitle: "Electrician Website Design Bedford | Get More Jobs",
     metaDescription:
-      "Professional website design for electricians in Bedford. Lead-generating sites from £59 per month.",
+      "Need more electrician leads in Bedford? We design high-converting websites with low upfront cost.",
     industry: "Electrical",
     location: "Bedford",
-    heroTitle: "Electrician Website Design in Bedford",
+    heroTitle: "Electrician Website Design Bedford",
     heroSubtitle: "High-performance websites for Bedfordshire's electricians",
     checklist: ["No upfront cost", "Managed launch", "Lead-focused design"],
     sections: [
@@ -684,12 +684,12 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "electrician-web-design-dunstable": {
     url: "electrician-web-design-dunstable",
     keyword: "Web design for electricians in Dunstable",
-    metaTitle: "Electrician Website Design Dunstable | Launch for £59/mo",
+    metaTitle: "Electrician Website Design Dunstable | Affordable & Fast",
     metaDescription:
-      "Professional website design for electricians in Dunstable. Fast, reliable and local. From £59 per month.",
+      "Affordable electrician websites in Dunstable. We design, build and manage everything for you. Low upfront cost.",
     industry: "Electrical",
     location: "Dunstable",
-    heroTitle: "Electrician Website Design in Dunstable",
+    heroTitle: "Electrician Website Design Dunstable",
     heroSubtitle: "Win more electrical work across Dunstable and LU postcode areas",
     checklist: ["No upfront cost", "Managed launch", "Lead-focused build"],
     sections: [
@@ -735,12 +735,12 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "electrician-web-design-milton-keynes": {
     url: "electrician-web-design-milton-keynes",
     keyword: "Web design for electricians in Milton Keynes",
-    metaTitle: "Electrician Website Design Milton Keynes | Lead-Gen Experts",
+    metaTitle: "Electrician Website Design Milton Keynes | Fast Setup",
     metaDescription:
-      "Professional website design for electricians in Milton Keynes. High-performance sites from £59 per month.",
+      "Get a modern electrician website in Milton Keynes quickly. Fully managed and built to convert. Low upfront cost.",
     industry: "Electrical",
     location: "Milton Keynes",
-    heroTitle: "Electrician Website Design in Milton Keynes",
+    heroTitle: "Electrician Website Design Milton Keynes",
     heroSubtitle: "Modern websites for Milton Keynes' best electrical contractors",
     checklist: ["No upfront cost", "SEO-optimized", "Fully managed"],
     sections: [
@@ -782,12 +782,12 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "electrician-web-design-st-albans": {
     url: "electrician-web-design-st-albans",
     keyword: "Web design for electricians in St Albans",
-    metaTitle: "Electrician Website Design St Albans | Premium Service",
+    metaTitle: "Electrician Website Design St Albans | Lead Generation",
     metaDescription:
-      "Professional website design for electricians in St Albans. High-quality, managed sites from £59 per month.",
+      "We create lead-generating websites for electricians in St Albans. Simple pricing, low upfront cost.",
     industry: "Electrical",
     location: "St Albans",
-    heroTitle: "Electrician Website Design in St Albans",
+    heroTitle: "Electrician Website Design St Albans",
     heroSubtitle: "A premium online presence for St Albans' electrical experts",
     checklist: ["No upfront cost", "Premium design", "Local SEO built-in"],
     sections: [
@@ -834,12 +834,12 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "electrician-web-design-watford": {
     url: "electrician-web-design-watford",
     keyword: "Web design for electricians in Watford",
-    metaTitle: "Electrician Website Design Watford | Launch for £59/mo",
+    metaTitle: "Electrician Website Design Watford | Done For You",
     metaDescription:
-      "Professional website design for electricians in Watford. Fast, local and reliable. From £59 per month.",
+      "Done-for-you websites for electricians in Watford. No hassle, low upfront cost. Start getting more enquiries.",
     industry: "Electrical",
     location: "Watford",
-    heroTitle: "Electrician Website Design in Watford",
+    heroTitle: "Electrician Website Design Watford",
     heroSubtitle: "Win more electrical work across Watford and Southwest Herts",
     checklist: ["No upfront cost", "Lead-generation focus", "Fully managed"],
     sections: [
@@ -887,9 +887,9 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "roofer-web-design": {
     url: "roofer-web-design",
     keyword: "Web design for roofers",
-    metaTitle: "Website Design for Roofers | From £59 Per Month",
+    metaTitle: "Website Design for Roofers | More Enquiries",
     metaDescription:
-      "High-converting websites for roofers. Modern, fast and fully managed from £59 per month. Get more local roofing jobs today.",
+      "We design websites for roofing companies that convert visitors into leads. Modern, fast and fully managed from £59 per month.",
     industry: "Roofing",
     heroTitle: "Website Design for Roofers",
     heroSubtitle: "Build Local Trust and Generate More Roofing Leads",
@@ -951,12 +951,12 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "roofer-web-design-luton": {
     url: "roofer-web-design-luton",
     keyword: "Web design for roofers in Luton",
-    metaTitle: "Roofer Website Design Luton | From £59 per month",
+    metaTitle: "Roofer Website Design Luton | Get More Enquiries",
     metaDescription:
-      "Professional website design for roofers in Luton. Modern, lead-gen sites from £59 per month.",
+      "We design high-converting roofing websites in Luton. Modern, fast and built to generate leads. Tiny upfront cost.",
     industry: "Roofing",
     location: "Luton",
-    heroTitle: "Roofer Website Design in Luton",
+    heroTitle: "Roofer Website Design Luton",
     heroSubtitle: "Professional websites for Luton's best roofing contractors",
     checklist: ["No upfront cost", "Lead-focused build", "Fully managed"],
     sections: [
@@ -1002,12 +1002,12 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "roofer-web-design-bedford": {
     url: "roofer-web-design-bedford",
     keyword: "Web design for roofers in Bedford",
-    metaTitle: "Roofer Website Design Bedford | Fast & Professional",
+    metaTitle: "Roofer Website Design Bedford | Affordable & Modern",
     metaDescription:
-      "Professional website design for roofers in Bedford. Lead-generating sites from £59 per month.",
+      "Professional roofing websites in Bedford. We handle everything so you can focus on jobs. Low upfront cost.",
     industry: "Roofing",
     location: "Bedford",
-    heroTitle: "Roofer Website Design in Bedford",
+    heroTitle: "Roofer Website Design Bedford",
     heroSubtitle: "High-performance websites for Bedfordshire's roofers",
     checklist: ["No upfront cost", "Managed launch", "Lead-focused design"],
     sections: [
@@ -1053,12 +1053,12 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "roofer-web-design-dunstable": {
     url: "roofer-web-design-dunstable",
     keyword: "Web design for roofers in Dunstable",
-    metaTitle: "Roofer Website Design Dunstable | Launch for £59/mo",
+    metaTitle: "Roofer Website Design Dunstable | Affordable Sites",
     metaDescription:
-      "Professional website design for roofers in Dunstable. Fast, reliable and local. From £59 per month.",
+      "Affordable website design for roofers in Dunstable. Upgrade your outdated site and win more work.",
     industry: "Roofing",
     location: "Dunstable",
-    heroTitle: "Roofer Website Design in Dunstable",
+    heroTitle: "Roofer Website Design Dunstable",
     heroSubtitle: "Win more roofing work across Dunstable and LU postcode areas",
     checklist: ["No upfront cost", "Managed launch", "Lead-focused build"],
     sections: [
@@ -1104,12 +1104,12 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "roofer-web-design-milton-keynes": {
     url: "roofer-web-design-milton-keynes",
     keyword: "Web design for roofers in Milton Keynes",
-    metaTitle: "Roofer Website Design Milton Keynes | Lead-Gen Experts",
+    metaTitle: "Roofer Website Design Milton Keynes | Fast & Modern",
     metaDescription:
-      "Professional website design for roofers in Milton Keynes. High-performance sites from £59 per month.",
+      "Modern roofing websites in Milton Keynes built to convert visitors into customers. From £59 per month.",
     industry: "Roofing",
     location: "Milton Keynes",
-    heroTitle: "Roofer Website Design in Milton Keynes",
+    heroTitle: "Roofer Website Design Milton Keynes",
     heroSubtitle: "Modern websites for Milton Keynes' best roofing contractors",
     checklist: ["No upfront cost", "SEO-optimized", "Fully managed"],
     sections: [
@@ -1150,12 +1150,12 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "roofer-web-design-st-albans": {
     url: "roofer-web-design-st-albans",
     keyword: "Web design for roofers in St Albans",
-    metaTitle: "Roofer Website Design St Albans | Premium Service",
+    metaTitle: "Roofer Website Design St Albans | More Leads",
     metaDescription:
-      "Professional website design for roofers in St Albans. High-quality, managed sites from £59 per month.",
+      "We help roofers in St Albans get more leads with professional websites. Simple pricing, fast turnaround.",
     industry: "Roofing",
     location: "St Albans",
-    heroTitle: "Roofer Website Design in St Albans",
+    heroTitle: "Roofer Website Design St Albans",
     heroSubtitle: "A premium online presence for St Albans' roofing experts",
     checklist: ["No upfront cost", "Premium design", "Local SEO built-in"],
     sections: [
@@ -1202,12 +1202,12 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "roofer-web-design-watford": {
     url: "roofer-web-design-watford",
     keyword: "Web design for roofers in Watford",
-    metaTitle: "Roofer Website Design Watford | Launch for £59/mo",
+    metaTitle: "Roofer Website Design Watford | Done For You Service",
     metaDescription:
-      "Professional website design for roofers in Watford. Fast, local and reliable. From £59 per month.",
+      "Done-for-you roofing websites in Watford. We build, design and manage your site. Low upfront cost.",
     industry: "Roofing",
     location: "Watford",
-    heroTitle: "Roofer Website Design in Watford",
+    heroTitle: "Roofer Website Design Watford",
     heroSubtitle: "Win more roofing work across Watford and Southwest Herts",
     checklist: ["No upfront cost", "Lead-generation focus", "Fully managed"],
     sections: [
@@ -1255,9 +1255,9 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "locksmith-web-design": {
     url: "locksmith-web-design",
     keyword: "Web design for locksmiths",
-    metaTitle: "Website Design for Locksmiths | From £59 Per Month",
+    metaTitle: "Website Design for Locksmiths | Get More Calls",
     metaDescription:
-      "High-converting websites for locksmiths. Modern, fast and fully managed from £59 per month. Get more local locksmith jobs today.",
+      "Lead-focused websites for locksmiths. Built to capture urgent enquiries and drive more calls. Low upfront cost, fully managed.",
     industry: "Locksmith",
     heroTitle: "Website Design for Locksmiths",
     heroSubtitle: "Build Trust and Win More Local Locksmith Jobs",
@@ -1319,12 +1319,12 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "locksmith-web-design-luton": {
     url: "locksmith-web-design-luton",
     keyword: "Web design for locksmiths in Luton",
-    metaTitle: "Locksmith Website Design Luton | From £59 per month",
+    metaTitle: "Locksmith Website Design Luton | 24/7 Lead Ready",
     metaDescription:
-      "Professional website design for locksmiths in Luton. Modern, lead-gen sites from £59 per month.",
+      "Professional locksmith websites in Luton designed to capture urgent leads. Fast, modern and mobile-friendly.",
     industry: "Locksmith",
     location: "Luton",
-    heroTitle: "Locksmith Website Design in Luton",
+    heroTitle: "Locksmith Website Design Luton",
     heroSubtitle: "Professional websites for Luton's most reliable locksmiths",
     checklist: ["No upfront cost", "Emergency-focused build", "Fully managed"],
     sections: [
@@ -1370,12 +1370,12 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "locksmith-web-design-bedford": {
     url: "locksmith-web-design-bedford",
     keyword: "Web design for locksmiths in Bedford",
-    metaTitle: "Locksmith Website Design Bedford | Fast & Professional",
+    metaTitle: "Locksmith Website Design Bedford | Get Calls Fast",
     metaDescription:
-      "Professional website design for locksmiths in Bedford. Lead-generating sites from £59 per month.",
+      "Need more locksmith calls in Bedford? We build high-converting websites with no upfront cost.",
     industry: "Locksmith",
     location: "Bedford",
-    heroTitle: "Locksmith Website Design in Bedford",
+    heroTitle: "Locksmith Website Design Bedford",
     heroSubtitle: "High-performance websites for Bedfordshire's locksmiths",
     checklist: ["No upfront cost", "Managed launch", "Lead-focused design"],
     sections: [
@@ -1421,9 +1421,9 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "locksmith-web-design-dunstable": {
     url: "locksmith-web-design-dunstable",
     keyword: "Web design for locksmiths in Dunstable",
-    metaTitle: "Locksmith Website Design Dunstable | Launch for £59/mo",
+    metaTitle: "Locksmith Website Design Dunstable | Affordable Sites",
     metaDescription:
-      "Professional website design for locksmiths in Dunstable. Fast, reliable and local. From £59 per month.",
+      "Affordable locksmith websites in Dunstable. Designed to convert visitors into customers. Low upfront cost.",
     industry: "Locksmith",
     location: "Dunstable",
     heroTitle: "Locksmith Website Design in Dunstable",
@@ -1472,9 +1472,9 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "locksmith-web-design-milton-keynes": {
     url: "locksmith-web-design-milton-keynes",
     keyword: "Web design for locksmiths in Milton Keynes",
-    metaTitle: "Locksmith Website Design Milton Keynes | Lead-Gen Experts",
+    metaTitle: "Locksmith Website Design Milton Keynes | Fast Setup",
     metaDescription:
-      "Professional website design for locksmiths in Milton Keynes. High-performance sites from £59 per month.",
+      "Get a modern locksmith website in Milton Keynes quickly. Built to generate calls and enquiries.",
     industry: "Locksmith",
     location: "Milton Keynes",
     heroTitle: "Locksmith Website Design in Milton Keynes",
@@ -1518,9 +1518,9 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "locksmith-web-design-st-albans": {
     url: "locksmith-web-design-st-albans",
     keyword: "Web design for locksmiths in St Albans",
-    metaTitle: "Locksmith Website Design St Albans | Premium Service",
+    metaTitle: "Locksmith Website Design St Albans | Lead Focused",
     metaDescription:
-      "Professional website design for locksmiths in St Albans. High-quality, managed sites from £59 per month.",
+      "Lead-focused locksmith websites in St Albans. We design and manage everything for you.",
     industry: "Locksmith",
     location: "St Albans",
     heroTitle: "Locksmith Website Design in St Albans",
@@ -1570,9 +1570,9 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "locksmith-web-design-watford": {
     url: "locksmith-web-design-watford",
     keyword: "Web design for locksmiths in Watford",
-    metaTitle: "Locksmith Website Design Watford | Launch for £59/mo",
+    metaTitle: "Locksmith Website Design Watford | Done For You",
     metaDescription:
-      "Professional website design for locksmiths in Watford. Fast, local and reliable. From £59 per month.",
+      "Done-for-you locksmith websites in Watford. Low upfront cost. Start getting more calls today.",
     industry: "Locksmith",
     location: "Watford",
     heroTitle: "Locksmith Website Design in Watford",
@@ -1623,9 +1623,9 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "cleaning-company-web-design": {
     url: "cleaning-company-web-design",
     keyword: "Web design for cleaning companies",
-    metaTitle: "Website Design for Cleaning Companies | From £59 Per Month",
+    metaTitle: "Website Design for Cleaning Companies | More Bookings",
     metaDescription:
-      "High-converting websites for cleaning companies. Modern, fast and fully managed from £59 per month. Get more cleaning contracts today.",
+      "We create websites for cleaning businesses that drive bookings. Simple, affordable and fully managed from £59 per month.",
     industry: "Cleaning",
     heroTitle: "Website Design for Cleaning Companies",
     heroSubtitle: "Build Trust and Win More Local Cleaning Contracts",
@@ -1687,9 +1687,9 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "cleaning-company-web-design-luton": {
     url: "cleaning-company-web-design-luton",
     keyword: "Web design for cleaning companies in Luton",
-    metaTitle: "Cleaning Company Website Design Luton | From £59 per month",
+    metaTitle: "Cleaning Company Website Design Luton | £59 Per Month",
     metaDescription:
-      "Professional website design for cleaning companies in Luton. Modern, lead-gen sites from £59 per month.",
+      "Professional websites for cleaning companies in Luton. Get more bookings with a modern site. Low upfront cost.",
     industry: "Cleaning",
     location: "Luton",
     heroTitle: "Cleaning Company Website Design in Luton",
@@ -1738,9 +1738,9 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "cleaning-company-web-design-bedford": {
     url: "cleaning-company-web-design-bedford",
     keyword: "Web design for cleaning companies in Bedford",
-    metaTitle: "Cleaning Company Website Design Bedford | Fast & Professional",
+    metaTitle: "Cleaning Website Design Bedford | More Bookings",
     metaDescription:
-      "Professional website design for cleaning companies in Bedford. Lead-generating sites from £59 per month.",
+      "We build websites for cleaning businesses in Bedford that generate more bookings.",
     industry: "Cleaning",
     location: "Bedford",
     heroTitle: "Cleaning Company Website Design in Bedford",
@@ -1789,9 +1789,9 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "cleaning-company-web-design-dunstable": {
     url: "cleaning-company-web-design-dunstable",
     keyword: "Web design for cleaning companies in Dunstable",
-    metaTitle: "Cleaning Company Website Design Dunstable | Launch for £59/mo",
+    metaTitle: "Cleaning Website Design Dunstable | Affordable & Fast",
     metaDescription:
-      "Professional website design for cleaning companies in Dunstable. Fast, reliable and local. From £59 per month.",
+      "Affordable websites for cleaning companies in Dunstable. Fully managed and easy to update.",
     industry: "Cleaning",
     location: "Dunstable",
     heroTitle: "Cleaning Company Website Design in Dunstable",
@@ -1840,9 +1840,9 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "cleaning-company-web-design-milton-keynes": {
     url: "cleaning-company-web-design-milton-keynes",
     keyword: "Web design for cleaning companies in Milton Keynes",
-    metaTitle: "Cleaning Company Website Design Milton Keynes | Lead-Gen Experts",
+    metaTitle: "Cleaning Website Design Milton Keynes | Fast Setup",
     metaDescription:
-      "Professional website design for cleaning companies in Milton Keynes. High-performance sites from £59 per month.",
+      "Get a modern cleaning business website in Milton Keynes. Designed to convert visitors into customers.",
     industry: "Cleaning",
     location: "Milton Keynes",
     heroTitle: "Cleaning Company Website Design in Milton Keynes",
@@ -1886,9 +1886,9 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "cleaning-company-web-design-st-albans": {
     url: "cleaning-company-web-design-st-albans",
     keyword: "Web design for cleaning companies in St Albans",
-    metaTitle: "Cleaning Company Website Design St Albans | Premium Service",
+    metaTitle: "Cleaning Website Design St Albans | More Leads",
     metaDescription:
-      "Professional website design for cleaning companies in St Albans. High-quality, managed sites from £59 per month.",
+      "We help cleaning companies in St Albans get more leads with professional websites.",
     industry: "Cleaning",
     location: "St Albans",
     heroTitle: "Cleaning Company Website Design in St Albans",
@@ -1922,7 +1922,7 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
       {
         title: "Serving St Albans and the District",
         description:
-          "We make sure your cleaning business is seen across the entire St Albans area, including Harpenden and neighboring villages.",
+          "We make sure your cleaning business is visible across the entire St Albans area, including Harpenden and neighboring villages.",
       },
       {
         title: "The St Albans Roadmap",
@@ -1938,9 +1938,9 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "cleaning-company-web-design-watford": {
     url: "cleaning-company-web-design-watford",
     keyword: "Web design for cleaning companies in Watford",
-    metaTitle: "Cleaning Company Website Design Watford | Launch for £59/mo",
+    metaTitle: "Cleaning Website Design Watford | Done For You",
     metaDescription:
-      "Professional website design for cleaning companies in Watford. Fast, local and reliable. From £59 per month.",
+      "Done-for-you websites for cleaning businesses in Watford. £59 per month, fully managed.",
     industry: "Cleaning",
     location: "Watford",
     heroTitle: "Cleaning Company Website Design in Watford",
@@ -1991,9 +1991,9 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "removals-web-design": {
     url: "removals-web-design",
     keyword: "Web design for removal companies",
-    metaTitle: "Website Design for Removal Companies | From £59 Per Month",
+    metaTitle: "Website Design for Removal Companies | Get More Leads",
     metaDescription:
-      "High-converting websites for removal companies. Modern, fast and fully managed from £59 per month. Get more removals jobs today.",
+      "High-converting websites for removals businesses. We design, build and manage everything. Low upfront cost, start today.",
     industry: "Removals",
     heroTitle: "Website Design for Removal Companies",
     heroSubtitle: "Build Trust and Win More Local Removal Contracts",
@@ -2055,9 +2055,9 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "removals-web-design-luton": {
     url: "removals-web-design-luton",
     keyword: "Web design for removal companies in Luton",
-    metaTitle: "Removals Website Design Luton | From £59 per month",
+    metaTitle: "Removals Website Design Luton | Get More Enquiries",
     metaDescription:
-      "Professional website design for removal companies in Luton. Modern, lead-gen sites from £59 per month.",
+      "We build high-converting websites for removal companies in Luton. Get more enquiries today.",
     industry: "Removals",
     location: "Luton",
     heroTitle: "Removals Website Design in Luton",
@@ -2106,9 +2106,9 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "removals-web-design-bedford": {
     url: "removals-web-design-bedford",
     keyword: "Web design for removal companies in Bedford",
-    metaTitle: "Removals Website Design Bedford | Fast & Professional",
+    metaTitle: "Removals Website Design Bedford | Low-Cost Build",
     metaDescription:
-      "Professional website design for removal companies in Bedford. Lead-generating sites from £59 per month.",
+      "Affordable websites for removal companies in Bedford. Fully managed and built to convert.",
     industry: "Removals",
     location: "Bedford",
     heroTitle: "Removals Website Design in Bedford",
@@ -2157,9 +2157,9 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "removals-web-design-dunstable": {
     url: "removals-web-design-dunstable",
     keyword: "Web design for removal companies in Dunstable",
-    metaTitle: "Removals Website Design Dunstable | Launch for £59/mo",
+    metaTitle: "Removals Website Design Dunstable | More Bookings",
     metaDescription:
-      "Professional website design for removal companies in Dunstable. Fast, reliable and local. From £59 per month.",
+      "Get more bookings with a modern removals website in Dunstable. Low upfront cost.",
     industry: "Removals",
     location: "Dunstable",
     heroTitle: "Removals Website Design in Dunstable",
@@ -2208,9 +2208,9 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "removals-web-design-milton-keynes": {
     url: "removals-web-design-milton-keynes",
     keyword: "Web design for removal companies in Milton Keynes",
-    metaTitle: "Removals Website Design Milton Keynes | Lead-Gen Experts",
+    metaTitle: "Removals Website Design Milton Keynes | Fast Setup",
     metaDescription:
-      "Professional website design for removal companies in Milton Keynes. High-performance sites from £59 per month.",
+      "Professional removals websites in Milton Keynes. Designed to generate leads quickly.",
     industry: "Removals",
     location: "Milton Keynes",
     heroTitle: "Removals Website Design in Milton Keynes",
@@ -2255,9 +2255,9 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "removals-web-design-st-albans": {
     url: "removals-web-design-st-albans",
     keyword: "Web design for removal companies in St Albans",
-    metaTitle: "Removals Website Design St Albans | Premium Service",
+    metaTitle: "Removals Website Design St Albans | Lead Focused",
     metaDescription:
-      "Professional website design for removal companies in St Albans. High-quality, managed sites from £59 per month.",
+      "Lead-focused websites for removal companies in St Albans. Simple pricing, low upfront cost.",
     industry: "Removals",
     location: "St Albans",
     heroTitle: "Removals Website Design in St Albans",
@@ -2307,9 +2307,9 @@ export const seoPagesData: Record<string, SEOPageInfo> = attachData({
   "removals-web-design-watford": {
     url: "removals-web-design-watford",
     keyword: "Web design for removal companies in Watford",
-    metaTitle: "Removals Website Design Watford | Launch for £59/mo",
+    metaTitle: "Removals Website Design Watford | Done For You Service",
     metaDescription:
-      "Professional website design for removal companies in Watford. Fast, local and reliable. From £59 per month.",
+      "Done-for-you removal websites in Watford. We handle everything so you don’t have to.",
     industry: "Removals",
     location: "Watford",
     heroTitle: "Removals Website Design in Watford",
