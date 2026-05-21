@@ -21,46 +21,44 @@ export interface SEOPageInfo {
 }
 
 // Plumbers
-import p1 from "./assets/plumbers/360_F_103795796_0hf7w5eRmajonHd1bUz5MxyFuU6MeneU.webp";
-import p2 from "./assets/plumbers/360_F_120813781_9bGwgW7aSUvXY5oxmhRT9jJ9xIArTvAT.webp";
-import p3 from "./assets/plumbers/hands-plumber-work-bathroom-plumbing-repair-service-as-assemble-install-concept-109778934.webp";
-import p4 from "./assets/plumbers/hands-plumber-work-bathroom-plumbing-repair-service-as-hands-plumber-work-bathroom-plumbing-repair-service-109188888.webp";
-import p5 from "./assets/plumbers/plumber-uses-wrench-repair-water-260nw-2466456603.webp";
+import p1 from "./assets/plumbers/asian-plumber-blue-overalls-clearing-blockage-drain.jpg";
+import p2 from "./assets/plumbers/household-repair-middle-aged-man-inspecting-pipe-touching-hand-sink-stylish-modern-kitchen.jpg";
+import p3 from "./assets/plumbers/male-plumber-working-fix-problems-client-s-house.jpg";
+import p4 from "./assets/plumbers/man-installs-heating-system-house-checks-pipes-with-wrench.jpg";
+import p5 from "./assets/plumbers/plumber-man-fixing-kitchen-sink.jpg";
 
-// Cleaners
-import c1 from "./assets/cleaners/commercial-office-cleaners.webp";
-import c2 from "./assets/cleaners/depositphotos_697067642-stock-photo-team-multicultural-cleaners-wipes-tables.webp";
-import c3 from "./assets/cleaners/group-of-professional-cleaners-getting-a-brief-on-their-job.webp";
-import c4 from "./assets/cleaners/group-of-professional-cleaners-working-at-an-office-wearing-facemasks-during-the-pandemic.webp";
-import c5 from "./assets/cleaners/male-female-cleaners-cleaning-office-table-cleaners-cleaning-computer-office-desk-high-angle-view-211309146.webp";
+// Industry Images (Pexels URLs)
+const c1 = "https://images.pexels.com/photos/2724749/pexels-photo-2724749.jpeg";
+const c2 = "https://images.pexels.com/photos/4099467/pexels-photo-4099467.jpeg";
+const c3 = "https://images.pexels.com/photos/4098524/pexels-photo-4098524.jpeg";
+const c4 = "https://images.pexels.com/photos/4098580/pexels-photo-4098580.jpeg";
+const c5 = "https://images.pexels.com/photos/6195129/pexels-photo-6195129.jpeg";
 
 // Electricians
-import e1 from "./assets/electritian/electrician-contractor-cable-electrician-contractor-electric-cable-closeup-photo-installing-whole-new-system-129577401.webp";
-import e2 from "./assets/electritian/electrician-is-stripping-electrical-wires-in-a-plastic-box-on-a-wooden-wall-to-install-the-electrical-outlet-free-photo.webp";
-import e3 from "./assets/electritian/electrician-repairs-electrical-component-using-tools-seated-ground-outdoors-electrician-works-electrical-device-442542824.webp";
-import e4 from "./assets/electritian/stock-photo-cropped-view-electrician-using-digital-tablet-blank-screen-switchboard.webp";
-import e5 from "./assets/electritian/young-electrician-working-in-a-residential-electrical-installation.webp";
+import e1 from "./assets/electrician/electrical-technician-working-switchboard-with-fuses.jpg";
+import e2 from "./assets/electrician/male-electrician-working-electrical-panel-male-electrician-overalls.jpg";
+import e3 from "./assets/electrician/male-electrician-works-switchboard-with-electrical-connecting-cable (1).jpg";
+import e4 from "./assets/electrician/male-electrician-works-switchboard-with-electrical-connecting-cable.jpg";
+import e5 from "./assets/electrician/man-electrical-technician-working-switchboard-with-fuses.jpg";
 
-// Locksmiths
-import l1 from "./assets/locksmiths/360_F_1828331092_hapQtxiph0sLEddY3BF1EvJjQW6dBbvU.webp";
-import l2 from "./assets/locksmiths/360_F_1964339855_TXMPQlheCh7K2iX7hyfnaOi7AYW16oqz.webp";
-import l3 from "./assets/locksmiths/360_F_440464916_bUHOThJpEuyUyLWS6cIC4HWkteVsNAup.webp";
-import l4 from "./assets/locksmiths/door-lock-service-locksmith-working-in-red-uniform.webp";
-import l5 from "./assets/locksmiths/premium_photo-1683134324677-698a7c2d5246.webp";
+const l1 = "https://images.pexels.com/photos/101808/pexels-photo-101808.jpeg";
+const l2 = "https://images.pexels.com/photos/4239113/pexels-photo-4239113.jpeg";
+const l3 = "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg";
+const l4 = "https://images.pexels.com/photos/4246120/pexels-photo-4246120.jpeg"; // Note: Shared ID check
+const l5 = "https://images.pexels.com/photos/4246202/pexels-photo-4246202.jpeg";
 
-// Removals
-import r1 from "./assets/removals/695f820774ebd4dcd6b9ac8b_23-07_1800GotJunk_LH_00526 1 (3).webp";
-import r2 from "./assets/removals/eco-friendly-junk-removal.webp";
-import r3 from "./assets/removals/gyspowouvyo4d7iqahmg.webp";
-import r4 from "./assets/removals/ra1au6sip49xhlobih7a.webp";
-import r5 from "./assets/removals/removals2.webp";
+const r1 = "https://images.pexels.com/photos/4569340/pexels-photo-4569340.jpeg";
+const r2 = "https://images.pexels.com/photos/4246120/pexels-photo-4246120.jpeg";
+const r3 = "https://images.pexels.com/photos/4246011/pexels-photo-4246011.jpeg";
+const r4 = "https://images.pexels.com/photos/4246091/pexels-photo-4246091.jpeg";
+const r5 = "https://images.pexels.com/photos/4246119/pexels-photo-4246119.jpeg";
 
 // Roofers
-import ro1 from "./assets/roofers/360_F_1038739481_dOYcB2oAd7sRLGkAEWHuELxjQutBQhNW.webp";
-import ro2 from "./assets/roofers/360_F_13280377_pABfJ1qwIM4ZQs2enWI01YA5Jbzt2y1i.webp";
-import ro3 from "./assets/roofers/dangerous-jobs.webp";
-import ro4 from "./assets/roofers/roofers-installing.webp";
-import ro5 from "./assets/roofers/roofers-working-roof-house-h-roofers-working-roof-house-393065710.webp";
+import ro1 from "./assets/roofers/bottom-view-worker-sitting-brick-wall.jpg";
+import ro2 from "./assets/roofers/construction-worker.jpg";
+import ro3 from "./assets/roofers/man-working-roof-front-view.jpg";
+import ro4 from "./assets/roofers/people-renovating-house-concept.jpg";
+import ro5 from "./assets/roofers/portrait-construction-worker-standing-rooftops-high-silos-storage-tanks.jpg";
 
 const industryImages = {
   Plumbing: [p1, p2, p3, p4, p5],

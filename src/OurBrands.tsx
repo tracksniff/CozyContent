@@ -17,7 +17,7 @@ const OurBrands = () => {
       ],
       footer: 'A utility-focused product designed for scale and automation.',
       icon: <Music className="w-8 h-8 text-primary" />,
-      imageUrl: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=2070&auto=format&fit=crop',
+      imageUrl: 'https://images.pexels.com/photos/144428/pexels-photo-144428.jpeg',
       color: 'bg-primary/10',
       link: 'https://tracksniff.com/'
     },
@@ -32,7 +32,7 @@ const OurBrands = () => {
       ],
       footer: 'A content platform built for clarity and consistency.',
       icon: <Trophy className="w-8 h-8 text-secondary" />,
-      imageUrl: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=2036&auto=format&fit=crop',
+      imageUrl: 'https://images.pexels.com/photos/46798/pexels-photo-46798.jpeg',
       color: 'bg-secondary/10',
       link: 'https://soccerwhizz.com/'
     }

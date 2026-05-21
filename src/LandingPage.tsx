@@ -54,23 +54,23 @@ const MousePerspective = ({ children, className }: { children: React.ReactNode, 
 
 const PORTFOLIO_IMAGES = [
   {
-    url: "https://images.unsplash.com/photo-1517292987719-0369a794ec0f?q=80&w=1974&auto=format&fit=crop",
-    title: "Minimalist SaaS Platform",
+    url: "https://images.pexels.com/photos/1779487/pexels-photo-1779487.jpeg",
+    title: "Responsive Business Suite",
     tag: "Clean Architecture"
   },
   {
-    url: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426&auto=format&fit=crop",
-    title: "Strategic Marketing Dashboard",
+    url: "https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg",
+    title: "Strategic Lead Dashboard",
     tag: "High Conversion"
   },
   {
-    url: "https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=1964&auto=format&fit=crop",
-    title: "Creative Portfolio Concept",
+    url: "https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg",
+    title: "Modern Trade Concept",
     tag: "Modern Aesthetic"
   },
   {
-    url: "https://images.unsplash.com/photo-1522542550221-31fd19575a2d?q=80&w=2070&auto=format&fit=crop",
-    title: "Next-Gen E-commerce Suite",
+    url: "https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg",
+    title: "Managed Service Platform",
     tag: "Lightning Speed"
   }
 ];
@@ -321,7 +321,7 @@ const LandingPage = () => {
                 <img
                   className="rounded-2xl w-full aspect-[3/4] object-cover"
                   alt="Old design"
-                  src="https://images.unsplash.com/photo-1504148455328-c376907d081c?q=80&w=1000&auto=format&fit=crop"
+                  src="https://images.pexels.com/photos/163032/pexels-photo-163032.jpeg"
                 />
               </div>
             </div>
@@ -331,7 +331,7 @@ const LandingPage = () => {
                 <img
                   className="rounded-2xl w-full aspect-[3/4] object-cover"
                   alt="Modern design"
-                  src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=1000&auto=format&fit=crop"
+                  src="https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg"
                 />
               </MousePerspective>
             </div>
