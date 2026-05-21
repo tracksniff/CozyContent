@@ -130,6 +130,15 @@ const PortfolioSlider = () => {
 
 const LandingPage = () => {
   const [isAnnual, setIsAnnual] = useState(true);
+
+  useEffect(() => {
+    document.title = "Cosy Content | Modern Websites Without the Hassle";
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute("content", "Get a modern business website in 7 days without the hassle. We build and manage high-converting websites for trades and local businesses.");
+    }
+  }, []);
+
   const fadeInUp = {
     initial: { opacity: 0, y: 20 },
     whileInView: { opacity: 1, y: 0 },

@@ -91,7 +91,42 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [pathname]);
+    
+    // Update document title
+    if (data.metaTitle) {
+      document.title = data.metaTitle;
+    }
+
+    // Update meta description
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute("content", data.metaDescription);
+    } else {
+      const meta = document.createElement("meta");
+      meta.name = "description";
+      meta.content = data.metaDescription;
+      document.getElementsByTagName("head")[0].appendChild(meta);
+    }
+
+    // Update OG tags for social sharing
+    const updateOrCreateMeta = (name: string, content: string, isProperty: boolean = false) => {
+      const attr = isProperty ? 'property' : 'name';
+      let tag = document.querySelector(`meta[${attr}="${name}"]`);
+      if (tag) {
+        tag.setAttribute("content", content);
+      } else {
+        tag = document.createElement("meta");
+        tag.setAttribute(attr, name);
+        tag.setAttribute("content", content);
+        document.head.appendChild(tag);
+      }
+    };
+
+    updateOrCreateMeta("og:title", data.metaTitle, true);
+    updateOrCreateMeta("og:description", data.metaDescription, true);
+    updateOrCreateMeta("og:type", "website", true);
+    updateOrCreateMeta("og:url", window.location.href, true);
+  }, [pathname, data]);
 
   const scrollToPricing = () => {
     pricingRef.current?.scrollIntoView({ behavior: 'smooth' });
