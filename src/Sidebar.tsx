@@ -12,45 +12,71 @@ import {
   X,
   Edit3,
   Zap,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { useAuth } from "./AuthContext";
 import logo from "./assets/PNG/Cosy Content Ltd -05.png";
 
-const SidebarItem: React.FC<{
+interface SidebarItemProps {
   icon: React.ReactNode;
   label: string;
   to?: string;
   active?: boolean;
   collapsed?: boolean;
   onClick?: () => void;
-}> = ({ icon, label, to, active, collapsed, onClick }) => {
-  const content = (
+  external?: boolean;
+  href?: string;
+}
+
+const SidebarItem: React.FC<SidebarItemProps> = ({
+  icon,
+  label,
+  to,
+  active,
+  collapsed,
+  onClick,
+  external,
+  href,
+}) => {
+  const inner = (
     <div
+      onClick={onClick}
       className={`
-        flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group cursor-pointer
+        flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 cursor-pointer group relative
         ${
           active
-            ? "bg-primary text-white shadow-lg shadow-primary/20"
+            ? "bg-primary text-white shadow-md shadow-primary/25"
             : "text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface"
         }
+        ${collapsed ? "justify-center px-2" : ""}
       `}
-      onClick={onClick}
     >
-      <div className={`${active ? "text-white" : "group-hover:text-primary"} transition-colors`}>
+      <div
+        className={`shrink-0 ${active ? "text-white" : "group-hover:text-primary transition-colors"}`}
+      >
         {icon}
       </div>
       {!collapsed && (
-        <span className="font-bold text-sm tracking-tight whitespace-nowrap overflow-hidden">
+        <span className="font-bold text-sm tracking-tight whitespace-nowrap">{label}</span>
+      )}
+      {/* Tooltip on collapse */}
+      {collapsed && (
+        <div className="absolute left-full ml-3 px-2.5 py-1.5 bg-on-surface text-surface text-xs font-bold rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-all whitespace-nowrap z-50 shadow-xl">
           {label}
-        </span>
+        </div>
       )}
     </div>
   );
 
-  if (to) {
-    return <Link to={to}>{content}</Link>;
-  }
-  return content;
+  if (href && external)
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer">
+        {inner}
+      </a>
+    );
+  if (to) return <Link to={to}>{inner}</Link>;
+  return inner;
 };
 
 const Sidebar: React.FC = () => {
@@ -66,45 +92,43 @@ const Sidebar: React.FC = () => {
     user?.plan_type === "annual" ||
     user?.plan_type === "priority_monthly";
 
+  const totalUpdates =
+    (user?.monthly_requests_remaining || 0) + (user?.purchased_requests_remaining || 0);
+
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
 
   const navItems = [
-    { icon: <LayoutDashboard size={20} />, label: "Dashboard", to: "/dashboard" },
-    { icon: <Globe size={20} />, label: "Websites", to: "/websites" },
-    { icon: <User size={20} />, label: "Profile", to: "/profile" },
+    { icon: <LayoutDashboard size={18} />, label: "Dashboard", to: "/dashboard" },
+    { icon: <Globe size={18} />, label: "Websites", to: "/websites" },
+    { icon: <User size={18} />, label: "Profile", to: "/profile" },
+    ...(user?.is_staff ? [{ icon: <UsersIcon size={18} />, label: "Users", to: "/users" }] : []),
+    { icon: <Settings size={18} />, label: "Settings", to: "/settings" },
+    ...(isMonthlyUser
+      ? [{ icon: <Edit3 size={18} />, label: "Request Changes", to: "/request-changes" }]
+      : []),
   ];
 
-  if (user?.is_staff) {
-    navItems.push({ icon: <UsersIcon size={20} />, label: "Users", to: "/users" });
-  }
-
-  navItems.push({ icon: <Settings size={20} />, label: "Settings", to: "/settings" });
-
-  const toggleMobile = () => setIsMobileOpen(!isMobileOpen);
+  const close = () => setIsMobileOpen(false);
 
   return (
     <>
-      {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-surface border-b border-outline-variant z-40 flex items-center justify-between px-4 transition-colors duration-300">
+      {/* ── Mobile top bar ── */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-surface/90 backdrop-blur-xl border-b border-outline-variant/20 z-40 flex items-center justify-between px-4">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 flex items-center justify-center">
-            <img src={logo} alt="Cosy Content Logo" className="w-full h-full object-contain" />
-          </div>
-          <span className="font-black text-base tracking-tighter">Cosy Content</span>
+          <img src={logo} alt="Logo" className="w-6 h-6 object-contain" />
+          <span className="font-black text-sm tracking-tighter text-on-surface">Cosy Content</span>
         </div>
-
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {user && !user.is_staff && (
             <Link
               to="/add-ons"
               className="flex items-center gap-1.5 bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20 hover:bg-primary/20 transition-all"
             >
               <span className="text-[9px] font-black text-primary uppercase tracking-widest">
-                {(user.monthly_requests_remaining || 0) + (user.purchased_requests_remaining || 0)}{" "}
-                Updates
+                {totalUpdates} Updates
               </span>
               {user.priority_updates_active && (
                 <Zap size={8} className="text-yellow-500 fill-yellow-500" />
@@ -112,57 +136,51 @@ const Sidebar: React.FC = () => {
             </Link>
           )}
           <button
-            onClick={toggleMobile}
-            className="p-1.5 text-on-surface-variant hover:text-primary transition-colors"
+            onClick={() => setIsMobileOpen((o) => !o)}
+            className="w-8 h-8 flex items-center justify-center rounded-xl text-on-surface-variant hover:text-primary transition-colors"
           >
-            {isMobileOpen ? <X size={20} /> : <Menu size={20} />}
+            {isMobileOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
       </div>
 
-      {/* Backdrop */}
+      {/* ── Backdrop ── */}
       {isMobileOpen && (
         <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden transition-all duration-500"
-          onClick={toggleMobile}
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden"
+          onClick={close}
         />
       )}
 
+      {/* ── Sidebar ── */}
       <aside
         className={`
-          fixed left-0 top-0 h-screen h-[100dvh] bg-surface border-r border-outline-variant transition-all duration-500 z-50 flex flex-col
+          fixed left-0 top-0 h-screen h-[100dvh] bg-surface border-r border-outline-variant/20 z-50 flex flex-col transition-all duration-300
           ${isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-          ${isCollapsed ? "lg:w-20" : "lg:w-64"}
+          ${isCollapsed ? "lg:w-[72px]" : "lg:w-64"}
           w-64
         `}
       >
-        {/* Sidebar Header */}
-        <div className="p-6 flex items-center justify-between mb-4 md:mb-8 shrink-0">
-          <div
-            className={`flex items-center gap-2 overflow-hidden transition-all duration-500 ${isCollapsed ? "lg:opacity-0" : "opacity-100"}`}
-          >
-            <div className="w-8 h-8 flex items-center justify-center shrink-0">
-              <img src={logo} alt="Cosy Content Logo" className="w-full h-full object-contain" />
-            </div>
-            <span className="font-black text-lg tracking-tighter truncate">Cosy Content</span>
-          </div>
-
-          {isCollapsed && (
-            <div className="absolute left-6 w-8 h-8 hidden lg:flex items-center justify-center">
-              <img src={logo} alt="Cosy Content Logo" className="w-full h-full object-contain" />
-            </div>
+        {/* Logo */}
+        <div
+          className={`flex items-center h-16 border-b border-outline-variant/15 shrink-0 transition-all duration-300 ${isCollapsed ? "justify-center px-4" : "px-5 gap-3"}`}
+        >
+          <img src={logo} alt="Cosy Content Logo" className="w-7 h-7 object-contain shrink-0" />
+          {!isCollapsed && (
+            <span className="font-black text-base tracking-tighter text-on-surface truncate">
+              Cosy Content
+            </span>
           )}
-
           <button
-            onClick={toggleMobile}
-            className="lg:hidden p-1 text-on-surface-variant hover:text-primary"
+            onClick={close}
+            className="lg:hidden ml-auto p-1 text-on-surface-variant hover:text-primary"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
-        {/* Navigation Items */}
-        <nav className="flex-grow px-4 space-y-2 overflow-y-auto">
+        {/* Nav */}
+        <nav className="flex-grow px-3 py-4 space-y-1 overflow-y-auto">
           {navItems.map((item) => (
             <SidebarItem
               key={item.to}
@@ -171,103 +189,90 @@ const Sidebar: React.FC = () => {
               to={item.to}
               active={location.pathname === item.to}
               collapsed={isCollapsed}
-              onClick={() => setIsMobileOpen(false)}
+              onClick={close}
             />
           ))}
 
-          {/* Request Changes Option */}
-          {isMonthlyUser && (
-            <SidebarItem
-              icon={<Edit3 size={20} />}
-              label="Request Changes"
-              to="/request-changes"
-              active={location.pathname === "/request-changes"}
-              collapsed={isCollapsed}
-              onClick={() => {
-                setIsMobileOpen(false);
-              }}
-            />
-          )}
-
-          {user && !user.is_staff && (
-            <div className={`mt-8 px-4 ${isCollapsed ? "hidden lg:block" : ""}`}>
-              <div
-                className={`p-4 bg-surface-container-high rounded-2xl border border-outline-variant ${isCollapsed ? "flex justify-center" : ""}`}
-              >
-                {isCollapsed ? (
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-black text-xs">
-                    {(user.monthly_requests_remaining || 0) +
-                      (user.purchased_requests_remaining || 0)}
-                  </div>
-                ) : (
-                  <>
-                    <div className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-2">
-                      Available Updates
-                    </div>
-                    <div className="flex items-end gap-2">
-                      <span className="text-2xl font-black text-on-surface">
-                        {(user.monthly_requests_remaining || 0) +
-                          (user.purchased_requests_remaining || 0)}
-                      </span>
-                      {user.priority_updates_active && (
-                        <div className="mb-1.5 px-2 py-0.5 bg-yellow-400 text-black text-[8px] font-black rounded-full uppercase tracking-tighter flex items-center gap-1">
-                          <Zap size={8} fill="black" /> Priority
-                        </div>
-                      )}
-                    </div>
-                    <Link
-                      to="/add-ons"
-                      className="mt-3 block text-[10px] font-black text-primary uppercase tracking-widest hover:brightness-125"
-                    >
-                      Get More +
-                    </Link>
-                  </>
-                )}
-              </div>
-            </div>
-          )}
-
           {user?.is_staff && (
-            <a
-              href={`${import.meta.env.VITE_API_URL}/admin/`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`
-                flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group
-                text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface mt-8
-              `}
-            >
-              <div className="group-hover:text-primary transition-colors">
-                <Shield size={20} />
+            <>
+              <div className={`pt-4 pb-1 ${isCollapsed ? "hidden" : ""}`}>
+                <p className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant/40 px-3">
+                  Admin
+                </p>
               </div>
-              {!isCollapsed && (
-                <span className="font-bold text-sm tracking-tight whitespace-nowrap overflow-hidden">
-                  Django Admin
-                </span>
-              )}
-            </a>
+              <SidebarItem
+                icon={<Shield size={18} />}
+                label="Django Admin"
+                href={`${import.meta.env.VITE_API_URL}/admin/`}
+                external
+                collapsed={isCollapsed}
+                onClick={close}
+              />
+            </>
           )}
         </nav>
 
-        {/* Sidebar Footer */}
-        <div className="p-4 pb-8 md:pb-4 space-y-2 border-t border-outline-variant/50 shrink-0">
+        {/* Updates widget (non-staff only) */}
+        {user && !user.is_staff && !isCollapsed && (
+          <div className="mx-3 mb-3 p-4 bg-surface-container-high rounded-2xl border border-outline-variant/30">
+            <p className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant mb-2">
+              Available Updates
+            </p>
+            <div className="flex items-end justify-between">
+              <div className="flex items-end gap-2">
+                <span className="text-2xl font-black text-on-surface">{totalUpdates}</span>
+                {user.priority_updates_active && (
+                  <span className="mb-1 px-2 py-0.5 bg-yellow-400 text-black text-[8px] font-black rounded-full uppercase flex items-center gap-1">
+                    <Zap size={8} fill="black" /> Priority
+                  </span>
+                )}
+              </div>
+              <Link
+                to="/add-ons"
+                className="text-[10px] font-black text-primary uppercase tracking-widest hover:brightness-125 transition-all"
+              >
+                Get More +
+              </Link>
+            </div>
+          </div>
+        )}
+        {user && !user.is_staff && isCollapsed && (
+          <div className="mx-2 mb-3 flex justify-center">
+            <Link
+              to="/add-ons"
+              className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary font-black text-sm border border-primary/20 hover:bg-primary hover:text-white transition-all"
+            >
+              {totalUpdates}
+            </Link>
+          </div>
+        )}
+
+        {/* Footer */}
+        <div className="px-3 pb-6 pt-3 border-t border-outline-variant/15 space-y-1 shrink-0">
+          {/* Collapse toggle (desktop only) */}
           <button
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className="hidden lg:flex w-full items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-xl transition-all group"
+            onClick={() => setIsCollapsed((c) => !c)}
+            className={`hidden lg:flex w-full items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all group ${isCollapsed ? "justify-center" : ""}`}
           >
-            {!isCollapsed && <span className="font-bold text-sm tracking-tight">Collapse</span>}
-            {isCollapsed && <span className="font-bold text-sm tracking-tight mx-auto">»</span>}
+            {isCollapsed ? (
+              <ChevronRight size={18} />
+            ) : (
+              <>
+                <ChevronLeft size={18} />
+                <span className="font-bold text-sm">Collapse</span>
+              </>
+            )}
           </button>
 
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-red-500/10 hover:text-red-500 rounded-xl transition-all group"
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant hover:bg-red-500/10 hover:text-red-500 transition-all group ${isCollapsed ? "justify-center" : ""}`}
           >
             <LogOut
-              size={20}
-              className="group-hover:rotate-180 transition-transform duration-500"
+              size={18}
+              className="group-hover:rotate-12 transition-transform duration-300 shrink-0"
             />
-            {!isCollapsed && <span className="font-bold text-sm tracking-tight">Logout</span>}
+            {!isCollapsed && <span className="font-bold text-sm">Logout</span>}
           </button>
         </div>
       </aside>
