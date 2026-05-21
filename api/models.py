@@ -138,6 +138,7 @@ class Website(models.Model):
 
     name = models.CharField(max_length=255)
     url = models.URLField()
+    custom_domain = models.CharField(max_length=255, blank=True, null=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='websites')
     hosting_type = models.CharField(max_length=20, choices=HOSTING_CHOICES, default='PLATFORM')
     created_at = models.DateTimeField(auto_now_add=True)

@@ -31,6 +31,7 @@ import threading
 import requests
 import logging
 import os
+import socket
 from django.conf import settings
 from django.http import HttpResponse
 from django.utils import timezone
@@ -603,6 +604,33 @@ class WebsiteViewSet(viewsets.ModelViewSet):
                 return Response({"error": "Vercel redeployment failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(detail=True, methods=['post'])
+    def update_custom_domain(self, request, pk=None):
+        website = self.get_object()
+        custom_domain = request.data.get('custom_domain')
+        if not custom_domain:
+            return Response({"error": "Custom domain is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        website.custom_domain = custom_domain
+        website.save()
+        return Response({"success": True, "custom_domain": custom_domain})
+
+    @action(detail=True, methods=['get'])
+    def check_dns(self, request, pk=None):
+        website = self.get_object()
+        if not website.custom_domain:
+            return Response({"error": "No custom domain set"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        server_ip = os.getenv("SERVER_IP", "76.76.21.21") # Vercel A record IP as default
+        try:
+            domain_ip = socket.gethostbyname(website.custom_domain)
+            if domain_ip == server_ip:
+                return Response({"is_ready": True, "domain_ip": domain_ip, "server_ip": server_ip})
+            else:
+                return Response({"is_ready": False, "domain_ip": domain_ip, "server_ip": server_ip})
+        except socket.gaierror:
+            return Response({"is_ready": False, "error": "Could not resolve domain"})
 
 class SiteRequestViewSet(viewsets.ModelViewSet):
     serializer_class = SiteRequestSerializer
