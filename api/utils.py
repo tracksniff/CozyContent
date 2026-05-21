@@ -211,7 +211,7 @@ def send_progress_update_email(user_email, company_name, progress):
     except:
         return False
 
-def send_admin_new_site_notification(repo_url, company_name):
+def send_admin_new_site_notification(repo_url, company_name, custom_domain=None):
     """
     Notify admin that a new site has been generated and pushed to GitHub.
     """
@@ -236,6 +236,7 @@ def send_admin_new_site_notification(repo_url, company_name):
             <div style="margin: 20px 0; padding: 20px; background-color: #f9fafb; border-radius: 8px; border-left: 4px solid #10b981;">
                 <p><strong>Company:</strong> {company_name}</p>
                 <p><strong>GitHub Repo:</strong> <a href="{repo_url}">{repo_url}</a></p>
+                <p><strong>Target Domain:</strong> {custom_domain or 'None provided yet'}</p>
             </div>
             <p><strong>Next Steps:</strong></p>
             <ol>

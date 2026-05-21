@@ -614,6 +614,24 @@ class WebsiteViewSet(viewsets.ModelViewSet):
         
         website.custom_domain = custom_domain
         website.save()
+
+        # Notify admin of domain update
+        from .utils import send_admin_new_site_notification
+        # We reuse this to send a notification, or we could create a specialized one
+        # For now, let's just use a simple log or similar if we don't want to spam, 
+        # but the user said "save domain information needed by admin".
+        
+        # Let's send a specific email to admin about the domain update
+        brevo_api_key = os.getenv("BREVO_API_KEY")
+        if brevo_api_key:
+            payload = {
+                "sender": {"name": "System", "email": "system@cosycontent.com"},
+                "to": [{"email": "crispusgikonyo458@gmail.com"}],
+                "subject": f"Domain Updated for {website.name}",
+                "htmlContent": f"User {website.owner.email} has updated the custom domain for <strong>{website.name}</strong> to: <strong>{custom_domain}</strong>. <br/> Visit site: {website.url}",
+            }
+            requests.post("https://api.brevo.com/v3/smtp/email", json=payload, headers={"api-key": brevo_api_key, "content-type": "application/json"})
+
         return Response({"success": True, "custom_domain": custom_domain})
 
     @action(detail=True, methods=['get'])

@@ -148,7 +148,7 @@ class WebsiteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Website
-        fields = ('id', 'name', 'url', 'custom_domain', 'created_at', 'owner_email', 'owner_id', 'hosting_type')
+        fields = ('id', 'name', 'url', 'custom_domain', 'created_at', 'owner_email', 'owner_id', 'hosting_type', 'plan_type')
         read_only_fields = ('id', 'created_at', 'owner_email')
 
     def create(self, validated_data):

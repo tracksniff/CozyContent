@@ -144,10 +144,11 @@ def process_application_task(application_id, user_id):
                 url=preview_url or repo_url,
                 owner=user,
                 hosting_type="PLATFORM",
+                plan_type=application.plan_type,
             )
             
             # Notify Admin Crisp about the new site and test repo
-            send_admin_new_site_notification(repo_url, application.company_name)
+            send_admin_new_site_notification(repo_url, application.company_name, application.website_url)
 
             # For one-time buyers, send the transfer request email
             if application.plan_type == 'one_time':
