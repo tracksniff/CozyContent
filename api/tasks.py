@@ -10,7 +10,8 @@ from .utils import (
     send_review_request_email, 
     send_progress_update_email, 
     send_github_transfer_email, 
-    send_admin_new_site_notification
+    send_admin_new_site_notification,
+    send_dns_setup_reminder_email
 )
 
 logger = logging.getLogger(__name__)
@@ -154,6 +155,8 @@ def process_application_task(application_id, user_id):
             if application.plan_type == 'one_time':
                 send_github_transfer_email(user.email, application.company_name)
             else:
+                # For monthly sites, tell them to configure DNS
+                send_dns_setup_reminder_email(user.email, application.company_name)
                 # Send notification to user that site is ready for review (80%)
                 send_progress_update_email(user.email, application.company_name, 80)
 

@@ -751,6 +751,7 @@ class SiteRequestViewSet(viewsets.ModelViewSet):
     def reject(self, request, pk=None):
         site_request = self.get_object()
         site_request.status = 'denied'
+        site_request.rejection_reason = request.data.get('reason', '')
         site_request.save()
         return Response({"success": True, "message": "Request rejected."})
 

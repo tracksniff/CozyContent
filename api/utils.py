@@ -400,11 +400,11 @@ def send_request_approval_email(site_request):
     except:
         return False
 
-def send_request_completion_email(site_request):
+def send_dns_setup_reminder_email(email, company_name):
     """
-    Notify the USER that their change request has been completed.
+    Notify a monthly subscriber that their site is built and they need to configure DNS.
     """
-    logger.info(f"Notifying user {site_request.user.email} about completed change request for {site_request.website.name}")
+    logger.info(f"Sending DNS setup reminder to {email} for {company_name}")
     brevo_api_key = os.getenv("BREVO_API_KEY")
     brevo_sender_email = os.getenv("BREVO_SENDER_EMAIL", "contact@cosycontent.com")
     brevo_sender_name = os.getenv("BREVO_SENDER_NAME", "Cosy Content")
@@ -412,24 +412,31 @@ def send_request_completion_email(site_request):
     if not brevo_api_key:
         return False
 
-    recipient_email = site_request.user.email
-    subject = f"Changes Completed: {site_request.website.name}"
+    subject = f"Next Step: Connect Your Domain for {company_name}"
     
     html_content = f"""
     <html>
     <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9fafb; padding: 20px;">
         <div style="max-width: 600px; margin: 0 auto; padding: 40px; background-color: white; border-radius: 12px; border: 1px solid #e5e7eb;">
             {get_email_header()}
-            <h2 style="color: #00696D;">Your Changes are Live! 🎉</h2>
-            <p>Great news! We have completed the updates you requested for <strong>{site_request.website.name}</strong>.</p>
-            <div style="padding: 15px; background: #f4f4f4; border-radius: 5px; margin: 20px 0;">
-                <p><strong>Updates implemented:</strong></p>
-                {site_request.details}
+            <h2 style="color: #00696D;">Your Website is Ready! 🚀</h2>
+            <p>Great news! We've finished building <strong>{company_name}</strong>. The final step to getting your website live is connecting your domain.</p>
+            
+            <div style="margin: 30px 0; padding: 25px; background-color: #f0fdfa; border-radius: 12px; border-left: 4px solid #00696D;">
+                <p style="margin-top: 0; font-weight: bold; color: #00696D;">What you need to do:</p>
+                <ol>
+                    <li>Log in to your <strong>Cosy Content Dashboard</strong>.</li>
+                    <li>Click the <strong>"Configure DNS"</strong> button in the setup banner.</li>
+                    <li>Follow the step-by-step instructions to point your domain to our server.</li>
+                </ol>
             </div>
-            <p>Please visit your website to review the changes:</p>
-            <div style="text-align: center; margin: 30px 0;">
-                <a href="{site_request.website.url}" style="display: inline-block; padding: 14px 30px; background-color: #00696D; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">View Your Website</a>
+
+            <div style="text-align: center; margin: 40px 0;">
+                <a href="https://cosycontent.com/dashboard" style="display: inline-block; padding: 16px 36px; background-color: #00696D; color: white; text-decoration: none; border-radius: 12px; font-weight: bold; font-size: 16px;">Go to Dashboard</a>
             </div>
+
+            <p style="font-size: 14px; color: #6b7280;">If you don't have a domain yet, don't worry! You can purchase one directly through our dashboard using our Namecheap integration.</p>
+            
             {get_email_footer()}
         </div>
     </body>
@@ -438,7 +445,7 @@ def send_request_completion_email(site_request):
 
     payload = {
         "sender": {"name": brevo_sender_name, "email": brevo_sender_email},
-        "to": [{"email": recipient_email}],
+        "to": [{"email": email}],
         "subject": subject,
         "htmlContent": html_content,
     }

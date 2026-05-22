@@ -57,6 +57,7 @@ class SiteRequest(models.Model):
     website = models.ForeignKey('Website', on_delete=models.CASCADE, related_name='site_requests')
     details = models.TextField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    rejection_reason = models.TextField(blank=True, null=True)
     is_priority = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
