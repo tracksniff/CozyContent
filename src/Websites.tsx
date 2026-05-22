@@ -16,7 +16,6 @@ import {
   Calendar,
 } from "lucide-react";
 import axios from "axios";
-import DNSModal from "./DNSModal";
 import toast from "react-hot-toast";
 
 const PlanBadge = ({ type }: { type: string }) => {
@@ -40,7 +39,6 @@ const Websites: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [selectedSiteForDNS, setSelectedSiteForDNS] = useState<any | null>(null);
   const { token, user, loading: authLoading } = useAuth();
 
   const authHeader = { Authorization: `Bearer ${token}` };
@@ -262,7 +260,7 @@ const Websites: React.FC = () => {
 
                     {showDNS(site) && (
                       <button
-                        onClick={() => setSelectedSiteForDNS(site)}
+                        onClick={() => navigate(`/dns-setup/${site.id}`)}
                         className="w-full py-2 bg-primary/5 border border-primary/20 rounded-xl text-[10px] font-black uppercase tracking-widest text-primary hover:bg-primary hover:text-white transition-all flex items-center justify-center gap-1.5"
                       >
                         <Settings size={11} /> Setup DNS
@@ -331,7 +329,7 @@ const Websites: React.FC = () => {
                     </a>
                     {showDNS(site) && (
                       <button
-                        onClick={() => setSelectedSiteForDNS(site)}
+                        onClick={() => navigate(`/dns-setup/${site.id}`)}
                         className="p-1.5 rounded-lg text-on-surface-variant hover:bg-primary/10 hover:text-primary transition-all"
                         title="Setup DNS"
                       >
@@ -369,14 +367,6 @@ const Websites: React.FC = () => {
           )}
         </div>
       </main>
-
-      {selectedSiteForDNS && (
-        <DNSModal
-          site={selectedSiteForDNS}
-          onClose={() => setSelectedSiteForDNS(null)}
-          onUpdate={fetchWebsites}
-        />
-      )}
     </div>
   );
 };

@@ -13,6 +13,7 @@ import Settings from './Settings';
 import Users from './Users';
 import AddOns from './AddOns';
 import RequestChanges from './RequestChanges';
+import DNSSetupPage from './DNSSetupPage';
 import OurBrands from './OurBrands';
 import PrivacyPolicy from './PrivacyPolicy';
 import TermsConditions from './TermsConditions';
@@ -175,6 +176,14 @@ function App() {
               element={
                 <PrivateRoute>
                   <RequestChanges />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/dns-setup/:id"
+              element={
+                <PrivateRoute>
+                  <DNSSetupPage />
                 </PrivateRoute>
               }
             />

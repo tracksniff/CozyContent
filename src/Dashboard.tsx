@@ -28,11 +28,11 @@ import {
   X,
   TrendingUp,
 } from "lucide-react";
-import Sidebar from "./Sidebar";
-import toast from "react-hot-toast";
-import DNSModal from "./DNSModal";
+import Sidebar from './Sidebar';
+import toast from 'react-hot-toast';
 
 const funMessages = [
+
   "Consulting our system...",
   "Polishing the Pixels...",
   "Brewing Digital Coffee...",
@@ -301,7 +301,6 @@ const Dashboard: React.FC = () => {
   const [isProcessingRequest, setIsProcessingRequest] = useState<Record<number, boolean>>({});
   const [feedback, setFeedback] = useState<Record<number, string>>({});
   const [githubUsernames, setGithubUsernames] = useState<Record<number, string>>({});
-  const [selectedSiteForDNS, setSelectedSiteForDNS] = useState<any | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [expandedRequest, setExpandedRequest] = useState<number | null>(null);
 
@@ -752,7 +751,7 @@ const Dashboard: React.FC = () => {
                 </p>
               </div>
               <button
-                onClick={() => setSelectedSiteForDNS(dnsSetupSites[0])}
+                onClick={() => navigate(`/dns-setup/${dnsSetupSites[0].id}`)}
                 className="bg-primary text-white px-5 py-2.5 rounded-xl font-black text-xs hover:scale-105 transition-all shadow-lg shadow-primary/20 whitespace-nowrap flex items-center gap-2 shrink-0"
               >
                 <Settings size={13} /> Configure DNS
@@ -976,7 +975,7 @@ const Dashboard: React.FC = () => {
                       isRedeploying={isRedeploying}
                       onDelete={handleDelete}
                       onRedeploy={handleRedeployVercel}
-                      onDNS={() => setSelectedSiteForDNS(site)}
+                      onDNS={() => navigate(`/dns-setup/${site.id}`)}
                       onRequestUpdate={() => navigate("/request-changes")}
                     />
                   </motion.div>
@@ -997,7 +996,7 @@ const Dashboard: React.FC = () => {
                       isRedeploying={isRedeploying}
                       onDelete={handleDelete}
                       onRedeploy={handleRedeployVercel}
-                      onDNS={() => setSelectedSiteForDNS(site)}
+                      onDNS={() => navigate(`/dns-setup/${site.id}`)}
                       onRequestUpdate={() => navigate("/request-changes")}
                     />
                   </motion.div>
@@ -1007,14 +1006,6 @@ const Dashboard: React.FC = () => {
           </motion.section>
         </div>
       </main>
-
-      {selectedSiteForDNS && (
-        <DNSModal
-          site={selectedSiteForDNS}
-          onClose={() => setSelectedSiteForDNS(null)}
-          onUpdate={fetchData}
-        />
-      )}
     </div>
   );
 };
