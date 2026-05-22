@@ -16,7 +16,7 @@ const DNSModal: React.FC<DNSModalProps> = ({ site, onClose, onUpdate }) => {
   const [isChecking, setIsChecking] = useState(false);
   const [dnsStatus, setDnsStatus] = useState<'idle' | 'ready' | 'pending' | 'error'>('idle');
   const [copied, setCopied] = useState(false);
-  const serverIp = "76.76.21.21"; // Default Vercel IP
+  const serverIp = "128.140.103.20";
 
   const handleCopy = () => {
     navigator.clipboard.writeText(serverIp);

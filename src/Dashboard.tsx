@@ -509,7 +509,7 @@ const Dashboard: React.FC = () => {
   const dnsSetupSites = websites.filter(
     (s) =>
       s.hosting_type === "PLATFORM" &&
-      !s.custom_domain &&
+      !s.dns_ready &&
       ["monthly", "annual", "priority_monthly"].includes(s.plan_type),
   );
   const filteredWebsites = websites.filter(
