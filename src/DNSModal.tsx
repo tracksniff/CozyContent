@@ -66,64 +66,64 @@ const DNSModal: React.FC<DNSModalProps> = ({ site, onClose, onUpdate }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-surface w-full max-w-2xl rounded-[2.5rem] border border-outline-variant shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh]">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+      <div className="bg-surface w-full max-w-2xl rounded-[1.5rem] sm:rounded-[2.5rem] border border-outline-variant shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[95vh] sm:max-h-[90vh]">
         {/* Left Side: Instructions */}
-        <div className="flex-grow p-6 md:p-10 overflow-y-auto">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
+        <div className="flex-grow p-5 sm:p-6 md:p-10 overflow-y-auto custom-scrollbar">
+          <div className="flex items-center gap-3 mb-4 sm:mb-6">
+            <div className="hidden sm:flex w-10 h-10 bg-primary/10 rounded-xl items-center justify-center text-primary">
               <Settings size={20} />
             </div>
-            <h2 className="text-xl md:text-2xl font-black text-on-surface tracking-tight">Setup DNS Routing</h2>
+            <h2 className="text-lg sm:text-xl md:text-2xl font-black text-on-surface tracking-tight">Setup DNS Routing</h2>
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <section>
-              <h3 className="text-xs font-black uppercase tracking-widest text-primary mb-3">Step 1: Get Your IP</h3>
-              <div className="bg-surface-container-low border border-outline-variant rounded-2xl p-4 flex items-center justify-between group">
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-primary mb-2 sm:mb-3">Step 1: Get Your IP</h3>
+              <div className="bg-surface-container-low border border-outline-variant rounded-xl sm:rounded-2xl p-3 sm:p-4 flex items-center justify-between group">
                 <div>
-                  <div className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-1">Server IP Address</div>
-                  <div className="text-lg font-black font-mono tracking-tight">{serverIp}</div>
+                  <div className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant mb-0.5 sm:mb-1">Server IP Address</div>
+                  <div className="text-base sm:text-lg font-black font-mono tracking-tight">{serverIp}</div>
                 </div>
                 <button 
                   onClick={handleCopy}
-                  className="p-3 bg-surface border border-outline-variant rounded-xl hover:bg-primary hover:text-white transition-all shadow-sm"
+                  className="p-2 sm:p-3 bg-surface border border-outline-variant rounded-lg sm:rounded-xl hover:bg-primary hover:text-white transition-all shadow-sm"
                 >
-                  {copied ? <Check size={18} /> : <Copy size={18} />}
+                  {copied ? <Check size={16} /> : <Copy size={16} />}
                 </button>
               </div>
             </section>
 
             <section>
-              <h3 className="text-xs font-black uppercase tracking-widest text-primary mb-3">Step 2: Add DNS Records</h3>
-              <p className="text-sm font-medium text-on-surface-variant leading-relaxed mb-4">
-                Login to your domain provider (GoDaddy, Namecheap, etc.) and add an <span className="text-on-surface font-bold">A Record</span>:
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-primary mb-2 sm:mb-3">Step 2: Add DNS Records</h3>
+              <p className="text-[11px] sm:text-sm font-medium text-on-surface-variant leading-relaxed mb-3">
+                Login to your provider and add an <span className="text-on-surface font-bold">A Record</span>:
               </p>
-              <ul className="space-y-3">
-                <li className="flex items-start gap-3 text-sm font-medium text-on-surface-variant">
-                    <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[10px] font-black shrink-0 mt-0.5">1</div>
-                    <span>Set Host/Name to <code className="bg-surface-variant px-1.5 py-0.5 rounded text-on-surface">@</code></span>
+              <ul className="space-y-2 sm:space-y-3">
+                <li className="flex items-start gap-2 sm:gap-3 text-[11px] sm:text-sm font-medium text-on-surface-variant">
+                    <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[9px] font-black shrink-0 mt-0.5">1</div>
+                    <span>Set Host to <code className="bg-surface-variant px-1 rounded text-on-surface">@</code></span>
                 </li>
-                <li className="flex items-start gap-3 text-sm font-medium text-on-surface-variant">
-                    <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[10px] font-black shrink-0 mt-0.5">2</div>
-                    <span>Set Value/Points to <code className="bg-surface-variant px-1.5 py-0.5 rounded text-on-surface">{serverIp}</code></span>
+                <li className="flex items-start gap-2 sm:gap-3 text-[11px] sm:text-sm font-medium text-on-surface-variant">
+                    <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[9px] font-black shrink-0 mt-0.5">2</div>
+                    <span>Set Value to <code className="bg-surface-variant px-1 rounded text-on-surface">{serverIp}</code></span>
                 </li>
               </ul>
             </section>
 
             <section>
-              <h3 className="text-xs font-black uppercase tracking-widest text-primary mb-3">Step 3: Enter Your Domain</h3>
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-primary mb-2 sm:mb-3">Step 3: Enter Your Domain</h3>
               <div className="flex gap-2">
                 <input 
                   type="text" 
                   placeholder="example.com"
-                  className="flex-grow bg-surface-container-low border border-outline-variant rounded-xl px-4 py-3 outline-none focus:border-primary transition-all text-sm font-medium"
+                  className="flex-grow bg-surface-container-low border border-outline-variant rounded-xl px-3 sm:px-4 py-2 sm:py-3 outline-none focus:border-primary transition-all text-xs sm:text-sm font-medium"
                   value={customDomain}
                   onChange={(e) => setCustomDomain(e.target.value)}
                 />
                 <button 
                   onClick={handleUpdateDomain}
-                  className="bg-on-surface text-surface px-6 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-primary transition-all"
+                  className="bg-on-surface text-surface px-4 sm:px-6 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-primary transition-all"
                 >
                   Save
                 </button>
@@ -133,7 +133,7 @@ const DNSModal: React.FC<DNSModalProps> = ({ site, onClose, onUpdate }) => {
         </div>
 
         {/* Right Side: Actions & Status */}
-        <div className="w-full md:w-72 bg-surface-container-low border-t md:border-t-0 md:border-l border-outline-variant p-6 md:p-8 flex flex-col justify-between">
+        <div className="w-full md:w-72 bg-surface-container-low border-t md:border-t-0 md:border-l border-outline-variant p-5 sm:p-6 md:p-8 flex flex-col justify-between overflow-y-auto">
           <div>
              <div className="mb-8">
                <h3 className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-4">Status Check</h3>
