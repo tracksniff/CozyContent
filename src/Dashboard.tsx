@@ -90,20 +90,22 @@ const StatCard = ({
   highlight?: boolean;
 }) => (
   <div
-    className={`rounded-2xl p-5 border transition-all ${highlight && value > 0 ? "bg-primary/5 border-primary/30" : "bg-surface-container-low border-outline-variant/30"}`}
+    className={`rounded-2xl p-4 sm:p-5 border transition-all ${highlight && value > 0 ? "bg-primary/5 border-primary/30" : "bg-surface-container-low border-outline-variant/30"}`}
   >
-    <div className="flex items-center justify-between mb-3">
+    <div className="flex items-center justify-between mb-2 sm:mb-3">
       <Icon
-        size={15}
+        size={14}
         className={highlight && value > 0 ? "text-primary" : "text-on-surface-variant"}
       />
       <span
-        className={`text-2xl font-black tabular-nums ${highlight && value > 0 ? "text-primary" : "text-on-surface"}`}
+        className={`text-xl sm:text-2xl font-black tabular-nums ${highlight && value > 0 ? "text-primary" : "text-on-surface"}`}
       >
         {value}
       </span>
     </div>
-    <p className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wide">{label}</p>
+    <p className="text-[10px] sm:text-[11px] font-bold text-on-surface-variant uppercase tracking-wide">
+      {label}
+    </p>
   </div>
 );
 
@@ -133,7 +135,7 @@ const SiteCard: React.FC<SiteCardProps> = ({
   const showUpdate = user?.is_staff || user?.plan_type?.includes("monthly");
 
   return (
-    <div className="bg-surface-container-low rounded-2xl border border-outline-variant/30 p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all group flex flex-col">
+    <div className="bg-surface-container-low rounded-2xl border border-outline-variant/30 p-4 sm:p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all group flex flex-col">
       {/* Top row */}
       <div className="flex justify-between items-start mb-4">
         <div className="w-10 h-10 bg-white dark:bg-surface rounded-xl border border-outline-variant/20 flex items-center justify-center text-primary shadow-sm group-hover:scale-105 group-hover:rotate-3 transition-all duration-300">
@@ -223,7 +225,7 @@ const SiteListRow: React.FC<SiteCardProps> = ({
   const showUpdate = user?.is_staff || user?.plan_type?.includes("monthly");
 
   return (
-    <div className="bg-surface-container-low rounded-xl border border-outline-variant/30 px-5 py-3.5 flex items-center gap-4 hover:border-primary/20 transition-all group">
+    <div className="bg-surface-container-low rounded-xl border border-outline-variant/30 px-3.5 py-3 sm:px-5 sm:py-3.5 flex items-center gap-3 sm:gap-4 hover:border-primary/20 transition-all group">
       <div className="w-8 h-8 bg-white dark:bg-surface rounded-lg border border-outline-variant/20 flex items-center justify-center text-primary shadow-sm shrink-0">
         <Globe size={14} />
       </div>
@@ -586,18 +588,18 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="p-6 md:p-10 max-w-7xl mx-auto space-y-10">
+        <div className="p-4 sm:p-6 md:p-10 max-w-7xl mx-auto space-y-8 sm:space-y-10">
           {/* ── Header Area ── */}
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 sm:gap-6">
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-              <p className="text-[10px] font-black uppercase tracking-[0.25em] text-primary mb-1">
+              <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.25em] text-primary mb-1">
                 {new Date().toLocaleDateString("en-US", {
                   weekday: "long",
                   month: "long",
                   day: "numeric",
                 })}
               </p>
-              <h1 className="text-3xl md:text-4xl font-black text-on-surface tracking-tighter">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-on-surface tracking-tighter">
                 {user?.is_staff ? (
                   <>
                     Good to see you, <span className="text-primary italic">Admin.</span>
@@ -608,9 +610,9 @@ const Dashboard: React.FC = () => {
                   </>
                 )}
               </h1>
-              <p className="text-sm text-on-surface-variant font-medium mt-1">
+              <p className="text-xs sm:text-sm text-on-surface-variant font-medium mt-1">
                 {user?.is_staff
-                  ? `${websites.length} total sites · ${pendingRequests.length} pending · ${inProgressRequests.length} in progress`
+                  ? `${websites.length} sites · ${pendingRequests.length} pending · ${inProgressRequests.length} active`
                   : `You are viewing details for your selected site portfolio.`}
               </p>
             </motion.div>
@@ -620,25 +622,25 @@ const Dashboard: React.FC = () => {
               <motion.div 
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="flex flex-col gap-2 min-w-[240px]"
+                className="flex flex-col gap-1.5 w-full lg:w-auto lg:min-w-[240px]"
               >
-                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60 ml-1">
+                <label className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60 ml-1">
                   Select Website
                 </label>
                 <div className="relative group">
-                  <Globe className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" size={16} />
+                  <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 text-primary" size={14} />
                   <select 
                     value={selectedSiteId}
                     onChange={(e) => setSelectedSiteId(e.target.value === "all" ? "all" : parseInt(e.target.value))}
-                    className="w-full pl-11 pr-10 py-3.5 bg-surface-container-low border border-outline-variant/30 rounded-2xl appearance-none font-bold text-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none cursor-pointer group-hover:border-primary/50"
+                    className="w-full pl-10 pr-9 py-3 bg-surface-container-low border border-outline-variant/30 rounded-xl appearance-none font-bold text-xs sm:text-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none cursor-pointer group-hover:border-primary/50"
                   >
                     <option value="all">All Websites</option>
                     {websites.map(s => (
                       <option key={s.id} value={s.id}>{s.name}</option>
                     ))}
                   </select>
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant group-hover:text-primary transition-colors">
-                    <ChevronDown size={16} />
+                  <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant group-hover:text-primary transition-colors">
+                    <ChevronDown size={14} />
                   </div>
                 </div>
               </motion.div>
@@ -651,7 +653,7 @@ const Dashboard: React.FC = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.05 }}
-              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4"
+              className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4"
             >
               <StatCard label="Total Sites" value={websites.length} icon={Globe} />
               <StatCard label="Pending" value={pendingRequests.length} icon={Bell} highlight />
@@ -1089,26 +1091,26 @@ const RequestCard: React.FC<RequestCardProps> = ({
   return (
     <div className="bg-surface-container-low rounded-2xl border border-outline-variant/30 overflow-hidden">
       <div
-        className="flex items-center gap-4 p-4 cursor-pointer hover:bg-surface-container/40 transition-colors"
+        className="flex items-center gap-3 sm:gap-4 p-3.5 sm:p-4 cursor-pointer hover:bg-surface-container/40 transition-colors"
         onClick={() => setExpandedRequest(isExpanded ? null : req.id)}
       >
-        <div className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
-          <Globe size={16} className="text-primary" />
+        <div className="w-8 h-8 sm:w-9 sm:h-9 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
+          <Globe size={15} className="text-primary" />
         </div>
         <div className="flex-grow min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-sm font-black text-on-surface truncate">{req.user_email}</span>
+            <span className="text-xs sm:text-sm font-black text-on-surface truncate">{req.user_email}</span>
             {req.is_priority && (
-              <span className="bg-yellow-500/10 text-yellow-600 text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest flex items-center gap-1 shrink-0">
-                <Zap size={9} fill="currentColor" /> Priority
+              <span className="bg-yellow-500/10 text-yellow-600 text-[8px] sm:text-[9px] font-black px-1.5 py-0.5 rounded-full uppercase tracking-widest flex items-center gap-1 shrink-0">
+                <Zap size={8} fill="currentColor" /> Priority
               </span>
             )}
           </div>
-          <p className="text-[11px] text-on-surface-variant font-medium truncate">
+          <p className="text-[10px] sm:text-[11px] text-on-surface-variant font-medium truncate">
             {req.website_name}
           </p>
         </div>
-        <div className="flex items-center gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-1 sm:gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
           {primaryAction}
           {secondaryAction}
         </div>
