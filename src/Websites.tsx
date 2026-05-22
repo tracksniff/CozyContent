@@ -267,7 +267,7 @@ const Websites: React.FC = () => {
                       </button>
                     )}
 
-                    {isMonthlyUser && (
+                    {(user?.is_staff || ["monthly", "annual", "priority_monthly"].includes(site.plan_type)) && (
                       <button
                         onClick={() => navigate("/request-changes")}
                         className="w-full py-2 bg-surface-container border border-outline-variant/30 rounded-xl text-[10px] font-black uppercase tracking-widest text-on-surface-variant hover:bg-primary hover:text-white hover:border-primary transition-all flex items-center justify-center gap-1.5"
@@ -336,7 +336,7 @@ const Websites: React.FC = () => {
                         <Settings size={14} />
                       </button>
                     )}
-                    {isMonthlyUser && (
+                    {(user?.is_staff || ["monthly", "annual", "priority_monthly"].includes(site.plan_type)) && (
                       <button
                         onClick={() => navigate("/request-changes")}
                         className="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all"

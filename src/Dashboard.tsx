@@ -132,7 +132,8 @@ const SiteCard: React.FC<SiteCardProps> = ({
     site.hosting_type === "PLATFORM" &&
     ["monthly", "annual", "priority_monthly"].includes(site.plan_type) &&
     (user?.is_staff || user?.plan_type?.includes("monthly"));
-  const showUpdate = user?.is_staff || user?.plan_type?.includes("monthly");
+  const showUpdate =
+    user?.is_staff || ["monthly", "annual", "priority_monthly"].includes(site.plan_type);
 
   return (
     <div className="bg-surface-container-low rounded-2xl border border-outline-variant/30 p-4 sm:p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all group flex flex-col">
@@ -222,7 +223,8 @@ const SiteListRow: React.FC<SiteCardProps> = ({
     site.hosting_type === "PLATFORM" &&
     ["monthly", "annual", "priority_monthly"].includes(site.plan_type) &&
     (user?.is_staff || user?.plan_type?.includes("monthly"));
-  const showUpdate = user?.is_staff || user?.plan_type?.includes("monthly");
+  const showUpdate =
+    user?.is_staff || ["monthly", "annual", "priority_monthly"].includes(site.plan_type);
 
   return (
     <div className="bg-surface-container-low rounded-xl border border-outline-variant/30 px-3.5 py-3 sm:px-5 sm:py-3.5 flex items-center gap-3 sm:gap-4 hover:border-primary/20 transition-all group">

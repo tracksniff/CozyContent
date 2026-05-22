@@ -57,8 +57,12 @@ const RequestChanges: React.FC = () => {
   useEffect(() => {
     if (!token) return;
     axios.get(`${import.meta.env.VITE_API_URL}/api/websites/`, { headers: authHeader }).then(res => {
-      setWebsites(res.data);
-      if (res.data.length > 0) setSelectedWebsite(res.data[0].id.toString());
+      // Filter for monthly/annual sites only
+      const monthlySites = res.data.filter((site: any) => 
+        ['monthly', 'annual', 'priority_monthly'].includes(site.plan_type)
+      );
+      setWebsites(monthlySites);
+      if (monthlySites.length > 0) setSelectedWebsite(monthlySites[0].id.toString());
     });
     fetchSiteRequests();
   }, [token]);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "./AuthContext";
 import logo from "./assets/PNG/Cosy Content Ltd -05.png";
+import axios from "axios";
 
 interface SidebarItemProps {
   icon: React.ReactNode;
@@ -85,15 +86,34 @@ const Sidebar: React.FC = () => {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [hasMonthlySite, setHasMonthlySite] = useState(false);
 
-  const isMonthlyUser =
-    user?.is_staff ||
-    user?.plan_type === "monthly" ||
-    user?.plan_type === "annual" ||
-    user?.plan_type === "priority_monthly";
+  useEffect(() => {
+    const checkMonthlySites = async () => {
+      if (user?.is_staff) {
+          setHasMonthlySite(true);
+          return;
+      }
+      if (!user) return;
+      try {
+        const token = localStorage.getItem('token');
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/websites/`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const monthly = res.data.some((s: any) => ['monthly', 'annual', 'priority_monthly'].includes(s.plan_type));
+        setHasMonthlySite(monthly);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    checkMonthlySites();
+  }, [user]);
 
-  const totalUpdates =
-    (user?.monthly_requests_remaining || 0) + (user?.purchased_requests_remaining || 0);
+  const isMonthlyUser = user?.is_staff || hasMonthlySite;
+
+  const totalUpdates = hasMonthlySite 
+    ? (user?.monthly_requests_remaining || 0) + (user?.purchased_requests_remaining || 0)
+    : 0;
 
   const handleLogout = () => {
     logout();
