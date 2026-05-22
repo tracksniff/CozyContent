@@ -8,7 +8,6 @@ import {
   ArrowRight,
   ShoppingCart,
   ChevronLeft,
-  Globe,
   ExternalLink,
   ShieldCheck,
 } from "lucide-react";
