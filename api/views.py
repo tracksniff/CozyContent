@@ -535,7 +535,7 @@ class StripeWebhookView(generics.GenericAPIView):
 
                 # Handle plan-specific logic
                 if plan_type in ["monthly", "annual"]:
-                    user.monthly_requests_remaining = 5
+                    user.monthly_requests_remaining += 5
                 elif plan_type == "pack_1":
                     user.purchased_requests_remaining += 1
                 elif plan_type == "pack_5":
