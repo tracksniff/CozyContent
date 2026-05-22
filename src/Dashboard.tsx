@@ -912,43 +912,45 @@ const Dashboard: React.FC = () => {
                         </div>
                       )}
 
-                    {/* Feedback */}
-                    <div className="bg-surface-container-low rounded-2xl border border-outline-variant/30 p-6">
-                      <h3 className="text-sm font-black text-on-surface mb-4 flex items-center gap-2">
-                        <MessageSquare size={15} className="text-primary" /> Feedback & Files
-                      </h3>
-                      <div className="relative mb-3">
-                        <textarea
-                          className="w-full p-4 bg-white dark:bg-surface border border-outline-variant rounded-xl focus:border-primary outline-none text-sm min-h-[96px] font-medium transition-all resize-none"
-                          placeholder="Describe what you'd like changed..."
-                          value={feedback[app.id] || ""}
-                          onChange={(e) => setFeedback((f) => ({ ...f, [app.id]: e.target.value }))}
-                        />
-                        <button
-                          onClick={() => handleSubmitFeedback(app.id)}
-                          disabled={!feedback[app.id]}
-                          className="absolute bottom-3 right-3 p-2 bg-primary text-white rounded-lg disabled:opacity-30 hover:scale-105 transition-all shadow-md"
-                        >
-                          <Send size={13} />
-                        </button>
-                      </div>
-                      <label className="cursor-pointer block">
-                        <div className="w-full py-3 px-4 border border-dashed border-outline-variant rounded-xl hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2 text-xs font-black text-on-surface-variant">
-                          {isUploading ? (
-                            <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                          ) : (
-                            <>
-                              <Upload size={13} /> Upload Assets
-                            </>
-                          )}
+                    {/* Feedback - Only for monthly/annual sites per user request */}
+                    {app.plan_type !== "one_time" && (
+                      <div className="bg-surface-container-low rounded-2xl border border-outline-variant/30 p-6">
+                        <h3 className="text-sm font-black text-on-surface mb-4 flex items-center gap-2">
+                          <MessageSquare size={15} className="text-primary" /> Feedback & Files
+                        </h3>
+                        <div className="relative mb-3">
+                          <textarea
+                            className="w-full p-4 bg-white dark:bg-surface border border-outline-variant rounded-xl focus:border-primary outline-none text-sm min-h-[96px] font-medium transition-all resize-none"
+                            placeholder="Describe what you'd like changed..."
+                            value={feedback[app.id] || ""}
+                            onChange={(e) => setFeedback((f) => ({ ...f, [app.id]: e.target.value }))}
+                          />
+                          <button
+                            onClick={() => handleSubmitFeedback(app.id)}
+                            disabled={!feedback[app.id]}
+                            className="absolute bottom-3 right-3 p-2 bg-primary text-white rounded-lg disabled:opacity-30 hover:scale-105 transition-all shadow-md"
+                          >
+                            <Send size={13} />
+                          </button>
                         </div>
-                        <input
-                          type="file"
-                          className="hidden"
-                          onChange={(e) => handleFileUpload(app.id, e)}
-                        />
-                      </label>
-                    </div>
+                        <label className="cursor-pointer block">
+                          <div className="w-full py-3 px-4 border border-dashed border-outline-variant rounded-xl hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2 text-xs font-black text-on-surface-variant">
+                            {isUploading ? (
+                              <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                              <>
+                                <Upload size={13} /> Upload Assets
+                              </>
+                            )}
+                          </div>
+                          <input
+                            type="file"
+                            className="hidden"
+                            onChange={(e) => handleFileUpload(app.id, e)}
+                          />
+                        </label>
+                      </div>
+                    )}
 
                     {/* Review CTA */}
                     {app.progress >= 80 && (
