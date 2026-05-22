@@ -61,49 +61,49 @@ function App() {
             <Route 
               path="/free-plumbing-website-audit" 
               element={<AuditPage 
-                title="Free Plumbing Website Audit | Get More Calls Online" 
+                title="Free Plumbing Website Audit | Cosy Content" 
                 industry="Plumbing"
-                description="Free plumbing website audit. Discover why your current site may be losing calls, enquiries and Google traffic."
+                description="Find out why your plumbing website isn’t generating enquiries. Free audit — no obligation."
               />} 
             />
             <Route 
               path="/free-roofer-website-audit" 
               element={<AuditPage 
-                title="Free Roofer Website Audit | More Quote Requests" 
+                title="Free Roofing Website Audit | Cosy Content" 
                 industry="Roofing"
-                description="Free roofer website audit. See how to improve your roofing website and generate more quote requests."
+                description="Discover what’s stopping your roofing website from ranking and converting. Free audit."
               />} 
             />
             <Route 
               path="/free-locksmith-website-audit" 
               element={<AuditPage 
-                title="Free Locksmith Website Audit | More Emergency Leads" 
+                title="Free Locksmith Website Audit | Cosy Content" 
                 industry="Locksmith"
-                description="Free locksmith website audit. Discover what may be costing you emergency calls and local leads."
+                description="Find out why local customers aren’t calling you. Free locksmith website audit."
               />} 
             />
             <Route 
               path="/free-electrician-website-audit" 
               element={<AuditPage 
-                title="Free Electrician Website Audit | Get More Enquiries" 
+                title="Free Electrician Website Audit | Cosy Content" 
                 industry="Electrical"
-                description="Free electrician website audit. Find issues affecting enquiries, trust and Google visibility."
+                description="See why your electrician website isn’t winning work locally. Free audit — no obligation."
               />} 
             />
             <Route 
               path="/free-cleaning-website-audit" 
               element={<AuditPage 
-                title="Free Cleaning Website Audit | More Bookings Online" 
+                title="Free Cleaning Website Audit | Cosy Content" 
                 industry="Cleaning"
-                description="Free cleaning website audit. Learn how to improve bookings, trust and local visibility."
+                description="Discover why your cleaning website isn’t attracting regular clients. Free audit."
               />} 
             />
             <Route 
               path="/free-removals-website-audit" 
               element={<AuditPage 
-                title="Free Removal Company Website Audit | More Moving Leads" 
+                title="Free Removal Company Website Audit | Cosy Content" 
                 industry="Removals"
-                description="Free removals website audit. Find out how to improve quote requests and generate more enquiries."
+                description="See why your removal website isn’t converting researchers into bookings. Free audit."
               />} 
             />
             <Route path="/login" element={<Login />} />

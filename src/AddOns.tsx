@@ -97,10 +97,10 @@ const AddOns: React.FC = () => {
                                 'Priority bug fixing'
                             ].map((feature, i) => (
                                 <div key={i} className="flex items-center gap-2.5">
-                                    <div className="w-4 h-4 rounded-full bg-yellow-400/10 flex items-center justify-center shrink-0">
-                                        <Check size={8} className="text-yellow-600" strokeWidth={4} />
+                                    <div className="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
+                                        <Check size={10} strokeWidth={4} />
                                     </div>
-                                    <span className="text-[11px] md:text-xs font-bold text-on-surface">{feature}</span>
+                                    <span className="text-[11px] md:text-xs font-black text-on-surface">{feature}</span>
                                 </div>
                             ))}
                         </div>
