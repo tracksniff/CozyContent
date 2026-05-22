@@ -27,6 +27,7 @@ import {
   Bell,
   X,
   TrendingUp,
+  ChevronDown,
 } from "lucide-react";
 import Sidebar from './Sidebar';
 import toast from 'react-hot-toast';
@@ -303,9 +304,16 @@ const Dashboard: React.FC = () => {
   const [githubUsernames, setGithubUsernames] = useState<Record<number, string>>({});
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [expandedRequest, setExpandedRequest] = useState<number | null>(null);
+  const [selectedSiteId, setSelectedSiteId] = useState<number | "all">(-1);
 
   const { token, user, loading: authLoading } = useAuth();
   const location = useLocation();
+
+  useEffect(() => {
+    if (websites.length > 0 && selectedSiteId === -1) {
+      setSelectedSiteId(websites[0].id);
+    }
+  }, [websites]);
 
   /* ── API helpers ── */
   const authHeader = { Authorization: `Bearer ${token}` };
@@ -505,17 +513,36 @@ const Dashboard: React.FC = () => {
   const processingApps = applications.filter((a) => a.status === "processing");
   const pendingRequests = siteRequests.filter((r) => r.status === "pending");
   const inProgressRequests = siteRequests.filter((r) => r.status === "in_progress");
+
+  // Filter logic based on selected site (for non-staff)
+  const isStaff = user?.is_staff;
+    
+  // Better application filtering for non-staff
+  const visibleApplications = !isStaff && selectedSiteId !== "all"
+    ? applications.filter(a => {
+        const matchingSite = websites.find(s => s.id === selectedSiteId);
+        return a.company_name === matchingSite?.name;
+      })
+    : applications;
+
   const dnsSetupSites = websites.filter(
     (s) =>
       s.hosting_type === "PLATFORM" &&
       !s.dns_ready &&
-      ["monthly", "annual", "priority_monthly"].includes(s.plan_type),
+      ["monthly", "annual", "priority_monthly"].includes(s.plan_type) &&
+      (isStaff || selectedSiteId === "all" || s.id === selectedSiteId),
   );
+  
   const filteredWebsites = websites.filter(
-    (s) =>
-      s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      s.url.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (s.owner_email && s.owner_email.toLowerCase().includes(searchQuery.toLowerCase())),
+    (s) => {
+      const matchesSearch = s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.url.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (s.owner_email && s.owner_email.toLowerCase().includes(searchQuery.toLowerCase()));
+      
+      const matchesSiteFilter = isStaff || selectedSiteId === "all" || s.id === selectedSiteId;
+      
+      return matchesSearch && matchesSiteFilter;
+    }
   );
   const displayName = user?.first_name || (user?.email ? user.email.split("@")[0] : "User");
 
@@ -560,32 +587,63 @@ const Dashboard: React.FC = () => {
         </div>
 
         <div className="p-6 md:p-10 max-w-7xl mx-auto space-y-10">
-          {/* ── Welcome ── */}
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-            <p className="text-[10px] font-black uppercase tracking-[0.25em] text-primary mb-1">
-              {new Date().toLocaleDateString("en-US", {
-                weekday: "long",
-                month: "long",
-                day: "numeric",
-              })}
-            </p>
-            <h1 className="text-3xl md:text-4xl font-black text-on-surface tracking-tighter">
-              {user?.is_staff ? (
-                <>
-                  Good to see you, <span className="text-primary italic">Admin.</span>
-                </>
-              ) : (
-                <>
-                  Welcome back, <span className="text-primary italic">{displayName}.</span>
-                </>
-              )}
-            </h1>
-            <p className="text-sm text-on-surface-variant font-medium mt-1">
-              {user?.is_staff
-                ? `${websites.length} total sites · ${pendingRequests.length} pending · ${inProgressRequests.length} in progress`
-                : `You have ${websites.length} site${websites.length !== 1 ? "s" : ""} in your portfolio.`}
-            </p>
-          </motion.div>
+          {/* ── Header Area ── */}
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+              <p className="text-[10px] font-black uppercase tracking-[0.25em] text-primary mb-1">
+                {new Date().toLocaleDateString("en-US", {
+                  weekday: "long",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </p>
+              <h1 className="text-3xl md:text-4xl font-black text-on-surface tracking-tighter">
+                {user?.is_staff ? (
+                  <>
+                    Good to see you, <span className="text-primary italic">Admin.</span>
+                  </>
+                ) : (
+                  <>
+                    Welcome back, <span className="text-primary italic">{displayName}.</span>
+                  </>
+                )}
+              </h1>
+              <p className="text-sm text-on-surface-variant font-medium mt-1">
+                {user?.is_staff
+                  ? `${websites.length} total sites · ${pendingRequests.length} pending · ${inProgressRequests.length} in progress`
+                  : `You are viewing details for your selected site portfolio.`}
+              </p>
+            </motion.div>
+
+            {/* Site Selector Dropdown */}
+            {!isStaff && websites.length > 1 && (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="flex flex-col gap-2 min-w-[240px]"
+              >
+                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60 ml-1">
+                  Select Website
+                </label>
+                <div className="relative group">
+                  <Globe className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" size={16} />
+                  <select 
+                    value={selectedSiteId}
+                    onChange={(e) => setSelectedSiteId(e.target.value === "all" ? "all" : parseInt(e.target.value))}
+                    className="w-full pl-11 pr-10 py-3.5 bg-surface-container-low border border-outline-variant/30 rounded-2xl appearance-none font-bold text-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none cursor-pointer group-hover:border-primary/50"
+                  >
+                    <option value="all">All Websites</option>
+                    {websites.map(s => (
+                      <option key={s.id} value={s.id}>{s.name}</option>
+                    ))}
+                  </select>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant group-hover:text-primary transition-colors">
+                    <ChevronDown size={16} />
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </div>
 
           {/* ── Admin stat cards ── */}
           {user?.is_staff && (
@@ -593,7 +651,7 @@ const Dashboard: React.FC = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.05 }}
-              className="grid grid-cols-2 md:grid-cols-4 gap-4"
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4"
             >
               <StatCard label="Total Sites" value={websites.length} icon={Globe} />
               <StatCard label="Pending" value={pendingRequests.length} icon={Bell} highlight />
@@ -761,7 +819,7 @@ const Dashboard: React.FC = () => {
 
           {/* ── Project timeline (customers) ── */}
           {!user?.is_staff &&
-            applications.map((app) => (
+            visibleApplications.map((app) => (
               <motion.section
                 key={app.id}
                 initial={{ opacity: 0, y: 10 }}

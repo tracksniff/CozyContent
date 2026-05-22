@@ -163,19 +163,19 @@ const Sidebar: React.FC = () => {
       >
         {/* Logo */}
         <div
-          className={`flex items-center h-16 border-b border-outline-variant/15 shrink-0 transition-all duration-300 ${isCollapsed ? "justify-center px-4" : "px-5 gap-3"}`}
+          className={`flex items-center h-16 border-b border-outline-variant/15 shrink-0 transition-all duration-300 ${isCollapsed ? "justify-center px-4" : "px-4 gap-2.5 sm:px-5 sm:gap-3"}`}
         >
-          <img src={logo} alt="Cosy Content Logo" className="w-7 h-7 object-contain shrink-0" />
+          <img src={logo} alt="Cosy Content Logo" className="w-6 h-6 sm:w-7 sm:h-7 object-contain shrink-0" />
           {!isCollapsed && (
-            <span className="font-black text-base tracking-tighter text-on-surface truncate">
+            <span className="font-black text-sm sm:text-base tracking-tighter text-on-surface truncate">
               Cosy Content
             </span>
           )}
           <button
             onClick={close}
-            className="lg:hidden ml-auto p-1 text-on-surface-variant hover:text-primary"
+            className="lg:hidden ml-auto p-1.5 text-on-surface-variant hover:text-primary active:scale-95 transition-all"
           >
-            <X size={18} />
+            <X size={20} />
           </button>
         </div>
 
