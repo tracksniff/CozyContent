@@ -80,9 +80,12 @@ const RequestChanges: React.FC = () => {
 
   const handleRejectRequest = async (requestId: number) => {
     if (!token) return;
+    const reason = prompt('Please enter a reason for rejection:');
+    if (reason === null) return; // User cancelled
+
     setIsProcessingRequest(p => ({ ...p, [requestId]: true }));
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/site-requests/${requestId}/reject/`, {}, { headers: authHeader });
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/site-requests/${requestId}/reject/`, { reason }, { headers: authHeader });
       toast.success('Request rejected.');
       fetchSiteRequests();
     } catch { toast.error('Failed to reject request.'); }
@@ -155,78 +158,80 @@ const RequestChanges: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
 
             {/* ── Form ── */}
-            <motion.div className="lg:col-span-3" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
-              <div className="bg-surface-container-low rounded-2xl border border-outline-variant/30 p-6 md:p-8">
-                <h2 className="text-sm font-black text-on-surface uppercase tracking-widest mb-6">New Request</h2>
+            {!user?.is_staff && (
+              <motion.div className="lg:col-span-3" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
+                <div className="bg-surface-container-low rounded-2xl border border-outline-variant/30 p-6 md:p-8">
+                  <h2 className="text-sm font-black text-on-surface uppercase tracking-widest mb-6">New Request</h2>
 
-                {/* No updates warning */}
-                {user && !user.is_staff && totalUpdates <= 0 && (
-                  <div className="mb-6 bg-red-500/5 border border-red-500/20 rounded-xl p-4 flex items-start gap-3">
-                    <AlertCircle size={16} className="text-red-500 shrink-0 mt-0.5" />
+                  {/* No updates warning */}
+                  {user && !user.is_staff && totalUpdates <= 0 && (
+                    <div className="mb-6 bg-red-500/5 border border-red-500/20 rounded-xl p-4 flex items-start gap-3">
+                      <AlertCircle size={16} className="text-red-500 shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-black text-on-surface">No updates remaining</p>
+                        <p className="text-xs text-on-surface-variant font-medium mt-0.5">
+                          You've used all your available updates.{' '}
+                          <Link to="/add-ons" className="text-primary font-black hover:brightness-125">Get more →</Link>
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  <form onSubmit={handleSubmit} className="space-y-5">
+                    {/* Website select */}
                     <div>
-                      <p className="text-sm font-black text-on-surface">No updates remaining</p>
-                      <p className="text-xs text-on-surface-variant font-medium mt-0.5">
-                        You've used all your available updates.{' '}
-                        <Link to="/add-ons" className="text-primary font-black hover:brightness-125">Get more →</Link>
-                      </p>
+                      <label className="block text-[9px] font-black uppercase tracking-widest text-on-surface-variant mb-2">Select Website</label>
+                      <div className="relative">
+                        <select
+                          value={selectedWebsite}
+                          onChange={e => setSelectedWebsite(e.target.value)}
+                          required
+                          className="w-full px-4 py-3 bg-white dark:bg-surface border border-outline-variant rounded-xl focus:border-primary outline-none transition-all font-bold text-sm appearance-none cursor-pointer pr-10"
+                        >
+                          {websites.map(site => (
+                            <option key={site.id} value={site.id}>{site.name}</option>
+                          ))}
+                          {websites.length === 0 && <option value="">No websites available</option>}
+                        </select>
+                        <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" />
+                      </div>
                     </div>
-                  </div>
-                )}
 
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  {/* Website select */}
-                  <div>
-                    <label className="block text-[9px] font-black uppercase tracking-widest text-on-surface-variant mb-2">Select Website</label>
-                    <div className="relative">
-                      <select
-                        value={selectedWebsite}
-                        onChange={e => setSelectedWebsite(e.target.value)}
+                    {/* Details */}
+                    <div>
+                      <label className="block text-[9px] font-black uppercase tracking-widest text-on-surface-variant mb-2">Change Details</label>
+                      <textarea
+                        value={details}
+                        onChange={e => setDetails(e.target.value)}
                         required
-                        className="w-full px-4 py-3 bg-white dark:bg-surface border border-outline-variant rounded-xl focus:border-primary outline-none transition-all font-bold text-sm appearance-none cursor-pointer pr-10"
-                      >
-                        {websites.map(site => (
-                          <option key={site.id} value={site.id}>{site.name}</option>
-                        ))}
-                        {websites.length === 0 && <option value="">No websites available</option>}
-                      </select>
-                      <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" />
+                        rows={6}
+                        placeholder="Be specific — e.g. 'Change the header background to dark green and update the phone number to +44 7700 000000'"
+                        className="w-full px-4 py-3 bg-white dark:bg-surface border border-outline-variant rounded-xl focus:border-primary outline-none transition-all font-medium text-sm resize-none"
+                      />
+                      <p className="mt-1.5 text-[10px] font-medium text-on-surface-variant/60 text-right">{details.length} chars</p>
                     </div>
-                  </div>
 
-                  {/* Details */}
-                  <div>
-                    <label className="block text-[9px] font-black uppercase tracking-widest text-on-surface-variant mb-2">Change Details</label>
-                    <textarea
-                      value={details}
-                      onChange={e => setDetails(e.target.value)}
-                      required
-                      rows={6}
-                      placeholder="Be specific — e.g. 'Change the header background to dark green and update the phone number to +44 7700 000000'"
-                      className="w-full px-4 py-3 bg-white dark:bg-surface border border-outline-variant rounded-xl focus:border-primary outline-none transition-all font-medium text-sm resize-none"
-                    />
-                    <p className="mt-1.5 text-[10px] font-medium text-on-surface-variant/60 text-right">{details.length} chars</p>
-                  </div>
+                    <button
+                      type="submit"
+                      disabled={isSubmitting || websites.length === 0 || (!user?.is_staff && totalUpdates <= 0)}
+                      className="w-full py-3.5 bg-primary text-white font-black rounded-xl hover:shadow-xl hover:shadow-primary/25 transition-all active:scale-[0.99] disabled:opacity-40 flex items-center justify-center gap-2 text-xs uppercase tracking-widest"
+                    >
+                      {isSubmitting
+                        ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        : <><Send size={14} /> Submit Request</>
+                      }
+                    </button>
 
-                  <button
-                    type="submit"
-                    disabled={isSubmitting || websites.length === 0 || (!user?.is_staff && totalUpdates <= 0)}
-                    className="w-full py-3.5 bg-primary text-white font-black rounded-xl hover:shadow-xl hover:shadow-primary/25 transition-all active:scale-[0.99] disabled:opacity-40 flex items-center justify-center gap-2 text-xs uppercase tracking-widest"
-                  >
-                    {isSubmitting
-                      ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      : <><Send size={14} /> Submit Request</>
-                    }
-                  </button>
-
-                  <p className="text-center text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">
-                    Typical turnaround: 24–48 hours
-                  </p>
-                </form>
-              </div>
-            </motion.div>
+                    <p className="text-center text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">
+                      Typical turnaround: 24–48 hours
+                    </p>
+                  </form>
+                </div>
+              </motion.div>
+            )}
 
             {/* ── Right panel ── */}
-            <motion.div className="lg:col-span-2 space-y-5" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }}>
+            <motion.div className={user?.is_staff ? "lg:col-span-5" : "lg:col-span-2"} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }}>
 
               {/* Recent requests */}
               <div className="bg-surface-container-low rounded-2xl border border-outline-variant/30 p-6">
@@ -276,6 +281,13 @@ const RequestChanges: React.FC = () => {
                             >
                               <div className="px-4 pb-4 border-t border-outline-variant/15">
                                 <p className="text-xs text-on-surface-variant font-medium leading-relaxed pt-3 whitespace-pre-wrap">{req.details}</p>
+
+                                {req.status === 'denied' && req.rejection_reason && (
+                                  <div className="mt-3 p-3 bg-red-500/5 border border-red-500/10 rounded-lg">
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-red-500 mb-1">Reason for rejection</p>
+                                    <p className="text-xs text-on-surface-variant font-medium">{req.rejection_reason}</p>
+                                  </div>
+                                )}
 
                                 {/* Admin actions */}
                                 {user?.is_staff && req.status === 'pending' && (

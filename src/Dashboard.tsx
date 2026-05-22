@@ -342,11 +342,14 @@ const Dashboard: React.FC = () => {
 
   const handleRejectRequest = async (requestId: number) => {
     if (!token) return;
+    const reason = prompt('Please enter a reason for rejection:');
+    if (reason === null) return;
+
     setIsProcessingRequest((p) => ({ ...p, [requestId]: true }));
     try {
       await axios.post(
         `${import.meta.env.VITE_API_URL}/api/site-requests/${requestId}/reject/`,
-        {},
+        { reason },
         { headers: authHeader },
       );
       toast.success("Request rejected.");
@@ -529,15 +532,16 @@ const Dashboard: React.FC = () => {
       })
     : applications;
 
-  const dnsSetupSites = websites.filter(
+  // DNS setup sites: always check all sites for the dashboard banner
+  const allDnsSetupSites = websites.filter(
     (s) =>
       s.hosting_type === "PLATFORM" &&
       !s.dns_ready &&
-      ["monthly", "annual", "priority_monthly"].includes(s.plan_type) &&
-      (isStaff || selectedSiteId === "all" || s.id === selectedSiteId),
+      ["monthly", "annual", "priority_monthly"].includes(s.plan_type),
   );
-  
+
   const filteredWebsites = websites.filter(
+
     (s) => {
       const matchesSearch = s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         s.url.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -799,7 +803,7 @@ const Dashboard: React.FC = () => {
           )}
 
           {/* ── DNS setup alert (customers) ── */}
-          {!user?.is_staff && dnsSetupSites.length > 0 && (
+          {!user?.is_staff && allDnsSetupSites.length > 0 && (
             <div className="bg-primary/5 border border-primary/20 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
               <div className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
                 <AlertCircle size={16} className="text-primary" />
@@ -807,13 +811,13 @@ const Dashboard: React.FC = () => {
               <div className="flex-grow">
                 <p className="text-sm font-black text-on-surface">Domain setup required</p>
                 <p className="text-xs text-on-surface-variant font-medium mt-0.5">
-                  {dnsSetupSites.length === 1
-                    ? `"${dnsSetupSites[0].name}" is ready but needs a domain to go live.`
-                    : `${dnsSetupSites.length} sites need domain configuration to go live.`}
+                  {allDnsSetupSites.length === 1
+                    ? `"${allDnsSetupSites[0].name}" is ready but needs a domain to go live.`
+                    : `${allDnsSetupSites.length} sites need domain configuration to go live.`}
                 </p>
               </div>
               <button
-                onClick={() => navigate(`/dns-setup/${dnsSetupSites[0].id}`)}
+                onClick={() => navigate(`/dns-setup/${allDnsSetupSites[0].id}`)}
                 className="bg-primary text-white px-5 py-2.5 rounded-xl font-black text-xs hover:scale-105 transition-all shadow-lg shadow-primary/20 whitespace-nowrap flex items-center gap-2 shrink-0"
               >
                 <Settings size={13} /> Configure DNS
@@ -1134,6 +1138,12 @@ const RequestCard: React.FC<RequestCardProps> = ({
               <p className="text-sm text-on-surface-variant font-medium leading-relaxed pt-4 whitespace-pre-wrap">
                 {req.details}
               </p>
+              {req.status === 'denied' && req.rejection_reason && (
+                <div className="mt-4 p-4 bg-red-500/5 border border-red-500/10 rounded-xl">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-red-500 mb-1">Reason for rejection</p>
+                  <p className="text-sm text-on-surface-variant font-medium">{req.rejection_reason}</p>
+                </div>
+              )}
             </div>
           </motion.div>
         )}
