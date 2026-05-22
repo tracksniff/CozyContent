@@ -210,45 +210,60 @@ const Sidebar: React.FC = () => {
               />
             </>
           )}
+
+          {/* Updates widget (non-staff only) - moved inside nav for better mobile scrolling */}
+          {user && !user.is_staff && (
+            <div className={`pt-4 pb-2 ${isCollapsed ? "px-2" : ""}`}>
+              {!isCollapsed ? (
+                <div className="p-4 bg-surface-container-high rounded-2xl border border-outline-variant/30">
+                  <p className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant mb-2">
+                    Available Updates
+                  </p>
+                  <div className="flex items-end justify-between">
+                    <div className="flex items-end gap-2">
+                      <span className="text-2xl font-black text-on-surface">{totalUpdates}</span>
+                      {user.priority_updates_active && (
+                        <span className="mb-1 px-2 py-0.5 bg-yellow-400 text-black text-[8px] font-black rounded-full uppercase flex items-center gap-1">
+                          <Zap size={8} fill="black" /> Priority
+                        </span>
+                      )}
+                    </div>
+                    <Link
+                      to="/add-ons"
+                      onClick={close}
+                      className="text-[10px] font-black text-primary uppercase tracking-widest hover:brightness-125 transition-all"
+                    >
+                      Get More +
+                    </Link>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex justify-center">
+                  <Link
+                    to="/add-ons"
+                    className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary font-black text-sm border border-primary/20 hover:bg-primary hover:text-white transition-all"
+                  >
+                    {totalUpdates}
+                  </Link>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Mobile Logout (redundant but helpful if footer is cut off) */}
+          <div className="lg:hidden pt-4 border-t border-outline-variant/10">
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-red-500 hover:bg-red-500/10 transition-all group"
+            >
+              <LogOut size={18} className="group-hover:rotate-12 transition-transform duration-300 shrink-0" />
+              <span className="font-bold text-sm">Logout</span>
+            </button>
+          </div>
         </nav>
 
-        {/* Updates widget (non-staff only) */}
-        {user && !user.is_staff && !isCollapsed && (
-          <div className="mx-3 mb-3 p-4 bg-surface-container-high rounded-2xl border border-outline-variant/30">
-            <p className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant mb-2">
-              Available Updates
-            </p>
-            <div className="flex items-end justify-between">
-              <div className="flex items-end gap-2">
-                <span className="text-2xl font-black text-on-surface">{totalUpdates}</span>
-                {user.priority_updates_active && (
-                  <span className="mb-1 px-2 py-0.5 bg-yellow-400 text-black text-[8px] font-black rounded-full uppercase flex items-center gap-1">
-                    <Zap size={8} fill="black" /> Priority
-                  </span>
-                )}
-              </div>
-              <Link
-                to="/add-ons"
-                className="text-[10px] font-black text-primary uppercase tracking-widest hover:brightness-125 transition-all"
-              >
-                Get More +
-              </Link>
-            </div>
-          </div>
-        )}
-        {user && !user.is_staff && isCollapsed && (
-          <div className="mx-2 mb-3 flex justify-center">
-            <Link
-              to="/add-ons"
-              className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary font-black text-sm border border-primary/20 hover:bg-primary hover:text-white transition-all"
-            >
-              {totalUpdates}
-            </Link>
-          </div>
-        )}
-
         {/* Footer */}
-        <div className="px-3 pb-6 pt-3 border-t border-outline-variant/15 space-y-1 shrink-0">
+        <div className="px-3 pb-8 pt-3 border-t border-outline-variant/15 space-y-1 shrink-0">
           {/* Collapse toggle (desktop only) */}
           <button
             onClick={() => setIsCollapsed((c) => !c)}
@@ -266,7 +281,7 @@ const Sidebar: React.FC = () => {
 
           <button
             onClick={handleLogout}
-            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant hover:bg-red-500/10 hover:text-red-500 transition-all group ${isCollapsed ? "justify-center" : ""}`}
+            className={`hidden lg:flex w-full items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant hover:bg-red-500/10 hover:text-red-500 transition-all group ${isCollapsed ? "justify-center" : ""}`}
           >
             <LogOut
               size={18}
