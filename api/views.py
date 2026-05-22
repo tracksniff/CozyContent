@@ -640,14 +640,23 @@ class WebsiteViewSet(viewsets.ModelViewSet):
         if not website.custom_domain:
             return Response({"error": "No custom domain set"}, status=status.HTTP_400_BAD_REQUEST)
         
-        server_ip = os.getenv("SERVER_IP", "76.76.21.21") # Vercel A record IP as default
+        server_ip = os.getenv("SERVER_IP", "128.140.103.20")
         try:
             domain_ip = socket.gethostbyname(website.custom_domain)
             if domain_ip == server_ip:
+                if not website.dns_ready:
+                    website.dns_ready = True
+                    website.save()
                 return Response({"is_ready": True, "domain_ip": domain_ip, "server_ip": server_ip})
             else:
+                if website.dns_ready:
+                    website.dns_ready = False
+                    website.save()
                 return Response({"is_ready": False, "domain_ip": domain_ip, "server_ip": server_ip})
         except socket.gaierror:
+            if website.dns_ready:
+                website.dns_ready = False
+                website.save()
             return Response({"is_ready": False, "error": "Could not resolve domain"})
 
 class SiteRequestViewSet(viewsets.ModelViewSet):

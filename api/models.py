@@ -142,6 +142,7 @@ class Website(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='websites')
     hosting_type = models.CharField(max_length=20, choices=HOSTING_CHOICES, default='PLATFORM')
     plan_type = models.CharField(max_length=20, blank=True, null=True) # 'one_time' or 'monthly'
+    dns_ready = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
