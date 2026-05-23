@@ -6,8 +6,6 @@ import logging
 
 import json
 
-import subprocess
-
 import shutil
 
 import tempfile
@@ -16,30 +14,15 @@ import colorsys
 
 import random
 
+import re
+
 
 logger = logging.getLogger(__name__)
 
 
-TEMPLATE_REPO = "https://github.com/Cosy-Content-LTD/soho-plumbers-modern-makeover.git"
-
-
-# Every file that contains visible content or design tokens.
-
-EDITABLE_FILES = [
-    "index.html",
-    "src/index.css",
-    "src/pages/Index.tsx",
-    "src/components/Navbar.tsx",
-    "src/components/HeroSection.tsx",
-    "src/components/WhyUsSection.tsx",
-    "src/components/ServicesSection.tsx",
-    "src/components/HowItWorks.tsx",
-    "src/components/MeetTheTeam.tsx",
-    "src/components/ReviewsSection.tsx",
-    "src/components/AreasSection.tsx",
-    "src/components/FooterSection.tsx",
-    "src/components/MobileCTA.tsx",
-]
+# Local scaffold = minimal Vite + React + Tailwind + shadcn/ui project.
+# Claude generates Index.tsx + any components freely on top of this.
+SCAFFOLD_DIR = os.path.join(os.path.dirname(__file__), "scaffold")
 
 
 # ─────────────────────────────────────────────────────────
@@ -97,7 +80,7 @@ INDUSTRY_IMAGE_SETS = {
         "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1200&q=80",
         "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&q=80",
         "https://images.unsplash.com/photo-1488229297570-58520851e868?w=1200&q=80",
-        "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?w=800&q=80",
+        "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?w=1200&q=80",
     ],
     "construction": [
         "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1600&q=80",
@@ -126,15 +109,16 @@ INDUSTRY_IMAGE_SETS = {
 # ─────────────────────────────────────────────────────────
 
 LAYOUT_STRATEGIES = [
-    "Trust-First Narrative: Place 'Why Us' and 'Reviews' immediately after the Hero to establish authority before listing services.",
-    "Services-Focused Narrative: Keep 'Services' right under the Hero, followed by 'How It Works' to drive conversion quickly.",
-    "Social-Proof Narrative: Move 'Meet the Team' and 'Reviews' higher up to humanise the brand early in the page.",
-    "Outcome-Focused Narrative: Lead with 'How It Works' and 'Why Us' to show the benefits before the technical details.",
-    "Modern Minimal Narrative: Use large spacing and reorder sections to create a more experimental, non-linear flow.",
-    "Data-Driven Narrative: Start with 'Stats' and 'Trust Badges' immediately after the Hero to provide instant proof.",
-    "Asymmetric Storytelling: Use a mix of full-width and contained sections with overlapping images and text to break the 'blocky' feel.",
-    "Direct Action Narrative: Place the 'Contact' or 'Booking' form/section very high up, right after the Hero description.",
-    "Impactful Visual Narrative: Lead with large, high-impact imagery and minimal text, letting the visuals tell the story first.",
+    "Trust-First Narrative: open with social proof (reviews, awards, badges) immediately after the hero to establish authority before pitching services.",
+    "Services-Focused Narrative: lead with a strong, scannable services section right after the hero, then drive into 'how it works' to convert quickly.",
+    "Social-Proof-Heavy Narrative: surface team faces, founder story, and testimonials early to humanise the brand before listing services.",
+    "Outcome-Focused Narrative: structure the page around customer outcomes / case studies first, services second.",
+    "Modern Minimal Narrative: very few sections, huge whitespace, oversized type, one or two hero images. Feel: art gallery / luxury brand.",
+    "Data-Driven Narrative: stats, numbers, KPIs, accreditations dominate the early sections. Feel: institutional, credible.",
+    "Asymmetric Editorial: mix full-bleed sections with narrow contained ones; overlap text on images; magazine-style.",
+    "Direct Action Narrative: contact / booking form placed unusually high (near the hero) — single-page conversion focus.",
+    "Visual-First Narrative: oversized imagery dominates, text plays supporting role. Hero takes 100vh.",
+    "Story-Driven Narrative: long-scroll storytelling with chapter-style section dividers and a clear emotional arc.",
 ]
 
 
@@ -147,119 +131,117 @@ DESIGN_PERSONALITIES = {
         "name": "Bold Industrial",
         "instructions": (
             "Theme: Industrial Power & High Contrast.\n"
-            "- Visuals: Bold, raw, and high-energy. Use thick borders (border-4), hard edges (rounded-none or rounded-md), and high-contrast color pairings.\n"
-            "- Hero: Experiment with 'Split-screen' or 'Dark-Focused' layouts. Use large, heavy typography (font-black tracking-tighter).\n"
-            "- Navbar: Use a bold, solid background color or a thick bottom border. Consider a vertical sidebar-style navigation for desktop.\n"
-            "- Rhythm: Use strong block-color sections (Primary/Secondary) to create a powerful, punchy flow. Avoid soft shadows; use hard 'neo-brutalist' shadows instead.\n"
-            "- Accents: Use the Accent color for glowing effects and high-visibility status indicators.\n"
+            "- Visuals: bold, raw, high-energy. Thick borders (border-4), hard edges (rounded-none or rounded-md), high-contrast pairings.\n"
+            "- Hero: split-screen or dark-focused layouts. Heavy typography (font-black tracking-tighter).\n"
+            "- Navbar: solid bold background or thick bottom border. Vertical sidebar nav is on the table.\n"
+            "- Rhythm: strong block-color sections, neo-brutalist hard shadows instead of soft.\n"
+            "- Accents: accent color for glowing highlights and status indicators.\n"
         ),
     },
     "plumbing": {
         "name": "Professional Trustworthy",
         "instructions": (
-            "Theme: Dependable Cleanliness & Technical Precision.\n"
-            "- Visuals: Clean, structured, and reassuring. Use medium rounded corners (rounded-xl) and subtle shadows to create depth.\n"
-            "- Hero: Use a 'Content-First' approach with clear trust badges and a strong, friendly call-to-action. Try an asymmetric grid layout.\n"
-            "- Navbar: Clean, centered navigation with a prominent call button. Use a soft shadow when scrolling.\n"
-            "- Rhythm: Clean, alternating sections with a focus on 'Step-by-step' processes and clear feature lists.\n"
-            "- Accents: Use the Primary color for icons and structural highlights to build brand recognition.\n"
+            "Theme: Dependable cleanliness & technical precision.\n"
+            "- Visuals: clean, structured, reassuring. Medium rounded corners (rounded-xl), subtle depth shadows.\n"
+            "- Hero: content-first with visible trust badges and a strong friendly CTA. Asymmetric grid welcome.\n"
+            "- Navbar: clean centered nav with a prominent phone button. Soft shadow on scroll.\n"
+            "- Rhythm: alternating sections, clear step-by-step processes, feature lists.\n"
+            "- Accents: primary color for icons and structural highlights.\n"
         ),
     },
     "beauty": {
         "name": "Elegant Minimal",
         "instructions": (
-            "Theme: Luxurious Serenity & Soft Whitespace.\n"
-            "- Visuals: High-end, airy, and sophisticated. Use extremely generous padding (py-40), rounded-full for buttons, and delicate thin dividers.\n"
-            "- Hero: Centered-focus layout with a large, beautiful background image and soft, layered typography. Try a 'floating' hero card.\n"
-            "- Navbar: Minimalist, transparent background that blurs on scroll. Use elegant, spaced-out menu items.\n"
-            "- Rhythm: Flowing, spacious layout. Use very subtle background tints (bg-primary/5) rather than solid dark blocks.\n"
-            "- Typography: Use tracking-widest and light font weights for a premium, boutique feel.\n"
+            "Theme: Luxurious serenity & soft whitespace.\n"
+            "- Visuals: airy, sophisticated, high-end. Generous padding (py-32+), rounded-full buttons, delicate thin dividers.\n"
+            "- Hero: centered with a beautiful background image and soft layered typography. Floating hero card optional.\n"
+            "- Navbar: minimalist transparent that blurs on scroll. Spaced-out menu items.\n"
+            "- Rhythm: flowing and spacious. Use subtle background tints (bg-primary/5) over solid dark blocks.\n"
+            "- Typography: tracking-widest, light font weights, premium boutique feel.\n"
         ),
     },
     "restaurant": {
         "name": "Warm and Inviting",
         "instructions": (
-            "Theme: Artisanal Texture & Rich Warmth.\n"
-            "- Visuals: Appetising, textured, and welcoming. Use warm gradients, rounded-3xl corners, and organic shapes.\n"
-            "- Hero: Full-bleed imagery with centered, high-impact headings and a clear reservation/order CTA. Use overlapping text elements.\n"
-            "- Navbar: Warm-toned background with an elegant logo placement. Consider a 'mega-menu' style for categories.\n"
-            "- Rhythm: A 'Menu-like' structure for services and features. Use layered elements and overlapping images to create an artisanal feel.\n"
-            "- Accents: Use the Secondary color for deep, rich backgrounds and the Accent color for highlights.\n"
+            "Theme: Artisanal texture & rich warmth.\n"
+            "- Visuals: appetising, textured, welcoming. Warm gradients, rounded-3xl corners, organic shapes.\n"
+            "- Hero: full-bleed imagery, high-impact centered headings, clear reservation / order CTA. Overlapping text welcome.\n"
+            "- Navbar: warm-toned background, elegant logo placement. Mega-menu for categories is fine.\n"
+            "- Rhythm: menu-like structure, layered elements, overlapping images, artisanal feel.\n"
+            "- Accents: secondary color for deep rich backgrounds, accent color for highlights.\n"
         ),
     },
     "legal": {
         "name": "Authoritative and Premium",
         "instructions": (
-            "Theme: Sophisticated Authority & Classic Excellence.\n"
-            "- Visuals: Stately, serious, and high-end. Use serif-style typography, thin elegant dividers, and a predominantly dark color palette.\n"
-            "- Hero: Large, bold typography on a dark Secondary background. Use the Accent color sparingly for 'prestige' highlights. Try a classical 'pillar' layout.\n"
-            "- Navbar: Professional and conservative. Use a solid top-bar for contact info and a clean main nav below it.\n"
-            "- Rhythm: A focused, linear narrative that emphasizes credentials and expert fields. Use wide layouts with large text blocks.\n"
-            "- Details: Sharp corners and gold/accent borders (border-l-2).\n"
+            "Theme: Sophisticated authority & classic excellence.\n"
+            "- Visuals: stately, serious, high-end. Serif headlines, thin dividers, dark dominant palette.\n"
+            "- Hero: large bold headlines on a dark secondary background. Accent color used sparingly for prestige highlights. Classical 'pillar' layout fits.\n"
+            "- Navbar: conservative and professional. Solid top-bar for contact info, clean main nav below.\n"
+            "- Rhythm: linear, credentials-forward, wide layouts, large text blocks.\n"
+            "- Details: sharp corners, gold/accent borders (border-l-2).\n"
         ),
     },
     "tech": {
         "name": "Modern Tech Startup",
         "instructions": (
-            "Theme: Digital Innovation & Glassmorphism.\n"
-            "- Visuals: Sleek, vibrant, and futuristic. Use glassmorphism effects (bg-white/10 backdrop-blur), neon glows, and dark backgrounds.\n"
-            "- Hero: Gradient headlines (text-transparent bg-clip-text) and large, modern typography with interactive-feeling buttons. Try a 3D-card effect.\n"
-            "- Navbar: Glassmorphic bar that floats at the top. Use subtle animations for hover states.\n"
-            "- Rhythm: Non-standard grids, asymmetric layouts, and varied section heights. Incorporate grid patterns or subtle tech motifs.\n"
-            "- Details: Use rounded-2xl throughout and smooth hover transitions.\n"
+            "Theme: Digital innovation & glassmorphism.\n"
+            "- Visuals: sleek, vibrant, futuristic. Glassmorphism (bg-white/10 backdrop-blur), neon glows, dark backgrounds.\n"
+            "- Hero: gradient headlines (text-transparent bg-clip-text), large modern type, interactive-feeling buttons. 3D-card effect welcome.\n"
+            "- Navbar: glassmorphic bar that floats. Subtle animated hovers.\n"
+            "- Rhythm: non-standard grids, asymmetric layouts, varied section heights. Grid patterns / tech motifs.\n"
+            "- Details: rounded-2xl throughout, smooth hover transitions.\n"
         ),
     },
     "medical": {
         "name": "Clean and Caring",
         "instructions": (
-            "Theme: Bright Clinical & Friendly Professionalism.\n"
-            "- Visuals: Pristine, safe, and welcoming. Use a lot of white space, soft Primary blue/green tones, and rounded-full pill shapes.\n"
-            "- Hero: Professional and friendly, using team photography and very clear 'Book Now' CTAs above the fold. Try a split-layout with a trust-card overlay.\n"
-            "- Navbar: Extremely clear and accessible. Use a high-contrast emergency contact button.\n"
-            "- Rhythm: Simple, clear, and easy to navigate. Use distinct panels for services and expertise badges.\n"
-            "- Details: Avoid harsh contrast; use soft shadows and light-tinted borders.\n"
+            "Theme: Bright clinical & friendly professionalism.\n"
+            "- Visuals: pristine, safe, welcoming. Lots of white space, soft primary blue/green tones, rounded-full pill shapes.\n"
+            "- Hero: professional + friendly with team photography and very clear 'Book Now' CTAs above the fold. Split-layout with trust-card overlay works well.\n"
+            "- Navbar: high accessibility, prominent emergency-contact button.\n"
+            "- Rhythm: simple panels for services, expertise badges, easy navigation.\n"
+            "- Details: soft shadows, light-tinted borders, avoid harsh contrast.\n"
         ),
     },
     "construction": {
         "name": "Strong and Reliable",
         "instructions": (
-            "Theme: Heavy-Duty Structural & Bold Scale.\n"
-            "- Visuals: Strong, large-scale, and impactful. Use massive typography (text-7xl), bold block colors, and industrial-style iconography.\n"
-            "- Hero: Full-width construction imagery with heavy-weight headlines and high-visibility CTAs. Try a 'brutalist' grid layout.\n"
-            "- Navbar: Strong and functional. Use a thick Primary background and bold, caps-lock navigation items.\n"
-            "- Rhythm: Strong, alternating blocks of Primary and Secondary colors. Use large-format imagery as section dividers.\n"
-            "- Details: Hard corners and prominent, bold borders.\n"
+            "Theme: Heavy-duty structural & bold scale.\n"
+            "- Visuals: strong, large-scale, impactful. Massive typography (text-7xl+), bold block colors, industrial iconography.\n"
+            "- Hero: full-width construction imagery, heavy headlines, high-visibility CTAs. Brutalist grid fits.\n"
+            "- Navbar: strong and functional. Thick primary background, bold uppercase nav items.\n"
+            "- Rhythm: alternating primary/secondary blocks, large-format imagery as dividers.\n"
+            "- Details: hard corners, prominent bold borders.\n"
         ),
     },
     "cleaning": {
         "name": "Fresh and Spotless",
         "instructions": (
-            "Theme: Sparkling Freshness & Organized Space.\n"
-            "- Visuals: Bright, high-contrast, and impeccably organized. Use a lot of whitespace and fresh Primary/Accent highlights.\n"
-            "- Hero: Bright and airy with a clean 'Before/After' or high-quality service image. Clear, simple headlines. Try a wave-style section divider.\n"
-            "- Navbar: Fresh and light. Use a thin border and a clear 'Request Quote' button.\n"
-            "- Rhythm: Very orderly grid layouts and checklist-style feature lists. Use light-colored sections with clean horizontal dividers.\n"
-            "- Details: Rounded-xl corners and thin, precise borders.\n"
+            "Theme: Sparkling freshness & organised space.\n"
+            "- Visuals: bright, high-contrast, organised. Plenty of whitespace, fresh primary/accent highlights.\n"
+            "- Hero: bright airy with a clean before/after or high-quality service image. Simple headlines, wave-style dividers welcome.\n"
+            "- Navbar: fresh and light. Thin border, clear 'Request Quote' button.\n"
+            "- Rhythm: orderly grids, checklist features, light sections with clean horizontal dividers.\n"
+            "- Details: rounded-xl corners, thin precise borders.\n"
         ),
     },
     "default": {
         "name": "Modern Professional",
         "instructions": (
-            "Theme: Clean Modernism & Versatile Layout.\n"
-            "- Visuals: Balanced, professional, and visually engaging. Use a mix of rounded corners and clean lines.\n"
-            "- Hero: Dynamic layout (Split or Centered) with strong brand integration. Use varied height containers.\n"
-            "- Navbar: Versatile and clean. Adapts to the brand colors with a subtle transition on scroll.\n"
-            "- Rhythm: Engaging flow with varied section types and clear content hierarchy.\n"
-            "- Details: Modern shadows and smooth transitions.\n"
+            "Theme: Clean modernism & versatile layout.\n"
+            "- Visuals: balanced, professional, visually engaging. Mix rounded corners and clean lines.\n"
+            "- Hero: dynamic layout (split or centered) with strong brand integration, varied heights.\n"
+            "- Navbar: versatile clean, adapts to brand colors, subtle transition on scroll.\n"
+            "- Rhythm: engaging flow, varied section types, clear hierarchy.\n"
+            "- Details: modern shadows, smooth transitions.\n"
         ),
     },
 }
 
 
 def get_design_personality(industry: str) -> dict:
-    """Return the design personality dict for the given industry."""
     industry_lower = industry.lower()
-
     if any(w in industry_lower for w in ["electric"]):
         return DESIGN_PERSONALITIES["electrical"]
     elif any(w in industry_lower for w in ["plumb"]):
@@ -282,13 +264,10 @@ def get_design_personality(industry: str) -> dict:
         return DESIGN_PERSONALITIES["default"]
 
 
-def get_industry_images(industry: str, user_images: list = None) -> list:
-    """Return relevant image URLs — user uploads first, then curated stock images."""
+def get_industry_images(industry: str, user_images: list | None = None) -> list:
     if user_images:
         return user_images
-
     industry_lower = industry.lower()
-
     if any(w in industry_lower for w in ["electric"]):
         return INDUSTRY_IMAGE_SETS["electrical"]
     elif any(w in industry_lower for w in ["plumb"]):
@@ -317,39 +296,23 @@ def get_industry_images(industry: str, user_images: list = None) -> list:
 
 
 def hex_to_hsl(hex_color: str) -> str:
-    """Convert #RRGGBB to 'H S% L%' string for CSS custom properties."""
-
     hex_color = hex_color.lstrip("#")
-
     r, g, b = (int(hex_color[i : i + 2], 16) / 255 for i in (0, 2, 4))
-
     h, l, s = colorsys.rgb_to_hls(r, g, b)
-
     return f"{round(h * 360)} {round(s * 100)}% {round(l * 100)}%"
 
 
 def is_dark(hex_color: str) -> bool:
-    """Return True if the color is dark (luminance < 50%)."""
-
     hex_color = hex_color.lstrip("#")
-
     r, g, b = (int(hex_color[i : i + 2], 16) / 255 for i in (0, 2, 4))
-
     _, l, _ = colorsys.rgb_to_hls(r, g, b)
-
     return l < 0.5
 
 
 def build_design_tokens(branding_colors: dict) -> dict:
-    """
-    Derive a full set of CSS HSL tokens from the brand hex colors.
-    Returns a dict of CSS variable name → HSL string.
-    """
-
     primary_hex = branding_colors.get("primary", "#2563EB")
     secondary_hex = branding_colors.get("secondary", "#1E3A5F")
     accent_hex = branding_colors.get("accent", "#10B981")
-    
     background_hex = branding_colors.get("background", "#FFFFFF")
     text_hex = branding_colors.get("text", "#333333")
     text_heading_hex = branding_colors.get("textHeading", "#111111")
@@ -361,24 +324,23 @@ def build_design_tokens(branding_colors: dict) -> dict:
     text_hsl = hex_to_hsl(text_hex)
     text_heading_hsl = hex_to_hsl(text_heading_hex)
 
-    # ── CALCULATE FOREGROUNDS (Contrast) ───────────────────────
-    # White foreground if background is dark, near-black if light
     def get_fg(hex_c):
         return "0 0% 100%" if is_dark(hex_c) else "0 0% 10%"
 
     primary_fg = get_fg(primary_hex)
     secondary_fg = get_fg(secondary_hex)
     accent_fg = get_fg(accent_hex)
-    background_fg = text_hsl # Use user's chosen text color for main background
 
-    # ── CALCULATE TINTS (Soft variants) ────────────────────────
     def get_tint(hsl_str, lum=97):
         parts = hsl_str.split()
         return f"{parts[0]} {parts[1]} {lum}%"
 
-    primary_tint = get_tint(primary_hsl)
     secondary_tint = get_tint(secondary_hsl)
-    background_alt = get_tint(background_hsl, 95) if not is_dark(background_hex) else get_tint(background_hsl, 15)
+    background_alt = (
+        get_tint(background_hsl, 95)
+        if not is_dark(background_hex)
+        else get_tint(background_hsl, 15)
+    )
 
     return {
         "--background": background_hsl,
@@ -395,7 +357,7 @@ def build_design_tokens(branding_colors: dict) -> dict:
         "--muted-foreground": text_hsl,
         "--accent": accent_hsl,
         "--accent-foreground": accent_fg,
-        "--border": primary_hsl, # Use primary for borders (will be low alpha in tailwind)
+        "--border": primary_hsl,
         "--input": primary_hsl,
         "--ring": primary_hsl,
         "--section-alt": secondary_tint,
@@ -407,104 +369,52 @@ def build_design_tokens(branding_colors: dict) -> dict:
 
 
 def inject_design_tokens(css_content: str, tokens: dict) -> str:
-    """
-    Replace every matching CSS custom property value in :root { }
-    with the new brand-derived value.
-    """
-
-    import re
-
     for var_name, hsl_value in tokens.items():
-        # Match:  --primary: <anything>;
-
         pattern = rf"({re.escape(var_name)}:\s*)[^;]+"
-
         replacement = rf"\g<1>{hsl_value}"
-
         css_content = re.sub(pattern, replacement, css_content)
-
     return css_content
 
 
 def choose_fonts(industry: str) -> tuple:
-    """
-    Pick Google Fonts that suit the industry.
-    Returns (display_font, body_font, google_fonts_url).
-    """
-
     industry_lower = industry.lower()
-
-    if any(
-        w in industry_lower
-        for w in ["law", "legal", "finance", "accounting", "consult"]
-    ):
+    if any(w in industry_lower for w in ["law", "legal", "finance", "accounting", "consult"]):
         return (
             "Playfair Display",
             "Source Sans 3",
             "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap",
         )
-
-    elif any(
-        w in industry_lower
-        for w in ["tech", "software", "digital", "it ", "cyber", "data"]
-    ):
+    elif any(w in industry_lower for w in ["tech", "software", "digital", "it ", "cyber", "data"]):
         return (
             "Space Grotesk",
             "Inter",
             "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap",
         )
-
-    elif any(
-        w in industry_lower
-        for w in ["beauty", "spa", "salon", "wellness", "yoga", "luxury"]
-    ):
+    elif any(w in industry_lower for w in ["beauty", "spa", "salon", "wellness", "yoga", "luxury"]):
         return (
             "Cormorant Garamond",
             "Jost",
             "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400&family=Jost:wght@300;400;500;600&display=swap",
         )
-
-    elif any(
-        w in industry_lower
-        for w in ["restaurant", "food", "cafe", "bakery", "catering"]
-    ):
+    elif any(w in industry_lower for w in ["restaurant", "food", "cafe", "bakery", "catering"]):
         return (
             "Fraunces",
             "DM Sans",
             "https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap",
         )
-
-    elif any(
-        w in industry_lower
-        for w in [
-            "electric",
-            "construct",
-            "build",
-            "engineer",
-            "plumb",
-            "hvac",
-            "trade",
-        ]
-    ):
+    elif any(w in industry_lower for w in ["electric", "construct", "build", "engineer", "plumb", "hvac", "trade"]):
         return (
             "Barlow Condensed",
             "Barlow",
             "https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@300;400;500;600;700&display=swap",
         )
-
-    elif any(
-        w in industry_lower
-        for w in ["health", "medical", "dental", "clinic", "care", "physio"]
-    ):
+    elif any(w in industry_lower for w in ["health", "medical", "dental", "clinic", "care", "physio"]):
         return (
             "Nunito",
             "Nunito",
             "https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&display=swap",
         )
-
     else:
-        # Default modern professional
-
         return (
             "Plus Jakarta Sans",
             "Plus Jakarta Sans",
@@ -512,617 +422,484 @@ def choose_fonts(industry: str) -> tuple:
         )
 
 
-def inject_fonts(
-    css_content: str, google_fonts_url: str, display_font: str, body_font: str
-) -> str:
-    """Replace the Google Fonts import and font-family declarations in the CSS."""
-
-    import re
-
-    # Replace the @import url(...fonts...) line
-
+def inject_fonts(css_content: str, google_fonts_url: str, display_font: str, body_font: str) -> str:
     css_content = re.sub(
         r"@import url\(['\"]https://fonts\.googleapis\.com[^)]+\)['\"];",
         f"@import url('{google_fonts_url}');",
         css_content,
     )
 
-    # Replace font-sans in body rule
-
-    css_content = re.sub(
-        r"(body\s*\{[^}]*font-)\w[\w-]*",
-        lambda m: m.group(0).replace(m.group(0).split("font-")[1], "sans"),
-        css_content,
-    )
-
-    # Inject --font-display and --font-sans as CSS variables in :root
-
     font_vars = f'    --font-display: "{display_font}", serif;\n    --font-sans: "{body_font}", sans-serif;\n'
-
     css_content = re.sub(
         r"(:root\s*\{)",
         r"\1\n" + font_vars,
         css_content,
         count=1,
     )
-
     return css_content
 
 
-def update_tailwind_config_fonts(
-    css_content: str, display_font: str, body_font: str
-) -> str:
-    """
-    If there's a @theme block or tailwind config referencing fonts, update it.
-    For this template (Tailwind v3 via @layer), we add a @layer base override.
-    """
+def update_tailwind_config_fonts(tailwind_config: str, display_font: str, body_font: str) -> str:
+    """Patch tailwind.config.ts fontFamily.sans / display to match brand fonts."""
+    tailwind_config = re.sub(
+        r'sans:\s*\[[^\]]*\]',
+        f'sans: ["{body_font}", "system-ui", "sans-serif"]',
+        tailwind_config,
+        count=1,
+    )
+    tailwind_config = re.sub(
+        r'display:\s*\[[^\]]*\]',
+        f'display: ["{display_font}", "Georgia", "serif"]',
+        tailwind_config,
+        count=1,
+    )
+    return tailwind_config
 
-    font_override = f"""
 
-@layer base {{
-
-  :root {{
-
-    --font-sans: "{body_font}", ui-sans-serif, system-ui, sans-serif;
-
-    --font-display: "{display_font}", ui-serif, serif;
-
-  }}
-
-}}
-
+def inject_extra_utilities(css_content: str) -> str:
+    extra_css = """
+@layer utilities {
+  .text-heading {
+    color: hsl(var(--heading));
+  }
+  .bg-section-alt {
+    background-color: hsl(var(--section-alt));
+  }
+  .bg-warm-bg {
+    background-color: hsl(var(--warm-bg));
+  }
+}
 """
-
-    # Only add if not already present
-
-    if "--font-display" not in css_content:
-        css_content = css_content + font_override
-
+    if ".text-heading" not in css_content:
+        css_content += extra_css
     return css_content
 
 
 # ─────────────────────────────────────────────────────────
-# Git / file helpers
+# Scaffold copy
 # ─────────────────────────────────────────────────────────
 
 
-def clone_template(dest_dir: str) -> bool:
+def copy_scaffold(dest_dir: str) -> bool:
+    """Copy the bundled minimal Vite + React + Tailwind + shadcn scaffold into dest_dir."""
+    if not os.path.isdir(SCAFFOLD_DIR):
+        logger.error(f"Scaffold directory missing: {SCAFFOLD_DIR}")
+        return False
     try:
-        result = subprocess.run(
-            ["git", "clone", "--depth=1", TEMPLATE_REPO, dest_dir],
-            capture_output=True,
-            text=True,
-            timeout=60,
-        )
-
-        if result.returncode != 0:
-            logger.error(f"Git clone failed: {result.stderr}")
-
-            return False
-
-        logger.info("Template cloned successfully.")
-
+        shutil.copytree(SCAFFOLD_DIR, dest_dir)
+        logger.info(f"Scaffold copied to {dest_dir}")
         return True
-
     except Exception as e:
-        logger.error(f"Clone error: {e}")
-
+        logger.error(f"Scaffold copy failed: {e}")
         return False
 
 
-def read_template_files(project_dir: str) -> dict:
-    files = {}
+def update_index_html(project_dir: str, application_data: dict) -> None:
+    """Rewrite <title>, meta description, og tags, author in index.html."""
+    index_path = os.path.join(project_dir, "index.html")
+    if not os.path.exists(index_path):
+        return
 
-    for rel_path in EDITABLE_FILES:
-        abs_path = os.path.join(project_dir, rel_path)
+    with open(index_path, "r", encoding="utf-8") as f:
+        html = f.read()
 
-        if os.path.exists(abs_path):
-            with open(abs_path, "r", encoding="utf-8") as f:
-                files[rel_path] = f.read()
+    company = application_data.get("company_name", "")
+    industry = application_data.get("industry", "")
+    location = application_data.get("city_location", "")
+    tagline = application_data.get("tagline") or f"{industry.title()} services in {location}".strip()
+    phone = application_data.get("phone_number", "")
 
-        else:
-            logger.warning(f"Template file not found, skipping: {rel_path}")
-
-    return files
-
-
-def extract_imports(content: str) -> tuple:
-    """Split a TSX file into (import_block, body)."""
-
-    lines = content.split("\n")
-
-    last_import_line = -1
-
-    for i, line in enumerate(lines):
-        if line.strip().startswith("import "):
-            last_import_line = i
-
-    if last_import_line == -1:
-        return "", content
-
-    return "\n".join(lines[: last_import_line + 1]), "\n".join(
-        lines[last_import_line + 1 :]
+    title = f"{company} — {tagline}" if tagline else company
+    description = (
+        f"{company}: {tagline}. "
+        f"Serving {location}. "
+        f"Call {phone}." if phone else f"{company}: {tagline}. Serving {location}."
     )
 
+    html = re.sub(r"<title>.*?</title>", f"<title>{title}</title>", html, count=1, flags=re.DOTALL)
+    html = re.sub(
+        r'<meta name="description" content=".*?"\s*/?>',
+        f'<meta name="description" content="{description}" />',
+        html,
+        count=1,
+    )
+    html = re.sub(
+        r'<meta name="author" content=".*?"\s*/?>',
+        f'<meta name="author" content="{company}" />',
+        html,
+        count=1,
+    )
+    html = re.sub(
+        r'<meta property="og:title" content=".*?"\s*/?>',
+        f'<meta property="og:title" content="{title}" />',
+        html,
+        count=1,
+    )
+    html = re.sub(
+        r'<meta property="og:description" content=".*?"\s*/?>',
+        f'<meta property="og:description" content="{description}" />',
+        html,
+        count=1,
+    )
+    # Strip any Lovable/AI favicon links — only allow local /favicon.ico
+    html = re.sub(
+        r'<link[^>]*rel="icon"[^>]*href="https?://[^"]+"[^>]*/?>',
+        '<link rel="icon" type="image/x-icon" href="/favicon.ico" />',
+        html,
+    )
 
-def strip_imports_for_claude(template_files: dict) -> tuple:
-    """Remove import blocks before sending to Claude so it can't break paths."""
-
-    files_for_claude = {}
-
-    locked_imports = {}
-
-    for rel_path, content in template_files.items():
-        if rel_path.endswith(".tsx") or rel_path.endswith(".ts"):
-            import_block, body = extract_imports(content)
-
-            locked_imports[rel_path] = import_block
-
-            files_for_claude[rel_path] = (
-                "/* !! LOCKED_IMPORTS — DO NOT EDIT !! */\n" + body
-            )
-
-        else:
-            files_for_claude[rel_path] = content
-
-    return files_for_claude, locked_imports
-
-
-def restore_imports(edited_files: dict, locked_imports: dict) -> dict:
-    """Unconditionally splice original imports back into every TSX file."""
-
-    restored = {}
-
-    for rel_path, content in edited_files.items():
-        if rel_path in locked_imports and locked_imports[rel_path]:
-            lines = content.split("\n")
-
-            body_start = 0
-
-            for i, line in enumerate(lines):
-                s = line.strip()
-
-                if s.startswith("import ") or s.startswith("/* !!") or s == "":
-                    body_start = i + 1
-
-                else:
-                    break
-
-            body = "\n".join(lines[body_start:])
-
-            restored[rel_path] = locked_imports[rel_path] + "\n" + body
-
-        else:
-            restored[rel_path] = content
-
-    return restored
+    with open(index_path, "w", encoding="utf-8") as f:
+        f.write(html)
 
 
-# Full set of lucide-react icons Claude might introduce during redesign
-_LUCIDE_ICONS = {
-    "Activity", "AlertCircle", "AlertTriangle", "AlarmClock", "Anchor", "Archive",
-    "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp", "AtSign", "Award",
-    "BadgeCheck", "BarChart", "BarChart2", "Battery", "Bell", "BellRing",
-    "Bike", "Bluetooth", "Bolt", "Book", "BookOpen", "Bookmark", "Box",
-    "Briefcase", "Brush", "Building", "Building2",
-    "Calendar", "Camera", "Car", "CheckCircle", "CheckCheck", "CheckSquare",
-    "ChefHat", "ChevronDown", "ChevronLeft", "ChevronRight", "ChevronUp",
-    "Circle", "Clipboard", "ClipboardCheck", "ClipboardList", "Clock",
-    "Cloud", "CloudRain", "CloudSnow", "CloudSun", "Cog", "Coins",
-    "Compass", "Construction", "CookingPot", "Copy", "CreditCard", "Crown",
-    "Delete", "Diamond", "DollarSign", "Download", "Droplets", "Dumbbell",
-    "Edit", "Edit2", "Edit3", "ExternalLink", "Eye", "EyeOff",
-    "File", "FileText", "Fingerprint", "Flag", "Flame", "Folder",
-    "Gauge", "Gift", "Globe", "GraduationCap", "Grid",
-    "Hammer", "Hand", "HandCoins", "Handshake", "HardHat", "Hash",
-    "Headphones", "Heart", "HeartHandshake", "HelpCircle", "Home",
-    "Hourglass", "Image", "Inbox", "Info",
-    "Key", "Laptop", "Leaf", "Library", "Link", "List", "Lock",
-    "Loader", "Loader2", "Mail", "Map", "MapPin", "Medal", "Menu",
-    "MessageCircle", "MessageSquare", "Mic", "Microscope", "Minus",
-    "Monitor", "Moon", "MoreHorizontal", "MoreVertical", "Mountain",
-    "Move", "Navigation", "Package", "PaintRoller", "Paintbrush",
-    "Palette", "Pen", "PenTool", "Pencil", "Percent", "Phone",
-    "PieChart", "PiggyBank", "Pill", "Pizza", "Play",
-    "Plus", "RefreshCw", "Ribbon", "Rocket", "RotateCw",
-    "Route", "Ruler", "Running", "Salad", "Satellite", "Scale",
-    "School", "Scissors", "Search", "Send", "Settings", "Share",
-    "Shield", "ShieldCheck", "ShoppingBag", "ShoppingCart",
-    "Shovel", "Signal", "Smartphone", "Smile", "Speaker",
-    "Sparkles", "Square", "Star", "StarHalf", "Stars",
-    "Stethoscope", "Sun", "Syringe", "Tablet", "Tag",
-    "Target", "Telescope", "Thermometer", "ThumbsUp", "Timer",
-    "Tool", "Trash", "Trash2", "TrendingDown", "TrendingUp",
-    "Triangle", "Trophy", "Truck", "Umbrella", "Unlock", "Upload",
-    "UserCheck", "UserPlus", "Users", "User", "Utensils", "UtensilsCrossed",
-    "Video", "Volume2", "Wallet", "Wand", "Wand2", "Watch", "Waves",
-    "Wifi", "Wind", "Wrench", "X", "XCircle", "Zap", "ZoomIn", "ZoomOut",
+# ─────────────────────────────────────────────────────────
+# Claude — generate site from scratch
+# ─────────────────────────────────────────────────────────
+
+
+# Path-safety: Claude returns relative paths; we only accept these subtrees.
+ALLOWED_PATH_PREFIXES = (
+    "src/pages/",
+    "src/components/",
+    "src/sections/",
+    "src/lib/",
+    "src/hooks/",
+)
+ALLOWED_EXTENSIONS = (".tsx", ".ts", ".css")
+# Files Claude is NOT allowed to overwrite — these are scaffold-locked.
+PROTECTED_PATHS = {
+    "src/main.tsx",
+    "src/App.tsx",
+    "src/index.css",
+    "src/vite-env.d.ts",
+    "src/lib/utils.ts",
+    "src/pages/NotFound.tsx",
+    "package.json",
+    "tsconfig.json",
+    "tsconfig.app.json",
+    "tsconfig.node.json",
+    "vite.config.ts",
+    "tailwind.config.ts",
+    "postcss.config.js",
+    "components.json",
+    "eslint.config.js",
+    "index.html",
 }
 
 
-def fix_missing_imports(restored_files: dict) -> dict:
-    """
-    Scan every TSX file for Lucide icon JSX usage and common UI components 
-    (like Button) that Claude might introduce, and patch the imports.
-    """
-    import re
-
-    jsx_tag_re = re.compile(r"<([A-Z][a-zA-Z0-9]+)[\s/>]")
-    lucide_import_re = re.compile(
-        r"(import\s*\{)([^}]+)(\}\s*from\s*['\"]lucide-react['\"];?)"
-    )
-    
-    # Check for Button component specifically
-    ui_button_import_re = re.compile(r"import\s*\{\s*Button\s*\}\s*from\s*['\"]@/components/ui/button['\"];?")
-
-    fixed = {}
-    for rel_path, content in restored_files.items():
-        if not rel_path.endswith(".tsx"):
-            fixed[rel_path] = content
-            continue
-
-        # 1. Fix Lucide Icons
-        used_icons = {m.group(1) for m in jsx_tag_re.finditer(content) if m.group(1) in _LUCIDE_ICONS}
-
-        if used_icons:
-            match = lucide_import_re.search(content)
-            if match:
-                existing = {s.strip() for s in match.group(2).split(",") if s.strip()}
-                merged = existing | used_icons
-                new_line = f"{match.group(1)} {', '.join(sorted(merged))} {match.group(3)}"
-                content = lucide_import_re.sub(new_line, content, count=1)
-            else:
-                # No lucide-react import yet — insert one after the last import line
-                lines = content.split("\n")
-                last_import = 0
-                for i, line in enumerate(lines):
-                    if line.strip().startswith("import "):
-                        last_import = i
-                new_import = f"import {{ {', '.join(sorted(used_icons))} }} from 'lucide-react';"
-                lines.insert(last_import + 1, new_import)
-                content = "\n".join(lines)
-                logger.info(f"{rel_path}: added lucide-react import for {used_icons}")
-
-        # 2. Fix Button Component
-        if "<Button" in content and not ui_button_import_re.search(content) and "const Button" not in content:
-            # If Claude used <Button> but it's not imported or defined, 
-            # we check if 'Button' was in the original locked imports.
-            # If it wasn't, Claude hallucinated it. We'll try to add a standard shadcn import
-            # or replace it with <button> if we want to be safe. 
-            # For now, let's try adding the import as it's the most likely intent.
-            lines = content.split("\n")
-            last_import = 0
-            for i, line in enumerate(lines):
-                if line.strip().startswith("import "):
-                    last_import = i
-            new_import = "import { Button } from \"@/components/ui/button\";"
-            lines.insert(last_import + 1, new_import)
-            content = "\n".join(lines)
-            logger.info(f"{rel_path}: injected missing Button import")
-
-        fixed[rel_path] = content
-
-    return fixed
+def _safe_relpath(rel_path: str) -> str | None:
+    """Return a normalised, scaffold-safe relative path, or None if disallowed."""
+    rel_path = rel_path.replace("\\", "/").lstrip("/")
+    norm = os.path.normpath(rel_path).replace("\\", "/")
+    if norm.startswith("..") or os.path.isabs(norm):
+        return None
+    if norm in PROTECTED_PATHS:
+        return None
+    if not norm.startswith(ALLOWED_PATH_PREFIXES):
+        return None
+    # Block writes into the shadcn ui directory (preserved as-is from scaffold)
+    if norm.startswith("src/components/ui/"):
+        return None
+    if not norm.endswith(ALLOWED_EXTENSIONS):
+        return None
+    return norm
 
 
-def write_edited_files(project_dir: str, edited_files: dict):
-    for rel_path, content in edited_files.items():
-        abs_path = os.path.join(project_dir, rel_path)
-
-        os.makedirs(os.path.dirname(abs_path), exist_ok=True)
-
-        with open(abs_path, "w", encoding="utf-8") as f:
-            f.write(content)
-
-    logger.info(f"Wrote {len(edited_files)} edited files.")
+SHADCN_UI_AVAILABLE = [
+    "accordion", "alert", "alert-dialog", "aspect-ratio", "avatar", "badge",
+    "breadcrumb", "button", "calendar", "card", "carousel", "checkbox",
+    "collapsible", "command", "dialog", "drawer", "dropdown-menu", "form",
+    "hover-card", "input", "label", "popover", "progress", "radio-group",
+    "scroll-area", "select", "separator", "sheet", "skeleton", "slider",
+    "switch", "table", "tabs", "textarea", "tooltip",
+]
 
 
-# ─────────────────────────────────────────────────────────
-# Claude content + design editing
-# ─────────────────────────────────────────────────────────
+CREATIVE_TWISTS = [
+    "Use large overlapping text that breaks section boundaries.",
+    "Incorporate subtle geometric background patterns via CSS gradients.",
+    "Use asymmetric grid layouts for every image/text pairing.",
+    "Apply a glassmorphism effect to at least two key sections.",
+    "Use bold vertical typography for section labels.",
+    "Lean into brutalist thick borders and hard shadows.",
+    "Use extreme airy whitespace (py-40+) between major sections.",
+    "Use organic blob shapes for image masks or backgrounds.",
+    "Use a sticky side-rail navigation instead of a top bar.",
+    "Use marquee / ticker strips of text or logos between sections.",
+    "Use oversized numerals (01, 02, 03) as section anchors.",
+    "Use rotated text or rotated photo frames for personality.",
+    "Use a horizontal scroll snap section for a visual gallery or testimonials.",
+    "Use a split hero with one half image, one half color block.",
+    "Use a full-bleed video-style background image with parallax-feeling overlays.",
+]
 
-# Universal frontend excellence rules injected into every generation
+
 FRONTEND_EXCELLENCE_GUIDE = """
-━━━ UNIVERSAL MODERN FRONTEND STANDARDS (apply to EVERY component) ━━━
+━━━ UNIVERSAL MODERN FRONTEND STANDARDS ━━━
 
-LAYOUT & SPACING
-• Sections must breathe — use py-20 to py-40, never py-8 or less
-• Content width: max-w-7xl mx-auto with px-6 sm:px-8 side padding
-• All grids: start grid-cols-1, expand md:grid-cols-2, lg:grid-cols-3 (mobile-first)
-• EXPERIMENT with asymmetrical layouts, overlapping elements, and varied section widths.
-• Use 'Full-bleed' sections (bg-primary or bg-secondary) to break up the white background.
+LAYOUT
+- Sections breathe — py-20 to py-40, never py-8 or less.
+- Content width: max-w-7xl mx-auto with px-6 sm:px-8.
+- Mobile-first grids: grid-cols-1 → md:grid-cols-2 → lg:grid-cols-3.
+- Experiment with asymmetric layouts, overlapping elements, full-bleed sections.
 
-TYPOGRAPHY HIERARCHY
-• One display size per section: text-4xl–text-8xl font-black for hero/section headings
-• Subheadings: text-xl–text-3xl font-bold tracking-tight
-• Body: text-base–text-xl font-medium leading-relaxed
-• Labels/captions: text-sm font-bold uppercase tracking-widest text-primary
+TYPOGRAPHY
+- One display size per section, text-4xl–text-8xl font-black for hero/section headings.
+- Subheads: text-xl–text-3xl font-bold tracking-tight.
+- Body: text-base–text-xl font-medium leading-relaxed.
+- Eyebrows: text-sm font-bold uppercase tracking-widest text-primary.
 
-CARDS & SURFACES
-• Cards: rounded-3xl or rounded-[2rem], shadow-sm hover:shadow-2xl transition-all duration-500
-• Subtle borders: border border-border/40
-• Card hover: hover:-translate-y-2 hover:shadow-2xl transition-all duration-500
+SURFACES
+- Cards: rounded-3xl or rounded-[2rem], shadow-sm hover:shadow-2xl transition-all duration-500.
+- Subtle borders: border border-border/40.
+- Card hover: hover:-translate-y-2.
 
-BUTTONS & CTAs
-• Primary CTA: large, rounded-full or rounded-2xl, py-5 px-10, shadow-xl hover:shadow-2xl
-• Secondary: ghost or outline variant, same size, rounded-full
-• ALWAYS include hover:scale-105 and active:scale-95 on buttons
-• Hero must have at least 2 CTA buttons above the fold — make one 'Glow' using shadow-primary/50
+BUTTONS
+- Primary CTA: large, rounded-full or rounded-2xl, py-5 px-10, shadow-xl.
+- Always include hover:scale-105 active:scale-95.
+- Hero has at least 2 CTAs above the fold.
 
 IMAGES
-• Always use object-cover with varied aspect ratios (aspect-[4/5], aspect-square, aspect-video)
-• Hero background: use background-image with bg-center bg-cover bg-no-repeat and a parallax effect if possible
-• Add a deep gradient overlay (from-black/60 to-transparent) on background images for text readability
+- object-cover with varied aspect ratios (aspect-[4/5], aspect-square, aspect-video).
+- Background images get a deep gradient overlay for text readability.
 
-VISUAL RHYTHM & UNIQUENESS
-• Every site must have a UNIQUE visual rhythm. Avoid the generic 'light-dark-light' pattern.
-• NAVBAR: Completely redesign the navbar for every site. Sometimes centered, sometimes split, sometimes with a top-bar.
-• HERO: This is the most important section. Change its layout drastically (Split, Centered, Stacked, Image-Background, Color-Background).
-• Use diverse background treatments: solid brand colors, subtle patterns, gradients, or high-quality imagery.
-• Reorder sections in Index.tsx to find the most compelling narrative flow for the specific industry.
+INTERACTIONS
+- All interactives: transition-all duration-300 ease-out.
+- Icon containers: hover:scale-110.
+- Link underlines via after:absolute pseudo-element.
 
-MICRO-INTERACTIONS
-• All interactive elements: transition-all duration-300 ease-out
-• Icon containers: hover:scale-110 hover:bg-primary/10 with transition
-• Links: hover:text-primary transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary hover:after:w-full after:transition-all
+STATS
+- text-5xl–text-8xl font-black, colored, never beige.
+- Stars in yellow/amber.
 
-STATS & SOCIAL PROOF
-• Stats numbers: text-5xl–text-8xl font-black — make them massive and colorful
-• Stars: show ★★★★★ in yellow/amber, use a nice container for them
-• Testimonial cards: large opening quotation mark, author name + location, maybe a small avatar placeholder
+UNIQUENESS
+- Every site must have a unique visual rhythm. Avoid generic light-dark-light banding.
+- Reorder, restructure, recolour sections to fit the industry and brand.
 """
 
 
-CONTENT_GUIDE = """
-NAVBAR:         company name (2-line logo), phone number, professional navigation links
-
-HEROSECTION:    badge text, h1 headline, star rating/review count, description paragraph,
-                phone number in CTA, trust badges, floating stat card values & labels,
-                background image (use first image from the provided image list)
-
-WHYUSSECTION:   section heading, subheading, all 4 feature titles + descriptions
-
-SERVICESSECTION: section heading, subheading, all 6 service titles + descriptions, phone in links
-
-HOWITWORKS:     section heading, all 3 step titles + descriptions
-
-MEETTHETEAM:    section heading, body paragraph, all 4 bullet points, phone in CTA,
-                team/company image (use second image from the provided image list)
-
-REVIEWSSECTION: all 3 review names, locations, and review text; star rating / review count
-
-AREASSECTION:   section heading, all area/location names
-
-FOOTERSECTION:  company name, description paragraph, phone number, locations text, copyright name
-
-MOBILECTA:      phone number
-
-INDEX.HTML:     <title>, meta description, og:title, og:description, author. 
-                IMPORTANT: Remove any <link> tag pointing to external favicons (especially lovable.dev). 
-                If a favicon is needed, use '/favicon.png' or none.
-
-COLORS:         Strictly use the provided Brand Colors (Background, Body Text, Heading Text, 
-                Primary, Secondary, Accent). Ensure all text is readable against its background.
-"""
-
-
-def edit_files_with_claude(
-    template_files: dict,
+def _build_system_prompt(
     application_data: dict,
     design_personality: dict,
     image_urls: list,
-) -> dict | None:
-    api_key = os.getenv("ANTHROPIC_API_KEY")
+    layout_strategy: str,
+    creative_twist: str,
+    display_font: str,
+    body_font: str,
+) -> str:
+    branding = application_data.get("branding_colors", {}) or {}
+    primary_hex = branding.get("primary", "#2563EB")
+    secondary_hex = branding.get("secondary", "#1E3A5F")
+    accent_hex = branding.get("accent", "#10B981")
+    background_hex = branding.get("background", "#FFFFFF")
+    text_hex = branding.get("text", "#333333")
+    heading_hex = branding.get("textHeading", "#111111")
 
-    if not api_key:
-        logger.error("ANTHROPIC_API_KEY not found")
+    image_list_str = "\n".join(f"  Image {i + 1}: {url}" for i, url in enumerate(image_urls))
+    shadcn_list = ", ".join(SHADCN_UI_AVAILABLE)
 
-        return None
+    return f"""You are an award-winning React/TypeScript developer and brand designer. You design and build BESPOKE marketing websites — every site you build looks completely different from the last. There is no template. There is no shared skeleton. You decide the section count, section order, section names, layout, and visual rhythm based on the brand and industry.
 
-    client = anthropic.Anthropic(api_key=api_key)
+━━━ YOUR JOB ━━━
+Design and code a complete, beautiful, single-page marketing site for the business described in the user message. The site must look bespoke and premium — not like a "site template with new content".
 
-    files_for_claude, locked_imports = strip_imports_for_claude(template_files)
+━━━ HARD CONSTRAINTS ON OUTPUT ━━━
+You will return a SINGLE raw JSON object. Keys are file paths, values are complete file contents.
 
-    template_snapshot = ""
+Required key:
+- "src/pages/Index.tsx" — the homepage. Must export default a React component.
 
-    for rel_path, content in files_for_claude.items():
-        # Skip index.css — handled in Python
+Optional keys (create freely as needed):
+- "src/components/<YourComponentName>.tsx" — any section/feature components you want.
+- "src/sections/<YourSectionName>.tsx" — alternative location for section components.
+- "src/lib/<helper>.ts" — small TypeScript helpers (no runtime deps beyond what is already in package.json).
+- "src/hooks/<useThing>.ts" / ".tsx" — custom hooks.
 
-        if rel_path == "src/index.css":
-            continue
+You may NOT create or overwrite: package.json, vite.config.ts, tailwind.config.ts, tsconfig*, index.html, src/main.tsx, src/App.tsx, src/index.css, src/lib/utils.ts, src/pages/NotFound.tsx, anything inside src/components/ui/.
 
-        template_snapshot += f"\n\n### FILE: {rel_path}\n```\n{content}\n```"
+━━━ TECH AVAILABLE ━━━
+- React 18 with TypeScript and JSX.
+- Tailwind CSS 3 (with brand CSS variables wired below).
+- lucide-react icons — use any icon you like. Just import what you use.
+- framer-motion — use freely for animations and reveals.
+- react-router-dom — already wired in App.tsx, the homepage is at "/".
+- shadcn/ui primitives are available at "@/components/ui/<name>": {shadcn_list}.
+  Import example: import {{ Button }} from "@/components/ui/button";
+- "@" path alias points to "src".
 
-    # Format image list for the prompt
-    image_list_str = "\n".join(
-        f"  Image {i+1}: {url}" for i, url in enumerate(image_urls)
-    )
+━━━ BRAND COLORS (wired to Tailwind via CSS variables) ━━━
+Use the Tailwind tokens — DO NOT hardcode hex values. The CSS variables are populated server-side.
+- bg-background, text-foreground   (page surface + body text)
+- text-heading                      (heading color)
+- bg-primary, text-primary, border-primary, text-primary-foreground
+- bg-secondary, text-secondary, text-secondary-foreground
+- bg-accent, text-accent, text-accent-foreground
+- bg-section-alt, bg-warm-bg, bg-muted
+- border-border, ring-ring
 
-    branding_colors = application_data.get("branding_colors", {})
-    primary_hex = branding_colors.get("primary", "#2563EB")
-    secondary_hex = branding_colors.get("secondary", "#1E3A5F")
-    accent_hex = branding_colors.get("accent", "#10B981")
-    background_hex = branding_colors.get("background", "#FFFFFF")
-    text_hex = branding_colors.get("text", "#333333")
-    text_heading_hex = branding_colors.get("textHeading", "#111111")
+Reference hex (for understanding contrast — DO NOT use directly in className):
+  Primary {primary_hex} · Secondary {secondary_hex} · Accent {accent_hex}
+  Background {background_hex} · Body text {text_hex} · Heading text {heading_hex}
 
-    industry = application_data.get("industry", "trade services")
-
-    # Pick a random layout strategy for this generation
-    layout_strategy = random.choice(LAYOUT_STRATEGIES)
-    
-    # Add a random 'Style Twist' to ensure further uniqueness
-    style_twists = [
-        "Use large, overlapping text that breaks section boundaries.",
-        "Incorporate subtle geometric background patterns using CSS gradients.",
-        "Use asymmetric grid layouts for all image/text pairings.",
-        "Apply a glassmorphism effect to at least two key sections.",
-        "Use bold, vertical typography for section labels.",
-        "Experiment with 'Brutalist' thick borders and hard shadows.",
-        "Use extremely large, airy whitespace (py-48) between major sections.",
-        "Incorporate 'organic' or 'blob' shapes for image masks or backgrounds.",
-    ]
-    style_twist = random.choice(style_twists)
-
-    system_prompt = f"""You are an expert React/TypeScript developer and UI/UX designer. Your task is to COMPLETELY REDESIGN this plumber website template into a visually unique, professional website for a different business — it must look NOTHING like the original template.
-
-━━━ YOUR MISSION ━━━
-Transform every component to match the DESIGN PERSONALITY below. The output must look like a completely different website, not a recolored version of the same template.
-Each site you generate must be unique in its layout, section ordering, and creative execution. Avoid generic designs; make each one feel bespoke and premium.
-
-━━━ LAYOUT STRATEGY: {layout_strategy} ━━━
-You MUST apply this layout strategy when redesigning the Index.tsx file. Reorder the components to match this narrative flow.
-
-━━━ STYLE TWIST: {style_twist} ━━━
-You SHOULD try to incorporate this creative twist into your redesign to ensure the site feels unique.
-
-━━━ BRAND COLORS & READABILITY ━━━
-Use these brand colors for your design (though they are also mapped to CSS variables):
-- Primary: {primary_hex}
-- Secondary: {secondary_hex}
-- Accent: {accent_hex}
-- Main Background: {background_hex}
-- Body Text: {text_hex}
-- Heading Text: {text_heading_hex}
-
-In Tailwind, you SHOULD prefer abstract classes:
-- `bg-background` for main surfaces
-- `text-foreground` or `text-text` for body text
-- `text-heading` for headings
-- `bg-primary`, `text-secondary`, `border-accent` etc.
-
-IMPORTANT: Ensure EXCELLENT readability. If the user's selected text color has low contrast against a background, you MUST adjust the background (e.g., adding an overlay or using a tinted variant) to ensure the text is perfectly legible.
+Fonts already loaded: display = "{display_font}", body = "{body_font}". Use `font-display` for headlines and the default sans for body.
 
 ━━━ DESIGN PERSONALITY: {design_personality["name"]} ━━━
 {design_personality["instructions"]}
 
-━━━ WHAT YOU MUST CHANGE ━━━
-1. ALL text — replace every Soho/plumber reference with content for the new {industry} business.
-2. Tailwind className values — change backgrounds (bg-*), colors (text-*, border-*), spacing (p-*, m-*), sizing (text-5xl etc.), layout (grid-cols-*, flex-*) to match the design personality above.
-3. ALL image references — replace any src attributes or backgroundImage style values with URLs from the provided image list.
-4. Section backgrounds — make sections look different from the original. Use dark sections, gradients, or colored backgrounds where the personality calls for it.
-5. Typography scale — adjust text sizes, weights, and letter-spacing to match the personality.
-6. Layout structure within components — you MUST reorder elements, change grid columns, add/remove divs to restructure the visual layout significantly.
-7. NAVBAR & HERO: These MUST be drastically different for every site. Do not use the same header style twice.
+━━━ LAYOUT STRATEGY: {layout_strategy} ━━━
+You MUST shape the page's narrative flow around this strategy.
 
-━━━ PROVIDED IMAGES (use these to replace ALL existing images) ━━━
+━━━ CREATIVE TWIST: {creative_twist} ━━━
+You MUST work this twist into at least one prominent part of the page.
+
+━━━ IMAGES TO USE ━━━
+You MUST use these image URLs everywhere you need imagery. Do NOT invent image URLs. Do NOT use placeholders. Distribute them across the page.
 {image_list_str}
 
-For background images use: style={{{{ backgroundImage: `url('IMAGE_URL')` }}}}
-For <img> tags use: src="IMAGE_URL"
-Distribute images across components — hero gets Image 1, team/about gets Image 2, services can use Images 3+.
+For <img>: src="{{IMAGE_URL}}" alt="meaningful alt text" loading="lazy"
+For background: style={{{{ backgroundImage: `url('{{IMAGE_URL}}')` }}}}
 
 {FRONTEND_EXCELLENCE_GUIDE}
 
-━━━ CONTENT TO UPDATE IN EACH FILE ━━━
-{CONTENT_GUIDE}
+━━━ RULES ━━━
+1. Index.tsx is the homepage; it composes the sections you create.
+2. Every imported component file must be in your JSON output (or be a shadcn/ui primitive).
+3. Imports must be valid: `import X from "@/components/X"` or `import {{ Button }} from "@/components/ui/button"`. Never invent shadcn components that aren't in the list above.
+4. Apostrophes in JSX text → &apos; · Quotes in JSX text → &quot;
+5. No diff, snippet, or partial files — every value is the COMPLETE file contents.
+6. No markdown fences, no backticks, no explanation — only the raw JSON object.
+7. Make the site look NOTHING like a plumber, electrician, or generic trade template unless that is the business. Tailor it to the industry given.
+8. Do not use a `dark` class on the html/body — the scaffold is light-mode only by default.
+9. Generate enough sections to fill a real marketing site: hero + 4-8 supporting sections (services, why-us, process, team, reviews, FAQ, contact, footer — pick what fits the business). Section count and naming are your choice.
+"""
 
-━━━ STRICT RULES ━━━
-1. The /* !! LOCKED_IMPORTS — DO NOT EDIT !! */ line — leave it exactly as-is. Do NOT replace it with import statements.
-2. Keep ALL component function names, prop type interfaces, and export statements IDENTICAL to the original.
-3. Keep ALL onClick handlers, framer-motion animation variants/props, and useRef/useState calls IDENTICAL.
-4. Apostrophes in JSX text → &apos;  Quotes in JSX text → &quot;
-5. Replace every old phone number with the new business phone number.
-6. Do NOT include src/index.css in your response — it is handled separately.
-7. Every file value must be the COMPLETE file content — never a diff or snippet.
-8. Return valid TSX — no syntax errors, no unclosed tags.
-9. Icons: you may ONLY use icon names that already appear in the original file's JSX. Do NOT introduce new icon component names — if an icon isn't in the original file, don't use it.
-10. FAVICON: Explicitly check index.html and remove any link tags pointing to Lovable or external AI favicon URLs.
-11. BUTTONS: Do NOT use a `<Button />` component unless it is already imported in the original file. Use standard `<button>` tags with Tailwind classes for all buttons.
 
-━━━ OUTPUT FORMAT ━━━
-Return a SINGLE raw JSON object. Keys = file paths. Values = complete file content.
-No markdown fences, no backticks, no explanation — only the JSON object."""
+def _build_user_prompt(application_data: dict, image_urls: list, design_personality: dict) -> str:
+    image_list_str = "\n".join(f"  Image {i + 1}: {url}" for i, url in enumerate(image_urls))
+    testimonials = application_data.get("testimonials", [])
+    testimonials_str = (
+        json.dumps(testimonials, indent=2) if isinstance(testimonials, list) else str(testimonials)
+    )
 
-    user_prompt = f"""Redesign this website for:
+    return f"""Build the homepage for this business.
 
-Company Name: {application_data["company_name"]}
-Industry: {application_data.get("industry", "trade services")}
-Phone Number: {application_data.get("phone_number", "N/A")}
-Location: {application_data["city_location"]}
-Services: {application_data["services_list"]}
-Testimonials: {application_data["testimonials"]}
+Company Name: {application_data.get("company_name", "")}
+Industry: {application_data.get("industry", "")}
+Tagline / USP: {application_data.get("tagline", "")}
+Phone Number: {application_data.get("phone_number", "")}
+Primary Location: {application_data.get("city_location", "")}
+Service Areas: {application_data.get("service_areas", application_data.get("city_location", ""))}
 Years of Experience: {application_data.get("years_experience", "10+")}
-Trust Badges: {application_data.get("trust_badges", "Fully insured, certified professionals")}
-Service Areas: {application_data.get("service_areas", application_data["city_location"])}
-Tagline / USP: {application_data.get("tagline", "Fast, reliable, professional service")}
+Trust Badges / Credentials: {application_data.get("trust_badges", "")}
+Services Offered: {application_data.get("services_list", "")}
+Testimonials:
+{testimonials_str}
 
-Brand Colors to respect:
-Primary: {primary_hex}
-Secondary: {secondary_hex}
-Accent: {accent_hex}
-Background: {background_hex}
-Body Text: {text_hex}
-Heading Text: {text_heading_hex}
+Design Personality: {design_personality["name"]}
 
-Design Personality to apply: {design_personality["name"]}
-Available images to use (replace ALL existing images with these):
+Available image URLs (use ONLY these for imagery):
 {image_list_str}
 
-Template files to redesign:
-{template_snapshot}
+Return ALL files as a single raw JSON object — keys are file paths, values are complete file contents. Index.tsx is required. No markdown fences."""
 
-Return ALL files as a single raw JSON object. Do NOT include src/index.css."""
+
+def generate_site_files_with_claude(
+    application_data: dict,
+    design_personality: dict,
+    image_urls: list,
+    display_font: str,
+    body_font: str,
+) -> dict | None:
+    api_key = os.getenv("ANTHROPIC_API_KEY")
+    if not api_key:
+        logger.error("ANTHROPIC_API_KEY not found")
+        return None
+
+    client = anthropic.Anthropic(api_key=api_key)
+
+    layout_strategy = random.choice(LAYOUT_STRATEGIES)
+    creative_twist = random.choice(CREATIVE_TWISTS)
+
+    system_prompt = _build_system_prompt(
+        application_data,
+        design_personality,
+        image_urls,
+        layout_strategy,
+        creative_twist,
+        display_font,
+        body_font,
+    )
+    user_prompt = _build_user_prompt(application_data, image_urls, design_personality)
 
     try:
         logger.info(
-            f"Sending template to Claude for full redesign ({design_personality['name']})..."
+            f"Calling Claude for from-scratch site generation "
+            f"(personality={design_personality['name']}, layout={layout_strategy[:40]}…)"
         )
-
         response = client.messages.create(
             model="claude-sonnet-4-6",
-            max_tokens=16000,
+            max_tokens=32000,
             system=system_prompt,
             messages=[{"role": "user", "content": user_prompt}],
         )
-
         text = response.content[0].text.strip()
-
-        stop_reason = response.stop_reason
-
-        logger.info(f"Claude responded. Stop reason: {stop_reason}")
+        logger.info(f"Claude responded. Stop reason: {response.stop_reason}")
 
         if text.startswith("```json"):
             text = text[7:]
-
         elif text.startswith("```"):
             text = text[3:]
-
         if text.endswith("```"):
             text = text[:-3]
-
         text = text.strip()
 
-        edited = json.loads(text)
+        raw_files = json.loads(text)
 
-        # Only keep valid keys, fall back to originals for anything missing
+        if not isinstance(raw_files, dict):
+            logger.error("Claude returned non-object JSON")
+            return None
 
-        valid_keys = set(template_files.keys()) - {"src/index.css"}
+        # Validate paths and content
+        cleaned: dict[str, str] = {}
+        for rel_path, content in raw_files.items():
+            if not isinstance(rel_path, str) or not isinstance(content, str):
+                logger.warning(f"Skipping invalid entry: {rel_path!r}")
+                continue
+            safe = _safe_relpath(rel_path)
+            if not safe:
+                logger.warning(f"Skipping disallowed path from Claude: {rel_path}")
+                continue
+            cleaned[safe] = content
 
-        filtered = {k: v for k, v in edited.items() if k in valid_keys}
+        if "src/pages/Index.tsx" not in cleaned:
+            logger.error("Claude omitted src/pages/Index.tsx — aborting")
+            return None
 
-        for k in valid_keys - set(filtered.keys()):
-            logger.warning(f"Claude omitted {k} — keeping original.")
-
-            filtered[k] = template_files[k]
-
-        # Restore locked imports, then patch any new Lucide icons Claude introduced
-
-        restored = restore_imports(filtered, locked_imports)
-
-        restored = fix_missing_imports(restored)
-
-        return restored
+        return cleaned
 
     except json.JSONDecodeError as e:
         logger.error(f"JSON parse error: {e}")
-
         return None
-
     except Exception as e:
         logger.error(f"Claude API error: {e}")
-
         return None
+
+
+def write_generated_files(project_dir: str, files: dict) -> None:
+    written = 0
+    for rel_path, content in files.items():
+        # Defense-in-depth: re-validate paths at the write boundary, in case
+        # an upstream caller fed an un-validated dict.
+        safe = _safe_relpath(rel_path)
+        if not safe:
+            logger.warning(f"Refusing to write disallowed path: {rel_path}")
+            continue
+        abs_path = os.path.join(project_dir, safe)
+        os.makedirs(os.path.dirname(abs_path), exist_ok=True)
+        with open(abs_path, "w", encoding="utf-8") as f:
+            f.write(content)
+        written += 1
+    logger.info(f"Wrote {written}/{len(files)} Claude-generated files into {project_dir}")
 
 
 # ─────────────────────────────────────────────────────────
@@ -1130,41 +907,10 @@ Return ALL files as a single raw JSON object. Do NOT include src/index.css."""
 # ─────────────────────────────────────────────────────────
 
 
-def inject_extra_utilities(css_content: str) -> str:
-    """Add extra tailwind utilities for the custom brand tokens."""
-    
-    extra_css = """
-@layer base {
-  :root {
-    /* Custom design tokens added by generation service */
-  }
-}
-
-@layer utilities {
-  .text-heading {
-    color: hsl(var(--heading));
-  }
-  .bg-background {
-    background-color: hsl(var(--background));
-  }
-  .text-foreground {
-    color: hsl(var(--foreground));
-  }
-}
-"""
-    if ".text-heading" not in css_content:
-        css_content += extra_css
-        
-    return css_content
-
-
-def generate_website_code(
-    application_data: dict, output_dir: str | None = None
-) -> str | None:
+def generate_website_code(application_data: dict, output_dir: str | None = None) -> str | None:
     """
-    Clone the template, apply brand design tokens + fonts to CSS,
-    then have Claude fully redesign all components with the right
-    industry personality and images.
+    Copy the local scaffold, brand the CSS and Tailwind config in Python,
+    then have Claude design and write Index.tsx + any components freely.
 
     application_data keys:
         company_name        — business name
@@ -1173,20 +919,18 @@ def generate_website_code(
         city_location       — e.g. "Manchester, UK"
         services_list       — comma-separated or list
         testimonials        — list of {name, location, text}
-        branding_colors     — dict: {primary, secondary, accent} as hex
+        branding_colors     — dict: {primary, secondary, accent, background, text, textHeading} as hex
         uploaded_images     — (optional) list of image URLs from user uploads
-        years_experience    — (optional) e.g. "15+"
-        trust_badges        — (optional) e.g. "NICEIC Approved, Fully Insured"
+        years_experience    — (optional)
+        trust_badges        — (optional)
         service_areas       — (optional) list of local areas
-        tagline             — (optional) short USP
+        tagline             — (optional)
     """
-
     if isinstance(application_data, str):
         try:
             application_data = json.loads(application_data)
-        except:
+        except Exception:
             logger.error("application_data is a string but not valid JSON")
-
             return None
 
     if output_dir is None:
@@ -1194,87 +938,59 @@ def generate_website_code(
 
     project_dir = os.path.join(output_dir, "project")
 
-    # 1. Clone
-
-    logger.info(f"Cloning template into {project_dir}...")
-
-    if not clone_template(project_dir):
+    # 1. Copy local scaffold
+    if not copy_scaffold(project_dir):
         return None
 
-    git_dir = os.path.join(project_dir, ".git")
-
-    if os.path.exists(git_dir):
-        shutil.rmtree(git_dir)
-
-    # 2. Read files
-
-    template_files = read_template_files(project_dir)
-
-    if not template_files:
-        logger.error("No template files could be read.")
-
-        return None
-
-    logger.info(f"Read {len(template_files)} template files.")
-
-    # 3. Resolve industry context
-
+    # 2. Resolve industry context
     industry = application_data.get("industry", "")
-
-    user_images = application_data.get("uploaded_images", [])
-
+    user_images = application_data.get("uploaded_images", []) or []
     design_personality = get_design_personality(industry)
-
     image_urls = get_industry_images(industry, user_images if user_images else None)
-
     logger.info(
         f"Design personality: {design_personality['name']} | "
         f"Images: {len(image_urls)} ({'user uploads' if user_images else 'stock'})"
     )
 
-    # 4. Apply design tokens + fonts to CSS in Python (fast, deterministic)
-
-    branding_colors = application_data.get("branding_colors", {})
-
+    # 3. Brand CSS variables + fonts in Python (deterministic)
+    branding_colors = application_data.get("branding_colors", {}) or {}
     tokens = build_design_tokens(branding_colors)
-
     display_font, body_font, fonts_url = choose_fonts(industry)
 
-    css = template_files["src/index.css"]
+    css_path = os.path.join(project_dir, "src", "index.css")
+    if os.path.exists(css_path):
+        with open(css_path, "r", encoding="utf-8") as f:
+            css = f.read()
+        css = inject_design_tokens(css, tokens)
+        css = inject_fonts(css, fonts_url, display_font, body_font)
+        css = inject_extra_utilities(css)
+        with open(css_path, "w", encoding="utf-8") as f:
+            f.write(css)
 
-    css = inject_design_tokens(css, tokens)
+    tailwind_path = os.path.join(project_dir, "tailwind.config.ts")
+    if os.path.exists(tailwind_path):
+        with open(tailwind_path, "r", encoding="utf-8") as f:
+            tw_config = f.read()
+        tw_config = update_tailwind_config_fonts(tw_config, display_font, body_font)
+        with open(tailwind_path, "w", encoding="utf-8") as f:
+            f.write(tw_config)
 
-    css = inject_fonts(css, fonts_url, display_font, body_font)
+    # 4. SEO + meta in index.html (also in Python — Claude shouldn't touch <script type="module">)
+    update_index_html(project_dir, application_data)
 
-    css = update_tailwind_config_fonts(css, display_font, body_font)
+    logger.info(f"Branding applied. Fonts: {display_font} / {body_font}")
 
-    css = inject_extra_utilities(css)
-
-    template_files["src/index.css"] = css
-
-    logger.info(f"Design tokens applied. Fonts: {display_font} / {body_font}")
-
-    # 5. Full visual redesign + content rebranding via Claude
-
-    edited_files = edit_files_with_claude(
-        template_files, application_data, design_personality, image_urls
+    # 5. Claude designs and writes the site from scratch
+    files = generate_site_files_with_claude(
+        application_data, design_personality, image_urls, display_font, body_font
     )
-
-    if not edited_files:
-        logger.error("Claude redesign failed.")
-
+    if not files:
+        logger.error("Claude site generation failed.")
         return None
 
-    # 6. Put our CSS back (Claude was told to skip it)
-
-    edited_files["src/index.css"] = template_files["src/index.css"]
-
-    # 7. Write everything back
-
-    write_edited_files(project_dir, edited_files)
+    write_generated_files(project_dir, files)
 
     logger.info(f"Website ready at: {project_dir}")
-
     return project_dir
 
 
@@ -1290,21 +1006,9 @@ if __name__ == "__main__":
         "city_location": "Manchester, UK",
         "services_list": "Rewiring, Fuse Board Upgrades, EV Charger Installation, Lighting Design, Emergency Repairs, PAT Testing",
         "testimonials": [
-            {
-                "name": "Sarah T.",
-                "location": "Didsbury",
-                "text": "Fantastic service, very professional and tidy.",
-            },
-            {
-                "name": "James R.",
-                "location": "Chorlton",
-                "text": "Fixed our fuse board same day. Highly recommend.",
-            },
-            {
-                "name": "Emma B.",
-                "location": "Salford",
-                "text": "Excellent response time. Very fairly priced.",
-            },
+            {"name": "Sarah T.", "location": "Didsbury", "text": "Fantastic service, very professional and tidy."},
+            {"name": "James R.", "location": "Chorlton", "text": "Fixed our fuse board same day. Highly recommend."},
+            {"name": "Emma B.", "location": "Salford", "text": "Excellent response time. Very fairly priced."},
         ],
         "branding_colors": {
             "primary": "#F59E0B",
@@ -1313,23 +1017,9 @@ if __name__ == "__main__":
         },
         "years_experience": "20+",
         "trust_badges": "NICEIC Approved, Part P Certified, Fully Insured",
-        "service_areas": [
-            "Didsbury",
-            "Chorlton",
-            "Salford",
-            "Trafford",
-            "Stockport",
-            "Oldham",
-            "Bolton",
-            "Bury",
-        ],
-        "tagline": "Manchester's most trusted emergency electricians",
+        "service_areas": ["Didsbury", "Chorlton", "Salford", "Trafford", "Stockport", "Oldham", "Bolton", "Bury"],
+        "tagline": "Manchester&apos;s most trusted emergency electricians",
     }
 
     path = generate_website_code(data)
-
-    if path:
-        print(f"Project generated at: {path}")
-
-    else:
-        print("Generation failed.")
+    print(f"Project generated at: {path}" if path else "Generation failed.")
