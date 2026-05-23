@@ -127,7 +127,7 @@ const Sidebar: React.FC = () => {
     ...(user?.is_staff ? [{ icon: <UsersIcon size={18} />, label: "Users", to: "/users" }] : []),
     { icon: <Settings size={18} />, label: "Settings", to: "/settings" },
     ...(isMonthlyUser
-      ? [{ icon: <Edit3 size={18} />, label: "Request Changes", to: "/request-changes" }]
+      ? [{ icon: <Edit3 size={18} />, label: "Request History", to: "/request-changes" }]
       : []),
   ];
 

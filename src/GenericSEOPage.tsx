@@ -288,10 +288,6 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
                       <div
                         className={`absolute inset-0 bg-gradient-to-r ${idx % 2 === 0 ? "from-transparent to-surface/60" : "from-surface/60 to-transparent"} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
                       />
-                      {/* Section bullet badge */}
-                      <div className="absolute top-5 left-5 w-9 h-9 rounded-xl bg-black/40 backdrop-blur-sm flex items-center justify-center">
-                        <div className="w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_10px_rgba(0,105,109,0.6)]" />
-                      </div>
                     </div>
                   )}
 
@@ -333,14 +329,20 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
                             const label = hasLabel ? cleanedPoint.slice(0, colonIdx) : null;
                             const body = hasLabel ? cleanedPoint.slice(colonIdx + 1).trim() : cleanedPoint;
 
+                            const isFirstOrLast = idx === 0 || idx === (data.sections?.length || 0) - 1;
+
                             return (
                               <div
                                 key={pIdx}
                                 className="flex items-start gap-4 p-3 rounded-xl hover:bg-surface transition-colors"
                               >
-                                <div className="mt-1 w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center shrink-0 font-black text-[10px] shadow-[0_0_10px_rgba(0,105,109,0.3)]">
-                                  {pIdx + 1}
-                                </div>
+                                {isFirstOrLast ? (
+                                  <div className="mt-2.5 w-2 h-2 rounded-full bg-primary shrink-0 shadow-[0_0_8px_rgba(0,105,109,0.4)]" />
+                                ) : (
+                                  <div className="mt-1 w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center shrink-0 font-black text-[10px] shadow-[0_0_10px_rgba(0,105,109,0.3)]">
+                                    {pIdx + 1}
+                                  </div>
+                                )}
                                 <span className="text-base leading-relaxed">
                                   {label && (
                                     <span className="font-bold text-on-surface">{label}: </span>
