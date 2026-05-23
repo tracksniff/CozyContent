@@ -185,8 +185,8 @@ const Checkout: React.FC = () => {
                   <div className="space-y-4 mb-10 flex-grow">
                     {plan.features.map((feature, fIdx) => (
                       <div key={fIdx} className="flex items-start gap-3">
-                        <div className={`mt-1 w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
-                          plan.popular ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-surface-container-high text-on-surface-variant'
+                        <div className={`mt-1 w-5 h-5 rounded-full flex items-center justify-center shrink-0 shadow-lg ${
+                          plan.popular ? 'bg-primary text-white shadow-primary/20' : 'bg-on-surface text-surface shadow-on-surface/10'
                         }`}>
                           <Check className="w-3 h-3" strokeWidth={4} />
                         </div>

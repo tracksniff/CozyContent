@@ -451,8 +451,8 @@ const LandingPage = () => {
                     'No ongoing updates or support'
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-4">
-                      <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-surface-container-high flex items-center justify-center">
-                        <Check className="w-3 h-3 text-on-surface-variant" strokeWidth={4} />
+                      <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-on-surface text-surface flex items-center justify-center shadow-lg shadow-on-surface/10">
+                        <Check className="w-3 h-3" strokeWidth={4} />
                       </div>
                       <span className="text-on-surface font-black text-sm leading-tight">{item}</span>
                     </div>

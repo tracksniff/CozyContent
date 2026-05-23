@@ -125,7 +125,7 @@ const RequestChanges: React.FC = () => {
               ← Dashboard
             </Link>
             <span className="text-outline-variant/40">/</span>
-            <span className="text-sm font-black text-on-surface">Request Changes</span>
+            <span className="text-sm font-black text-on-surface">Request History</span>
           </div>
           {user && !user.is_staff && (
             <div className="flex items-center gap-2">
@@ -150,12 +150,12 @@ const RequestChanges: React.FC = () => {
           {/* Header */}
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
             <h1 className="text-3xl md:text-4xl font-black text-on-surface tracking-tighter">
-              Request <span className="text-primary italic">Changes.</span>
+              Request <span className="text-primary italic">History.</span>
             </h1>
             <p className="text-sm text-on-surface-variant font-medium mt-1">Tell us what you'd like updated on your website.</p>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
 
             {/* ── Form ── */}
             {!user?.is_staff && (
@@ -231,7 +231,7 @@ const RequestChanges: React.FC = () => {
             )}
 
             {/* ── Right panel ── */}
-            <motion.div className={user?.is_staff ? "lg:col-span-5" : "lg:col-span-2"} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }}>
+            <motion.div className={`${user?.is_staff ? "lg:col-span-5" : "lg:col-span-2"} space-y-6`} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }}>
 
               {/* Recent requests */}
               <div className="bg-surface-container-low rounded-2xl border border-outline-variant/30 p-6">

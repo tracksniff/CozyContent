@@ -7,7 +7,8 @@ import {
   Clock, 
   Phone, 
   ExternalLink,
-  Sparkles
+  Sparkles,
+  Check
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "./Navbar";
@@ -209,18 +210,18 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
               </p>
 
               {/* Checklist pills */}
-              <div className="flex flex-wrap justify-center gap-3 mb-12">
-              {(data.checklist || ["Fast Delivery", "Fully Managed", "SEO Optimised"]).map(
-              (item, idx) => (
-              <div
-              key={idx}
-              className="flex items-center gap-2.5 px-5 py-2.5 bg-surface rounded-full border border-outline-variant/40 text-sm font-semibold"
-              >
-              <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(0,105,109,0.4)]" />
-              {item}
-              </div>
-              ),
-              )}
+              <div className="flex flex-wrap justify-center gap-4 mb-12">
+                {(data.checklist || ["Fast Delivery", "Fully Managed", "SEO Optimised"]).map(
+                  (item, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-center gap-3.5 px-6 py-3 bg-surface rounded-full border border-outline-variant/40 text-base font-bold shadow-sm"
+                    >
+                      <div className="w-3 h-3 rounded-full bg-primary shadow-[0_0_10px_rgba(0,105,109,0.5)]" />
+                      {item}
+                    </div>
+                  ),
+                )}
               </div>
               {/* CTA buttons */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -323,19 +324,24 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
                           className={`grid gap-3 ${!section.image && section.points.length > 3 ? "sm:grid-cols-2" : ""}`}
                         >
                           {section.points.map((point, pIdx) => {
+                            // Clean leading numbers/dots if they exist (e.g., "1. " or "1) ")
+                            const cleanedPoint = point.replace(/^\d+[\.\)\s]+/, "");
+
                             // Split at first colon for styled label
-                            const colonIdx = point.indexOf(":");
+                            const colonIdx = cleanedPoint.indexOf(":");
                             const hasLabel = colonIdx > 0 && colonIdx < 40;
-                            const label = hasLabel ? point.slice(0, colonIdx) : null;
-                            const body = hasLabel ? point.slice(colonIdx + 1).trim() : point;
+                            const label = hasLabel ? cleanedPoint.slice(0, colonIdx) : null;
+                            const body = hasLabel ? cleanedPoint.slice(colonIdx + 1).trim() : cleanedPoint;
 
                             return (
                               <div
                                 key={pIdx}
-                                className="flex items-start gap-3 p-3 rounded-xl hover:bg-surface transition-colors"
+                                className="flex items-start gap-4 p-3 rounded-xl hover:bg-surface transition-colors"
                               >
-                                <div className="mt-2 w-1.5 h-1.5 rounded-full bg-primary shrink-0 shadow-[0_0_8px_rgba(0,105,109,0.4)]" />
-                                <span className="text-sm leading-relaxed">
+                                <div className="mt-1 w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center shrink-0 font-black text-[10px] shadow-[0_0_10px_rgba(0,105,109,0.3)]">
+                                  {pIdx + 1}
+                                </div>
+                                <span className="text-base leading-relaxed">
                                   {label && (
                                     <span className="font-bold text-on-surface">{label}: </span>
                                   )}
@@ -476,9 +482,15 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
 
                 <div className="space-y-4 mb-10 flex-grow">
                   {plan.features.map((feature, fIdx) => (
-                    <div key={fIdx} className="flex items-start gap-3">
-                      <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary shrink-0 shadow-[0_0_8px_rgba(0,105,109,0.4)]" />
-                      <span className="text-sm font-bold text-on-surface leading-tight">{feature}</span>
+                    <div key={fIdx} className="flex items-start gap-4">
+                      <div className={`mt-1 flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center shadow-lg transition-colors duration-500 ${
+                        plan.popular 
+                          ? 'bg-primary text-white shadow-primary/20' 
+                          : 'bg-on-surface text-surface shadow-on-surface/10'
+                      }`}>
+                        <Check className="w-3 h-3" strokeWidth={4} />
+                      </div>
+                      <span className="text-on-surface font-black text-sm leading-tight">{feature}</span>
                     </div>
                   ))}
                 </div>
@@ -525,9 +537,9 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
                     "Area-specific content",
                     "Mobile-first design"
                   ].map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-3">
-                      <div className="w-1.5 h-1.5 rounded-full bg-primary shrink-0 shadow-[0_0_8px_rgba(0,105,109,0.4)]" />
-                      <span className="text-sm font-bold">{item}</span>
+                    <div key={idx} className="flex items-center gap-4">
+                      <div className="w-2.5 h-2.5 rounded-full bg-primary shrink-0 shadow-[0_0_10px_rgba(0,105,109,0.5)]" />
+                      <span className="text-base font-bold">{item}</span>
                     </div>
                   ))}
                 </div>

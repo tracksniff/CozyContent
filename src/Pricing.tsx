@@ -204,7 +204,11 @@ const PricingPage: React.FC = () => {
                 <div className="space-y-4 mb-10 flex-grow">
                   {plan.features.map((feature, fIdx) => (
                     <div key={fIdx} className="flex items-start gap-4">
-                      <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/20">
+                      <div className={`mt-1 flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center shadow-lg transition-colors duration-500 ${
+                        plan.popular 
+                          ? 'bg-primary text-white shadow-primary/20' 
+                          : 'bg-on-surface text-surface shadow-on-surface/10'
+                      }`}>
                         <Check className="w-3 h-3" strokeWidth={4} />
                       </div>
                       <span className="text-on-surface font-black text-sm leading-tight">{feature}</span>

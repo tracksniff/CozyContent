@@ -90,20 +90,20 @@ const StatCard = ({
   highlight?: boolean;
 }) => (
   <div
-    className={`rounded-2xl p-4 sm:p-5 border transition-all ${highlight && value > 0 ? "bg-primary/5 border-primary/30" : "bg-surface-container-low border-outline-variant/30"}`}
+    className={`rounded-xl p-3 sm:p-5 border transition-all ${highlight && value > 0 ? "bg-primary/5 border-primary/30" : "bg-surface-container-low border-outline-variant/30"}`}
   >
-    <div className="flex items-center justify-between mb-2 sm:mb-3">
+    <div className="flex items-center justify-between mb-1.5 sm:mb-3">
       <Icon
-        size={14}
+        size={12}
         className={highlight && value > 0 ? "text-primary" : "text-on-surface-variant"}
       />
       <span
-        className={`text-xl sm:text-2xl font-black tabular-nums ${highlight && value > 0 ? "text-primary" : "text-on-surface"}`}
+        className={`text-lg sm:text-2xl font-black tabular-nums ${highlight && value > 0 ? "text-primary" : "text-on-surface"}`}
       >
         {value}
       </span>
     </div>
-    <p className="text-[10px] sm:text-[11px] font-bold text-on-surface-variant uppercase tracking-wide">
+    <p className="text-[9px] sm:text-[11px] font-black text-on-surface-variant uppercase tracking-wider">
       {label}
     </p>
   </div>
@@ -659,7 +659,7 @@ const Dashboard: React.FC = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.05 }}
-              className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4"
+              className="grid grid-cols-1 md:grid-cols-4 gap-3 sm:gap-4"
             >
               <StatCard label="Total Sites" value={websites.length} icon={Globe} />
               <StatCard label="Pending" value={pendingRequests.length} icon={Bell} highlight />
