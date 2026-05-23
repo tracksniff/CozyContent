@@ -131,6 +131,10 @@ LAYOUT_STRATEGIES = [
     "Social-Proof Narrative: Move 'Meet the Team' and 'Reviews' higher up to humanise the brand early in the page.",
     "Outcome-Focused Narrative: Lead with 'How It Works' and 'Why Us' to show the benefits before the technical details.",
     "Modern Minimal Narrative: Use large spacing and reorder sections to create a more experimental, non-linear flow.",
+    "Data-Driven Narrative: Start with 'Stats' and 'Trust Badges' immediately after the Hero to provide instant proof.",
+    "Asymmetric Storytelling: Use a mix of full-width and contained sections with overlapping images and text to break the 'blocky' feel.",
+    "Direct Action Narrative: Place the 'Contact' or 'Booking' form/section very high up, right after the Hero description.",
+    "Impactful Visual Narrative: Lead with large, high-impact imagery and minimal text, letting the visuals tell the story first.",
 ]
 
 
@@ -145,6 +149,7 @@ DESIGN_PERSONALITIES = {
             "Theme: Industrial Power & High Contrast.\n"
             "- Visuals: Bold, raw, and high-energy. Use thick borders (border-4), hard edges (rounded-none or rounded-md), and high-contrast color pairings.\n"
             "- Hero: Experiment with 'Split-screen' or 'Dark-Focused' layouts. Use large, heavy typography (font-black tracking-tighter).\n"
+            "- Navbar: Use a bold, solid background color or a thick bottom border. Consider a vertical sidebar-style navigation for desktop.\n"
             "- Rhythm: Use strong block-color sections (Primary/Secondary) to create a powerful, punchy flow. Avoid soft shadows; use hard 'neo-brutalist' shadows instead.\n"
             "- Accents: Use the Accent color for glowing effects and high-visibility status indicators.\n"
         ),
@@ -154,7 +159,8 @@ DESIGN_PERSONALITIES = {
         "instructions": (
             "Theme: Dependable Cleanliness & Technical Precision.\n"
             "- Visuals: Clean, structured, and reassuring. Use medium rounded corners (rounded-xl) and subtle shadows to create depth.\n"
-            "- Hero: Use a 'Content-First' approach with clear trust badges and a strong, friendly call-to-action.\n"
+            "- Hero: Use a 'Content-First' approach with clear trust badges and a strong, friendly call-to-action. Try an asymmetric grid layout.\n"
+            "- Navbar: Clean, centered navigation with a prominent call button. Use a soft shadow when scrolling.\n"
             "- Rhythm: Clean, alternating sections with a focus on 'Step-by-step' processes and clear feature lists.\n"
             "- Accents: Use the Primary color for icons and structural highlights to build brand recognition.\n"
         ),
@@ -163,8 +169,9 @@ DESIGN_PERSONALITIES = {
         "name": "Elegant Minimal",
         "instructions": (
             "Theme: Luxurious Serenity & Soft Whitespace.\n"
-            "- Visuals: High-end, airy, and sophisticated. Use extremely generous padding (py-32), rounded-full for buttons, and delicate dividers.\n"
-            "- Hero: Centered-focus layout with a large, beautiful background image and soft, layered typography.\n"
+            "- Visuals: High-end, airy, and sophisticated. Use extremely generous padding (py-40), rounded-full for buttons, and delicate thin dividers.\n"
+            "- Hero: Centered-focus layout with a large, beautiful background image and soft, layered typography. Try a 'floating' hero card.\n"
+            "- Navbar: Minimalist, transparent background that blurs on scroll. Use elegant, spaced-out menu items.\n"
             "- Rhythm: Flowing, spacious layout. Use very subtle background tints (bg-primary/5) rather than solid dark blocks.\n"
             "- Typography: Use tracking-widest and light font weights for a premium, boutique feel.\n"
         ),
@@ -173,8 +180,9 @@ DESIGN_PERSONALITIES = {
         "name": "Warm and Inviting",
         "instructions": (
             "Theme: Artisanal Texture & Rich Warmth.\n"
-            "- Visuals: Appetising, textured, and welcoming. Use warm gradients, rounded-3xl corners, and textured backgrounds (if possible via CSS).\n"
-            "- Hero: Full-bleed imagery with centered, high-impact headings and a clear reservation/order CTA.\n"
+            "- Visuals: Appetising, textured, and welcoming. Use warm gradients, rounded-3xl corners, and organic shapes.\n"
+            "- Hero: Full-bleed imagery with centered, high-impact headings and a clear reservation/order CTA. Use overlapping text elements.\n"
+            "- Navbar: Warm-toned background with an elegant logo placement. Consider a 'mega-menu' style for categories.\n"
             "- Rhythm: A 'Menu-like' structure for services and features. Use layered elements and overlapping images to create an artisanal feel.\n"
             "- Accents: Use the Secondary color for deep, rich backgrounds and the Accent color for highlights.\n"
         ),
@@ -184,7 +192,8 @@ DESIGN_PERSONALITIES = {
         "instructions": (
             "Theme: Sophisticated Authority & Classic Excellence.\n"
             "- Visuals: Stately, serious, and high-end. Use serif-style typography, thin elegant dividers, and a predominantly dark color palette.\n"
-            "- Hero: Large, bold typography on a dark Secondary background. Use the Accent color sparingly for 'prestige' highlights.\n"
+            "- Hero: Large, bold typography on a dark Secondary background. Use the Accent color sparingly for 'prestige' highlights. Try a classical 'pillar' layout.\n"
+            "- Navbar: Professional and conservative. Use a solid top-bar for contact info and a clean main nav below it.\n"
             "- Rhythm: A focused, linear narrative that emphasizes credentials and expert fields. Use wide layouts with large text blocks.\n"
             "- Details: Sharp corners and gold/accent borders (border-l-2).\n"
         ),
@@ -194,7 +203,8 @@ DESIGN_PERSONALITIES = {
         "instructions": (
             "Theme: Digital Innovation & Glassmorphism.\n"
             "- Visuals: Sleek, vibrant, and futuristic. Use glassmorphism effects (bg-white/10 backdrop-blur), neon glows, and dark backgrounds.\n"
-            "- Hero: Gradient headlines (text-transparent bg-clip-text) and large, modern typography with interactive-feeling buttons.\n"
+            "- Hero: Gradient headlines (text-transparent bg-clip-text) and large, modern typography with interactive-feeling buttons. Try a 3D-card effect.\n"
+            "- Navbar: Glassmorphic bar that floats at the top. Use subtle animations for hover states.\n"
             "- Rhythm: Non-standard grids, asymmetric layouts, and varied section heights. Incorporate grid patterns or subtle tech motifs.\n"
             "- Details: Use rounded-2xl throughout and smooth hover transitions.\n"
         ),
@@ -204,7 +214,8 @@ DESIGN_PERSONALITIES = {
         "instructions": (
             "Theme: Bright Clinical & Friendly Professionalism.\n"
             "- Visuals: Pristine, safe, and welcoming. Use a lot of white space, soft Primary blue/green tones, and rounded-full pill shapes.\n"
-            "- Hero: Professional and friendly, using team photography and very clear 'Book Now' CTAs above the fold.\n"
+            "- Hero: Professional and friendly, using team photography and very clear 'Book Now' CTAs above the fold. Try a split-layout with a trust-card overlay.\n"
+            "- Navbar: Extremely clear and accessible. Use a high-contrast emergency contact button.\n"
             "- Rhythm: Simple, clear, and easy to navigate. Use distinct panels for services and expertise badges.\n"
             "- Details: Avoid harsh contrast; use soft shadows and light-tinted borders.\n"
         ),
@@ -214,7 +225,8 @@ DESIGN_PERSONALITIES = {
         "instructions": (
             "Theme: Heavy-Duty Structural & Bold Scale.\n"
             "- Visuals: Strong, large-scale, and impactful. Use massive typography (text-7xl), bold block colors, and industrial-style iconography.\n"
-            "- Hero: Full-width construction imagery with heavy-weight headlines and high-visibility CTAs.\n"
+            "- Hero: Full-width construction imagery with heavy-weight headlines and high-visibility CTAs. Try a 'brutalist' grid layout.\n"
+            "- Navbar: Strong and functional. Use a thick Primary background and bold, caps-lock navigation items.\n"
             "- Rhythm: Strong, alternating blocks of Primary and Secondary colors. Use large-format imagery as section dividers.\n"
             "- Details: Hard corners and prominent, bold borders.\n"
         ),
@@ -224,7 +236,8 @@ DESIGN_PERSONALITIES = {
         "instructions": (
             "Theme: Sparkling Freshness & Organized Space.\n"
             "- Visuals: Bright, high-contrast, and impeccably organized. Use a lot of whitespace and fresh Primary/Accent highlights.\n"
-            "- Hero: Bright and airy with a clean 'Before/After' or high-quality service image. Clear, simple headlines.\n"
+            "- Hero: Bright and airy with a clean 'Before/After' or high-quality service image. Clear, simple headlines. Try a wave-style section divider.\n"
+            "- Navbar: Fresh and light. Use a thin border and a clear 'Request Quote' button.\n"
             "- Rhythm: Very orderly grid layouts and checklist-style feature lists. Use light-colored sections with clean horizontal dividers.\n"
             "- Details: Rounded-xl corners and thin, precise borders.\n"
         ),
@@ -234,7 +247,8 @@ DESIGN_PERSONALITIES = {
         "instructions": (
             "Theme: Clean Modernism & Versatile Layout.\n"
             "- Visuals: Balanced, professional, and visually engaging. Use a mix of rounded corners and clean lines.\n"
-            "- Hero: Dynamic layout (Split or Centered) with strong brand integration.\n"
+            "- Hero: Dynamic layout (Split or Centered) with strong brand integration. Use varied height containers.\n"
+            "- Navbar: Versatile and clean. Adapts to the brand colors with a subtle transition on scroll.\n"
             "- Rhythm: Engaging flow with varied section types and clear content hierarchy.\n"
             "- Details: Modern shadows and smooth transitions.\n"
         ),
@@ -726,10 +740,10 @@ _LUCIDE_ICONS = {
 }
 
 
-def fix_missing_lucide_imports(restored_files: dict) -> dict:
+def fix_missing_imports(restored_files: dict) -> dict:
     """
-    Scan every TSX file for Lucide icon JSX usage and patch the
-    lucide-react import line so no icon is referenced but undefined.
+    Scan every TSX file for Lucide icon JSX usage and common UI components 
+    (like Button) that Claude might introduce, and patch the imports.
     """
     import re
 
@@ -737,6 +751,9 @@ def fix_missing_lucide_imports(restored_files: dict) -> dict:
     lucide_import_re = re.compile(
         r"(import\s*\{)([^}]+)(\}\s*from\s*['\"]lucide-react['\"];?)"
     )
+    
+    # Check for Button component specifically
+    ui_button_import_re = re.compile(r"import\s*\{\s*Button\s*\}\s*from\s*['\"]@/components/ui/button['\"];?")
 
     fixed = {}
     for rel_path, content in restored_files.items():
@@ -744,33 +761,44 @@ def fix_missing_lucide_imports(restored_files: dict) -> dict:
             fixed[rel_path] = content
             continue
 
-        # Find all capitalised JSX tags that match a known Lucide icon
-        used = {m.group(1) for m in jsx_tag_re.finditer(content) if m.group(1) in _LUCIDE_ICONS}
+        # 1. Fix Lucide Icons
+        used_icons = {m.group(1) for m in jsx_tag_re.finditer(content) if m.group(1) in _LUCIDE_ICONS}
 
-        if not used:
-            fixed[rel_path] = content
-            continue
+        if used_icons:
+            match = lucide_import_re.search(content)
+            if match:
+                existing = {s.strip() for s in match.group(2).split(",") if s.strip()}
+                merged = existing | used_icons
+                new_line = f"{match.group(1)} {', '.join(sorted(merged))} {match.group(3)}"
+                content = lucide_import_re.sub(new_line, content, count=1)
+            else:
+                # No lucide-react import yet — insert one after the last import line
+                lines = content.split("\n")
+                last_import = 0
+                for i, line in enumerate(lines):
+                    if line.strip().startswith("import "):
+                        last_import = i
+                new_import = f"import {{ {', '.join(sorted(used_icons))} }} from 'lucide-react';"
+                lines.insert(last_import + 1, new_import)
+                content = "\n".join(lines)
+                logger.info(f"{rel_path}: added lucide-react import for {used_icons}")
 
-        match = lucide_import_re.search(content)
-        if match:
-            existing = {s.strip() for s in match.group(2).split(",") if s.strip()}
-            merged = existing | used
-            new_line = f"{match.group(1)} {', '.join(sorted(merged))} {match.group(3)}"
-            content = lucide_import_re.sub(new_line, content, count=1)
-            added = merged - existing
-            if added:
-                logger.info(f"{rel_path}: injected Lucide icons {added}")
-        else:
-            # No lucide-react import yet — insert one after the last import line
+        # 2. Fix Button Component
+        if "<Button" in content and not ui_button_import_re.search(content) and "const Button" not in content:
+            # If Claude used <Button> but it's not imported or defined, 
+            # we check if 'Button' was in the original locked imports.
+            # If it wasn't, Claude hallucinated it. We'll try to add a standard shadcn import
+            # or replace it with <button> if we want to be safe. 
+            # For now, let's try adding the import as it's the most likely intent.
             lines = content.split("\n")
             last_import = 0
             for i, line in enumerate(lines):
                 if line.strip().startswith("import "):
                     last_import = i
-            new_import = f"import {{ {', '.join(sorted(used))} }} from 'lucide-react';"
+            new_import = "import { Button } from \"@/components/ui/button\";"
             lines.insert(last_import + 1, new_import)
             content = "\n".join(lines)
-            logger.info(f"{rel_path}: added lucide-react import for {used}")
+            logger.info(f"{rel_path}: injected missing Button import")
 
         fixed[rel_path] = content
 
@@ -798,60 +826,55 @@ FRONTEND_EXCELLENCE_GUIDE = """
 ━━━ UNIVERSAL MODERN FRONTEND STANDARDS (apply to EVERY component) ━━━
 
 LAYOUT & SPACING
-• Sections must breathe — use py-20 to py-32, never py-8 or less
+• Sections must breathe — use py-20 to py-40, never py-8 or less
 • Content width: max-w-7xl mx-auto with px-6 sm:px-8 side padding
 • All grids: start grid-cols-1, expand md:grid-cols-2, lg:grid-cols-3 (mobile-first)
 • EXPERIMENT with asymmetrical layouts, overlapping elements, and varied section widths.
+• Use 'Full-bleed' sections (bg-primary or bg-secondary) to break up the white background.
 
 TYPOGRAPHY HIERARCHY
-• One display size per section: text-4xl–text-7xl font-black for hero/section headings
-• Subheadings: text-xl–text-2xl font-bold
-• Body: text-base–text-lg font-medium leading-relaxed
-• Labels/captions: text-sm font-medium text-muted-foreground
+• One display size per section: text-4xl–text-8xl font-black for hero/section headings
+• Subheadings: text-xl–text-3xl font-bold tracking-tight
+• Body: text-base–text-xl font-medium leading-relaxed
+• Labels/captions: text-sm font-bold uppercase tracking-widest text-primary
 
 CARDS & SURFACES
-• Cards: rounded-2xl or rounded-3xl, shadow-sm hover:shadow-xl transition-all duration-300
-• Subtle borders: border border-border/50
-• Card hover: hover:-translate-y-1 hover:shadow-xl transition-all duration-300
+• Cards: rounded-3xl or rounded-[2rem], shadow-sm hover:shadow-2xl transition-all duration-500
+• Subtle borders: border border-border/40
+• Card hover: hover:-translate-y-2 hover:shadow-2xl transition-all duration-500
 
 BUTTONS & CTAs
-• Primary CTA: large, rounded-full or rounded-xl, py-4 px-8, shadow-lg hover:shadow-xl
-• Secondary: ghost or outline variant, same size
-• ALWAYS include hover:scale-105 or hover:brightness-110 on buttons
-• Hero must have at least 2 CTA buttons above the fold
+• Primary CTA: large, rounded-full or rounded-2xl, py-5 px-10, shadow-xl hover:shadow-2xl
+• Secondary: ghost or outline variant, same size, rounded-full
+• ALWAYS include hover:scale-105 and active:scale-95 on buttons
+• Hero must have at least 2 CTA buttons above the fold — make one 'Glow' using shadow-primary/50
 
 IMAGES
-• Always use object-cover with explicit aspect ratios (aspect-video, aspect-square, etc.)
-• Hero background: use background-image with bg-center bg-cover bg-no-repeat
-• Add a gradient overlay on background images for text readability
+• Always use object-cover with varied aspect ratios (aspect-[4/5], aspect-square, aspect-video)
+• Hero background: use background-image with bg-center bg-cover bg-no-repeat and a parallax effect if possible
+• Add a deep gradient overlay (from-black/60 to-transparent) on background images for text readability
 
 VISUAL RHYTHM & UNIQUENESS
 • Every site must have a UNIQUE visual rhythm. Avoid the generic 'light-dark-light' pattern.
+• NAVBAR: Completely redesign the navbar for every site. Sometimes centered, sometimes split, sometimes with a top-bar.
+• HERO: This is the most important section. Change its layout drastically (Split, Centered, Stacked, Image-Background, Color-Background).
 • Use diverse background treatments: solid brand colors, subtle patterns, gradients, or high-quality imagery.
 • Reorder sections in Index.tsx to find the most compelling narrative flow for the specific industry.
-• The hero MUST use a background image or strong gradient — never plain white/light.
 
 MICRO-INTERACTIONS
-• All interactive elements: transition-all duration-200
-• Icon containers: hover:scale-110 or hover:rotate-12 with transition
-• Links: hover:underline or hover:text-primary with transition
+• All interactive elements: transition-all duration-300 ease-out
+• Icon containers: hover:scale-110 hover:bg-primary/10 with transition
+• Links: hover:text-primary transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary hover:after:w-full after:transition-all
 
 STATS & SOCIAL PROOF
-• Stats numbers: text-4xl–text-6xl font-black — make them BIG and bold
-• Stars: show ★★★★★ in yellow/amber, never just text
-• Testimonial cards: large opening quotation mark, author name + location
-
-FOOTER
-• Always dark background (bg-gray-900 or bg-slate-900)
-• 3–4 column grid on desktop, stacked on mobile
-• Company name + description in first column
-• Links in subsequent columns
-• Copyright bar at bottom with thin border separator
+• Stats numbers: text-5xl–text-8xl font-black — make them massive and colorful
+• Stars: show ★★★★★ in yellow/amber, use a nice container for them
+• Testimonial cards: large opening quotation mark, author name + location, maybe a small avatar placeholder
 """
 
 
 CONTENT_GUIDE = """
-NAVBAR:         company name (2-line logo), phone number
+NAVBAR:         company name (2-line logo), phone number, professional navigation links
 
 HEROSECTION:    badge text, h1 headline, star rating/review count, description paragraph,
                 phone number in CTA, trust badges, floating stat card values & labels,
@@ -927,6 +950,19 @@ def edit_files_with_claude(
 
     # Pick a random layout strategy for this generation
     layout_strategy = random.choice(LAYOUT_STRATEGIES)
+    
+    # Add a random 'Style Twist' to ensure further uniqueness
+    style_twists = [
+        "Use large, overlapping text that breaks section boundaries.",
+        "Incorporate subtle geometric background patterns using CSS gradients.",
+        "Use asymmetric grid layouts for all image/text pairings.",
+        "Apply a glassmorphism effect to at least two key sections.",
+        "Use bold, vertical typography for section labels.",
+        "Experiment with 'Brutalist' thick borders and hard shadows.",
+        "Use extremely large, airy whitespace (py-48) between major sections.",
+        "Incorporate 'organic' or 'blob' shapes for image masks or backgrounds.",
+    ]
+    style_twist = random.choice(style_twists)
 
     system_prompt = f"""You are an expert React/TypeScript developer and UI/UX designer. Your task is to COMPLETELY REDESIGN this plumber website template into a visually unique, professional website for a different business — it must look NOTHING like the original template.
 
@@ -936,6 +972,9 @@ Each site you generate must be unique in its layout, section ordering, and creat
 
 ━━━ LAYOUT STRATEGY: {layout_strategy} ━━━
 You MUST apply this layout strategy when redesigning the Index.tsx file. Reorder the components to match this narrative flow.
+
+━━━ STYLE TWIST: {style_twist} ━━━
+You SHOULD try to incorporate this creative twist into your redesign to ensure the site feels unique.
 
 ━━━ BRAND COLORS & READABILITY ━━━
 Use these brand colors for your design (though they are also mapped to CSS variables):
@@ -964,6 +1003,7 @@ IMPORTANT: Ensure EXCELLENT readability. If the user's selected text color has l
 4. Section backgrounds — make sections look different from the original. Use dark sections, gradients, or colored backgrounds where the personality calls for it.
 5. Typography scale — adjust text sizes, weights, and letter-spacing to match the personality.
 6. Layout structure within components — you MUST reorder elements, change grid columns, add/remove divs to restructure the visual layout significantly.
+7. NAVBAR & HERO: These MUST be drastically different for every site. Do not use the same header style twice.
 
 ━━━ PROVIDED IMAGES (use these to replace ALL existing images) ━━━
 {image_list_str}
@@ -988,6 +1028,7 @@ Distribute images across components — hero gets Image 1, team/about gets Image
 8. Return valid TSX — no syntax errors, no unclosed tags.
 9. Icons: you may ONLY use icon names that already appear in the original file's JSX. Do NOT introduce new icon component names — if an icon isn't in the original file, don't use it.
 10. FAVICON: Explicitly check index.html and remove any link tags pointing to Lovable or external AI favicon URLs.
+11. BUTTONS: Do NOT use a `<Button />` component unless it is already imported in the original file. Use standard `<button>` tags with Tailwind classes for all buttons.
 
 ━━━ OUTPUT FORMAT ━━━
 Return a SINGLE raw JSON object. Keys = file paths. Values = complete file content.
@@ -1069,7 +1110,7 @@ Return ALL files as a single raw JSON object. Do NOT include src/index.css."""
 
         restored = restore_imports(filtered, locked_imports)
 
-        restored = fix_missing_lucide_imports(restored)
+        restored = fix_missing_imports(restored)
 
         return restored
 
