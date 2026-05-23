@@ -836,14 +836,21 @@ def generate_site_files_with_claude(
             f"Calling Claude for from-scratch site generation "
             f"(personality={design_personality['name']}, layout={layout_strategy[:40]}…)"
         )
-        response = client.messages.create(
+        # Streaming required: with max_tokens this high the SDK refuses the
+        # non-streaming endpoint (>10 min budget). We still collect the full
+        # text and use it the same way.
+        with client.messages.stream(
             model="claude-sonnet-4-6",
             max_tokens=32000,
             system=system_prompt,
             messages=[{"role": "user", "content": user_prompt}],
-        )
-        text = response.content[0].text.strip()
-        logger.info(f"Claude responded. Stop reason: {response.stop_reason}")
+        ) as stream:
+            text_parts = []
+            for delta in stream.text_stream:
+                text_parts.append(delta)
+            final = stream.get_final_message()
+        text = "".join(text_parts).strip()
+        logger.info(f"Claude responded. Stop reason: {final.stop_reason}")
 
         if text.startswith("```json"):
             text = text[7:]
