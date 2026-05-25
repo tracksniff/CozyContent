@@ -71,9 +71,9 @@ const industryImages = {
 
 const industryDemos = {
   Plumbing: [
-    { name: "EcoFlow Plumbing", url: "https://demo-plumber-1.vercel.app/", image: p1 },
-    { name: "Rapid Response Pipes", url: "https://demo-plumber-2.vercel.app/", image: p2 },
-    { name: "Blue Diamond Heating", url: "https://demo-plumber-3.vercel.app/", image: p3 },
+    { name: "EcoFlow Plumbing", url: "https://ecoflow-plumbing.vercel.app/", image: p1 },
+    { name: "Rapid Response Pipes", url: "https://rapid-response-pipes.vercel.app/", image: p2 },
+    { name: "Blue Diamond Heating", url: "https://blue-diamond-heating.vercel.app/", image: p3 },
   ],
   Electrical: [
     { name: "VoltSafe Solutions", url: "https://voltsafe-solutions.vercel.app/", image: e1 },
