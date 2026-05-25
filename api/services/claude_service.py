@@ -133,7 +133,7 @@ DESIGN_PERSONALITIES = {
             "Theme: Industrial Power & High Contrast.\n"
             "- Visuals: bold, raw, high-energy. Thick borders (border-4), hard edges (rounded-none or rounded-md), high-contrast pairings.\n"
             "- Hero: split-screen or dark-focused layouts. Heavy typography (font-black tracking-tighter).\n"
-            "- Navbar: solid bold background or thick bottom border. Vertical sidebar nav is on the table.\n"
+            "- Navbar: bold `bg-header text-header-foreground` solid bar OR `bg-background text-foreground` with a thick `border-b-4 border-primary` underline. Optionally a left vertical sidebar nav.\n"
             "- Rhythm: strong block-color sections, neo-brutalist hard shadows instead of soft.\n"
             "- Accents: accent color for glowing highlights and status indicators.\n"
         ),
@@ -144,7 +144,7 @@ DESIGN_PERSONALITIES = {
             "Theme: Dependable cleanliness & technical precision.\n"
             "- Visuals: clean, structured, reassuring. Medium rounded corners (rounded-xl), subtle depth shadows.\n"
             "- Hero: content-first with visible trust badges and a strong friendly CTA. Asymmetric grid welcome.\n"
-            "- Navbar: clean centered nav with a prominent phone button. Soft shadow on scroll.\n"
+            "- Navbar: `bg-background/90 backdrop-blur text-foreground` with a soft shadow on scroll. Wordmark uses text-heading, links use text-foreground/80, and the phone CTA uses bg-primary text-primary-foreground.\n"
             "- Rhythm: alternating sections, clear step-by-step processes, feature lists.\n"
             "- Accents: primary color for icons and structural highlights.\n"
         ),
@@ -155,7 +155,7 @@ DESIGN_PERSONALITIES = {
             "Theme: Luxurious serenity & soft whitespace.\n"
             "- Visuals: airy, sophisticated, high-end. Generous padding (py-32+), rounded-full buttons, delicate thin dividers.\n"
             "- Hero: centered with a beautiful background image and soft layered typography. Floating hero card optional.\n"
-            "- Navbar: minimalist transparent that blurs on scroll. Spaced-out menu items.\n"
+            "- Navbar: minimalist `bg-background/70 backdrop-blur text-foreground` that floats. Spaced-out tracking-widest menu items. Wordmark uses text-heading.\n"
             "- Rhythm: flowing and spacious. Use subtle background tints (bg-primary/5) over solid dark blocks.\n"
             "- Typography: tracking-widest, light font weights, premium boutique feel.\n"
         ),
@@ -166,7 +166,7 @@ DESIGN_PERSONALITIES = {
             "Theme: Artisanal texture & rich warmth.\n"
             "- Visuals: appetising, textured, welcoming. Warm gradients, rounded-3xl corners, organic shapes.\n"
             "- Hero: full-bleed imagery, high-impact centered headings, clear reservation / order CTA. Overlapping text welcome.\n"
-            "- Navbar: warm-toned background, elegant logo placement. Mega-menu for categories is fine.\n"
+            "- Navbar: `bg-header text-header-foreground` warm solid bar with elegant logo placement, or `bg-background/85 backdrop-blur text-foreground` for a softer look. Mega-menu for categories is fine — keep all nav text on the matching foreground token.\n"
             "- Rhythm: menu-like structure, layered elements, overlapping images, artisanal feel.\n"
             "- Accents: secondary color for deep rich backgrounds, accent color for highlights.\n"
         ),
@@ -177,7 +177,7 @@ DESIGN_PERSONALITIES = {
             "Theme: Sophisticated authority & classic excellence.\n"
             "- Visuals: stately, serious, high-end. Serif headlines, thin dividers, dark dominant palette.\n"
             "- Hero: large bold headlines on a dark secondary background. Accent color used sparingly for prestige highlights. Classical 'pillar' layout fits.\n"
-            "- Navbar: conservative and professional. Solid top-bar for contact info, clean main nav below.\n"
+            "- Navbar: conservative two-tier — a slim `bg-header text-header-foreground` top contact bar, then a `bg-background text-foreground` main nav with thin border-b-border below. Keep foreground classes on every element of each bar.\n"
             "- Rhythm: linear, credentials-forward, wide layouts, large text blocks.\n"
             "- Details: sharp corners, gold/accent borders (border-l-2).\n"
         ),
@@ -188,7 +188,7 @@ DESIGN_PERSONALITIES = {
             "Theme: Digital innovation & glassmorphism.\n"
             "- Visuals: sleek, vibrant, futuristic. Glassmorphism (bg-white/10 backdrop-blur), neon glows, dark backgrounds.\n"
             "- Hero: gradient headlines (text-transparent bg-clip-text), large modern type, interactive-feeling buttons. 3D-card effect welcome.\n"
-            "- Navbar: glassmorphic bar that floats. Subtle animated hovers.\n"
+            "- Navbar: glassmorphic floating bar — `bg-background/60 backdrop-blur-xl text-foreground` with a subtle border-border/30. Wordmark uses text-heading. Subtle animated hovers.\n"
             "- Rhythm: non-standard grids, asymmetric layouts, varied section heights. Grid patterns / tech motifs.\n"
             "- Details: rounded-2xl throughout, smooth hover transitions.\n"
         ),
@@ -199,7 +199,7 @@ DESIGN_PERSONALITIES = {
             "Theme: Bright clinical & friendly professionalism.\n"
             "- Visuals: pristine, safe, welcoming. Lots of white space, soft primary blue/green tones, rounded-full pill shapes.\n"
             "- Hero: professional + friendly with team photography and very clear 'Book Now' CTAs above the fold. Split-layout with trust-card overlay works well.\n"
-            "- Navbar: high accessibility, prominent emergency-contact button.\n"
+            "- Navbar: high-accessibility `bg-background text-foreground` with a shadow-sm on scroll. Emergency-contact button uses bg-primary text-primary-foreground and is visually prominent.\n"
             "- Rhythm: simple panels for services, expertise badges, easy navigation.\n"
             "- Details: soft shadows, light-tinted borders, avoid harsh contrast.\n"
         ),
@@ -210,7 +210,7 @@ DESIGN_PERSONALITIES = {
             "Theme: Heavy-duty structural & bold scale.\n"
             "- Visuals: strong, large-scale, impactful. Massive typography (text-7xl+), bold block colors, industrial iconography.\n"
             "- Hero: full-width construction imagery, heavy headlines, high-visibility CTAs. Brutalist grid fits.\n"
-            "- Navbar: strong and functional. Thick primary background, bold uppercase nav items.\n"
+            "- Navbar: strong and functional — `bg-primary text-primary-foreground` thick bar with bold uppercase nav items. Every link inside the nav uses text-primary-foreground (or /80 opacity variant).\n"
             "- Rhythm: alternating primary/secondary blocks, large-format imagery as dividers.\n"
             "- Details: hard corners, prominent bold borders.\n"
         ),
@@ -221,7 +221,7 @@ DESIGN_PERSONALITIES = {
             "Theme: Sparkling freshness & organised space.\n"
             "- Visuals: bright, high-contrast, organised. Plenty of whitespace, fresh primary/accent highlights.\n"
             "- Hero: bright airy with a clean before/after or high-quality service image. Simple headlines, wave-style dividers welcome.\n"
-            "- Navbar: fresh and light. Thin border, clear 'Request Quote' button.\n"
+            "- Navbar: fresh and light — `bg-background text-foreground` with a thin border-b-border. 'Request Quote' button uses bg-primary text-primary-foreground.\n"
             "- Rhythm: orderly grids, checklist features, light sections with clean horizontal dividers.\n"
             "- Details: rounded-xl corners, thin precise borders.\n"
         ),
@@ -232,7 +232,7 @@ DESIGN_PERSONALITIES = {
             "Theme: Clean modernism & versatile layout.\n"
             "- Visuals: balanced, professional, visually engaging. Mix rounded corners and clean lines.\n"
             "- Hero: dynamic layout (split or centered) with strong brand integration, varied heights.\n"
-            "- Navbar: versatile clean, adapts to brand colors, subtle transition on scroll.\n"
+            "- Navbar: versatile clean — `bg-background/90 backdrop-blur text-foreground` with a subtle border-b on scroll. CTA button uses bg-primary text-primary-foreground.\n"
             "- Rhythm: engaging flow, varied section types, clear hierarchy.\n"
             "- Details: modern shadows, smooth transitions.\n"
         ),
@@ -302,11 +302,32 @@ def hex_to_hsl(hex_color: str) -> str:
     return f"{round(h * 360)} {round(s * 100)}% {round(l * 100)}%"
 
 
-def is_dark(hex_color: str) -> bool:
+def _srgb_to_linear(c: float) -> float:
+    return c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
+
+
+def relative_luminance(hex_color: str) -> float:
+    """WCAG 2.x relative luminance (0..1)."""
     hex_color = hex_color.lstrip("#")
     r, g, b = (int(hex_color[i : i + 2], 16) / 255 for i in (0, 2, 4))
-    _, l, _ = colorsys.rgb_to_hls(r, g, b)
-    return l < 0.5
+    r, g, b = _srgb_to_linear(r), _srgb_to_linear(g), _srgb_to_linear(b)
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b
+
+
+def contrast_ratio(hex_a: str, hex_b: str) -> float:
+    la, lb = relative_luminance(hex_a), relative_luminance(hex_b)
+    light, dark = (la, lb) if la > lb else (lb, la)
+    return (light + 0.05) / (dark + 0.05)
+
+
+def is_dark(hex_color: str) -> bool:
+    """True when white text contrasts better than black against this color."""
+    return contrast_ratio(hex_color, "#FFFFFF") >= contrast_ratio(hex_color, "#000000")
+
+
+def best_foreground_hsl(hex_color: str) -> str:
+    """Pick white or near-black foreground for max contrast against hex_color."""
+    return "0 0% 100%" if is_dark(hex_color) else "0 0% 10%"
 
 
 def build_design_tokens(branding_colors: dict) -> dict:
@@ -324,12 +345,19 @@ def build_design_tokens(branding_colors: dict) -> dict:
     text_hsl = hex_to_hsl(text_hex)
     text_heading_hsl = hex_to_hsl(text_heading_hex)
 
-    def get_fg(hex_c):
-        return "0 0% 100%" if is_dark(hex_c) else "0 0% 10%"
+    primary_fg = best_foreground_hsl(primary_hex)
+    secondary_fg = best_foreground_hsl(secondary_hex)
+    accent_fg = best_foreground_hsl(accent_hex)
 
-    primary_fg = get_fg(primary_hex)
-    secondary_fg = get_fg(secondary_hex)
-    accent_fg = get_fg(accent_hex)
+    # Navbar gets its own pair: secondary as the surface, plus an explicit
+    # foreground guaranteed to clear WCAG AA against it. If the user's body-text
+    # color happens to be readable on secondary too, we keep using it so the
+    # navbar still feels brand-consistent; otherwise we fall back to the
+    # computed white/black foreground.
+    if contrast_ratio(text_hex, secondary_hex) >= 4.5:
+        header_fg_hsl = text_hsl
+    else:
+        header_fg_hsl = secondary_fg
 
     def get_tint(hsl_str, lum=97):
         parts = hsl_str.split()
@@ -365,6 +393,8 @@ def build_design_tokens(branding_colors: dict) -> dict:
         "--hero-overlay": secondary_hsl,
         "--warm-bg": background_hsl,
         "--heading": text_heading_hsl,
+        "--header": secondary_hsl,
+        "--header-foreground": header_fg_hsl,
     }
 
 
@@ -734,12 +764,29 @@ Use the Tailwind tokens — DO NOT hardcode hex values. The CSS variables are po
 - bg-primary, text-primary, border-primary, text-primary-foreground
 - bg-secondary, text-secondary, text-secondary-foreground
 - bg-accent, text-accent, text-accent-foreground
+- bg-header, text-header-foreground (navbar surface + navbar text — guaranteed AA contrast)
 - bg-section-alt, bg-warm-bg, bg-muted
 - border-border, ring-ring
 
 Reference hex (for understanding contrast — DO NOT use directly in className):
   Primary {primary_hex} · Secondary {secondary_hex} · Accent {accent_hex}
   Background {background_hex} · Body text {text_hex} · Heading text {heading_hex}
+
+━━━ CONTRAST RULES (NON-NEGOTIABLE) ━━━
+Every bg-X token has a matching text-X-foreground token. When you set a colored background, you MUST pair it with the matching foreground class so text stays readable. Never set a colored background and leave the text to inherit the page foreground — that is how dark-on-dark bugs happen.
+
+REQUIRED pairings (memorise these):
+- bg-primary    → text-primary-foreground    on every element inside it
+- bg-secondary  → text-secondary-foreground
+- bg-accent     → text-accent-foreground
+- bg-header     → text-header-foreground
+- bg-background → text-foreground (or text-heading for headings)
+
+For the NAVBAR / header specifically, pick ONE of these three patterns and stick to it for all nav text, links, and the logo wordmark inside the nav:
+  (a) bg-background/80 backdrop-blur with text-foreground links and a text-heading wordmark — a light, floating nav.
+  (b) bg-header text-header-foreground — a branded solid nav. Every link, button label, and the wordmark inside the nav must use text-header-foreground (or a /80 opacity variant of it). Borders inside the nav use border-header-foreground/20.
+  (c) bg-primary text-primary-foreground — a bold primary-colored nav, same foreground rule.
+NEVER mix: don't put text-foreground inside bg-header, don't put text-secondary-foreground inside bg-primary, etc. If you need a muted nav link, use the matching foreground class at reduced opacity (e.g. text-header-foreground/70), not a different color token.
 
 Fonts already loaded: display = "{display_font}", body = "{body_font}". Use `font-display` for headlines and the default sans for body.
 

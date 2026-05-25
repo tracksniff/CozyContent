@@ -55,6 +55,11 @@ export default {
         "warm-bg": "hsl(var(--warm-bg))",
         "hero-overlay": "hsl(var(--hero-overlay))",
         "cta-glow": "hsl(var(--cta-glow))",
+        heading: "hsl(var(--heading))",
+        header: {
+          DEFAULT: "hsl(var(--header))",
+          foreground: "hsl(var(--header-foreground))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
