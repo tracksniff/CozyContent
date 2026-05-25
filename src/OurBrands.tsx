@@ -17,7 +17,6 @@ const OurBrands = () => {
       ],
       footer: 'A utility-focused product designed for scale and automation.',
       icon: <Music className="w-8 h-8 text-primary" />,
-      imageUrl: 'https://images.pexels.com/photos/144428/pexels-photo-144428.jpeg',
       color: 'bg-primary/10',
       link: 'https://tracksniff.com/'
     },
@@ -32,36 +31,40 @@ const OurBrands = () => {
       ],
       footer: 'A content platform built for clarity and consistency.',
       icon: <Trophy className="w-8 h-8 text-secondary" />,
-      imageUrl: 'https://images.pexels.com/photos/46798/pexels-photo-46798.jpeg',
       color: 'bg-secondary/10',
       link: 'https://soccerwhizz.com/'
     }
   ];
 
-  const BrowserPreview = ({ url, title }: { url: string, title: string }) => (
-    <div className="relative group w-full">
-      {/* Browser Bar */}
-      <div className="bg-surface-container-highest rounded-t-xl border border-outline-variant/30 px-3 py-2 flex items-center gap-2">
-        <div className="flex gap-1">
-          <div className="w-2 h-2 rounded-full bg-red-400/50" />
-          <div className="w-2 h-2 rounded-full bg-amber-400/50" />
-          <div className="w-2 h-2 rounded-full bg-emerald-400/50" />
+  const BrowserPreview = ({ siteUrl, title }: { siteUrl: string, title: string }) => {
+    const screenshotUrl = `https://api.microlink.io/?url=${encodeURIComponent(siteUrl)}&screenshot=true&meta=false&embed=screenshot.url&viewport.width=1280&viewport.height=800`;
+    const hostname = new URL(siteUrl).hostname.replace(/^www\./, '');
+    return (
+      <div className="relative group w-full">
+        {/* Browser Bar */}
+        <div className="bg-surface-container-highest rounded-t-xl border border-outline-variant/30 px-3 py-2 flex items-center gap-2">
+          <div className="flex gap-1">
+            <div className="w-2 h-2 rounded-full bg-red-400/50" />
+            <div className="w-2 h-2 rounded-full bg-amber-400/50" />
+            <div className="w-2 h-2 rounded-full bg-emerald-400/50" />
+          </div>
+          <div className="mx-auto bg-surface/50 rounded-md px-2 py-0.5 text-[8px] text-on-surface-variant font-medium border border-outline-variant/10 w-32 text-center truncate">
+            {hostname}
+          </div>
         </div>
-        <div className="mx-auto bg-surface/50 rounded-md px-2 py-0.5 text-[8px] text-on-surface-variant font-medium border border-outline-variant/10 w-32 text-center truncate">
-          {title.toLowerCase()}.com
+        {/* Screenshot Container */}
+        <div className="relative aspect-[16/10] overflow-hidden rounded-b-xl border-x border-b border-outline-variant/30 shadow-2xl transition-all duration-700 group-hover:shadow-primary/5 bg-surface-container">
+          <img
+            src={screenshotUrl}
+            alt={`${title} live preview`}
+            loading="lazy"
+            className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
         </div>
       </div>
-      {/* Image Container */}
-      <div className="relative aspect-[16/10] overflow-hidden rounded-b-xl border-x border-b border-outline-variant/30 shadow-2xl transition-all duration-700 group-hover:shadow-primary/5">
-        <img 
-          src={url} 
-          alt={title} 
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-      </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="bg-surface text-on-surface font-body selection:bg-primary/20 selection:text-primary min-h-screen transition-colors duration-300">
@@ -134,7 +137,7 @@ const OurBrands = () => {
 
                   {/* Brand Preview */}
                   <div className="lg:w-7/12 w-full">
-                    <BrowserPreview url={brand.imageUrl} title={brand.name} />
+                    <BrowserPreview siteUrl={brand.link} title={brand.name} />
                   </div>
                 </div>
               </motion.div>
