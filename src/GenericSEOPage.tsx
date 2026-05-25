@@ -390,11 +390,15 @@ const GenericSEOPage: React.FC<GenericSEOPageProps> = ({ data }) => {
                   rel="noopener noreferrer"
                   className="group relative flex flex-col bg-surface rounded-[2.5rem] border border-outline-variant/30 overflow-hidden hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500"
                 >
-                  <div className="aspect-[4/3] overflow-hidden relative">
-                    <img
-                      src={demo.image}
-                      alt={demo.name}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  <div className="aspect-[4/3] overflow-hidden relative bg-white">
+                    <iframe
+                      src={demo.url}
+                      title={demo.name}
+                      loading="lazy"
+                      scrolling="no"
+                      sandbox="allow-scripts allow-same-origin"
+                      className="absolute top-0 left-0 origin-top-left pointer-events-none border-0 block"
+                      style={{ width: '1280px', height: '960px', transform: 'scale(0.3125)' }}
                     />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                       <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center text-black transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 shadow-xl">
