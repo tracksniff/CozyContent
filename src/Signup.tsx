@@ -103,6 +103,63 @@ const getContrastRatio = (hex1: string, hex2: string) => {
 
 const isValidHex = (h: string) => /^[0-9A-Fa-f]{6}$/.test(h);
 
+// Picks white or near-black for max contrast against `bg`. Mirrors the
+// `best_foreground_hsl` helper on the backend — what we render in the preview
+// is what Claude's prompt is told to render for bg-header / bg-secondary.
+const bestForegroundHex = (bg: string): string =>
+  getContrastRatio(bg, "#FFFFFF") >= getContrastRatio(bg, "#0F172A") ? "#FFFFFF" : "#0F172A";
+
+const hexToHsl = (hex: string): [number, number, number] => {
+  const r = parseInt(hex.slice(1, 3), 16) / 255;
+  const g = parseInt(hex.slice(3, 5), 16) / 255;
+  const b = parseInt(hex.slice(5, 7), 16) / 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+  let h = 0;
+  let s = 0;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+      case g: h = (b - r) / d + 2; break;
+      default: h = (r - g) / d + 4;
+    }
+    h *= 60;
+  }
+  return [h, s * 100, l * 100];
+};
+
+const hslToHex = (h: number, s: number, l: number): string => {
+  const sn = s / 100;
+  const ln = l / 100;
+  const k = (n: number) => (n + h / 30) % 12;
+  const a = sn * Math.min(ln, 1 - ln);
+  const f = (n: number) => ln - a * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1));
+  const toHex = (v: number) => Math.round(v * 255).toString(16).padStart(2, "0").toUpperCase();
+  return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`;
+};
+
+// Build a full 6-role palette from one brand seed color. Secondary is a near-
+// neutral dark with a hint of the seed's hue (great for navbars / footers).
+// Accent is a complementary, bright pop. Background/text are safe neutrals.
+const generateSmartPalette = (primary: string) => {
+  if (!/^#[0-9A-Fa-f]{6}$/.test(primary)) return null;
+  const [h, s] = hexToHsl(primary);
+  const secondary = hslToHex(h, Math.min(s, 22), 12);
+  const accentH = (h + 150) % 360;
+  const accent = hslToHex(accentH, Math.max(s, 65), 55);
+  return {
+    primary,
+    secondary,
+    accent,
+    background: "#FFFFFF",
+    text: "#374151",
+    textHeading: "#0F172A",
+  };
+};
+
 const inputCls =
   "w-full px-5 py-4 bg-surface border border-outline-variant rounded-2xl focus:border-primary outline-none transition-all text-on-surface font-medium";
 
@@ -311,6 +368,14 @@ const Signup: React.FC = () => {
       const pri = brandColors.primary;
       handleColorSwatch(key, isLight(pri) ? "#1E293B" : "#FBBF24");
     }
+  };
+
+  const applySmartPalette = () => {
+    const palette = generateSmartPalette(brandColors.primary);
+    if (!palette) return;
+    (Object.entries(palette) as [BrandColorKey, string][]).forEach(([k, v]) =>
+      handleColorSwatch(k, v),
+    );
   };
 
   const extractColorsFromLogo = () => {
@@ -1161,6 +1226,24 @@ const Signup: React.FC = () => {
                           </span>
                         </button>
                       )}
+
+                      {/* Smart palette from primary */}
+                      <button
+                        type="button"
+                        onClick={applySmartPalette}
+                        title="Build a full WCAG-safe palette from your primary color"
+                        className="group flex flex-col items-center gap-2"
+                      >
+                        <div
+                          className="w-[52px] h-7 rounded-full border-2 border-dashed flex items-center justify-center transition-all"
+                          style={{ borderColor: brandColors.primary }}
+                        >
+                          <Wand2 size={14} style={{ color: brandColors.primary }} />
+                        </div>
+                        <span className="text-[10px] font-bold text-on-surface-variant group-hover:text-primary transition-colors whitespace-nowrap">
+                          Smart palette
+                        </span>
+                      </button>
                     </div>
                   </div>
 
@@ -1290,10 +1373,25 @@ const Signup: React.FC = () => {
 
                   {/* ── Preview ─────────────────────────────────────── */}
                   <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">
-                        Live site preview
-                      </p>
+                    <div className="flex items-center justify-between mb-3 gap-3 flex-wrap">
+                      <div className="flex items-center gap-3">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">
+                          Live site preview
+                        </p>
+                        {(() => {
+                          const ratio = getContrastRatio(brandColors.secondary, bestForegroundHex(brandColors.secondary));
+                          const aa = ratio >= 4.5;
+                          return (
+                            <span
+                              className={`text-[9px] font-bold flex items-center gap-1 px-2 py-0.5 rounded-full ${aa ? "text-emerald-700 bg-emerald-50" : "text-amber-700 bg-amber-50"}`}
+                              title="Contrast of the navbar's secondary color against its auto-picked foreground"
+                            >
+                              {aa ? <CheckCircle2 size={10} /> : <AlertTriangle size={10} />}
+                              Navbar {ratio.toFixed(1)}:1
+                            </span>
+                          );
+                        })()}
+                      </div>
                       <div className="flex bg-surface-container-low p-1 rounded-lg border border-outline-variant/30">
                         {(["desktop", "mobile"] as const).map((m) => (
                           <button
@@ -1329,13 +1427,22 @@ const Signup: React.FC = () => {
 
                       {/* Site preview container */}
                       <div className="overflow-y-auto max-h-[320px]" aria-hidden>
-                        <div className="px-4 py-2.5 flex items-center justify-between" style={{ backgroundColor: brandColors.secondary }}>
-                          <div className="flex items-center gap-2">
-                            {logoPreview ? <img src={logoPreview} className="w-5 h-5 object-contain" /> : <div className="w-4 h-4 rounded bg-white/30" />}
-                            <div className="h-1.5 w-14 rounded-full bg-white/60" />
-                          </div>
-                          <div className="h-6 w-16 rounded-full text-[8px] flex items-center justify-center font-black" style={{ backgroundColor: brandColors.accent, color: isLight(brandColors.accent) ? "#111" : "#fff" }}>Call now</div>
-                        </div>
+                        {(() => {
+                          const navFg = bestForegroundHex(brandColors.secondary);
+                          const navFgAlpha = navFg === "#FFFFFF" ? "rgba(255,255,255,0.85)" : "rgba(15,23,42,0.85)";
+                          const navFgFaint = navFg === "#FFFFFF" ? "rgba(255,255,255,0.45)" : "rgba(15,23,42,0.4)";
+                          return (
+                            <div className="px-4 py-2.5 flex items-center justify-between" style={{ backgroundColor: brandColors.secondary }}>
+                              <div className="flex items-center gap-2">
+                                {logoPreview ? <img src={logoPreview} className="w-5 h-5 object-contain" /> : <div className="w-4 h-4 rounded" style={{ backgroundColor: navFgFaint }} />}
+                                <div className="h-1.5 w-14 rounded-full" style={{ backgroundColor: navFgAlpha }} />
+                                <div className="h-1.5 w-8 rounded-full" style={{ backgroundColor: navFgFaint }} />
+                                <div className="h-1.5 w-8 rounded-full" style={{ backgroundColor: navFgFaint }} />
+                              </div>
+                              <div className="h-6 w-16 rounded-full text-[8px] flex items-center justify-center font-black" style={{ backgroundColor: brandColors.accent, color: bestForegroundHex(brandColors.accent) }}>Call now</div>
+                            </div>
+                          );
+                        })()}
                         <div className="px-5 py-10 flex flex-col gap-2.5 items-center text-center" style={{ background: `linear-gradient(135deg, ${brandColors.primary} 0%, ${brandColors.secondary} 100%)` }}>
                           <div className="h-1.5 w-20 rounded-full bg-white/20" />
                           <div className="h-3 w-3/4 rounded bg-white/80" />
@@ -1354,10 +1461,17 @@ const Signup: React.FC = () => {
                             ))}
                           </div>
                         </div>
-                        <div className="px-4 py-3 flex items-center justify-between" style={{ backgroundColor: brandColors.secondary }}>
-                          <div className="h-1.5 w-20 rounded-full bg-white/30" />
-                          <div className="h-1.5 w-12 rounded-full bg-white/20" />
-                        </div>
+                        {(() => {
+                          const footFg = bestForegroundHex(brandColors.secondary);
+                          const dim = footFg === "#FFFFFF" ? "rgba(255,255,255,0.3)" : "rgba(15,23,42,0.3)";
+                          const dimmer = footFg === "#FFFFFF" ? "rgba(255,255,255,0.18)" : "rgba(15,23,42,0.18)";
+                          return (
+                            <div className="px-4 py-3 flex items-center justify-between" style={{ backgroundColor: brandColors.secondary }}>
+                              <div className="h-1.5 w-20 rounded-full" style={{ backgroundColor: dim }} />
+                              <div className="h-1.5 w-12 rounded-full" style={{ backgroundColor: dimmer }} />
+                            </div>
+                          );
+                        })()}
                       </div>
                     </div>
                   </div>
