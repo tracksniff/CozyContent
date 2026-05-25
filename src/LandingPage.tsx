@@ -132,10 +132,10 @@ const LandingPage = () => {
   const [isAnnual, setIsAnnual] = useState(true);
 
   useEffect(() => {
-    document.title = "Cosy Content | Modern Websites Without the Hassle";
+    document.title = "Website Design for Tradespeople | Cosy Content";
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute("content", "Get a modern business website in 7 days without the hassle. We build and manage high-converting websites for trades and local businesses.");
+      metaDescription.setAttribute("content", "We build modern, managed websites for plumbers, roofers, electricians, locksmiths, cleaners, and removal companies.");
     }
   }, []);
 
