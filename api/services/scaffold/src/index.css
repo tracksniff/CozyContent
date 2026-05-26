@@ -99,9 +99,357 @@
   }
 }
 
+@layer base {
+  :root {
+    /* Spacing + radii + shadows + transitions — reusable design tokens */
+    --r-sm: 8px;
+    --r: 16px;
+    --r-lg: 24px;
+    --r-xl: 36px;
+    --r-pill: 999px;
+
+    --shadow-sm: 0 2px 6px hsl(var(--foreground) / 0.06);
+    --shadow: 0 14px 40px hsl(var(--foreground) / 0.10);
+    --shadow-lg: 0 30px 80px hsl(var(--foreground) / 0.18);
+    --shadow-glow: 0 12px 30px hsl(var(--primary) / 0.32);
+
+    --t: 0.2s ease;
+    --t-fast: 0.12s ease;
+    --t-slow: 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+
+    --container: 1200px;
+    --header-h: 80px;
+  }
+}
+
+@layer components {
+  /* Eyebrow chip — small uppercase label above section headings */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: hsl(var(--primary) / 0.1);
+    color: hsl(var(--primary));
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.5rem 0.875rem;
+    border-radius: var(--r-pill);
+    line-height: 1;
+  }
+  .eyebrow .dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: hsl(var(--primary));
+    box-shadow: 0 0 0 4px hsl(var(--primary) / 0.2);
+    display: inline-block;
+  }
+  .eyebrow.eyebrow-accent {
+    background: hsl(var(--accent) / 0.12);
+    color: hsl(var(--accent));
+  }
+  .eyebrow.eyebrow-accent .dot {
+    background: hsl(var(--accent));
+    box-shadow: 0 0 0 4px hsl(var(--accent) / 0.2);
+  }
+
+  /* Centered section heading block */
+  .section-head {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 3.5rem;
+  }
+  .section-head h2 {
+    margin-top: 1rem;
+    color: hsl(var(--heading));
+  }
+  .section-head p {
+    color: hsl(var(--muted-foreground));
+    font-size: 1.05rem;
+    margin-top: 1rem;
+    line-height: 1.6;
+  }
+
+  /* Italic serif accent — pair the display font with a serif span */
+  .serif-em {
+    font-family: var(--font-display, "Instrument Serif"), Georgia, serif;
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: -0.01em;
+  }
+
+  /* Card surface */
+  .surface-card {
+    background: hsl(var(--background));
+    border-radius: var(--r-lg);
+    padding: 2rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid hsl(var(--border) / 0.4);
+    transition: transform var(--t), box-shadow var(--t);
+  }
+  .surface-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow);
+  }
+
+  /* Promise / value-prop tile */
+  .promise {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.75rem;
+    border-radius: var(--r-lg);
+    background: hsl(var(--background));
+    border: 1px solid hsl(var(--border) / 0.4);
+    transition: transform var(--t), box-shadow var(--t);
+  }
+  .promise:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+  }
+  .promise__ic {
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--r);
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Numbered process step */
+  .step {
+    position: relative;
+    padding: 1.5rem;
+    border-radius: var(--r-lg);
+    background: hsl(var(--background));
+    border: 1px solid hsl(var(--border) / 0.4);
+  }
+  .step__num {
+    font-family: var(--font-display, "Instrument Serif"), Georgia, serif;
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    line-height: 1;
+    color: hsl(var(--primary));
+    font-weight: 700;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  .step__connector {
+    position: absolute;
+    top: 50%;
+    right: -1rem;
+    width: 2rem;
+    height: 2px;
+    background: linear-gradient(to right, hsl(var(--border)), transparent);
+  }
+
+  /* Testimonial / review card */
+  .review {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.75rem;
+    border-radius: var(--r-lg);
+    background: hsl(var(--background));
+    border: 1px solid hsl(var(--border) / 0.4);
+    box-shadow: var(--shadow-sm);
+  }
+  .review__stars {
+    display: flex;
+    gap: 0.25rem;
+  }
+  .review__text {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: hsl(var(--foreground));
+  }
+  .review__by {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid hsl(var(--border) / 0.6);
+    padding-top: 1rem;
+  }
+  .review__by strong {
+    color: hsl(var(--heading));
+    font-weight: 700;
+  }
+  .review__by span {
+    color: hsl(var(--muted-foreground));
+    font-size: 0.875rem;
+  }
+
+  /* Stat block — large number + label */
+  .stat-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .stat-block__num {
+    font-family: var(--font-display, "Instrument Serif"), Georgia, serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 700;
+    line-height: 1;
+    color: hsl(var(--primary));
+    letter-spacing: -0.02em;
+  }
+  .stat-block__label {
+    color: hsl(var(--muted-foreground));
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  /* Sticker / floating trust badge over hero imagery */
+  .sticker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: hsl(var(--background));
+    border-radius: var(--r);
+    box-shadow: var(--shadow);
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
+  .sticker__ic {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--r-sm);
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .sticker__ic--accent {
+    background: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+  }
+
+  /* Tag chip */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--r-pill);
+    background: hsl(var(--secondary));
+    color: hsl(var(--secondary-foreground));
+  }
+  .tag--accent {
+    background: hsl(var(--accent) / 0.15);
+    color: hsl(var(--accent));
+  }
+
+  /* Checklist with custom dot bullets */
+  ul.check-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+  ul.check-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: hsl(var(--foreground));
+  }
+  ul.check-list li::before {
+    content: "";
+    width: 1.375rem;
+    height: 1.375rem;
+    border-radius: 50%;
+    background: hsl(var(--primary) / 0.15);
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 0.8rem;
+    color: hsl(var(--primary));
+    flex-shrink: 0;
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Color tokens that aren't a Tailwind colour shortcut */
+  .text-heading {
+    color: hsl(var(--heading));
+  }
+  .bg-section-alt {
+    background-color: hsl(var(--section-alt));
+  }
+  .bg-warm-bg {
+    background-color: hsl(var(--warm-bg));
+  }
+
+  /* Organic image masks — wrap an <img> to get an irregular border-radius */
+  .organic-mask {
+    border-radius: 50% 50% 50% 50% / 48% 48% 52% 52%;
+    overflow: hidden;
+  }
+  .organic-mask-2 {
+    border-radius: 42% 58% 64% 36% / 49% 35% 65% 51%;
+    overflow: hidden;
+  }
+  .organic-mask-3 {
+    border-radius: 64% 36% 27% 73% / 55% 32% 68% 45%;
+    overflow: hidden;
+  }
+
+  /* Blob positioning helper — for decorative Blob shapes behind content */
+  .blob-decor {
+    position: absolute;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+  }
+
+  /* Marquee strip — used for accreditation logos / testimonials ticker */
+  .marquee {
+    display: flex;
+    gap: 3rem;
+    animation: marquee-scroll 30s linear infinite;
+  }
+  @keyframes marquee-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* Float bob animation — for floating CTA buttons / chat bubbles */
+  .bob {
+    animation: bob 3.6s ease-in-out infinite;
+  }
+  @keyframes bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  /* Soft glow ring — for hero feature elements */
+  .glow-primary {
+    box-shadow: 0 0 0 6px hsl(var(--primary) / 0.12), var(--shadow);
+  }
+  .glow-accent {
+    box-shadow: 0 0 0 6px hsl(var(--accent) / 0.18), var(--shadow);
+  }
+
+  /* Big oversized numerals as section anchors */
+  .numeral-anchor {
+    font-family: var(--font-display, "Instrument Serif"), Georgia, serif;
+    font-size: clamp(4rem, 12vw, 9rem);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: hsl(var(--primary) / 0.12);
+    font-weight: 700;
   }
 }
 

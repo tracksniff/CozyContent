@@ -133,9 +133,13 @@ DESIGN_PERSONALITIES = {
             "Theme: Industrial Power & High Contrast.\n"
             "- Visuals: bold, raw, high-energy. Thick borders (border-4), hard edges (rounded-none or rounded-md), high-contrast pairings.\n"
             "- Hero: split-screen or dark-focused layouts. Heavy typography (font-black tracking-tighter).\n"
+            "- Typography clamps: h1 clamp(2.75rem, 6vw, 5.25rem) font-black tracking-tighter; h2 clamp(2rem, 4vw, 3.5rem); body 1rem leading-relaxed.\n"
             "- Navbar: bold `bg-header text-header-foreground` solid bar OR `bg-background text-foreground` with a thick `border-b-4 border-primary` underline. Optionally a left vertical sidebar nav.\n"
             "- Rhythm: strong block-color sections, neo-brutalist hard shadows instead of soft.\n"
-            "- Accents: accent color for glowing highlights and status indicators.\n"
+            "- Section order: Header → Hero → Stats → Services → Process → Accreditations → Testimonials → CTA Banner → Footer.\n"
+            "- Recommended Icon names: bolt, plug, bulb, battery, zap, shield, hardhat, cog, wrench, check.\n"
+            "- Accents: accent color for glowing highlights and status indicators; use .glow-accent on the hero CTA.\n"
+            "- Cards: replace soft .surface-card lift with hard offset borders — `border-2 border-foreground shadow-[6px_6px_0_hsl(var(--primary))]`.\n"
         ),
     },
     "plumbing": {
@@ -143,10 +147,13 @@ DESIGN_PERSONALITIES = {
         "instructions": (
             "Theme: Dependable cleanliness & technical precision.\n"
             "- Visuals: clean, structured, reassuring. Medium rounded corners (rounded-xl), subtle depth shadows.\n"
-            "- Hero: content-first with visible trust badges and a strong friendly CTA. Asymmetric grid welcome.\n"
-            "- Navbar: `bg-background/90 backdrop-blur text-foreground` with a soft shadow on scroll. Wordmark uses text-heading, links use text-foreground/80, and the phone CTA uses bg-primary text-primary-foreground.\n"
-            "- Rhythm: alternating sections, clear step-by-step processes, feature lists.\n"
-            "- Accents: primary color for icons and structural highlights.\n"
+            "- Hero: content-first with visible trust .sticker badges and a strong friendly CTA. Asymmetric grid welcome. Wrap hero photo with .organic-mask. Float a .bob WhatsApp bubble bottom-left of the photo.\n"
+            "- Typography clamps: h1 clamp(2.5rem, 6vw, 5rem) tracking-tight; h2 clamp(1.85rem, 4vw, 3.25rem); body 1rem leading-[1.65].\n"
+            "- Navbar: `bg-background/90 backdrop-blur text-foreground` with a soft shadow on scroll. Wordmark uses text-heading, links use text-foreground/80, the phone CTA uses bg-primary text-primary-foreground.\n"
+            "- Rhythm: alternating .bg-background / .bg-section-alt sections, clear step-by-step .step process row, .promise grids, .review testimonials.\n"
+            "- Section order: Header → Hero → Promises → Services → Process → Accreditations → Testimonials → CTA Banner → Footer.\n"
+            "- Recommended Icon names: boiler, drop, radiator, bath, pipes, faucet, shield, spark, smile, check, phone, whatsapp, clock.\n"
+            "- Accents: primary color for icons and structural highlights; use .eyebrow primary chip above every section heading.\n"
         ),
     },
     "beauty": {
@@ -154,20 +161,26 @@ DESIGN_PERSONALITIES = {
         "instructions": (
             "Theme: Luxurious serenity & soft whitespace.\n"
             "- Visuals: airy, sophisticated, high-end. Generous padding (py-32+), rounded-full buttons, delicate thin dividers.\n"
-            "- Hero: centered with a beautiful background image and soft layered typography. Floating hero card optional.\n"
+            "- Hero: centered with a beautiful background image and soft layered typography. Wrap hero photo with .organic-mask-2 for an irregular crop. Floating hero card optional.\n"
+            "- Typography clamps: h1 clamp(2.75rem, 6vw, 5.5rem) font-light tracking-tight (use .serif-em for one phrase); h2 clamp(2rem, 4vw, 3.5rem) font-light; body 1rem leading-[1.75] font-light.\n"
             "- Navbar: minimalist `bg-background/70 backdrop-blur text-foreground` that floats. Spaced-out tracking-widest menu items. Wordmark uses text-heading.\n"
-            "- Rhythm: flowing and spacious. Use subtle background tints (bg-primary/5) over solid dark blocks.\n"
-            "- Typography: tracking-widest, light font weights, premium boutique feel.\n"
+            "- Rhythm: flowing and spacious. Use subtle background tints (bg-primary/5) over solid dark blocks. Use Blob shape='b' as a soft wash behind hero.\n"
+            "- Section order: Header → Hero → About/Founder Story → Services → Testimonials → Stats → CTA Banner → Footer.\n"
+            "- Recommended Icon names: scissors, brush, flower, lotus, heart, spark, smile, leaf, star, calendar.\n"
+            "- Typography detail: tracking-widest on eyebrows and small text, light font weights everywhere, premium boutique feel.\n"
         ),
     },
     "restaurant": {
         "name": "Warm and Inviting",
         "instructions": (
             "Theme: Artisanal texture & rich warmth.\n"
-            "- Visuals: appetising, textured, welcoming. Warm gradients, rounded-3xl corners, organic shapes.\n"
+            "- Visuals: appetising, textured, welcoming. Warm gradients, rounded-3xl corners, organic shapes. Use .organic-mask-3 on hero food photography.\n"
             "- Hero: full-bleed imagery, high-impact centered headings, clear reservation / order CTA. Overlapping text welcome.\n"
+            "- Typography clamps: h1 clamp(3rem, 7vw, 6rem) tracking-tight (use .serif-em for one phrase); h2 clamp(2.25rem, 4.5vw, 3.75rem); body 1.05rem leading-relaxed.\n"
             "- Navbar: `bg-header text-header-foreground` warm solid bar with elegant logo placement, or `bg-background/85 backdrop-blur text-foreground` for a softer look. Mega-menu for categories is fine — keep all nav text on the matching foreground token.\n"
-            "- Rhythm: menu-like structure, layered elements, overlapping images, artisanal feel.\n"
+            "- Rhythm: menu-like structure, layered elements, overlapping images, artisanal feel. Use Blob shape='c' in section corners with secondary tint.\n"
+            "- Section order: Header → Hero → Menu Highlights (Services slot) → Story/About → Stats → Testimonials → Booking CTA → Footer.\n"
+            "- Recommended Icon names: fork, knife, chef, cup, wine, leaf, heart, calendar, pin, clock, star.\n"
             "- Accents: secondary color for deep rich backgrounds, accent color for highlights.\n"
         ),
     },
@@ -175,22 +188,28 @@ DESIGN_PERSONALITIES = {
         "name": "Authoritative and Premium",
         "instructions": (
             "Theme: Sophisticated authority & classic excellence.\n"
-            "- Visuals: stately, serious, high-end. Serif headlines, thin dividers, dark dominant palette.\n"
+            "- Visuals: stately, serious, high-end. Serif headlines, thin dividers, dark dominant palette. Avoid Blob shapes — restraint is the brand.\n"
             "- Hero: large bold headlines on a dark secondary background. Accent color used sparingly for prestige highlights. Classical 'pillar' layout fits.\n"
+            "- Typography clamps: h1 clamp(2.5rem, 5vw, 4.5rem) font-display font-bold tracking-tight; h2 clamp(2rem, 3.75vw, 3rem); body 1.05rem leading-[1.7]. Use .serif-em only for a tagline phrase.\n"
             "- Navbar: conservative two-tier — a slim `bg-header text-header-foreground` top contact bar, then a `bg-background text-foreground` main nav with thin border-b-border below. Keep foreground classes on every element of each bar.\n"
             "- Rhythm: linear, credentials-forward, wide layouts, large text blocks.\n"
-            "- Details: sharp corners, gold/accent borders (border-l-2).\n"
+            "- Section order: Header → Hero → Practice Areas (Services) → Process → Team/About → Accreditations → Testimonials → Consultation CTA → Footer.\n"
+            "- Recommended Icon names: gavel, scale, book, briefcase, shield, certificate, award, building, check.\n"
+            "- Details: sharp corners (rounded-md max), gold/accent borders (border-l-2), zero rounded-3xl/rounded-full.\n"
         ),
     },
     "tech": {
         "name": "Modern Tech Startup",
         "instructions": (
             "Theme: Digital innovation & glassmorphism.\n"
-            "- Visuals: sleek, vibrant, futuristic. Glassmorphism (bg-white/10 backdrop-blur), neon glows, dark backgrounds.\n"
-            "- Hero: gradient headlines (text-transparent bg-clip-text), large modern type, interactive-feeling buttons. 3D-card effect welcome.\n"
+            "- Visuals: sleek, vibrant, futuristic. Glassmorphism (bg-white/10 backdrop-blur), neon glows (.glow-primary / .glow-accent), dark accent gradients.\n"
+            "- Hero: gradient headlines (text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent), large modern type, interactive-feeling buttons. 3D-card effect welcome. Use Blob shape='a' + 'd' at large size, low opacity behind hero.\n"
+            "- Typography clamps: h1 clamp(3rem, 7vw, 6.5rem) font-bold tracking-tighter; h2 clamp(2.25rem, 4.5vw, 3.75rem); body 1rem leading-relaxed.\n"
             "- Navbar: glassmorphic floating bar — `bg-background/60 backdrop-blur-xl text-foreground` with a subtle border-border/30. Wordmark uses text-heading. Subtle animated hovers.\n"
             "- Rhythm: non-standard grids, asymmetric layouts, varied section heights. Grid patterns / tech motifs.\n"
-            "- Details: rounded-2xl throughout, smooth hover transitions.\n"
+            "- Section order: Header → Hero → Stats → Services/Features → Process → Testimonials → Pricing or CTA Banner → Footer.\n"
+            "- Recommended Icon names: laptop, cpu, cloud, code, lock, bolt, spark, zap, cog, shield, grid.\n"
+            "- Details: rounded-2xl throughout, smooth hover transitions, hover:scale-[1.02] on cards.\n"
         ),
     },
     "medical": {
@@ -198,10 +217,13 @@ DESIGN_PERSONALITIES = {
         "instructions": (
             "Theme: Bright clinical & friendly professionalism.\n"
             "- Visuals: pristine, safe, welcoming. Lots of white space, soft primary blue/green tones, rounded-full pill shapes.\n"
-            "- Hero: professional + friendly with team photography and very clear 'Book Now' CTAs above the fold. Split-layout with trust-card overlay works well.\n"
-            "- Navbar: high-accessibility `bg-background text-foreground` with a shadow-sm on scroll. Emergency-contact button uses bg-primary text-primary-foreground and is visually prominent.\n"
-            "- Rhythm: simple panels for services, expertise badges, easy navigation.\n"
-            "- Details: soft shadows, light-tinted borders, avoid harsh contrast.\n"
+            "- Hero: professional + friendly with team photography wrapped in .organic-mask and very clear 'Book Now' CTAs above the fold. Float 2 .sticker badges on the hero photo with credentials/awards. Split-layout with trust-card overlay works well.\n"
+            "- Typography clamps: h1 clamp(2.5rem, 5.5vw, 4.75rem) font-bold tracking-tight; h2 clamp(2rem, 4vw, 3.25rem); body 1.05rem leading-[1.7].\n"
+            "- Navbar: high-accessibility `bg-background text-foreground` with a shadow-sm on scroll. Emergency-contact button uses bg-primary text-primary-foreground rounded-full and is visually prominent.\n"
+            "- Rhythm: simple panels for services, expertise badges, easy navigation. Use .promise tiles with rounded-3xl override.\n"
+            "- Section order: Header → Hero → Services → Team → Promises/Why-Us → Reviews → FAQ → Book Now CTA → Footer.\n"
+            "- Recommended Icon names: stethoscope, cross, tooth, pulse, heart, shield, smile, calendar, clock, phone, user, users.\n"
+            "- Details: soft shadows (.surface-card default), light-tinted borders, avoid harsh contrast.\n"
         ),
     },
     "construction": {
@@ -209,10 +231,13 @@ DESIGN_PERSONALITIES = {
         "instructions": (
             "Theme: Heavy-duty structural & bold scale.\n"
             "- Visuals: strong, large-scale, impactful. Massive typography (text-7xl+), bold block colors, industrial iconography.\n"
-            "- Hero: full-width construction imagery, heavy headlines, high-visibility CTAs. Brutalist grid fits.\n"
+            "- Hero: full-width construction imagery, heavy headlines, high-visibility CTAs. Brutalist grid fits. Avoid .organic-mask — keep image edges hard rectangles.\n"
+            "- Typography clamps: h1 clamp(3rem, 8vw, 7rem) font-black tracking-tighter uppercase; h2 clamp(2.5rem, 5vw, 4.5rem) font-black uppercase; body 1.05rem font-medium.\n"
             "- Navbar: strong and functional — `bg-primary text-primary-foreground` thick bar with bold uppercase nav items. Every link inside the nav uses text-primary-foreground (or /80 opacity variant).\n"
-            "- Rhythm: alternating primary/secondary blocks, large-format imagery as dividers.\n"
-            "- Details: hard corners, prominent bold borders.\n"
+            "- Rhythm: alternating primary/secondary blocks, large-format imagery as dividers. Use .numeral-anchor (01, 02, 03…) as oversized faded numerals before each major section.\n"
+            "- Section order: Header → Hero → Stats → Services/Capabilities → Process → Portfolio/Past Projects → Testimonials → Quote CTA → Footer.\n"
+            "- Recommended Icon names: hammer, wrench, hardhat, saw, ruler, truck, building, cog, shield, check.\n"
+            "- Details: hard corners (rounded-none / rounded-md max), prominent bold borders (border-2 / border-4), zero rounded-full.\n"
         ),
     },
     "cleaning": {
@@ -220,10 +245,13 @@ DESIGN_PERSONALITIES = {
         "instructions": (
             "Theme: Sparkling freshness & organised space.\n"
             "- Visuals: bright, high-contrast, organised. Plenty of whitespace, fresh primary/accent highlights.\n"
-            "- Hero: bright airy with a clean before/after or high-quality service image. Simple headlines, wave-style dividers welcome.\n"
-            "- Navbar: fresh and light — `bg-background text-foreground` with a thin border-b-border. 'Request Quote' button uses bg-primary text-primary-foreground.\n"
-            "- Rhythm: orderly grids, checklist features, light sections with clean horizontal dividers.\n"
-            "- Details: rounded-xl corners, thin precise borders.\n"
+            "- Hero: bright airy with a clean before/after or high-quality service image. Simple headlines, wave-style dividers welcome. Use Blob shape='b' for a soft accent wash.\n"
+            "- Typography clamps: h1 clamp(2.5rem, 6vw, 5rem) font-bold tracking-tight; h2 clamp(2rem, 4vw, 3.5rem); body 1rem leading-relaxed.\n"
+            "- Navbar: fresh and light — `bg-background text-foreground` with a thin border-b-border. 'Request Quote' button uses bg-primary text-primary-foreground rounded-full.\n"
+            "- Rhythm: orderly grids, .check-list features, light sections with clean horizontal dividers. Alternate .bg-background / .bg-section-alt.\n"
+            "- Section order: Header → Hero → Promises → Services → Process → Stats → Testimonials → Quote CTA → Footer.\n"
+            "- Recommended Icon names: broom, spray, sparkle, bucket, leaf, drop, check, smile, shield, clock.\n"
+            "- Details: rounded-xl corners, thin precise borders, plenty of .check-list usage.\n"
         ),
     },
     "default": {
@@ -231,10 +259,13 @@ DESIGN_PERSONALITIES = {
         "instructions": (
             "Theme: Clean modernism & versatile layout.\n"
             "- Visuals: balanced, professional, visually engaging. Mix rounded corners and clean lines.\n"
-            "- Hero: dynamic layout (split or centered) with strong brand integration, varied heights.\n"
+            "- Hero: dynamic layout (split or centered) with strong brand integration, varied heights. Wrap hero photo with .organic-mask.\n"
+            "- Typography clamps: h1 clamp(2.5rem, 6vw, 5rem) font-bold tracking-tight; h2 clamp(2rem, 4vw, 3.25rem); body 1rem leading-relaxed.\n"
             "- Navbar: versatile clean — `bg-background/90 backdrop-blur text-foreground` with a subtle border-b on scroll. CTA button uses bg-primary text-primary-foreground.\n"
             "- Rhythm: engaging flow, varied section types, clear hierarchy.\n"
-            "- Details: modern shadows, smooth transitions.\n"
+            "- Section order: Header → Hero → Promises → Services → Process → Testimonials → Stats → CTA → Footer.\n"
+            "- Recommended Icon names: shield, spark, smile, star, check, phone, mail, pin, clock, building.\n"
+            "- Details: modern shadows (.surface-card defaults), smooth transitions, rounded-xl/-2xl.\n"
         ),
     },
 }
@@ -594,6 +625,7 @@ ALLOWED_PATH_PREFIXES = (
     "src/sections/",
     "src/lib/",
     "src/hooks/",
+    "src/data/",
 )
 ALLOWED_EXTENSIONS = (".tsx", ".ts", ".css")
 # Files Claude is NOT allowed to overwrite — these are scaffold-locked.
@@ -604,6 +636,8 @@ PROTECTED_PATHS = {
     "src/vite-env.d.ts",
     "src/lib/utils.ts",
     "src/pages/NotFound.tsx",
+    "src/components/Icon.tsx",
+    "src/components/Blob.tsx",
     "package.json",
     "tsconfig.json",
     "tsconfig.app.json",
@@ -668,43 +702,71 @@ FRONTEND_EXCELLENCE_GUIDE = """
 ━━━ UNIVERSAL MODERN FRONTEND STANDARDS ━━━
 
 LAYOUT
-- Sections breathe — py-20 to py-40, never py-8 or less.
+- Sections breathe — py-20 md:py-28 lg:py-32 minimum, never py-8 or less.
 - Content width: max-w-7xl mx-auto with px-6 sm:px-8.
-- Mobile-first grids: grid-cols-1 → md:grid-cols-2 → lg:grid-cols-3.
+- Mobile-first grids: grid-cols-1 → md:grid-cols-2 → lg:grid-cols-3 (or -4 for .promise tiles).
 - Experiment with asymmetric layouts, overlapping elements, full-bleed sections.
+- Wrap any section that hosts a <Blob> with `relative overflow-hidden`; give the inner content `relative z-10`.
 
 TYPOGRAPHY
 - One display size per section, text-4xl–text-8xl font-black for hero/section headings.
+- Use the typography clamps specified in the DESIGN PERSONALITY block — they override the generic text-* sizes when set.
 - Subheads: text-xl–text-3xl font-bold tracking-tight.
 - Body: text-base–text-xl font-medium leading-relaxed.
-- Eyebrows: text-sm font-bold uppercase tracking-widest text-primary.
+- Eyebrows: prefer `<span className="eyebrow"><span className="dot" /> LABEL</span>` over hand-rolled small-caps.
+- Use `<span className="serif-em">…</span>` to italicise one phrase inside a display heading — adds personality without changing the whole font.
 
 SURFACES
-- Cards: rounded-3xl or rounded-[2rem], shadow-sm hover:shadow-2xl transition-all duration-500.
-- Subtle borders: border border-border/40.
-- Card hover: hover:-translate-y-2.
+- Prefer the ready-made classes: `.surface-card`, `.promise`, `.step`, `.review` — they handle border + shadow + hover lift already.
+- Custom cards: rounded-3xl or rounded-[2rem], shadow-sm hover:shadow-2xl transition-all duration-500, border border-border/40.
+- Card hover: hover:-translate-y-2 (already in .surface-card / .promise — don't double-apply).
 
 BUTTONS
-- Primary CTA: large, rounded-full or rounded-2xl, py-5 px-10, shadow-xl.
+- Primary CTA: large, rounded-full or rounded-2xl, py-5 px-10, shadow-xl, `bg-primary text-primary-foreground`.
 - Always include hover:scale-105 active:scale-95.
-- Hero has at least 2 CTAs above the fold.
+- Hero has at least 2 CTAs above the fold (primary phone + secondary WhatsApp/email).
+- Wrap WhatsApp/chat floating button in `.bob` for a subtle bobbing animation.
 
 IMAGES
 - object-cover with varied aspect ratios (aspect-[4/5], aspect-square, aspect-video).
-- Background images get a deep gradient overlay for text readability.
+- Wrap the primary hero image with one of `.organic-mask` / `.organic-mask-2` / `.organic-mask-3` for an irregular border-radius (except construction/legal, which keep hard rectangles).
+- Background images get a deep gradient overlay for text readability — `bg-gradient-to-t from-foreground/70 via-foreground/20 to-transparent`.
+- Lazy-load: <img loading="lazy" />.
 
-INTERACTIONS
+STICKER / TRUST-BADGE PATTERN (use on hero photo)
+- Position two .sticker elements absolutely over the hero image — one top-right, one bottom-left.
+- Each contains a .sticker__ic (filled icon square) + a 2-line label (strong + span).
+- Optional `.glow-primary` or `.glow-accent` around the icon square for emphasis.
+- Example:
+  <div className="sticker absolute -top-4 -right-6"><span className="sticker__ic"><Icon name="shield" size={18} /></span><div><strong>Gas Safe</strong><span className="block text-xs">Register 1234</span></div></div>
+
+ANIMATIONS
+- framer-motion: use ONLY for (a) hero text/image reveal (initial → animate, stagger 80-120ms), (b) section scroll-in (whileInView, viewport once), (c) hover micro-interactions on cards. Don't animate every section.
+- Plain CSS classes for: .bob (floating CTA), .marquee (logos ticker), hover transforms (hover:scale-, hover:-translate-y-).
 - All interactives: transition-all duration-300 ease-out.
-- Icon containers: hover:scale-110.
-- Link underlines via after:absolute pseudo-element.
+- Icon containers: hover:scale-110 transition-transform.
+- Link underlines via after:absolute pseudo-element or border-b on hover.
 
 STATS
-- text-5xl–text-8xl font-black, colored, never beige.
-- Stars in yellow/amber.
+- Use `.stat-block` with `.stat-block__num` + `.stat-block__label`.
+- Numbers are colored, NEVER beige — the class already paints them in primary.
+- Stars in yellow/amber: `<Icon name="star" color="#ffb800" />`.
+
+DATA LAYER
+- Always import from `@/data/site` — never inline arrays in JSX.
+- Section components receive data via imports, not props (unless a child component needs a single item).
+- Map services/promises/testimonials/process/etc. inside the section component itself.
+
+FOOTER (required section)
+- Use the matching foreground for whichever bg you pick: `bg-secondary text-secondary-foreground` is the safest default; `bg-foreground text-background` for darker brands.
+- Layout: grid-cols-1 md:grid-cols-2 lg:grid-cols-4. Columns: brand+tagline+socials, services links, service-areas, contact.
+- Bottom strip: thin border-t border-current/20, copyright + credentials in muted opacity.
+- Socials use Icon names: facebook, instagram, twitter, linkedin, youtube, tiktok — only render the ones in site.socials[].
 
 UNIQUENESS
 - Every site must have a unique visual rhythm. Avoid generic light-dark-light banding.
 - Reorder, restructure, recolour sections to fit the industry and brand.
+- Use the design personality's typography clamps and section order — do NOT default to a one-size-fits-all hero+three-card grid.
 """
 
 
@@ -745,17 +807,68 @@ Optional keys (create freely as needed):
 - "src/lib/<helper>.ts" — small TypeScript helpers (no runtime deps beyond what is already in package.json).
 - "src/hooks/<useThing>.ts" / ".tsx" — custom hooks.
 
-You may NOT create or overwrite: package.json, vite.config.ts, tailwind.config.ts, tsconfig*, index.html, src/main.tsx, src/App.tsx, src/index.css, src/lib/utils.ts, src/pages/NotFound.tsx, anything inside src/components/ui/.
+You may NOT create or overwrite: package.json, vite.config.ts, tailwind.config.ts, tsconfig*, index.html, src/main.tsx, src/App.tsx, src/index.css, src/lib/utils.ts, src/pages/NotFound.tsx, src/components/Icon.tsx, src/components/Blob.tsx, anything inside src/components/ui/.
 
 ━━━ TECH AVAILABLE ━━━
 - React 18 with TypeScript and JSX.
 - Tailwind CSS 3 (with brand CSS variables wired below).
-- lucide-react icons — use any icon you like. Just import what you use.
-- framer-motion — use freely for animations and reveals.
+- lucide-react icons — available, but PREFER the bundled custom Icon below.
+- framer-motion — use sparingly for hero reveals, scroll-in fades, and hover micro-interactions. Plain CSS transitions handle the rest.
 - react-router-dom — already wired in App.tsx, the homepage is at "/".
 - shadcn/ui primitives are available at "@/components/ui/<name>": {shadcn_list}.
   Import example: import {{ Button }} from "@/components/ui/button";
 - "@" path alias points to "src".
+
+━━━ BUNDLED SITE COMPONENTS (use these — they're already in src/components/) ━━━
+- `@/components/Icon` — a hand-crafted SVG icon system with a curated set of names that match real-world trades & professions. Prefer this over lucide-react when an industry-specific icon exists, because it gives the site a bespoke, on-brand feel.
+  Import: `import Icon from "@/components/Icon";`
+  Usage: `<Icon name="boiler" size={28} />` · default color is currentColor.
+  Available names (use the closest match — don't invent names that aren't in this list):
+    Contact:   phone, whatsapp, mail, pin, clock, calendar, globe
+    UI:        arrow, arrowR, arrowL, arrowDown, arrowUp, check, plus, minus, menu, close
+    Trust:     star, shield, award, certificate, badge, spark, smile, heart, leaf, thumbsUp
+    People:    user, users, quote
+    Social:    facebook, instagram, twitter, youtube, tiktok, linkedin
+    Plumbing:  boiler, drop, radiator, bath, pipes, faucet, salt
+    Electrical: bolt, plug, bulb, battery, zap
+    Trades:    hammer, wrench, hardhat, saw, ruler, truck
+    Beauty:    scissors, brush, flower, lotus
+    Restaurant: fork, knife, chef, cup, wine
+    Legal:     gavel, scale, book, briefcase
+    Medical:   stethoscope, cross, tooth, pulse
+    Tech:      laptop, cpu, cloud, code, lock
+    Cleaning:  broom, spray, sparkle, bucket
+    Utility:   grid, cog, building, home
+
+- `@/components/Blob` — decorative organic SVG shape. Place behind hero content / section corners for soft brand colour washes. Uses absolute positioning — wrap the parent in `relative overflow-hidden`.
+  Import: `import Blob from "@/components/Blob";`
+  Props: `shape` ("a" | "b" | "c" | "d"), `color` (CSS color, e.g. `"hsl(var(--primary) / 0.18)"`), `size` (px), `className`.
+  Example: `<Blob shape="b" color="hsl(var(--accent) / 0.18)" size={520} className="blob-decor -top-20 -right-20" />`
+
+━━━ READY-MADE UTILITY CLASSES (in src/index.css — use them, don't re-invent) ━━━
+Component classes (already wired to brand colours):
+- `.eyebrow` — small uppercase pill label above section headings. Add `<span class="dot" />` for the bullet. Use `.eyebrow-accent` modifier for accent colour.
+- `.section-head` — centred max-width 720px heading block (eyebrow + h2 + p).
+- `.serif-em` — italic serif span; use to emphasise one phrase inside a display heading.
+- `.surface-card` — generic white card with subtle border + hover lift.
+- `.promise` — value-prop tile with `.promise__ic` (filled icon square).
+- `.step` — numbered process step with `.step__num` and optional `.step__connector` line.
+- `.review` — testimonial card with `.review__stars`, `.review__text`, `.review__by` (name + meta).
+- `.stat-block` — `.stat-block__num` + `.stat-block__label` (big number, small label).
+- `.sticker` — floating trust badge over a hero photo. `.sticker__ic` (filled square) supports `.sticker__ic--accent`.
+- `.tag` — small pill chip; `.tag--accent` for accent colour.
+- `.check-list` — `<ul>` with auto-rendered checkmark bullets.
+
+Utility classes:
+- `.text-heading` (heading colour), `.bg-section-alt`, `.bg-warm-bg`.
+- `.organic-mask`, `.organic-mask-2`, `.organic-mask-3` — irregular border-radius image crops.
+- `.blob-decor` — absolute-positioned + pointer-events-none helper for `<Blob>`.
+- `.marquee` — horizontal infinite scroll strip (set parent overflow-hidden, render content twice).
+- `.bob` — gentle floating animation for CTAs / chat bubbles.
+- `.glow-primary`, `.glow-accent` — soft coloured ring + shadow.
+- `.numeral-anchor` — oversized faded display numeral (01, 02, 03…) as visual anchor.
+
+CSS variables also exposed: `--r-sm/--r/--r-lg/--r-xl/--r-pill`, `--shadow-sm/--shadow/--shadow-lg/--shadow-glow`, `--t/--t-fast/--t-slow`, `--container`, `--header-h`. You may consume them in inline styles or new component styles.
 
 ━━━ BRAND COLORS (wired to Tailwind via CSS variables) ━━━
 Use the Tailwind tokens — DO NOT hardcode hex values. The CSS variables are populated server-side.
@@ -808,16 +921,59 @@ For background: style={{{{ backgroundImage: `url('{{IMAGE_URL}}')` }}}}
 
 {FRONTEND_EXCELLENCE_GUIDE}
 
+━━━ DATA LAYER (REQUIRED) ━━━
+You MUST create `src/data/site.ts` exporting typed constants the homepage and sub-components consume. Do NOT inline arrays of services / testimonials / promises inside JSX — define them as data and `.map()` over them in components. Suggested shape (adapt field names to the brand):
+
+```ts
+export const site = {{
+  name: "...", tagline: "...", phone: "...", phoneHref: "tel:...",
+  email: "...", address: "...", whatsapp: "https://wa.me/...",
+  serviceArea: "...", yearsExperience: 10, credentials: ["...", "..."],
+  socials: [{{ name: "instagram", href: "..." }}],
+}};
+export const promises = [{{ icon: "shield", title: "...", text: "..." }}, ...];
+export const services = [{{ slug: "...", title: "...", short: "...", icon: "...", bullets: ["..."] }}, ...];
+export const process = [{{ step: "01", title: "...", text: "..." }}, ...];
+export const accreditations = [{{ name: "...", note: "...", icon: "..." }}, ...];
+export const testimonials = [{{ name: "...", area: "...", rating: 5, text: "..." }}, ...];
+export const stats = [{{ value: "10+", label: "years" }}, ...];
+```
+
+Then `import {{ site, services, promises, ... }} from "@/data/site";` in Index.tsx and any section component.
+
+━━━ SECTION COMPOSITION (REQUIRED) ━━━
+The homepage MUST have at least 7 distinct sections. Pick from the menu below — your layout strategy dictates the ORDER, your design personality dictates the STYLE, but the menu items are the building blocks. Build each as a standalone component in `src/components/sections/` (or `src/sections/`) and compose them inside Index.tsx.
+
+MENU (use AT LEAST 7 of these):
+1. Header / Navbar — sticky, brand wordmark + 4-5 nav links + phone CTA. (REQUIRED)
+2. Hero — headline, lede, 2 CTAs, trust strip (years / count / satisfaction), hero image with organic mask + 1-2 floating .sticker badges, optional .bob WhatsApp/chat bubble. (REQUIRED)
+3. Promises / Why-Us — grid-cols-2 lg:grid-cols-4 of .promise tiles with Icon + title + 1-line text.
+4. Services — grid-cols-1 md:grid-cols-2 lg:grid-cols-3 of service cards mapped from `services[]`. Each card has Icon + title + short text + "Learn more →" affordance. Vary card backgrounds with subtle `bg-primary/5` / `bg-accent/5` tints.
+5. Process / How It Works — 3-5 `.step` cards with `.step__num` numerals (01, 02, 03…). Connect with `.step__connector` or arrow icons.
+6. Accreditations / Trust Strip — horizontal row of `.sticker`-style chips or logos, possibly inside `.marquee`.
+7. Stats — 3-4 `.stat-block` items in a row (years, jobs done, customer rating).
+8. Testimonials — grid of `.review` cards mapped from `testimonials[]`. Yellow/amber stars via Icon name="star".
+9. About / Team — split layout: paragraph copy + team photo via `.organic-mask` and 2-3 credential `.sticker` badges floating around it.
+10. FAQ — accordion (use shadcn Accordion) of 4-6 Q&A.
+11. Service Areas — chip cloud of `.tag` items listing covered locations.
+12. CTA Banner — full-width section in `bg-primary text-primary-foreground` or `bg-secondary text-secondary-foreground` with a final phone CTA + WhatsApp/email secondary.
+13. Footer — REQUIRED. Multi-column (brand + tagline + socials, services links, areas, contact). Bottom strip with copyright + credentials.
+
+Section header rule: every non-hero section MUST start with a `.section-head` containing an `.eyebrow` chip, an `<h2>` (use `.serif-em` to italicise one phrase), and a 1-2 sentence lede.
+
+Section padding rule: `py-20 md:py-28 lg:py-32` minimum. Alternate `bg-background` and `bg-section-alt` (or a subtle `bg-primary/5`) for visual rhythm.
+
 ━━━ RULES ━━━
-1. Index.tsx is the homepage; it composes the sections you create.
-2. Every imported component file must be in your JSON output (or be a shadcn/ui primitive).
+1. Index.tsx is the homepage; it imports section components and composes them top-to-bottom.
+2. Every imported component file must be in your JSON output (or be a shadcn/ui primitive, or be one of the bundled `@/components/Icon` / `@/components/Blob` / `@/data/site`).
 3. Imports must be valid: `import X from "@/components/X"` or `import {{ Button }} from "@/components/ui/button"`. Never invent shadcn components that aren't in the list above.
 4. Apostrophes in JSX text → &apos; · Quotes in JSX text → &quot;
 5. No diff, snippet, or partial files — every value is the COMPLETE file contents.
 6. No markdown fences, no backticks, no explanation — only the raw JSON object.
-7. Make the site look NOTHING like a plumber, electrician, or generic trade template unless that is the business. Tailor it to the industry given.
+7. Make the site look bespoke for THIS specific business — never feel like a generic trade template. Tailor copy, icon choices, and section names to the industry.
 8. Do not use a `dark` class on the html/body — the scaffold is light-mode only by default.
-9. Generate enough sections to fill a real marketing site: hero + 4-8 supporting sections (services, why-us, process, team, reviews, FAQ, contact, footer — pick what fits the business). Section count and naming are your choice.
+9. Section count: 7-10 sections. Do NOT skimp.
+10. Always include the bundled custom Icon for service tiles, promise tiles, footer, and CTAs. Reserve lucide-react for icons that are missing from the bundled set.
 """
 
 
@@ -828,6 +984,18 @@ def _build_user_prompt(application_data: dict, image_urls: list, design_personal
         json.dumps(testimonials, indent=2) if isinstance(testimonials, list) else str(testimonials)
     )
 
+    services_raw = application_data.get("services_list", "")
+    if isinstance(services_raw, list):
+        services_str = json.dumps(services_raw, indent=2)
+    else:
+        services_str = str(services_raw)
+
+    trust_raw = application_data.get("trust_badges", "")
+    if isinstance(trust_raw, list):
+        trust_str = json.dumps(trust_raw, indent=2)
+    else:
+        trust_str = str(trust_raw)
+
     return f"""Build the homepage for this business.
 
 Company Name: {application_data.get("company_name", "")}
@@ -837,8 +1005,10 @@ Phone Number: {application_data.get("phone_number", "")}
 Primary Location: {application_data.get("city_location", "")}
 Service Areas: {application_data.get("service_areas", application_data.get("city_location", ""))}
 Years of Experience: {application_data.get("years_experience", "10+")}
-Trust Badges / Credentials: {application_data.get("trust_badges", "")}
-Services Offered: {application_data.get("services_list", "")}
+Trust Badges / Credentials:
+{trust_str}
+Services Offered:
+{services_str}
 Testimonials:
 {testimonials_str}
 
@@ -847,7 +1017,20 @@ Design Personality: {design_personality["name"]}
 Available image URLs (use ONLY these for imagery):
 {image_list_str}
 
-Return ALL files as a single raw JSON object — keys are file paths, values are complete file contents. Index.tsx is required. No markdown fences."""
+━━━ TURN THIS INTO `src/data/site.ts` ━━━
+First, transcribe the data above into a typed `src/data/site.ts` module with these named exports:
+- `site` — object with name, tagline, phone, phoneHref, email, address, whatsapp, serviceArea, yearsExperience, credentials[], socials[].
+- `promises` — 4 items (`{{ icon, title, text }}`), inferred from the trust badges + USP if not explicit.
+- `services` — one item per service in "Services Offered" (`{{ slug, title, short, long, bullets[], icon }}`). Choose `icon` from the bundled Icon name list that best matches each service.
+- `process` — 3-5 numbered steps describing how a customer engages with this business.
+- `accreditations` — derived from "Trust Badges / Credentials".
+- `testimonials` — pass through the testimonials above; ensure each has `name`, `area` (or location), `rating` (default 5), `text`.
+- `stats` — 3-4 numeric stats (years, jobs done, response time, satisfaction).
+- `faqs` (optional) — 4-6 industry-appropriate Q&A entries.
+
+Every other section component MUST import from `@/data/site` and `.map()` over the arrays — no inline hard-coded service lists.
+
+Return ALL files as a single raw JSON object — keys are file paths, values are complete file contents. `src/data/site.ts` and `src/pages/Index.tsx` are both required. No markdown fences."""
 
 
 def generate_site_files_with_claude(
