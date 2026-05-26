@@ -350,7 +350,7 @@ const DNSSetupPage: React.FC = () => {
                   Get a professional domain for your business at Namecheap.
                 </p>
                 <a
-                  href="https://namecheap.pxf.io/c/5950882/1301211/15832"
+                  href="https://namecheap.pxf.io/c/7336842/386170/5618"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-between p-4 bg-white dark:bg-surface border border-outline-variant/40 rounded-xl hover:border-primary hover:shadow-md transition-all"
