@@ -45,7 +45,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    'django_celery_beat',
     'api',
+    'leads',
 ]
 
 MIDDLEWARE = [
@@ -201,6 +203,24 @@ SESSION_COOKIE_SAMESITE = 'Lax'
 
 # --- Default Auto Field ---
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# --- Celery / Redis ---
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', 'redis://localhost:6379/1')
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 60 * 60  # 1h hard cap per task
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+# --- Outscraper ---
+OUTSCRAPER_API_KEY = os.getenv('OUTSCRAPER_API_KEY')
+OUTSCRAPER_LIMIT_PER_QUERY = int(os.getenv('OUTSCRAPER_LIMIT_PER_QUERY', '100'))
+
+# --- Website audit (PageSpeed) ---
+PAGESPEED_API_KEY = os.getenv('PAGESPEED_API_KEY')
+AUDIT_BATCH_SIZE = int(os.getenv('AUDIT_BATCH_SIZE', '50'))
+AUDIT_OUTDATED_THRESHOLD = int(os.getenv('AUDIT_OUTDATED_THRESHOLD', '50'))  # mobile perf < this -> outdated
+AUDIT_REFRESH_DAYS = int(os.getenv('AUDIT_REFRESH_DAYS', '30'))
 
 # --- OAuth Settings ---
 AUTHLIB_OAUTH_CLIENTS = {
