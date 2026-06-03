@@ -1,14 +1,11 @@
 name: Deploy Backend
-
 on:
   push:
     branches:
       - backend
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.0.0
@@ -19,18 +16,13 @@ jobs:
           script: |
             # Pull latest backend changes
             cd ~/CosyContent/backend/CozyContent
-
-
             git pull origin backend
-
             # Redeploy ONLY the Django container via orchestrator
             cd ~/orchestrator
-            docker-compose stop cosycontent-django
-            docker-compose rm -f cosycontent-django
-            docker-compose build cosycontent-django
-            docker-compose up -d --no-deps cosycontent-django
-
+            docker compose stop cosycontent-django
+            docker compose rm -f cosycontent-django
+            docker compose build cosycontent-django
+            docker compose up -d --no-deps cosycontent-django
             # Clean up
             docker image prune -f
-
             echo "Backend deployed successfully!"
