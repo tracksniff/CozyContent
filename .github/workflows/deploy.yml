@@ -15,17 +15,12 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             # Pull latest frontend changes
-            cd ~/cosycontent/frontend/CozyContent
+            cd ~/CosyContent/frontend/CozyContent
             git pull origin frontend
-
             # Rebuild only the cosycontent react frontend
             cd ~/orchestrator
-            docker-compose build cosycontent-react
-
+            docker compose build cosycontent-react
             # Restart only the cosycontent react frontend (everything else stays running)
-            docker-compose up -d cosycontent-react
-
+            docker compose up -d cosycontent-react
             # Clean up dangling images from the build
             docker image prune -f
-
-            echo "✅ Cosycontent Frontend deployed successfully!"
