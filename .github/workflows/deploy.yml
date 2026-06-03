@@ -19,6 +19,8 @@ jobs:
           script: |
             # Pull latest backend changes
             cd ~/Cosycontent/backend/CozyContent
+
+
             git pull origin backend
 
             # Redeploy ONLY the Django container via orchestrator
