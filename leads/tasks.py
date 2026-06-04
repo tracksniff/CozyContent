@@ -95,28 +95,33 @@ def scrape_all_businesses() -> dict:
 @shared_task(name="leads.test_single_scrape_task")
 def test_single_scrape_task() -> str:
     """Debug task: Scrape 1 result and log the RAW JSON response."""
-    from .services.outscraper_service import _client
+    from .services.outscraper_service import search
     import json
 
     category = "plumbing"
     query = CATEGORY_QUERIES[category]
     location = LOCATIONS[0]
     
-    client = _client()
     search_term = f"{query} in {location}, UK"
-    
     logger.info("DEBUG: Starting test scrape for %r", search_term)
     
     try:
-        response = client.google_maps_search(
-            search_term,
-            limit=1,
-            language="en",
-            region="GB",
-            enrichment=['emails_and_contacts'],
-        )
-        raw_json = json.dumps(response, indent=2)
-        logger.info("DEBUG: RAW OUTSCRAPER RESPONSE:\n%s", raw_json)
+        # Use our search function which includes normalization and custom email scraping
+        results = list(search(query, location, category=category, limit=1))
+        
+        if not results:
+            logger.warning("DEBUG: No results returned from search.")
+            return "No results"
+
+        # Log the first normalized result (this is what goes into the DB)
+        normalized_data = results[0]
+        logger.info("DEBUG: NORMALIZED DATA (READY FOR DB):\n%s", json.dumps(normalized_data, indent=2))
+        
+        if normalized_data.get("email"):
+            logger.info("DEBUG: SUCCESS! Found email: %s", normalized_data["email"])
+        else:
+            logger.warning("DEBUG: No email found for %s", normalized_data["name"])
+
         return "Success - check logs"
     except Exception as e:
         logger.error("DEBUG: Test scrape failed: %s", e)
