@@ -20,20 +20,29 @@ def _client() -> ApiClient:
     return ApiClient(api_key=api_key)
 
 
+from .email_scraper_service import extract_emails_from_url
+
 def _normalize(row: dict, *, category: str, location: str) -> dict:
     """Map an Outscraper Google-Maps result into our Business field shape."""
     # Outscraper uses "website" in recent API versions
     website = row.get("website") or row.get("site") or None
+
     email = None
-    # Enrichment often returns a list in "emails" or separate "email_1", "email_2" fields
+    # 1. Try to get email from Outscraper enrichment first
     emails_list = row.get("emails")
     if isinstance(emails_list, list) and emails_list:
         email = emails_list[0]
     else:
-        # Fallback to direct field keys
         email = row.get("email_1") or row.get("email") or row.get("email_2")
 
+    # 2. If no email from Outscraper but we HAVE a website, scrape it ourselves!
+    if not email and website:
+        scraped_emails = extract_emails_from_url(website)
+        if scraped_emails:
+            email = scraped_emails[0]
+
     return {
+
         "name": (row.get("name") or "").strip(),
         "category": category,
         "location": location,
