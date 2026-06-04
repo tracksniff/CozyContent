@@ -17,12 +17,12 @@ jobs:
             # Pull latest backend changes
             cd ~/CosyContent/backend/CozyContent
             git pull origin backend
-            # Redeploy ONLY the Django container via orchestrator
+            # Redeploy Django and Celery containers via orchestrator
             cd ~/orchestrator
-            docker compose stop cosycontent-django
-            docker compose rm -f cosycontent-django
-            docker compose build cosycontent-django
-            docker compose up -d --no-deps cosycontent-django
+            docker compose stop cosycontent-django cosycontent-worker cosycontent-beat
+            docker compose rm -f cosycontent-django cosycontent-worker cosycontent-beat
+            docker compose build cosycontent-django cosycontent-worker cosycontent-beat
+            docker compose up -d --no-deps cosycontent-django cosycontent-worker cosycontent-beat
             # Clean up
             docker image prune -f
             echo "Backend deployed successfully!"
