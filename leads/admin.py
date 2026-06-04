@@ -47,33 +47,10 @@ class BusinessAdmin(admin.ModelAdmin):
         return redirect("admin:leads_business_changelist")
 
     def test_single_scrape(self, request):
-        """Trigger a single category/location scrape and log the RAW output."""
-        from .tasks import CATEGORY_QUERIES, LOCATIONS
-        from .services.outscraper_service import _client
-        import json
-        import logging
-
-        logger = logging.getLogger("leads.tasks")
-        
-        category = "plumbing"
-        query = CATEGORY_QUERIES[category]
-        location = LOCATIONS[0] # Usually Luton
-        
-        client = _client()
-        search_term = f"{query} in {location}, UK"
-        
-        logger.info("TEST SCRAPE START: %s", search_term)
-        response = client.google_maps_search(
-            search_term,
-            limit=1,
-            language="en",
-            region="GB",
-        )
-        
-        # Log the raw response so we can see the exact field names
-        logger.info("RAW OUTSCRAPER RESPONSE: %s", json.dumps(response, indent=2))
-        
-        self.message_user(request, f"Test scrape for '{search_term}' triggered. Check logs for RAW RESPONSE.", messages.INFO)
+        """Trigger a single category/location scrape task and log the RAW output in Celery."""
+        from .tasks import test_single_scrape_task
+        test_single_scrape_task.delay()
+        self.message_user(request, "Test scrape task triggered. Check CELERY WORKER logs for RAW RESPONSE.", messages.INFO)
         return redirect("admin:leads_business_changelist")
 
     @admin.action(description="Trigger full business scrape (Outscraper)")

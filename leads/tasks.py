@@ -92,6 +92,36 @@ def scrape_all_businesses() -> dict:
     return totals
 
 
+@shared_task(name="leads.test_single_scrape_task")
+def test_single_scrape_task() -> str:
+    """Debug task: Scrape 1 result and log the RAW JSON response."""
+    from .services.outscraper_service import _client
+    import json
+
+    category = "plumbing"
+    query = CATEGORY_QUERIES[category]
+    location = LOCATIONS[0]
+    
+    client = _client()
+    search_term = f"{query} in {location}, UK"
+    
+    logger.info("DEBUG: Starting test scrape for %r", search_term)
+    
+    try:
+        response = client.google_maps_search(
+            search_term,
+            limit=1,
+            language="en",
+            region="GB",
+        )
+        raw_json = json.dumps(response, indent=2)
+        logger.info("DEBUG: RAW OUTSCRAPER RESPONSE:\n%s", raw_json)
+        return "Success - check logs"
+    except Exception as e:
+        logger.error("DEBUG: Test scrape failed: %s", e)
+        return f"Failed: {e}"
+
+
 # ---------------------------------------------------------------------------
 # Daily website audit pipeline
 # ---------------------------------------------------------------------------
