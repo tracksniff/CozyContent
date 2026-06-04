@@ -31,7 +31,12 @@ class BusinessAdmin(admin.ModelAdmin):
     search_fields = ("name", "phone", "email", "website", "address")
     readonly_fields = ("created_at", "updated_at", "google_id", "last_audited_at")
     ordering = ("-updated_at",)
-    actions = ["trigger_scrape", "trigger_audit"]
+    actions = ["trigger_scrape", "trigger_audit", "delete_no_website"]
+
+    @admin.action(description="Delete businesses without websites")
+    def delete_no_website(self, request, queryset):
+        deleted_count, _ = Business.objects.filter(has_website=False).delete()
+        self.message_user(request, f"Successfully deleted {deleted_count} businesses without websites.", messages.SUCCESS)
 
     def get_urls(self):
         urls = super().get_urls()
