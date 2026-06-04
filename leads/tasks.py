@@ -113,6 +113,7 @@ def test_single_scrape_task() -> str:
             limit=1,
             language="en",
             region="GB",
+            enrichment=['emails_and_contacts'],
         )
         raw_json = json.dumps(response, indent=2)
         logger.info("DEBUG: RAW OUTSCRAPER RESPONSE:\n%s", raw_json)
