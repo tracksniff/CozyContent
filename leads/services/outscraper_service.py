@@ -25,12 +25,13 @@ def _normalize(row: dict, *, category: str, location: str) -> dict:
     # Outscraper uses "website" in recent API versions
     website = row.get("website") or row.get("site") or None
     email = None
-    # Enrichment adds "emails" list
-    emails = row.get("emails") or []
-    if isinstance(emails, list) and emails:
-        email = emails[0]
-    elif isinstance(emails, str):
-        email = emails
+    # Enrichment often returns a list in "emails" or separate "email_1", "email_2" fields
+    emails_list = row.get("emails")
+    if isinstance(emails_list, list) and emails_list:
+        email = emails_list[0]
+    else:
+        # Fallback to direct field keys
+        email = row.get("email_1") or row.get("email") or row.get("email_2")
 
     return {
         "name": (row.get("name") or "").strip(),
@@ -64,7 +65,7 @@ def search(query: str, location: str, *, category: str, limit: int = 100) -> Ite
         limit=limit,
         language="en",
         region="GB",
-        enrichment=['emails_and_contacts'],
+        enrichment=['contacts_n_leads'],
     )
 
     if not response:
