@@ -22,9 +22,11 @@ def _client() -> ApiClient:
 
 def _normalize(row: dict, *, category: str, location: str) -> dict:
     """Map an Outscraper Google-Maps result into our Business field shape."""
-    website = row.get("site") or None
+    # Outscraper uses "website" in recent API versions
+    website = row.get("website") or row.get("site") or None
     email = None
-    emails = row.get("email_1") or row.get("emails")
+    # Enrichment adds "emails" list
+    emails = row.get("emails") or []
     if isinstance(emails, list) and emails:
         email = emails[0]
     elif isinstance(emails, str):
@@ -62,6 +64,7 @@ def search(query: str, location: str, *, category: str, limit: int = 100) -> Ite
         limit=limit,
         language="en",
         region="GB",
+        enrichment=['emails_and_contacts'],
     )
 
     if not response:
