@@ -37,12 +37,43 @@ class BusinessAdmin(admin.ModelAdmin):
         urls = super().get_urls()
         custom_urls = [
             path("start-initial-scrape/", self.admin_site.admin_view(self.start_initial_scrape), name="start-initial-scrape"),
+            path("test-single-scrape/", self.admin_site.admin_view(self.test_single_scrape), name="test-single-scrape"),
         ]
         return custom_urls + urls
 
     def start_initial_scrape(self, request):
         scrape_all_businesses.delay()
         self.message_user(request, "Initial business scraping task has been triggered.", messages.SUCCESS)
+        return redirect("admin:leads_business_changelist")
+
+    def test_single_scrape(self, request):
+        """Trigger a single category/location scrape and log the RAW output."""
+        from .tasks import CATEGORY_QUERIES, LOCATIONS
+        from .services.outscraper_service import _client
+        import json
+        import logging
+
+        logger = logging.getLogger("leads.tasks")
+        
+        category = "plumbing"
+        query = CATEGORY_QUERIES[category]
+        location = LOCATIONS[0] # Usually Luton
+        
+        client = _client()
+        search_term = f"{query} in {location}, UK"
+        
+        logger.info("TEST SCRAPE START: %s", search_term)
+        response = client.google_maps_search(
+            search_term,
+            limit=1,
+            language="en",
+            region="GB",
+        )
+        
+        # Log the raw response so we can see the exact field names
+        logger.info("RAW OUTSCRAPER RESPONSE: %s", json.dumps(response, indent=2))
+        
+        self.message_user(request, f"Test scrape for '{search_term}' triggered. Check logs for RAW RESPONSE.", messages.INFO)
         return redirect("admin:leads_business_changelist")
 
     @admin.action(description="Trigger full business scrape (Outscraper)")
