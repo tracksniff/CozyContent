@@ -29,7 +29,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-xfu6lzqui%e^0$n$hqs%&#bu*1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['cosycontent.com', 'api.cosycontent.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['cosycontent.com', 'api.cosycontent.com', 'preview.cosycontent.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -221,6 +221,13 @@ PAGESPEED_API_KEY = os.getenv('PAGESPEED_API_KEY')
 AUDIT_BATCH_SIZE = int(os.getenv('AUDIT_BATCH_SIZE', '50'))
 AUDIT_OUTDATED_THRESHOLD = int(os.getenv('AUDIT_OUTDATED_THRESHOLD', '50'))  # mobile perf < this -> outdated
 AUDIT_REFRESH_DAYS = int(os.getenv('AUDIT_REFRESH_DAYS', '30'))
+
+# --- Website previews (Stage 2) ---
+# Public base where personalised prospect previews are hosted.
+PREVIEW_BASE_URL = os.getenv('PREVIEW_BASE_URL', 'https://preview.cosycontent.com').rstrip('/')
+# 'Get This Website' CTA target (the purchase / get-started page).
+PREVIEW_PURCHASE_URL = os.getenv('PREVIEW_PURCHASE_URL', FRONTEND_URL.rstrip('/') + '/get-started')
+PREVIEW_EXPIRY_DAYS = int(os.getenv('PREVIEW_EXPIRY_DAYS', '30'))
 
 # --- OAuth Settings ---
 AUTHLIB_OAUTH_CLIENTS = {

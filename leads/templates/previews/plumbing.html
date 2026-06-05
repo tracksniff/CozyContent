@@ -1,0 +1,10 @@
+{% extends "previews/base.html" %}
+{% block page_title %}Plumbing &amp; Heating in {{ town }}{% endblock %}
+{% block strip %}
+<div class="strip"><div class="wrap">
+  <svg class="i"><use href="#i-flame"/></svg>{{ emergency_line }}
+  <span style="opacity:.85">·</span> Gas Safe registered
+  <span style="opacity:.85">·</span> No call-out fee
+  {% if phone_number %}<span style="opacity:.85">·</span> <a href="tel:{{ phone_number }}" style="text-decoration:underline">{{ phone_number }}</a>{% endif %}
+</div></div>
+{% endblock %}

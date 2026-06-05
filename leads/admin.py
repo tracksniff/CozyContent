@@ -1,8 +1,9 @@
 from django.contrib import admin, messages
 from django.shortcuts import redirect
 from django.urls import path
+from django.utils.html import format_html
 
-from .models import Business, OutreachQueue
+from .models import Business, OutreachQueue, WebsitePreview
 from .tasks import scrape_all_businesses, audit_website_batch
 
 
@@ -31,7 +32,19 @@ class BusinessAdmin(admin.ModelAdmin):
     search_fields = ("name", "phone", "email", "website", "address")
     readonly_fields = ("created_at", "updated_at", "google_id", "last_audited_at")
     ordering = ("-updated_at",)
-    actions = ["trigger_scrape", "trigger_audit", "audit_selected", "delete_no_website"]
+    actions = [
+        "trigger_scrape", "trigger_audit", "audit_selected",
+        "generate_previews", "delete_no_website",
+    ]
+
+    @admin.action(description="Generate website previews for selected")
+    def generate_previews(self, request, queryset):
+        from .tasks import generate_preview_for_business
+        count = 0
+        for biz in queryset:
+            generate_preview_for_business.delay(biz.pk)
+            count += 1
+        self.message_user(request, f"Triggered preview generation for {count} businesses.", messages.SUCCESS)
 
     @admin.action(description="Delete businesses without websites")
     def delete_no_website(self, request, queryset):
@@ -107,3 +120,53 @@ class OutreachQueueAdmin(admin.ModelAdmin):
     search_fields = ("business__name", "business__email", "reason")
     readonly_fields = ("created_at", "updated_at")
     autocomplete_fields = ("business",)
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path("process-queue/", self.admin_site.admin_view(self.process_queue_view), name="process-queue"),
+        ]
+        return custom_urls + urls
+
+    def process_queue_view(self, request):
+        from .tasks import process_outreach_queue
+        process_outreach_queue.delay()
+        self.message_user(request, "Outreach queue processing task has been triggered.", messages.SUCCESS)
+        return redirect("admin:leads_outreachqueue_changelist")
+
+
+@admin.register(WebsitePreview)
+class WebsitePreviewAdmin(admin.ModelAdmin):
+    list_display = (
+        "business_name",
+        "template_key",
+        "town",
+        "preview_link",
+        "color_swatch",
+        "color_source",
+        "is_claimed",
+        "view_count",
+        "expires_at",
+    )
+    list_filter = ("template_key", "is_claimed", "color_source")
+    search_fields = ("business_name", "slug", "town", "business__name")
+    readonly_fields = (
+        "created_at", "updated_at", "view_count", "preview_link",
+        "color_swatch", "rendered_html",
+    )
+    autocomplete_fields = ("business",)
+    ordering = ("-created_at",)
+
+    @admin.display(description="URL")
+    def preview_link(self, obj):
+        return format_html('<a href="{}" target="_blank">{}</a>', obj.public_url, obj.slug)
+
+    @admin.display(description="Colours")
+    def color_swatch(self, obj):
+        return format_html(
+            '<span style="display:inline-block;width:16px;height:16px;border-radius:3px;'
+            'background:{};border:1px solid #ccc;vertical-align:middle"></span> '
+            '<span style="display:inline-block;width:16px;height:16px;border-radius:3px;'
+            'background:{};border:1px solid #ccc;vertical-align:middle"></span>',
+            obj.color_primary, obj.color_accent,
+        )

@@ -20,4 +20,7 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
+    # Hosted prospect previews (preview.cosycontent.com/<slug>).
+    # Kept last so admin/api always win the match.
+    path('', include('leads.urls')),
 ]

@@ -1,4 +1,12 @@
+from datetime import timedelta
+
 from django.db import models
+from django.utils import timezone
+
+
+def _default_expiry():
+    """Previews expire 30 days after creation if unclaimed (spec)."""
+    return timezone.now() + timedelta(days=30)
 
 
 class Business(models.Model):
@@ -131,3 +139,67 @@ class OutreachQueue(models.Model):
 
     def __str__(self):
         return f"{self.business.name} → {self.status}"
+
+
+class WebsitePreview(models.Model):
+    """A personalised, publicly-hosted demo site for a prospect.
+
+    Generated once (template + extracted brand colours + substituted variables)
+    when a Business is marked ``is_outdated``. The rendered HTML is baked at
+    generation time and served verbatim so preview pages load fast.
+
+    Public URL: ``preview.cosycontent.com/<slug>``
+    """
+
+    business = models.ForeignKey(
+        Business, on_delete=models.CASCADE, related_name="previews"
+    )
+    slug = models.SlugField(max_length=255, unique=True)
+    template_key = models.CharField(max_length=50)
+
+    # --- Substituted variables (kept for re-render / audit) ---
+    business_name = models.CharField(max_length=255)
+    phone_number = models.CharField(max_length=50, blank=True, default="")
+    town = models.CharField(max_length=100, blank=True, default="")
+    trade = models.CharField(max_length=100, blank=True, default="")
+    service_area = models.CharField(max_length=200, blank=True, default="")
+
+    # --- Brand colours pulled from the prospect's real site ---
+    color_primary = models.CharField(max_length=9, default="#0B6BCB")
+    color_accent = models.CharField(max_length=9, default="#F59E0B")
+    color_source = models.CharField(max_length=40, blank=True, default="")
+
+    # Baked HTML served to visitors.
+    rendered_html = models.TextField(blank=True, default="")
+
+    is_claimed = models.BooleanField(default=False)
+    view_count = models.IntegerField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    expires_at = models.DateTimeField(default=_default_expiry)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["slug"]),
+            models.Index(fields=["expires_at"]),
+            models.Index(fields=["is_claimed"]),
+        ]
+        ordering = ("-created_at",)
+
+    def __str__(self):
+        return f"Preview: {self.business_name} ({self.slug})"
+
+    @property
+    def public_url(self) -> str:
+        from django.conf import settings
+        base = getattr(settings, "PREVIEW_BASE_URL", "https://preview.cosycontent.com")
+        return f"{base.rstrip('/')}/{self.slug}"
+
+    @property
+    def is_expired(self) -> bool:
+        # Claimed previews never expire (the prospect bought the site).
+        return not self.is_claimed and timezone.now() >= self.expires_at
+
+    def renew(self, days: int = 30) -> None:
+        self.expires_at = timezone.now() + timedelta(days=days)

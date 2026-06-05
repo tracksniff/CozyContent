@@ -1,0 +1,10 @@
+{% extends "previews/base.html" %}
+{% block page_title %}Professional Cleaners in {{ town }}{% endblock %}
+{% block strip %}
+<div class="strip"><div class="wrap">
+  <svg class="i"><use href="#i-sparkle"/></svg>{{ emergency_line }}
+  <span style="opacity:.85">·</span> Vetted &amp; insured teams
+  <span style="opacity:.85">·</span> Satisfaction guaranteed
+  {% if phone_number %}<span style="opacity:.85">·</span> <a href="tel:{{ phone_number }}" style="text-decoration:underline">{{ phone_number }}</a>{% endif %}
+</div></div>
+{% endblock %}
