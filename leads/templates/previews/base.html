@@ -5,147 +5,220 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 {# Preview pages must NOT be indexed (spec). #}
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
-<meta name="theme-color" content="{{ color_primary }}">
+<meta name="theme-color" content="{{ brand_500 }}">
 <title>{{ business_name }} — {% block page_title %}{{ trade|capfirst }} in {{ town }}{% endblock %}</title>
 <meta name="description" content="{{ hero_sub }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --brand:{{ color_primary }};
-  --brand-dark:{{ color_primary_dark }};
-  --brand-light:{{ color_primary_light }};
-  --accent:{{ color_accent }};
-  --on-brand:{{ color_on_primary }};
-  --on-accent:{{ color_on_accent }};
-  --ink:#0f172a; --muted:#475569; --line:#e2e8f0; --bg:#ffffff; --bg-soft:#f8fafc;
+  --brand-50:{{ brand_50 }}; --brand-100:{{ brand_100 }}; --brand-200:{{ brand_200 }};
+  --brand-500:{{ brand_500 }}; --brand-600:{{ brand_600 }}; --brand-700:{{ brand_700 }}; --brand-900:{{ brand_900 }};
+  --accent-400:{{ accent_400 }}; --accent-500:{{ accent_500 }}; --accent-600:{{ accent_600 }};
+  --on-brand:{{ on_brand }}; --on-accent:{{ on_accent }};
+  --ink-900:#0b1220; --ink-700:#2a3447; --ink-500:#5b6678; --ink-300:#9aa3b6; --ink-100:#e7ebf3;
+  --bg:#ffffff; --bg-soft:#f6f8fc;
+  --radius:16px; --radius-lg:24px; --radius-xl:32px;
+  --shadow-sm:0 1px 2px rgba(11,18,32,.06),0 1px 1px rgba(11,18,32,.04);
+  --shadow:0 12px 32px -12px rgba(11,18,32,.18);
+  --shadow-lg:0 40px 80px -32px rgba(11,18,32,.32);
+  --container:1160px;
+  --font:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font);color:var(--ink-900);background:var(--bg);line-height:1.6;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;padding-bottom:88px;overflow-x:hidden}
 img{max-width:100%;display:block}
 a{color:inherit;text-decoration:none}
-.wrap{width:100%;max-width:1120px;margin:0 auto;padding:0 20px}
-.btn{display:inline-flex;align-items:center;gap:.5rem;font-weight:700;border-radius:999px;
-  padding:.85rem 1.6rem;font-size:1rem;cursor:pointer;border:0;transition:transform .15s,box-shadow .15s;white-space:nowrap}
+h1,h2,h3{letter-spacing:-.025em;line-height:1.1;font-weight:800}
+h1{font-size:clamp(2.3rem,5.2vw,3.7rem)}
+h2{font-size:clamp(1.7rem,3.4vw,2.5rem)}
+.wrap{width:100%;max-width:var(--container);margin:0 auto;padding:0 22px}
+.muted{color:var(--ink-500)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.55rem;font-family:inherit;
+  font-weight:700;font-size:1rem;border-radius:999px;padding:.9rem 1.7rem;cursor:pointer;border:1.5px solid transparent;
+  transition:transform .14s ease,box-shadow .18s ease,background .18s ease;white-space:nowrap}
 .btn:hover{transform:translateY(-2px)}
-.btn-primary{background:var(--brand);color:var(--on-brand);box-shadow:0 8px 24px -8px var(--brand)}
-.btn-accent{background:var(--accent);color:var(--on-accent);box-shadow:0 8px 24px -8px var(--accent)}
-.btn-ghost{background:transparent;color:var(--brand);border:2px solid var(--brand)}
-.eyebrow{display:inline-block;font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--brand);background:var(--brand-light);padding:.35rem .8rem;border-radius:999px}
+.btn-primary{background:var(--brand-500);color:var(--on-brand);box-shadow:0 14px 30px -12px var(--brand-500)}
+.btn-primary:hover{background:var(--brand-600)}
+.btn-accent{background:var(--accent-500);color:var(--on-accent);box-shadow:0 14px 30px -12px var(--accent-500)}
+.btn-accent:hover{background:var(--accent-600)}
+.btn-ghost{background:#fff;color:var(--brand-700);border-color:var(--ink-100);box-shadow:var(--shadow-sm)}
+.btn-ghost:hover{border-color:var(--brand-200);background:var(--brand-50)}
+.btn-lg{padding:1.05rem 2.1rem;font-size:1.06rem}
+
+.eyebrow{display:inline-flex;align-items:center;gap:.5rem;font-size:.76rem;font-weight:800;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--brand-700);background:var(--brand-50);border:1px solid var(--brand-100);
+  padding:.45rem .9rem;border-radius:999px}
+.eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--accent-500)}
+.grad-text{background:linear-gradient(115deg,var(--brand-600),var(--accent-500));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
 
 /* Header */
-header.site{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);
-  backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-.nav{display:flex;align-items:center;justify-content:space-between;height:68px}
-.brand{display:flex;align-items:center;gap:.6rem;font-weight:800;font-size:1.2rem}
-.brand .mark{width:38px;height:38px;border-radius:10px;background:var(--brand);color:var(--on-brand);
-  display:grid;place-items:center;font-weight:800}
-.nav .phone{display:flex;align-items:center;gap:.5rem;font-weight:700;color:var(--brand)}
+header.site{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.82);
+  backdrop-filter:saturate(150%) blur(12px);border-bottom:1px solid var(--ink-100)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:74px;gap:1rem}
+.brand{display:flex;align-items:center;gap:.65rem;font-weight:900;font-size:1.18rem;letter-spacing:-.02em}
+.brand .mark{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-weight:900;
+  color:var(--on-brand);background:linear-gradient(140deg,var(--brand-500),var(--brand-700));box-shadow:var(--shadow-sm)}
+.nav-links{display:none;gap:1.8rem;font-weight:600;color:var(--ink-700)}
+.nav-links a:hover{color:var(--brand-600)}
+@media(min-width:880px){.nav-links{display:flex}}
+.nav-right{display:flex;align-items:center;gap:1rem}
+.nav .phone{display:none;align-items:center;gap:.5rem;font-weight:700;color:var(--brand-700)}
+@media(min-width:560px){.nav .phone{display:flex}}
 .nav-cta{display:none}
-@media(min-width:680px){.nav-cta{display:inline-flex}}
+@media(min-width:660px){.nav-cta{display:inline-flex}}
 
 /* Hero */
-.hero{position:relative;overflow:hidden;background:
-  radial-gradient(1200px 600px at 80% -10%,var(--brand-light),transparent 60%),var(--bg)}
-.hero-grid{display:grid;gap:2rem;padding:3rem 0;align-items:center}
-@media(min-width:900px){.hero-grid{grid-template-columns:1.1fr .9fr;padding:4.5rem 0}}
-.hero h1{font-size:2.1rem;line-height:1.15;letter-spacing:-.02em;margin:1rem 0}
-@media(min-width:900px){.hero h1{font-size:3.1rem}}
-.hero p.lead{font-size:1.12rem;color:var(--muted);max-width:38ch}
-.hero-actions{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:1.6rem}
-.trust{display:flex;flex-wrap:wrap;gap:1.2rem;margin-top:1.8rem;color:var(--muted);font-size:.92rem}
-.trust b{color:var(--ink)}
-.hero-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:1.6rem;
-  box-shadow:0 30px 60px -30px rgba(2,6,23,.25)}
-.hero-card .ribbon{display:flex;align-items:center;gap:.6rem;font-weight:800;color:var(--brand);margin-bottom:1rem}
-.hero-card ul{list-style:none;display:grid;gap:.8rem}
-.hero-card li{display:flex;gap:.7rem;align-items:flex-start}
-.tick{flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:var(--brand);color:var(--on-brand);
-  display:grid;place-items:center}
+.hero{position:relative;overflow:hidden;background:linear-gradient(180deg,var(--brand-50),#fff 72%)}
+.blob{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
+.blob-1{width:560px;height:560px;background:radial-gradient(circle,var(--brand-200),transparent 70%);top:-220px;left:-160px;opacity:.6}
+.blob-2{width:520px;height:520px;background:radial-gradient(circle,var(--accent-400),transparent 70%);bottom:-260px;right:-180px;opacity:.45}
+.hero-grid{position:relative;z-index:1;display:grid;gap:2.6rem;padding:clamp(2.6rem,6vw,5rem) 0 clamp(3rem,6vw,5.5rem);align-items:center}
+@media(min-width:980px){.hero-grid{grid-template-columns:1.12fr .88fr;gap:3.4rem}}
+.hero h1{margin:1.1rem 0 1.1rem}
+.hero .lead{font-size:1.16rem;color:var(--ink-500);max-width:54ch}
+.hero-actions{display:flex;flex-wrap:wrap;gap:.8rem;margin:1.8rem 0 1.9rem}
+.hero-trust{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem;max-width:560px}
+@media(max-width:520px){.hero-trust{grid-template-columns:1fr}}
+.t-card{display:flex;align-items:center;gap:.7rem;background:#fff;border:1px solid var(--ink-100);
+  border-radius:14px;padding:.85rem .9rem;box-shadow:var(--shadow-sm)}
+.t-card .ic{flex:0 0 auto;color:var(--brand-600)}
+.t-card b{display:block;font-size:.9rem}
+.t-card span{font-size:.74rem;color:var(--ink-500)}
 
-/* Emergency / strip */
-.strip{background:var(--brand-dark);color:#fff}
-.strip .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.8rem;
-  padding:.9rem 20px;font-weight:600;text-align:center}
+/* Hero proof cluster (no photos needed — looks premium + loads instantly) */
+.hero-visual{position:relative;min-height:340px;display:grid;place-items:center}
+.panel{position:relative;width:100%;max-width:420px;aspect-ratio:1/.92;border-radius:var(--radius-xl);
+  background:linear-gradient(150deg,var(--brand-600),var(--brand-900));overflow:hidden;box-shadow:var(--shadow-lg)}
+.panel::before{content:"";position:absolute;inset:0;
+  background-image:radial-gradient(rgba(255,255,255,.16) 1.4px,transparent 1.4px);background-size:22px 22px;opacity:.5}
+.panel .glow{position:absolute;width:240px;height:240px;border-radius:50%;
+  background:radial-gradient(circle,var(--accent-400),transparent 65%);opacity:.55;top:-60px;right:-40px;filter:blur(10px)}
+.float{position:absolute;background:#fff;border-radius:18px;box-shadow:var(--shadow-lg);padding:1rem 1.15rem}
+.float-main{left:50%;top:50%;transform:translate(-50%,-50%);width:min(86%,320px);text-align:left}
+.float-main .stars{color:#f5a623;font-size:1.35rem;letter-spacing:3px}
+.float-main .big{font-size:2.4rem;font-weight:900;letter-spacing:-.03em;margin:.2rem 0 0}
+.float-main p{color:var(--ink-500);font-size:.9rem}
+.avis{display:flex;margin-top:.8rem}
+.avis i{width:30px;height:30px;border-radius:50%;border:2px solid #fff;margin-left:-8px;
+  display:grid;place-items:center;font-size:.72rem;font-weight:800;color:#fff;font-style:normal}
+.avis i:first-child{margin-left:0}
+.badge-float{display:flex;align-items:center;gap:.55rem;font-weight:700;font-size:.86rem}
+.badge-float .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:#fff}
+.bf-1{top:6%;left:-4%}
+.bf-2{bottom:7%;right:-4%}
+@media(max-width:520px){.bf-1{left:2%}.bf-2{right:2%}}
+
+/* Stats band */
+.stats{background:var(--ink-900);color:#fff}
+.stats .row{display:grid;grid-template-columns:repeat(2,1fr);gap:1.4rem;padding:2.2rem 0}
+@media(min-width:760px){.stats .row{grid-template-columns:repeat(4,1fr)}}
+.stat{text-align:center}
+.stat .n{font-size:clamp(1.8rem,3.4vw,2.4rem);font-weight:900;letter-spacing:-.03em;
+  background:linear-gradient(120deg,#fff,var(--brand-200));-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat .l{color:rgba(255,255,255,.62);font-size:.86rem;margin-top:.2rem}
+
+/* Strip */
+.strip{background:var(--brand-700);color:#fff}
+.strip .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.7rem;
+  padding:.85rem 22px;font-weight:600;font-size:.95rem;text-align:center}
+.strip a{text-decoration:underline;text-underline-offset:3px}
 
 /* Sections */
-section.block{padding:3.5rem 0}
-.section-head{text-align:center;max-width:46ch;margin:0 auto 2.4rem}
-.section-head h2{font-size:1.9rem;letter-spacing:-.02em;margin:.8rem 0 .5rem}
-.section-head p{color:var(--muted)}
+section.block{padding:clamp(3rem,7vw,5.5rem) 0}
+.section-head{text-align:center;max-width:640px;margin:0 auto 2.8rem}
+.section-head h2{margin:.9rem 0 .6rem}
+.section-head p{color:var(--ink-500);font-size:1.06rem}
 
 /* Services */
 .cards{display:grid;gap:1.2rem;grid-template-columns:1fr}
-@media(min-width:640px){.cards{grid-template-columns:1fr 1fr}}
-@media(min-width:980px){.cards{grid-template-columns:repeat(4,1fr)}}
-.card{border:1px solid var(--line);border-radius:16px;padding:1.5rem;background:#fff;transition:transform .15s,box-shadow .15s}
-.card:hover{transform:translateY(-4px);box-shadow:0 24px 40px -28px rgba(2,6,23,.4)}
-.card .ic{width:52px;height:52px;border-radius:13px;background:var(--brand-light);color:var(--brand);
-  display:grid;place-items:center;margin-bottom:1rem}
-.card h3{font-size:1.1rem;margin-bottom:.4rem}
-.card p{color:var(--muted);font-size:.95rem}
+@media(min-width:620px){.cards{grid-template-columns:1fr 1fr}}
+@media(min-width:1000px){.cards{grid-template-columns:repeat(4,1fr)}}
+.card{position:relative;border:1px solid var(--ink-100);border-radius:var(--radius-lg);padding:1.7rem 1.5rem;
+  background:#fff;transition:transform .16s ease,box-shadow .2s ease,border-color .2s ease;overflow:hidden}
+.card::after{content:"";position:absolute;inset:0 0 auto 0;height:4px;
+  background:linear-gradient(90deg,var(--brand-500),var(--accent-500));opacity:0;transition:opacity .2s}
+.card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:transparent}
+.card:hover::after{opacity:1}
+.card .ic{width:56px;height:56px;border-radius:15px;display:grid;place-items:center;margin-bottom:1.1rem;
+  color:var(--brand-600);background:linear-gradient(145deg,var(--brand-50),var(--brand-100))}
+.card h3{font-size:1.14rem;font-weight:700;margin-bottom:.45rem}
+.card p{color:var(--ink-500);font-size:.95rem}
 
 /* USP band */
 .usps{background:var(--bg-soft)}
-.usp-grid{display:grid;gap:1.2rem;grid-template-columns:1fr}
+.usp-grid{display:grid;gap:1.1rem;grid-template-columns:1fr}
 @media(min-width:760px){.usp-grid{grid-template-columns:repeat(3,1fr)}}
-.usp{display:flex;gap:.9rem;align-items:flex-start;background:#fff;border:1px solid var(--line);
-  border-radius:14px;padding:1.2rem}
-.usp .ic{flex:0 0 auto;width:44px;height:44px;border-radius:11px;background:var(--accent);color:var(--on-accent);
-  display:grid;place-items:center}
-.usp b{display:block;font-size:1.02rem}
+.usp{display:flex;gap:.95rem;align-items:flex-start;background:#fff;border:1px solid var(--ink-100);
+  border-radius:var(--radius);padding:1.3rem;box-shadow:var(--shadow-sm)}
+.usp .ic{flex:0 0 auto;width:46px;height:46px;border-radius:12px;display:grid;place-items:center;
+  color:var(--on-accent);background:linear-gradient(140deg,var(--accent-400),var(--accent-600))}
+.usp b{display:block;font-size:1.04rem;font-weight:700}
 
 /* Reviews */
 .reviews{display:grid;gap:1.2rem;grid-template-columns:1fr}
 @media(min-width:760px){.reviews{grid-template-columns:repeat(3,1fr)}}
-.review{border:1px solid var(--line);border-radius:16px;padding:1.4rem;background:#fff}
-.stars{color:#f59e0b;font-size:1.05rem;letter-spacing:2px}
-.review p{margin:.6rem 0;color:var(--muted)}
-.review .who{font-weight:700;font-size:.92rem}
+.review{border:1px solid var(--ink-100);border-radius:var(--radius-lg);padding:1.6rem;background:#fff;box-shadow:var(--shadow-sm)}
+.stars{color:#f5a623;font-size:1.05rem;letter-spacing:2px}
+.review p{margin:.7rem 0 1.1rem;color:var(--ink-700)}
+.review .who{display:flex;align-items:center;gap:.7rem}
+.review .who .av{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;
+  background:linear-gradient(140deg,var(--brand-500),var(--brand-700))}
+.review .who b{font-size:.94rem}
+.review .who span{font-size:.82rem;color:var(--ink-500)}
 
 /* FAQ */
-.faq{max-width:760px;margin:0 auto;display:grid;gap:.8rem}
-.faq details{border:1px solid var(--line);border-radius:12px;background:#fff;padding:0 1.2rem}
-.faq summary{cursor:pointer;font-weight:700;padding:1.1rem 0;list-style:none;display:flex;justify-content:space-between;gap:1rem}
+.faq{max-width:780px;margin:0 auto;display:grid;gap:.8rem}
+.faq details{border:1px solid var(--ink-100);border-radius:14px;background:#fff;padding:0 1.3rem;transition:box-shadow .2s}
+.faq details[open]{box-shadow:var(--shadow)}
+.faq summary{cursor:pointer;font-weight:700;padding:1.2rem 0;list-style:none;display:flex;justify-content:space-between;gap:1rem}
 .faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:"+";color:var(--brand);font-size:1.4rem;line-height:1}
+.faq summary::after{content:"+";color:var(--brand-600);font-size:1.5rem;line-height:1;font-weight:400}
 .faq details[open] summary::after{content:"–"}
-.faq details p{padding:0 0 1.1rem;color:var(--muted)}
+.faq details p{padding:0 0 1.2rem;color:var(--ink-500)}
 
 /* Final CTA */
-.cta-final{background:linear-gradient(135deg,var(--brand),var(--brand-dark));color:var(--on-brand);
-  border-radius:24px;padding:2.6rem 1.5rem;text-align:center;margin:2rem 0}
-.cta-final h2{font-size:1.8rem;margin-bottom:.6rem}
-.cta-final p{opacity:.92;max-width:46ch;margin:0 auto 1.4rem}
-.cta-final .btn-accent{font-size:1.05rem;padding:1rem 2rem}
+.cta-final{position:relative;overflow:hidden;border-radius:var(--radius-xl);
+  background:linear-gradient(135deg,var(--brand-600),var(--brand-900));color:var(--on-brand);
+  padding:clamp(2.4rem,5vw,3.6rem) 1.6rem;text-align:center}
+.cta-final .glow{position:absolute;width:360px;height:360px;border-radius:50%;
+  background:radial-gradient(circle,var(--accent-400),transparent 65%);opacity:.4;top:-120px;right:-80px}
+.cta-final h2{position:relative;color:#fff;margin-bottom:.7rem}
+.cta-final p{position:relative;opacity:.9;max-width:48ch;margin:0 auto 1.6rem;font-size:1.06rem}
 
 /* Footer */
-footer.site{background:#0b1220;color:#cbd5e1;padding:2.6rem 0;font-size:.92rem}
-footer .cols{display:grid;gap:1.6rem;grid-template-columns:1fr}
+footer.site{background:var(--ink-900);color:#aeb7c7;padding:3rem 0 2rem;font-size:.93rem}
+footer .cols{display:grid;gap:1.8rem;grid-template-columns:1fr}
 @media(min-width:680px){footer .cols{grid-template-columns:2fr 1fr 1fr}}
-footer h4{color:#fff;margin-bottom:.6rem}
+footer h4{color:#fff;margin-bottom:.7rem;font-size:.95rem}
 footer a:hover{color:#fff}
-.footnote{border-top:1px solid #1e293b;margin-top:1.8rem;padding-top:1.2rem;font-size:.82rem;color:#64748b}
+footer .brand{color:#fff}
+.footnote{border-top:1px solid rgba(255,255,255,.1);margin-top:2rem;padding-top:1.3rem;font-size:.82rem;color:#6b7689}
 
-/* "Get this website" — the offer bar pinned to the bottom (spec CTA) */
-.offer-bar{position:fixed;left:0;right:0;bottom:0;z-index:60;background:#0b1220;color:#fff;
-  border-top:3px solid var(--accent);box-shadow:0 -10px 30px -10px rgba(0,0,0,.5)}
-.offer-bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.8rem 20px}
-.offer-bar .txt{font-size:.92rem}
-.offer-bar .txt b{display:block;font-size:1rem}
-.offer-bar .txt span{color:#94a3b8}
-@media(max-width:520px){.offer-bar .txt span{display:none}}
-body{padding-bottom:84px}
+/* "Get This Website" offer bar (spec CTA) */
+.offer-bar{position:fixed;left:0;right:0;bottom:0;z-index:60;
+  background:rgba(11,18,32,.92);backdrop-filter:blur(10px);color:#fff;border-top:1px solid rgba(255,255,255,.1);
+  box-shadow:0 -12px 32px -10px rgba(0,0,0,.5)}
+.offer-bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.8rem 22px}
+.offer-bar .txt{display:flex;align-items:center;gap:.7rem;font-size:.92rem;min-width:0}
+.offer-bar .pill{flex:0 0 auto;font-size:.66rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--accent-500);color:var(--on-accent);padding:.32rem .6rem;border-radius:999px}
+.offer-bar .txt b{display:block}
+.offer-bar .txt span{color:#94a3b8;display:block;font-size:.8rem}
+@media(max-width:600px){.offer-bar .txt span{display:none}}
 
-svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.8;fill:none;
-  stroke-linecap:round;stroke-linejoin:round}
-.icon-svg{display:none}
+svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.icon-svg{position:absolute;width:0;height:0;overflow:hidden}
 </style>
 </head>
 <body>
 
-{# ---- inline SVG icon library (referenced by <use>) ---- #}
+{# ---- inline SVG icon library ---- #}
 <svg class="icon-svg" xmlns="http://www.w3.org/2000/svg"><defs>
 <g id="i-phone"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></g>
 <g id="i-check"><polyline points="20 6 9 17 4 12"/></g>
@@ -168,14 +241,22 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.8;fill:none;
 <g id="i-box"><path d="M21 8l-9-5-9 5 9 5 9-5zM3 8v8l9 5 9-5V8M12 13v8"/></g>
 <g id="i-truck"><path d="M1 7h13v9H1zM14 10h4l3 3v3h-7z"/><circle cx="5.5" cy="18" r="1.5"/><circle cx="17.5" cy="18" r="1.5"/></g>
 <g id="i-star"><polygon points="12 2 15 9 22 9.5 17 14 18.5 21 12 17.5 5.5 21 7 14 2 9.5 9 9"/></g>
+<g id="i-clock"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></g>
+<g id="i-pin"><path d="M12 21s-7-6.3-7-11a7 7 0 0 1 14 0c0 4.7-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></g>
+<g id="i-thumb"><path d="M7 22V11l5-9a2.5 2.5 0 0 1 2.5 3l-1 5H21a2 2 0 0 1 2 2.3l-1.4 7A2 2 0 0 1 19.6 22H7zM7 11H3v11h4"/></g>
 </defs></svg>
 
 <header class="site">
   <div class="wrap nav">
     <a class="brand" href="#top"><span class="mark">{{ business_name|first|upper }}</span>{{ business_name }}</a>
-    <div style="display:flex;align-items:center;gap:1rem">
+    <nav class="nav-links">
+      <a href="#services">Services</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#faq">FAQs</a>
+    </nav>
+    <div class="nav-right">
       {% if phone_number %}<a class="phone" href="tel:{{ phone_number }}"><svg class="i"><use href="#i-phone"/></svg>{{ phone_number }}</a>{% endif %}
-      <a class="btn btn-primary nav-cta" href="{% if phone_number %}tel:{{ phone_number }}{% else %}#contact{% endif %}">Get a quote</a>
+      <a class="btn btn-primary nav-cta" href="{% if phone_number %}tel:{{ phone_number }}{% else %}#contact{% endif %}">Get a free quote</a>
     </div>
   </div>
 </header>
@@ -183,41 +264,59 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.8;fill:none;
 <a id="top"></a>
 {% block hero %}
 <section class="hero">
+  <span class="blob blob-1"></span><span class="blob blob-2"></span>
   <div class="wrap hero-grid">
     <div>
-      <span class="eyebrow">{{ tagline }}</span>
-      <h1>{{ hero_headline }}</h1>
+      <span class="eyebrow"><span class="dot"></span>{{ tagline }}</span>
+      <h1>{{ trade|capfirst }}s in {{ town }} <span class="grad-text">done right.</span></h1>
       <p class="lead">{{ hero_sub }}</p>
       <div class="hero-actions">
-        {% if phone_number %}<a class="btn btn-primary" href="tel:{{ phone_number }}"><svg class="i"><use href="#i-phone"/></svg>Call {{ phone_number }}</a>{% endif %}
-        <a class="btn btn-ghost" href="#services">Our services</a>
+        {% if phone_number %}<a class="btn btn-primary btn-lg" href="tel:{{ phone_number }}"><svg class="i"><use href="#i-phone"/></svg>Call {{ phone_number }}</a>{% endif %}
+        <a class="btn btn-ghost btn-lg" href="#services">View our services</a>
       </div>
-      <div class="trust">
-        <span>★★★★★ <b>Trusted</b> in {{ town }}</span>
-        <span><b>Fully insured</b> &amp; local</span>
-        <span><b>Free</b> quotes</span>
+      <div class="hero-trust">
+        <div class="t-card"><span class="ic"><svg class="i"><use href="#i-star"/></svg></span><div><b>{{ rating }}/5 rated</b><span>by locals in {{ town }}</span></div></div>
+        <div class="t-card"><span class="ic"><svg class="i"><use href="#i-shield"/></svg></span><div><b>Fully insured</b><span>&amp; accredited</span></div></div>
+        <div class="t-card"><span class="ic"><svg class="i"><use href="#i-thumb"/></svg></span><div><b>Free quotes</b><span>no obligation</span></div></div>
       </div>
     </div>
-    <div class="hero-card">
-      <div class="ribbon"><svg class="i"><use href="#i-shield"/></svg>Why {{ business_name }}?</div>
-      <ul>
-        {% for u in usps %}<li><span class="tick"><svg class="i" style="width:14px;height:14px"><use href="#i-check"/></svg></span><span>{{ u }}</span></li>{% endfor %}
-      </ul>
+    <div class="hero-visual">
+      <div class="panel"><span class="glow"></span></div>
+      <div class="float float-main">
+        <div class="stars">★★★★★</div>
+        <p class="big">{{ rating }}/5</p>
+        <p>Trusted by homeowners across {{ service_area }}</p>
+        <div class="avis">
+          <i style="background:var(--brand-500)">JM</i><i style="background:var(--accent-500)">SP</i>
+          <i style="background:var(--brand-700)">RK</i><i style="background:var(--brand-600)">+</i>
+        </div>
+      </div>
+      <div class="float badge-float bf-1"><span class="ic" style="background:var(--brand-600)"><svg class="i" style="width:18px;height:18px"><use href="#i-check"/></svg></span>Verified local {{ trade }}</div>
+      <div class="float badge-float bf-2"><span class="ic" style="background:var(--accent-500)"><svg class="i" style="width:18px;height:18px"><use href="#i-clock"/></svg></span>Fast response</div>
     </div>
   </div>
 </section>
 {% endblock %}
 
 {% block strip %}
-<div class="strip"><div class="wrap"><svg class="i"><use href="#i-phone"/></svg>{{ emergency_line }}{% if phone_number %} — <a href="tel:{{ phone_number }}" style="text-decoration:underline">{{ phone_number }}</a>{% endif %}</div></div>
+<div class="strip"><div class="wrap"><svg class="i"><use href="#i-phone"/></svg>{{ emergency_line }}{% if phone_number %} — <a href="tel:{{ phone_number }}">{{ phone_number }}</a>{% endif %}</div></div>
 {% endblock %}
+
+<section class="stats">
+  <div class="wrap row">
+    <div class="stat"><div class="n">{{ rating }}★</div><div class="l">Average rating</div></div>
+    <div class="stat"><div class="n">{% if review_count %}{{ review_count }}+{% else %}100s{% endif %}</div><div class="l">Happy customers</div></div>
+    <div class="stat"><div class="n">{{ town }}</div><div class="l">Proudly local</div></div>
+    <div class="stat"><div class="n">7 days</div><div class="l">A week availability</div></div>
+  </div>
+</section>
 
 <section class="block" id="services">
   <div class="wrap">
     <div class="section-head">
-      <span class="eyebrow">What we do</span>
+      <span class="eyebrow"><span class="dot"></span>What we do</span>
       <h2>{{ trade|capfirst }} services in {{ town }}</h2>
-      <p>Whatever you need, {{ business_name }} has {{ service_area }} covered.</p>
+      <p>Whatever you need, {{ business_name }} has {{ service_area }} covered — fast, tidy and fully guaranteed.</p>
     </div>
     <div class="cards">
       {% for s in services %}
@@ -233,7 +332,7 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.8;fill:none;
 
 <section class="block usps">
   <div class="wrap">
-    <div class="section-head"><span class="eyebrow">The {{ business_name }} difference</span><h2>Local people you can trust</h2></div>
+    <div class="section-head"><span class="eyebrow"><span class="dot"></span>Why {{ business_name }}</span><h2>Local people you can trust</h2><p>The reasons homeowners across {{ service_area }} choose us again and again.</p></div>
     <div class="usp-grid">
       {% for u in usps %}
       <div class="usp"><span class="ic"><svg class="i"><use href="#i-check"/></svg></span><div><b>{{ u }}</b></div></div>
@@ -243,21 +342,21 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.8;fill:none;
 </section>
 
 {% block reviews %}
-<section class="block">
+<section class="block" id="reviews">
   <div class="wrap">
-    <div class="section-head"><span class="eyebrow">Reviews</span><h2>Loved by customers in {{ town }}</h2></div>
+    <div class="section-head"><span class="eyebrow"><span class="dot"></span>Reviews</span><h2>Loved by customers in {{ town }}</h2></div>
     <div class="reviews">
-      <div class="review"><div class="stars">★★★★★</div><p>"Quick, professional and tidy. Couldn't recommend {{ business_name }} more."</p><div class="who">— Sarah, {{ town }}</div></div>
-      <div class="review"><div class="stars">★★★★★</div><p>"Turned up on time, fair price, brilliant work. Will use again."</p><div class="who">— James, {{ town }}</div></div>
-      <div class="review"><div class="stars">★★★★★</div><p>"Honest advice and a great job. Exactly what you want from a local {{ trade }}."</p><div class="who">— Priya, {{ town }}</div></div>
+      <div class="review"><div class="stars">★★★★★</div><p>"Quick, professional and tidy. Couldn't recommend {{ business_name }} more — a proper local {{ trade }}."</p><div class="who"><span class="av">SJ</span><div><b>Sarah J.</b><span>{{ town }}</span></div></div></div>
+      <div class="review"><div class="stars">★★★★★</div><p>"Turned up on time, fair price and brilliant work. Will absolutely use again."</p><div class="who"><span class="av">JD</span><div><b>James D.</b><span>{{ town }}</span></div></div></div>
+      <div class="review"><div class="stars">★★★★★</div><p>"Honest advice and a great job from start to finish. Exactly what you want."</p><div class="who"><span class="av">PK</span><div><b>Priya K.</b><span>{{ town }}</span></div></div></div>
     </div>
   </div>
 </section>
 {% endblock %}
 
-<section class="block" id="contact">
+<section class="block usps" id="faq">
   <div class="wrap">
-    <div class="section-head"><span class="eyebrow">FAQs</span><h2>Good to know</h2></div>
+    <div class="section-head"><span class="eyebrow"><span class="dot"></span>FAQs</span><h2>Good to know</h2></div>
     <div class="faq">
       {% for f in faqs %}
       <details{% if forloop.first %} open{% endif %}><summary>{{ f.q }}</summary><p>{{ f.a }}</p></details>
@@ -266,12 +365,13 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.8;fill:none;
   </div>
 </section>
 
-<section class="block">
+<section class="block" id="contact">
   <div class="wrap">
     <div class="cta-final">
+      <span class="glow"></span>
       <h2>Need a {{ trade }} in {{ town }}?</h2>
-      <p>Get in touch with {{ business_name }} today for a free, no-obligation quote.</p>
-      {% if phone_number %}<a class="btn btn-accent" href="tel:{{ phone_number }}"><svg class="i"><use href="#i-phone"/></svg>Call {{ phone_number }}</a>{% else %}<a class="btn btn-accent" href="#top">Request a quote</a>{% endif %}
+      <p>Get in touch with {{ business_name }} today for a free, no-obligation quote — we cover {{ service_area }}.</p>
+      {% if phone_number %}<a class="btn btn-accent btn-lg" href="tel:{{ phone_number }}"><svg class="i"><use href="#i-phone"/></svg>Call {{ phone_number }}</a>{% else %}<a class="btn btn-accent btn-lg" href="#top">Request a quote</a>{% endif %}
     </div>
   </div>
 </section>
@@ -280,11 +380,11 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.8;fill:none;
   <div class="wrap">
     <div class="cols">
       <div>
-        <div class="brand" style="color:#fff;margin-bottom:.6rem"><span class="mark">{{ business_name|first|upper }}</span>{{ business_name }}</div>
-        <p>{{ tagline }}. Proudly serving {{ service_area }}.</p>
+        <div class="brand" style="display:flex;align-items:center;gap:.6rem;font-weight:900;font-size:1.15rem;margin-bottom:.8rem"><span class="mark">{{ business_name|first|upper }}</span>{{ business_name }}</div>
+        <p style="max-width:42ch">{{ tagline }}. Proudly serving {{ service_area }} with honest, reliable workmanship.</p>
       </div>
-      <div><h4>Contact</h4>{% if phone_number %}<p><a href="tel:{{ phone_number }}">{{ phone_number }}</a></p>{% endif %}<p>{{ town }}</p></div>
-      <div><h4>Hours</h4><p>Mon–Sun</p><p>Emergency cover available</p></div>
+      <div><h4>Contact</h4>{% if phone_number %}<p><a href="tel:{{ phone_number }}">{{ phone_number }}</a></p>{% endif %}<p><svg class="i" style="width:1em;height:1em;vertical-align:-2px"><use href="#i-pin"/></svg> {{ town }}</p></div>
+      <div><h4>Opening hours</h4><p>Mon–Sun, 7am–8pm</p><p>Emergency cover available</p></div>
     </div>
     <div class="footnote">© {{ year }} {{ business_name }}. All rights reserved. Serving {{ service_area }}.</div>
   </div>
@@ -293,7 +393,7 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.8;fill:none;
 {# ---- "Get This Website" CTA — required on every preview page (spec) ---- #}
 <div class="offer-bar">
   <div class="wrap">
-    <div class="txt"><b>Like this website?</b><span>This is a free preview built for {{ business_name }}.</span></div>
+    <div class="txt"><span class="pill">Free preview</span><div><b>Like this website?</b><span>We built this for {{ business_name }} — make it yours.</span></div></div>
     <a class="btn btn-accent" href="{{ cta_url }}" rel="nofollow">Get This Website →</a>
   </div>
 </div>

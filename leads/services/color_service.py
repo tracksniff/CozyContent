@@ -183,3 +183,31 @@ def shade(hex_color: str, percent: float) -> str:
 def readable_text_on(hex_color: str) -> str:
     """Return white or near-black depending on background luminance."""
     return "#ffffff" if _luminance(hex_color) < 0.6 else "#0f172a"
+
+
+def palette(primary: str, accent: str) -> dict:
+    """Build a full Inter-grade tint scale from the brand + accent colours.
+
+    Mirrors the reference design system (brand-50 … brand-900) so previews look
+    professionally art-directed regardless of which colour we pulled from the
+    prospect's site. If the brand colour is very light, we darken it for text
+    contrast so headings/buttons stay legible.
+    """
+    # Guard against near-white brand colours that would wash out the UI.
+    if _luminance(primary) > 0.82:
+        primary = shade(primary, -0.45)
+
+    return {
+        "brand_50": shade(primary, 0.93),
+        "brand_100": shade(primary, 0.85),
+        "brand_200": shade(primary, 0.68),
+        "brand_500": primary,
+        "brand_600": shade(primary, -0.14),
+        "brand_700": shade(primary, -0.32),
+        "brand_900": shade(primary, -0.58),
+        "accent_400": shade(accent, 0.18),
+        "accent_500": accent,
+        "accent_600": shade(accent, -0.16),
+        "on_brand": readable_text_on(primary),
+        "on_accent": readable_text_on(accent),
+    }
