@@ -1,10 +1,595 @@
-{% extends "previews/base.html" %}
-{% block page_title %}Removals &amp; Storage in {{ town }}{% endblock %}
-{% block strip %}
-<div class="strip"><div class="wrap">
-  <svg class="i"><use href="#i-truck"/></svg>{{ emergency_line }}
-  <span style="opacity:.85">·</span> Fully insured crews
-  <span style="opacity:.85">·</span> Free no-obligation surveys
-  {% if phone_number %}<span style="opacity:.85">·</span> <a href="tel:{{ phone_number }}" style="text-decoration:underline">{{ phone_number }}</a>{% endif %}
-</div></div>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<title>{{ business_name }} — {{ trade }} in {{ town }}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brand-50:{{ brand_50 }};
+    --brand-100:{{ brand_100 }};
+    --brand-200:{{ brand_200 }};
+    --brand-500:{{ brand_500 }};
+    --brand-600:{{ brand_600 }};
+    --brand-700:{{ brand_700 }};
+    --brand-900:{{ brand_900 }};
+    --accent-400:{{ accent_400 }};
+    --accent-500:{{ accent_500 }};
+    --accent-600:{{ accent_600 }};
+    --on-brand:{{ on_brand }};
+    --on-accent:{{ on_accent }};
+    --ink:#10151c;
+    --muted:#5b6573;
+    --line:#e4e8ee;
+    --paper:#ffffff;
+    --wash:#f5f7fa;
+    --maxw:1200px;
+    --r:14px;
+    --shadow:0 18px 44px -22px rgba(16,21,28,.35);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Archivo',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    color:var(--ink);background:var(--paper);line-height:1.55;
+    -webkit-font-smoothing:antialiased;padding-bottom:64px;
+  }
+  a{color:inherit;text-decoration:none}
+  img,svg{display:block;max-width:100%}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  h1,h2,h3{line-height:1.08;letter-spacing:-.02em;font-weight:800}
+  .eyebrow{
+    font-size:.74rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--accent-600);display:inline-flex;align-items:center;gap:9px;
+  }
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--accent-500);display:inline-block}
+  .btn{
+    display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:1rem;
+    padding:15px 26px;border-radius:11px;cursor:pointer;border:0;transition:.18s ease;
+    letter-spacing:.01em;
+  }
+  .btn-accent{background:var(--accent-500);color:var(--on-accent);box-shadow:0 12px 26px -12px var(--accent-600)}
+  .btn-accent:hover{background:var(--accent-600);transform:translateY(-2px)}
+  .btn-brand{background:var(--brand-600);color:var(--on-brand)}
+  .btn-brand:hover{background:var(--brand-700);transform:translateY(-2px)}
+  .btn-ghost{background:transparent;color:var(--on-brand);border:1.5px solid rgba(255,255,255,.35)}
+  .btn-ghost:hover{border-color:var(--on-brand);background:rgba(255,255,255,.08)}
+  .arrow{transition:transform .18s ease}
+  .btn:hover .arrow{transform:translateX(4px)}
+
+  /* ===== HEADER ===== */
+  header.site{position:sticky;top:0;z-index:60;background:var(--paper);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;gap:26px;height:78px}
+  .brand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:1.18rem;letter-spacing:-.02em}
+  .brand .mark{
+    width:42px;height:42px;border-radius:11px;background:var(--brand-600);color:var(--on-brand);
+    display:grid;place-items:center;flex:none;
+  }
+  .nav nav{display:flex;gap:26px;margin-left:auto;font-weight:600;font-size:.95rem;color:var(--muted)}
+  .nav nav a:hover{color:var(--brand-700)}
+  .nav .head-cta{display:flex;align-items:center;gap:16px;margin-left:26px}
+  .phone-top{display:flex;flex-direction:column;line-height:1.15;text-align:right}
+  .phone-top span{font-size:.72rem;color:var(--muted);font-weight:600}
+  .phone-top strong{font-size:1.05rem;color:var(--brand-700);font-weight:800}
+  @media(max-width:920px){.nav nav{display:none}.nav .head-cta .btn{padding:11px 16px;font-size:.9rem}}
+
+  /* ===== HERO ===== */
+  .hero{position:relative;background:var(--brand-700);color:var(--on-brand);overflow:hidden}
+  .hero::before{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(115deg,var(--brand-900) 0%,var(--brand-700) 55%,var(--brand-600) 100%);
+    z-index:0;
+  }
+  .hero-grid-lines{
+    position:absolute;inset:0;z-index:1;opacity:.10;
+    background-image:linear-gradient(var(--on-brand) 1px,transparent 1px),linear-gradient(90deg,var(--on-brand) 1px,transparent 1px);
+    background-size:46px 46px;
+    -webkit-mask-image:linear-gradient(180deg,#000,transparent 85%);
+            mask-image:linear-gradient(180deg,#000,transparent 85%);
+  }
+  .hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1.15fr .85fr;gap:54px;align-items:center;padding:78px 0 96px}
+  .hero h1{font-size:clamp(2.5rem,5.4vw,4.05rem);font-weight:900;margin:18px 0 16px}
+  .hero h1 .accent{color:var(--accent-400)}
+  .hero p.sub{font-size:1.18rem;max-width:30em;color:rgba(255,255,255,.86);margin-bottom:30px}
+  .hero .hero-eyebrow{color:var(--accent-400)}
+  .hero .hero-eyebrow::before{background:var(--accent-400)}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+  .trust-line{display:flex;align-items:center;gap:18px;margin-top:30px;flex-wrap:wrap;font-size:.9rem}
+  .stars{display:inline-flex;gap:2px;color:var(--accent-400)}
+  .trust-line .rev{color:rgba(255,255,255,.82);font-weight:600}
+
+  /* mini quote form mock */
+  .quote-card{
+    background:var(--paper);color:var(--ink);border-radius:18px;padding:26px;box-shadow:var(--shadow);
+    border:1px solid rgba(255,255,255,.4);
+  }
+  .quote-card h3{font-size:1.18rem;margin-bottom:4px}
+  .quote-card .qsub{font-size:.88rem;color:var(--muted);margin-bottom:20px}
+  .qfield{position:relative;margin-bottom:14px}
+  .qfield label{display:block;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  .qfield .ipt{
+    display:flex;align-items:center;gap:11px;border:1.5px solid var(--line);border-radius:11px;
+    padding:13px 15px;background:var(--wash);font-weight:600;color:var(--muted);font-size:.97rem;
+  }
+  .qfield .pin{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;flex:none;color:var(--on-brand);font-weight:800;font-size:.74rem}
+  .pin-a{background:var(--brand-600)}
+  .pin-b{background:var(--accent-500)}
+  .route-dots{display:flex;flex-direction:column;align-items:center;gap:4px;margin:-6px 0 -6px 12px;height:14px;justify-content:center}
+  .route-dots span{width:3px;height:3px;border-radius:50%;background:var(--brand-200)}
+  .quote-card .btn{width:100%;justify-content:center;margin-top:8px}
+  .quote-meta{display:flex;gap:14px;margin-top:16px;font-size:.78rem;color:var(--muted);font-weight:600;flex-wrap:wrap}
+  .quote-meta b{color:var(--brand-700)}
+
+  /* route motif strip */
+  .route-motif{position:relative;z-index:2;padding:0 0 8px}
+  .route-svg{width:100%;height:auto;display:block;opacity:.9}
+
+  @media(max-width:860px){
+    .hero-inner{grid-template-columns:1fr;gap:38px;padding:54px 0 70px}
+    .hero h1{font-size:clamp(2.1rem,9vw,3rem)}
+  }
+
+  /* ===== STEPPER ===== */
+  .process{padding:88px 0;background:var(--paper)}
+  .sec-head{max-width:46em;margin-bottom:46px}
+  .sec-head h2{font-size:clamp(1.9rem,3.6vw,2.7rem);margin:14px 0 12px;color:var(--ink)}
+  .sec-head p{color:var(--muted);font-size:1.08rem}
+  .stepper{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+  .stepper::before{
+    content:"";position:absolute;top:31px;left:12.5%;right:12.5%;height:3px;
+    background:repeating-linear-gradient(90deg,var(--brand-200) 0 12px,transparent 12px 22px);
+    z-index:0;
+  }
+  .step{position:relative;z-index:1;text-align:center;padding:0 18px}
+  .step .node{
+    width:64px;height:64px;border-radius:50%;margin:0 auto 22px;display:grid;place-items:center;
+    background:var(--paper);border:3px solid var(--brand-600);color:var(--brand-700);position:relative;
+    box-shadow:0 0 0 8px var(--paper);
+  }
+  .step .num{
+    position:absolute;top:-10px;right:-10px;width:28px;height:28px;border-radius:50%;
+    background:var(--accent-500);color:var(--on-accent);font-weight:900;font-size:.85rem;display:grid;place-items:center;
+  }
+  .step h3{font-size:1.18rem;margin-bottom:8px}
+  .step p{color:var(--muted);font-size:.95rem}
+  @media(max-width:760px){
+    .stepper{grid-template-columns:1fr 1fr;gap:36px 0}
+    .stepper::before{display:none}
+  }
+
+  /* ===== SERVICES ===== */
+  .services{padding:88px 0;background:var(--wash)}
+  .svc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+  .svc{
+    background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:30px;
+    display:flex;gap:20px;align-items:flex-start;transition:.2s ease;position:relative;overflow:hidden;
+  }
+  .svc::after{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--brand-600);transform:scaleY(0);transform-origin:top;transition:.22s ease}
+  .svc:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:var(--brand-200)}
+  .svc:hover::after{transform:scaleY(1)}
+  .svc .ico{
+    width:56px;height:56px;border-radius:13px;flex:none;display:grid;place-items:center;
+    background:var(--brand-50);color:var(--brand-700);border:1px solid var(--brand-100);
+  }
+  .svc h3{font-size:1.2rem;margin-bottom:7px}
+  .svc p{color:var(--muted);font-size:.96rem}
+  @media(max-width:680px){.svc-grid{grid-template-columns:1fr}}
+
+  /* ===== RELIABILITY BAND ===== */
+  .reliability{background:var(--brand-600);color:var(--on-brand);padding:30px 0}
+  .rel-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .rel{display:flex;align-items:center;gap:13px;font-weight:700;font-size:1rem}
+  .rel .chk{
+    width:38px;height:38px;border-radius:10px;flex:none;display:grid;place-items:center;
+    background:rgba(255,255,255,.14);color:var(--accent-400);
+  }
+  @media(max-width:760px){.rel-grid{grid-template-columns:1fr 1fr;gap:20px}}
+
+  /* ===== WHY US / USPS ===== */
+  .why{padding:88px 0}
+  .why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;counter-reset:usp}
+  .usp{
+    border:1px solid var(--line);border-radius:var(--r);padding:32px 28px;background:var(--paper);
+    position:relative;counter-increment:usp;
+  }
+  .usp::before{
+    content:"0" counter(usp);font-weight:900;font-size:2.4rem;color:var(--brand-100);
+    line-height:1;display:block;margin-bottom:14px;letter-spacing:-.04em;
+  }
+  .usp p{font-weight:700;font-size:1.12rem;color:var(--ink);letter-spacing:-.01em}
+  @media(max-width:760px){.why-grid{grid-template-columns:1fr}}
+
+  /* ===== REVIEWS ===== */
+  .reviews{padding:88px 0;background:var(--brand-900);color:var(--on-brand)}
+  .reviews .sec-head h2{color:var(--on-brand)}
+  .reviews .sec-head p{color:rgba(255,255,255,.78)}
+  .rev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .rev-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:var(--r);padding:28px}
+  .rev-card .stars{margin-bottom:14px}
+  .rev-card blockquote{font-size:1.02rem;line-height:1.6;color:rgba(255,255,255,.92);margin-bottom:18px}
+  .rev-card .who{display:flex;align-items:center;gap:12px}
+  .rev-card .av{width:42px;height:42px;border-radius:50%;background:var(--accent-500);color:var(--on-accent);display:grid;place-items:center;font-weight:900;flex:none}
+  .rev-card .who b{display:block;font-size:.96rem}
+  .rev-card .who span{font-size:.82rem;color:rgba(255,255,255,.7)}
+  @media(max-width:760px){.rev-grid{grid-template-columns:1fr}}
+
+  /* ===== FAQ ===== */
+  .faq{padding:88px 0;background:var(--wash)}
+  .faq-list{max-width:780px;margin:0 auto}
+  details.q{background:var(--paper);border:1px solid var(--line);border-radius:12px;margin-bottom:14px;overflow:hidden}
+  details.q[open]{border-color:var(--brand-200);box-shadow:var(--shadow)}
+  details.q summary{
+    list-style:none;cursor:pointer;padding:22px 24px;font-weight:800;font-size:1.06rem;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;color:var(--ink);
+  }
+  details.q summary::-webkit-details-marker{display:none}
+  details.q summary .ic{
+    width:30px;height:30px;border-radius:8px;background:var(--brand-50);color:var(--brand-700);
+    display:grid;place-items:center;flex:none;font-size:1.3rem;font-weight:700;transition:.2s ease;
+  }
+  details.q[open] summary .ic{background:var(--brand-600);color:var(--on-brand);transform:rotate(45deg)}
+  details.q .ans{padding:0 24px 24px;color:var(--muted);font-size:1rem;line-height:1.65}
+
+  /* ===== CLOSING CTA ===== */
+  .closing{padding:0 0 88px}
+  .closing-card{
+    background:linear-gradient(115deg,var(--brand-700),var(--brand-600));color:var(--on-brand);
+    border-radius:24px;padding:64px;display:grid;grid-template-columns:1.4fr .6fr;gap:40px;align-items:center;
+    position:relative;overflow:hidden;
+  }
+  .closing-card .route-bg{position:absolute;inset:0;opacity:.15;pointer-events:none}
+  .closing-card h2{font-size:clamp(1.9rem,3.6vw,2.7rem);margin-bottom:14px;position:relative}
+  .closing-card p{color:rgba(255,255,255,.86);font-size:1.1rem;max-width:34em;position:relative}
+  .closing-card .actions{display:flex;flex-direction:column;gap:14px;position:relative}
+  .closing-card .actions .btn{justify-content:center}
+  .closing-card .ph{text-align:center;margin-top:6px;font-size:.92rem;color:rgba(255,255,255,.82)}
+  .closing-card .ph a{font-weight:800;color:var(--accent-400)}
+  @media(max-width:760px){.closing-card{grid-template-columns:1fr;padding:40px 28px}}
+
+  /* ===== FOOTER ===== */
+  footer.site{background:var(--ink);color:rgba(255,255,255,.7);padding:56px 0 28px}
+  .foot-top{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:34px;padding-bottom:34px;border-bottom:1px solid rgba(255,255,255,.12)}
+  .foot-brand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:1.2rem;color:#fff;margin-bottom:14px}
+  .foot-brand .mark{width:40px;height:40px;border-radius:10px;background:var(--brand-600);color:var(--on-brand);display:grid;place-items:center;flex:none}
+  footer.site p{font-size:.92rem;line-height:1.6}
+  footer.site h4{color:#fff;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px}
+  footer.site ul{list-style:none}
+  footer.site ul li{margin-bottom:9px;font-size:.92rem}
+  footer.site ul li a:hover{color:#fff}
+  .foot-bot{padding-top:24px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:.82rem;color:rgba(255,255,255,.5)}
+  @media(max-width:760px){.foot-top{grid-template-columns:1fr;gap:26px}}
+
+  /* ===== PERSISTENT BAR ===== */
+  .gtw-bar{
+    position:fixed;left:0;right:0;bottom:0;z-index:90;background:var(--ink);color:#fff;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;padding:11px 24px;
+    border-top:3px solid var(--accent-500);box-shadow:0 -10px 30px -16px rgba(0,0,0,.5);
+  }
+  .gtw-bar .msg{font-weight:700;font-size:.95rem;display:flex;align-items:center;gap:11px}
+  .gtw-bar .msg .dot{width:9px;height:9px;border-radius:50%;background:var(--accent-500);box-shadow:0 0 0 4px rgba(255,255,255,.08)}
+  .gtw-bar .btn{padding:11px 22px;font-size:.95rem}
+  @media(max-width:620px){.gtw-bar .msg span.long{display:none}.gtw-bar{padding:10px 16px}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site">
+  <div class="wrap nav">
+    <a class="brand" href="#">
+      <span class="mark" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h13v13H1z"/><path d="M14 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2"/><circle cx="17.5" cy="18.5" r="2"/></svg>
+      </span>
+      {{ business_name }}
+    </a>
+    <nav>
+      <a href="#process">How it works</a>
+      <a href="#services">Services</a>
+      <a href="#why">Why us</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="head-cta">
+      {% if phone_number %}
+      <a class="phone-top" href="tel:{{ phone_number }}">
+        <span>Call our team</span>
+        <strong>{{ phone_number }}</strong>
+      </a>
+      {% endif %}
+      <a class="btn btn-accent" href="#quote">Get a quote <span class="arrow">&rarr;</span></a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid-lines" aria-hidden="true"></div>
+  <div class="wrap hero-inner">
+    <div class="hero-copy">
+      <span class="eyebrow hero-eyebrow">{{ trade }} &middot; {{ service_area }}</span>
+      <h1>{{ tagline }}<br><span class="accent">{{ town }}, sorted.</span></h1>
+      <p class="sub">{{ hero_sub }}</p>
+      <div class="hero-cta">
+        <a class="btn btn-accent" href="{{ cta_url }}" rel="nofollow">Get a moving quote <span class="arrow">&rarr;</span></a>
+        {% if phone_number %}
+        <a class="btn btn-ghost" href="tel:{{ phone_number }}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          {{ phone_number }}
+        </a>
+        {% endif %}
+      </div>
+      <div class="trust-line">
+        <span class="stars" aria-label="{{ rating }} out of 5">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5 7 .9-5 4.9 1.2 7L12 18l-6.2 3.3L7 14.3l-5-4.9 7-.9z"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5 7 .9-5 4.9 1.2 7L12 18l-6.2 3.3L7 14.3l-5-4.9 7-.9z"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5 7 .9-5 4.9 1.2 7L12 18l-6.2 3.3L7 14.3l-5-4.9 7-.9z"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5 7 .9-5 4.9 1.2 7L12 18l-6.2 3.3L7 14.3l-5-4.9 7-.9z"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5 7 .9-5 4.9 1.2 7L12 18l-6.2 3.3L7 14.3l-5-4.9 7-.9z"/></svg>
+        </span>
+        <span class="rev"><strong>{{ rating }}/5</strong> &middot; {{ review_count }} verified moves</span>
+      </div>
+    </div>
+
+    <!-- MINI QUOTE FORM MOCK -->
+    <div class="quote-card" id="quote">
+      <h3>Get a moving quote</h3>
+      <p class="qsub">Free, no-obligation. Reply within the hour.</p>
+      <div class="qfield">
+        <label>Moving from</label>
+        <div class="ipt"><span class="pin pin-a">A</span> Your current address</div>
+      </div>
+      <div class="route-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="qfield">
+        <label>Moving to</label>
+        <div class="ipt"><span class="pin pin-b">B</span> Where you're heading</div>
+      </div>
+      <a class="btn btn-accent" href="{{ cta_url }}" rel="nofollow">See my price <span class="arrow">&rarr;</span></a>
+      <div class="quote-meta">
+        <span>&check; <b>Fixed</b> written quote</span>
+        <span>&check; <b>Free</b> home survey</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROUTE / JOURNEY MOTIF -->
+  <div class="wrap route-motif" aria-hidden="true">
+    <svg class="route-svg" viewBox="0 0 1200 70" preserveAspectRatio="none" fill="none">
+      <path d="M40 50 C 300 50, 360 18, 600 18 S 900 50, 1160 50" stroke="var(--accent-400)" stroke-width="2.5" stroke-dasharray="9 9" stroke-linecap="round"/>
+      <circle cx="40" cy="50" r="9" fill="var(--accent-500)"/>
+      <circle cx="40" cy="50" r="3.5" fill="#fff"/>
+      <circle cx="1160" cy="50" r="9" fill="var(--accent-500)"/>
+      <circle cx="1160" cy="50" r="3.5" fill="#fff"/>
+      <g transform="translate(560 -8)">
+        <rect x="0" y="6" width="44" height="22" rx="2" fill="var(--brand-600)"/>
+        <path d="M44 12 H58 L66 20 V28 H44 Z" fill="var(--brand-500)"/>
+        <circle cx="14" cy="30" r="4" fill="#10151c"/>
+        <circle cx="54" cy="30" r="4" fill="#10151c"/>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- PROCESS / STEPPER -->
+<section class="process" id="process">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">The {{ business_name }} method</span>
+      <h2>Four organised steps, zero surprises</h2>
+      <p>A clear journey from your front door to your new home &mdash; planned, packed and delivered by one accountable crew.</p>
+    </div>
+    <div class="stepper">
+      <div class="step">
+        <div class="node">
+          <span class="num">1</span>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <h3>Survey</h3>
+        <p>Free home or video survey to scope your move and lock a fixed written quote.</p>
+      </div>
+      <div class="step">
+        <div class="node">
+          <span class="num">2</span>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
+        </div>
+        <h3>Pack</h3>
+        <p>Professional materials and careful wrapping &mdash; fragiles, furniture and everything between.</p>
+      </div>
+      <div class="step">
+        <div class="node">
+          <span class="num">3</span>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="13" height="11" rx="1"/><path d="M14 9h4l3 3v5h-7z"/><circle cx="5" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+        </div>
+        <h3>Move</h3>
+        <p>Modern, GPS-tracked vehicles and uniformed crews get your belongings there safely, on time.</p>
+      </div>
+      <div class="step">
+        <div class="node">
+          <span class="num">4</span>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+        </div>
+        <h3>Unpack</h3>
+        <p>Boxes placed room-by-room, beds rebuilt, packaging removed &mdash; you settle straight in.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">What we move</span>
+      <h2>Removals built around how you live</h2>
+      <p>From a single-room flat to a full commercial relocation &mdash; one trusted team across {{ service_area }}.</p>
+    </div>
+    <div class="svc-grid">
+      {% for s in services %}
+      <article class="svc">
+        <span class="ico" aria-hidden="true">
+          {% if s.icon == "truck" %}
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="13" height="11" rx="1"/><path d="M14 9h4l3 3v5h-7z"/><circle cx="5" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+          {% elif s.icon == "box" %}
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M3 8l9 5 9-5"/></svg>
+          {% elif s.icon == "building" %}
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="1"/><path d="M9 6h2M13 6h2M9 10h2M13 10h2M9 14h2M13 14h2"/><path d="M10 22v-4h4v4"/></svg>
+          {% elif s.icon == "layers" %}
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5z"/><path d="M2 12l10 5 10-5"/><path d="M2 17l10 5 10-5"/></svg>
+          {% else %}
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="13" height="11" rx="1"/><path d="M14 9h4l3 3v5h-7z"/><circle cx="5" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+          {% endif %}
+        </span>
+        <div>
+          <h3>{{ s.title }}</h3>
+          <p>{{ s.desc }}</p>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- RELIABILITY BAND -->
+<section class="reliability">
+  <div class="wrap rel-grid">
+    <div class="rel"><span class="chk"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span> Fully insured</div>
+    <div class="rel"><span class="chk"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span> Free no-obligation survey</div>
+    <div class="rel"><span class="chk"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span> Uniformed crews</div>
+    <div class="rel"><span class="chk"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span> Fixed written quotes</div>
+  </div>
+</section>
+
+<!-- WHY US / USPS -->
+<section class="why" id="why">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Why {{ town }} chooses us</span>
+      <h2>Reliable logistics, every single move</h2>
+      <p>We treat your belongings like our own &mdash; and back it with process, people and proper cover.</p>
+    </div>
+    <div class="why-grid">
+      {% for u in usps %}
+      <div class="usp"><p>{{ u }}</p></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews" id="reviews">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Rated {{ rating }}/5 by movers</span>
+      <h2>Trusted across {{ town }}</h2>
+      <p>{{ review_count }} families and businesses moved without the stress.</p>
+    </div>
+    <div class="rev-grid">
+      <article class="rev-card">
+        <span class="stars" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5 7 .9-5 4.9 1.2 7L12 18l-6.2 3.3L7 14.3l-5-4.9 7-.9z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5 7 .9-5 4.9 1.2 7L12 18l-6.2 3.3L7 14.3l-5-4.9 7-.9z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5 7 .9-5 4.9 1.2 7L12 18l-6.2 3.3L7 14.3l-5-4.9 7-.9z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5 7 .9-5 4.9 1.2 7L12 18l-6.2 3.3L7 14.3l-5-4.9 7-.9z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5 7 .9-5 4.9 1.2 7L12 18l-6.2 3.3L7 14.3l-5-4.9 7-.9z"/></svg>
+        </span>
+        <blockquote>"From survey to unpack the whole move ran like clockwork. Punctual, careful with our furniture and not a single scratch. Genuinely stress-free."</blockquote>
+        <div class="who"><span class="av">SJ</span><div><b>Sarah J.</b><span>House move &middot; {{ town }}</span></div></div>
+      </article>
+      <article class="rev-card">
+        <span class="stars" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5 7 .9-5 4.9 1.2 7L12 18l-6.2 3.3L7 14.3l-5-4.9 7-.9z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5 7 .9-5 4.9 1.2 7L12 18l-6.2 3.3L7 14.3l-5-4.9 7-.9z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5 7 .9-5 4.9 1.2 7L12 18l-6.2 3.3L7 14.3l-5-4.9 7-.9z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5 7 .9-5 4.9 1.2 7L12 18l-6.2 3.3L7 14.3l-5-4.9 7-.9z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5 7 .9-5 4.9 1.2 7L12 18l-6.2 3.3L7 14.3l-5-4.9 7-.9z"/></svg>
+        </span>
+        <blockquote>"We relocated our office over a weekend and were trading again Monday morning. The fixed written quote was exactly what we paid. Faultless."</blockquote>
+        <div class="who"><span class="av">DM</span><div><b>David M.</b><span>Office relocation &middot; {{ service_area }}</span></div></div>
+      </article>
+      <article class="rev-card">
+        <span class="stars" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5 7 .9-5 4.9 1.2 7L12 18l-6.2 3.3L7 14.3l-5-4.9 7-.9z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5 7 .9-5 4.9 1.2 7L12 18l-6.2 3.3L7 14.3l-5-4.9 7-.9z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5 7 .9-5 4.9 1.2 7L12 18l-6.2 3.3L7 14.3l-5-4.9 7-.9z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5 7 .9-5 4.9 1.2 7L12 18l-6.2 3.3L7 14.3l-5-4.9 7-.9z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 6.5 7 .9-5 4.9 1.2 7L12 18l-6.2 3.3L7 14.3l-5-4.9 7-.9z"/></svg>
+        </span>
+        <blockquote>"The crew packed everything for us and labelled it by room. Unloading was effortless. Polite, uniformed and clearly knew exactly what they were doing."</blockquote>
+        <div class="who"><span class="av">PK</span><div><b>Priya K.</b><span>Packing &amp; move &middot; {{ town }}</span></div></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="wrap">
+    <div class="sec-head" style="text-align:center;margin-left:auto;margin-right:auto">
+      <span class="eyebrow" style="justify-content:center;display:inline-flex">Before you book</span>
+      <h2>Moving questions, answered</h2>
+    </div>
+    <div class="faq-list">
+      {% for f in faqs %}
+      <details class="q"{% if forloop.first %} open{% endif %}>
+        <summary>{{ f.q }}<span class="ic" aria-hidden="true">+</span></summary>
+        <div class="ans">{{ f.a }}</div>
+      </details>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING CTA -->
+<section class="closing">
+  <div class="wrap">
+    <div class="closing-card">
+      <svg class="route-bg" viewBox="0 0 600 200" preserveAspectRatio="none" aria-hidden="true"><path d="M-20 150 C 150 150, 200 60, 320 60 S 480 150, 620 120" stroke="#fff" stroke-width="2" stroke-dasharray="8 8" fill="none"/></svg>
+      <div>
+        <span class="eyebrow" style="color:var(--accent-400)">Ready when you are</span>
+        <h2>Let's plan your move</h2>
+        <p>Book a free, no-obligation survey and get a fixed written quote from {{ business_name }} &mdash; the {{ trade }} {{ town }} relies on.</p>
+      </div>
+      <div class="actions">
+        <a class="btn btn-accent" href="{{ cta_url }}" rel="nofollow">Get a moving quote <span class="arrow">&rarr;</span></a>
+        {% if phone_number %}
+        <a class="btn btn-ghost" href="tel:{{ phone_number }}">Call {{ phone_number }}</a>
+        <p class="ph">Or speak to us now: <a href="tel:{{ phone_number }}">{{ phone_number }}</a></p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site">
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <div class="foot-brand">
+          <span class="mark" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h13v13H1z"/><path d="M14 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2"/><circle cx="17.5" cy="18.5" r="2"/></svg></span>
+          {{ business_name }}
+        </div>
+        <p>Professional {{ trade }} serving {{ town }} and {{ service_area }}. Fully insured, fixed written quotes and uniformed crews on every move.</p>
+        {% if emergency_line %}<p style="margin-top:12px;color:var(--accent-400);font-weight:700">Urgent move? {{ emergency_line }}</p>{% endif %}
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul>
+          {% for s in services %}<li><a href="#services">{{ s.title }}</a></li>{% endfor %}
+        </ul>
+      </div>
+      <div>
+        <h4>Get in touch</h4>
+        <ul>
+          {% if phone_number %}<li><a href="tel:{{ phone_number }}">{{ phone_number }}</a></li>{% endif %}
+          <li>{{ service_area }}</li>
+          <li><a href="{{ cta_url }}" rel="nofollow">Request a quote</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span>&copy; {{ year }} {{ business_name }}. All rights reserved.</span>
+      <span>{{ trade }} &middot; {{ town }} &middot; Rated {{ rating }}/5 from {{ review_count }} reviews</span>
+    </div>
+  </div>
+</footer>
+
+<!-- PERSISTENT GET-THIS-WEBSITE BAR -->
+<div class="gtw-bar">
+  <div class="msg"><span class="dot" aria-hidden="true"></span> <span>Like this website?<span class="long"> A bespoke site like this for {{ business_name }}.</span></span></div>
+  <a class="btn btn-accent" href="{{ cta_url }}" rel="nofollow">Get This Website <span class="arrow">&rarr;</span></a>
+</div>
+
+</body>
+</html>
