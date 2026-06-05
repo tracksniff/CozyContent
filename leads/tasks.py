@@ -201,6 +201,27 @@ def audit_website_batch() -> dict:
     return stats
 
 
+@shared_task(name="leads.audit_single_business")
+def audit_single_business(business_id: int) -> dict:
+    """Audit a single business by ID (HTML check + PageSpeed)."""
+    threshold = getattr(settings, "AUDIT_OUTDATED_THRESHOLD", 50)
+    stats = {"html_failed": 0, "scored": 0, "errors": 0, "queued": 0}
+
+    try:
+        business = Business.objects.get(pk=business_id)
+        if not business.website:
+            return {"error": "Business has no website"}
+        
+        _audit_one(business, threshold, stats)
+    except Business.DoesNotExist:
+        return {"error": f"Business {business_id} not found"}
+    except Exception as e:
+        logger.exception("Manual audit failed for business %s", business_id)
+        return {"error": str(e)}
+
+    return stats
+
+
 def _audit_one(business: Business, threshold: int, stats: dict) -> None:
     now = timezone.now()
     url = business.website
