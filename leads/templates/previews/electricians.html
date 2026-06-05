@@ -1,0 +1,10 @@
+{% extends "previews/base.html" %}
+{% block page_title %}Approved Electricians in {{ town }}{% endblock %}
+{% block strip %}
+<div class="strip"><div class="wrap">
+  <svg class="i"><use href="#i-bolt"/></svg>{{ emergency_line }}
+  <span style="opacity:.85">·</span> NICEIC-standard work
+  <span style="opacity:.85">·</span> Certificates issued
+  {% if phone_number %}<span style="opacity:.85">·</span> <a href="tel:{{ phone_number }}" style="text-decoration:underline">{{ phone_number }}</a>{% endif %}
+</div></div>
+{% endblock %}

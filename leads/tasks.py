@@ -7,10 +7,12 @@ from django.db import IntegrityError, transaction
 from django.db.models import Q
 from django.utils import timezone
 
-from .models import Business, OutreachQueue
+from .models import Business, OutreachQueue, WebsitePreview
 from .services.html_check_service import quick_check
+from .services.preview_service import build_preview
 from .services.outscraper_service import search
 from .services.pagespeed_service import score as pagespeed_score
+from .services.brevo_service import send_outreach_email
 
 logger = logging.getLogger(__name__)
 
@@ -271,9 +273,93 @@ def _audit_one(business: Business, threshold: int, stats: dict) -> None:
     business.save()
     stats["scored"] += 1
 
-    # 5. Queue outreach if outdated
+    # 5. Outdated → generate a personalised preview, then queue outreach.
     if business.is_outdated:
+        # Build the preview first so the outreach email can link to it.
+        generate_preview_for_business.delay(business.pk)
         reason = f"mobile performance {mobile_perf} < {threshold}"
         if _enqueue_outreach(business, reason):
             stats["queued"] += 1
             logger.info("Queued outreach for %s — %s", business.name, reason)
+
+
+@shared_task(name="leads.process_outreach_queue")
+def process_outreach_queue() -> dict:
+    """Process the OutreachQueue and send emails via Brevo."""
+    batch_size = getattr(settings, "OUTREACH_BATCH_SIZE", 20)
+    queue = OutreachQueue.objects.filter(
+        status=OutreachQueue.STATUS_QUEUED,
+        scheduled_at__lte=timezone.now()
+    ).select_related("business")[:batch_size]
+
+    stats = {"sent": 0, "failed": 0, "skipped": 0}
+
+    for entry in queue:
+        business = entry.business
+        if not business.email:
+            entry.status = OutreachQueue.STATUS_SKIPPED
+            entry.reason = "No email address"
+            entry.save()
+            stats["skipped"] += 1
+            continue
+
+        entry.status = OutreachQueue.STATUS_SENDING
+        entry.save()
+
+        success = send_outreach_email(business)
+        if success:
+            entry.status = OutreachQueue.STATUS_SENT
+            entry.sent_at = timezone.now()
+            entry.save()
+            stats["sent"] += 1
+        else:
+            entry.status = OutreachQueue.STATUS_FAILED
+            entry.attempts += 1
+            entry.last_error = "Brevo API error"
+            entry.save()
+            stats["failed"] += 1
+
+    return stats
+
+
+# ---------------------------------------------------------------------------
+# Website preview generation (Stage 2)
+# ---------------------------------------------------------------------------
+
+
+@shared_task(name="leads.generate_preview_for_business")
+def generate_preview_for_business(business_id: int) -> dict:
+    """Build (or refresh) the personalised preview site for one business.
+
+    Triggered automatically when a website is marked ``is_outdated``; also
+    runnable on demand from the admin.
+    """
+    try:
+        business = Business.objects.get(pk=business_id)
+    except Business.DoesNotExist:
+        return {"error": f"Business {business_id} not found"}
+
+    try:
+        preview = build_preview(business)
+    except Exception as exc:  # noqa: BLE001
+        logger.exception("Preview generation failed for business %s", business_id)
+        return {"error": str(exc)}
+
+    return {
+        "preview_id": preview.pk,
+        "slug": preview.slug,
+        "color_primary": preview.color_primary,
+        "color_source": preview.color_source,
+        "expires_at": preview.expires_at.isoformat(),
+    }
+
+
+@shared_task(name="leads.expire_old_previews")
+def expire_old_previews() -> dict:
+    """Delete unclaimed previews past their 30-day expiry to manage storage."""
+    now = timezone.now()
+    stale = WebsitePreview.objects.filter(is_claimed=False, expires_at__lt=now)
+    count = stale.count()
+    stale.delete()
+    logger.info("expire_old_previews removed %d expired previews", count)
+    return {"deleted": count}

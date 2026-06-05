@@ -1,0 +1,302 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+{# Preview pages must NOT be indexed (spec). #}
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<meta name="theme-color" content="{{ color_primary }}">
+<title>{{ business_name }} — {% block page_title %}{{ trade|capfirst }} in {{ town }}{% endblock %}</title>
+<meta name="description" content="{{ hero_sub }}">
+<style>
+:root{
+  --brand:{{ color_primary }};
+  --brand-dark:{{ color_primary_dark }};
+  --brand-light:{{ color_primary_light }};
+  --accent:{{ color_accent }};
+  --on-brand:{{ color_on_primary }};
+  --on-accent:{{ color_on_accent }};
+  --ink:#0f172a; --muted:#475569; --line:#e2e8f0; --bg:#ffffff; --bg-soft:#f8fafc;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+.wrap{width:100%;max-width:1120px;margin:0 auto;padding:0 20px}
+.btn{display:inline-flex;align-items:center;gap:.5rem;font-weight:700;border-radius:999px;
+  padding:.85rem 1.6rem;font-size:1rem;cursor:pointer;border:0;transition:transform .15s,box-shadow .15s;white-space:nowrap}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{background:var(--brand);color:var(--on-brand);box-shadow:0 8px 24px -8px var(--brand)}
+.btn-accent{background:var(--accent);color:var(--on-accent);box-shadow:0 8px 24px -8px var(--accent)}
+.btn-ghost{background:transparent;color:var(--brand);border:2px solid var(--brand)}
+.eyebrow{display:inline-block;font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--brand);background:var(--brand-light);padding:.35rem .8rem;border-radius:999px}
+
+/* Header */
+header.site{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:68px}
+.brand{display:flex;align-items:center;gap:.6rem;font-weight:800;font-size:1.2rem}
+.brand .mark{width:38px;height:38px;border-radius:10px;background:var(--brand);color:var(--on-brand);
+  display:grid;place-items:center;font-weight:800}
+.nav .phone{display:flex;align-items:center;gap:.5rem;font-weight:700;color:var(--brand)}
+.nav-cta{display:none}
+@media(min-width:680px){.nav-cta{display:inline-flex}}
+
+/* Hero */
+.hero{position:relative;overflow:hidden;background:
+  radial-gradient(1200px 600px at 80% -10%,var(--brand-light),transparent 60%),var(--bg)}
+.hero-grid{display:grid;gap:2rem;padding:3rem 0;align-items:center}
+@media(min-width:900px){.hero-grid{grid-template-columns:1.1fr .9fr;padding:4.5rem 0}}
+.hero h1{font-size:2.1rem;line-height:1.15;letter-spacing:-.02em;margin:1rem 0}
+@media(min-width:900px){.hero h1{font-size:3.1rem}}
+.hero p.lead{font-size:1.12rem;color:var(--muted);max-width:38ch}
+.hero-actions{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:1.6rem}
+.trust{display:flex;flex-wrap:wrap;gap:1.2rem;margin-top:1.8rem;color:var(--muted);font-size:.92rem}
+.trust b{color:var(--ink)}
+.hero-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:1.6rem;
+  box-shadow:0 30px 60px -30px rgba(2,6,23,.25)}
+.hero-card .ribbon{display:flex;align-items:center;gap:.6rem;font-weight:800;color:var(--brand);margin-bottom:1rem}
+.hero-card ul{list-style:none;display:grid;gap:.8rem}
+.hero-card li{display:flex;gap:.7rem;align-items:flex-start}
+.tick{flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:var(--brand);color:var(--on-brand);
+  display:grid;place-items:center}
+
+/* Emergency / strip */
+.strip{background:var(--brand-dark);color:#fff}
+.strip .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.8rem;
+  padding:.9rem 20px;font-weight:600;text-align:center}
+
+/* Sections */
+section.block{padding:3.5rem 0}
+.section-head{text-align:center;max-width:46ch;margin:0 auto 2.4rem}
+.section-head h2{font-size:1.9rem;letter-spacing:-.02em;margin:.8rem 0 .5rem}
+.section-head p{color:var(--muted)}
+
+/* Services */
+.cards{display:grid;gap:1.2rem;grid-template-columns:1fr}
+@media(min-width:640px){.cards{grid-template-columns:1fr 1fr}}
+@media(min-width:980px){.cards{grid-template-columns:repeat(4,1fr)}}
+.card{border:1px solid var(--line);border-radius:16px;padding:1.5rem;background:#fff;transition:transform .15s,box-shadow .15s}
+.card:hover{transform:translateY(-4px);box-shadow:0 24px 40px -28px rgba(2,6,23,.4)}
+.card .ic{width:52px;height:52px;border-radius:13px;background:var(--brand-light);color:var(--brand);
+  display:grid;place-items:center;margin-bottom:1rem}
+.card h3{font-size:1.1rem;margin-bottom:.4rem}
+.card p{color:var(--muted);font-size:.95rem}
+
+/* USP band */
+.usps{background:var(--bg-soft)}
+.usp-grid{display:grid;gap:1.2rem;grid-template-columns:1fr}
+@media(min-width:760px){.usp-grid{grid-template-columns:repeat(3,1fr)}}
+.usp{display:flex;gap:.9rem;align-items:flex-start;background:#fff;border:1px solid var(--line);
+  border-radius:14px;padding:1.2rem}
+.usp .ic{flex:0 0 auto;width:44px;height:44px;border-radius:11px;background:var(--accent);color:var(--on-accent);
+  display:grid;place-items:center}
+.usp b{display:block;font-size:1.02rem}
+
+/* Reviews */
+.reviews{display:grid;gap:1.2rem;grid-template-columns:1fr}
+@media(min-width:760px){.reviews{grid-template-columns:repeat(3,1fr)}}
+.review{border:1px solid var(--line);border-radius:16px;padding:1.4rem;background:#fff}
+.stars{color:#f59e0b;font-size:1.05rem;letter-spacing:2px}
+.review p{margin:.6rem 0;color:var(--muted)}
+.review .who{font-weight:700;font-size:.92rem}
+
+/* FAQ */
+.faq{max-width:760px;margin:0 auto;display:grid;gap:.8rem}
+.faq details{border:1px solid var(--line);border-radius:12px;background:#fff;padding:0 1.2rem}
+.faq summary{cursor:pointer;font-weight:700;padding:1.1rem 0;list-style:none;display:flex;justify-content:space-between;gap:1rem}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--brand);font-size:1.4rem;line-height:1}
+.faq details[open] summary::after{content:"–"}
+.faq details p{padding:0 0 1.1rem;color:var(--muted)}
+
+/* Final CTA */
+.cta-final{background:linear-gradient(135deg,var(--brand),var(--brand-dark));color:var(--on-brand);
+  border-radius:24px;padding:2.6rem 1.5rem;text-align:center;margin:2rem 0}
+.cta-final h2{font-size:1.8rem;margin-bottom:.6rem}
+.cta-final p{opacity:.92;max-width:46ch;margin:0 auto 1.4rem}
+.cta-final .btn-accent{font-size:1.05rem;padding:1rem 2rem}
+
+/* Footer */
+footer.site{background:#0b1220;color:#cbd5e1;padding:2.6rem 0;font-size:.92rem}
+footer .cols{display:grid;gap:1.6rem;grid-template-columns:1fr}
+@media(min-width:680px){footer .cols{grid-template-columns:2fr 1fr 1fr}}
+footer h4{color:#fff;margin-bottom:.6rem}
+footer a:hover{color:#fff}
+.footnote{border-top:1px solid #1e293b;margin-top:1.8rem;padding-top:1.2rem;font-size:.82rem;color:#64748b}
+
+/* "Get this website" — the offer bar pinned to the bottom (spec CTA) */
+.offer-bar{position:fixed;left:0;right:0;bottom:0;z-index:60;background:#0b1220;color:#fff;
+  border-top:3px solid var(--accent);box-shadow:0 -10px 30px -10px rgba(0,0,0,.5)}
+.offer-bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.8rem 20px}
+.offer-bar .txt{font-size:.92rem}
+.offer-bar .txt b{display:block;font-size:1rem}
+.offer-bar .txt span{color:#94a3b8}
+@media(max-width:520px){.offer-bar .txt span{display:none}}
+body{padding-bottom:84px}
+
+svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.8;fill:none;
+  stroke-linecap:round;stroke-linejoin:round}
+.icon-svg{display:none}
+</style>
+</head>
+<body>
+
+{# ---- inline SVG icon library (referenced by <use>) ---- #}
+<svg class="icon-svg" xmlns="http://www.w3.org/2000/svg"><defs>
+<g id="i-phone"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></g>
+<g id="i-check"><polyline points="20 6 9 17 4 12"/></g>
+<g id="i-droplet"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></g>
+<g id="i-flame"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></g>
+<g id="i-shower"><path d="M4 4l16 16"/><path d="M14 4h2a4 4 0 0 1 4 4v2"/><circle cx="12" cy="14" r="6"/></g>
+<g id="i-wrench"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.2-.5-.5-2.2z"/></g>
+<g id="i-bolt"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></g>
+<g id="i-plug"><path d="M9 2v6M15 2v6M7 8h10v3a5 5 0 0 1-10 0z M12 16v6"/></g>
+<g id="i-car"><path d="M5 13l1.5-5h11L19 13M3 13h18v5H3z"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/></g>
+<g id="i-shield"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/></g>
+<g id="i-home"><path d="M3 10l9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></g>
+<g id="i-layers"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></g>
+<g id="i-sun"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></g>
+<g id="i-key"><circle cx="8" cy="15" r="4"/><path d="M10.8 12.2L20 3M16 7l3 3M14 9l2 2"/></g>
+<g id="i-lock"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></g>
+<g id="i-door"><path d="M5 21V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v17M3 21h18"/><circle cx="15" cy="12" r="1"/></g>
+<g id="i-sparkle"><path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></g>
+<g id="i-building"><rect x="5" y="3" width="14" height="18" rx="1"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2"/></g>
+<g id="i-box"><path d="M21 8l-9-5-9 5 9 5 9-5zM3 8v8l9 5 9-5V8M12 13v8"/></g>
+<g id="i-truck"><path d="M1 7h13v9H1zM14 10h4l3 3v3h-7z"/><circle cx="5.5" cy="18" r="1.5"/><circle cx="17.5" cy="18" r="1.5"/></g>
+<g id="i-star"><polygon points="12 2 15 9 22 9.5 17 14 18.5 21 12 17.5 5.5 21 7 14 2 9.5 9 9"/></g>
+</defs></svg>
+
+<header class="site">
+  <div class="wrap nav">
+    <a class="brand" href="#top"><span class="mark">{{ business_name|first|upper }}</span>{{ business_name }}</a>
+    <div style="display:flex;align-items:center;gap:1rem">
+      {% if phone_number %}<a class="phone" href="tel:{{ phone_number }}"><svg class="i"><use href="#i-phone"/></svg>{{ phone_number }}</a>{% endif %}
+      <a class="btn btn-primary nav-cta" href="{% if phone_number %}tel:{{ phone_number }}{% else %}#contact{% endif %}">Get a quote</a>
+    </div>
+  </div>
+</header>
+
+<a id="top"></a>
+{% block hero %}
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">{{ tagline }}</span>
+      <h1>{{ hero_headline }}</h1>
+      <p class="lead">{{ hero_sub }}</p>
+      <div class="hero-actions">
+        {% if phone_number %}<a class="btn btn-primary" href="tel:{{ phone_number }}"><svg class="i"><use href="#i-phone"/></svg>Call {{ phone_number }}</a>{% endif %}
+        <a class="btn btn-ghost" href="#services">Our services</a>
+      </div>
+      <div class="trust">
+        <span>★★★★★ <b>Trusted</b> in {{ town }}</span>
+        <span><b>Fully insured</b> &amp; local</span>
+        <span><b>Free</b> quotes</span>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div class="ribbon"><svg class="i"><use href="#i-shield"/></svg>Why {{ business_name }}?</div>
+      <ul>
+        {% for u in usps %}<li><span class="tick"><svg class="i" style="width:14px;height:14px"><use href="#i-check"/></svg></span><span>{{ u }}</span></li>{% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block strip %}
+<div class="strip"><div class="wrap"><svg class="i"><use href="#i-phone"/></svg>{{ emergency_line }}{% if phone_number %} — <a href="tel:{{ phone_number }}" style="text-decoration:underline">{{ phone_number }}</a>{% endif %}</div></div>
+{% endblock %}
+
+<section class="block" id="services">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">What we do</span>
+      <h2>{{ trade|capfirst }} services in {{ town }}</h2>
+      <p>Whatever you need, {{ business_name }} has {{ service_area }} covered.</p>
+    </div>
+    <div class="cards">
+      {% for s in services %}
+      <div class="card">
+        <div class="ic"><svg class="i"><use href="#i-{{ s.icon }}"/></svg></div>
+        <h3>{{ s.title }}</h3>
+        <p>{{ s.desc }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="block usps">
+  <div class="wrap">
+    <div class="section-head"><span class="eyebrow">The {{ business_name }} difference</span><h2>Local people you can trust</h2></div>
+    <div class="usp-grid">
+      {% for u in usps %}
+      <div class="usp"><span class="ic"><svg class="i"><use href="#i-check"/></svg></span><div><b>{{ u }}</b></div></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% block reviews %}
+<section class="block">
+  <div class="wrap">
+    <div class="section-head"><span class="eyebrow">Reviews</span><h2>Loved by customers in {{ town }}</h2></div>
+    <div class="reviews">
+      <div class="review"><div class="stars">★★★★★</div><p>"Quick, professional and tidy. Couldn't recommend {{ business_name }} more."</p><div class="who">— Sarah, {{ town }}</div></div>
+      <div class="review"><div class="stars">★★★★★</div><p>"Turned up on time, fair price, brilliant work. Will use again."</p><div class="who">— James, {{ town }}</div></div>
+      <div class="review"><div class="stars">★★★★★</div><p>"Honest advice and a great job. Exactly what you want from a local {{ trade }}."</p><div class="who">— Priya, {{ town }}</div></div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+<section class="block" id="contact">
+  <div class="wrap">
+    <div class="section-head"><span class="eyebrow">FAQs</span><h2>Good to know</h2></div>
+    <div class="faq">
+      {% for f in faqs %}
+      <details{% if forloop.first %} open{% endif %}><summary>{{ f.q }}</summary><p>{{ f.a }}</p></details>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <div class="cta-final">
+      <h2>Need a {{ trade }} in {{ town }}?</h2>
+      <p>Get in touch with {{ business_name }} today for a free, no-obligation quote.</p>
+      {% if phone_number %}<a class="btn btn-accent" href="tel:{{ phone_number }}"><svg class="i"><use href="#i-phone"/></svg>Call {{ phone_number }}</a>{% else %}<a class="btn btn-accent" href="#top">Request a quote</a>{% endif %}
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <div class="brand" style="color:#fff;margin-bottom:.6rem"><span class="mark">{{ business_name|first|upper }}</span>{{ business_name }}</div>
+        <p>{{ tagline }}. Proudly serving {{ service_area }}.</p>
+      </div>
+      <div><h4>Contact</h4>{% if phone_number %}<p><a href="tel:{{ phone_number }}">{{ phone_number }}</a></p>{% endif %}<p>{{ town }}</p></div>
+      <div><h4>Hours</h4><p>Mon–Sun</p><p>Emergency cover available</p></div>
+    </div>
+    <div class="footnote">© {{ year }} {{ business_name }}. All rights reserved. Serving {{ service_area }}.</div>
+  </div>
+</footer>
+
+{# ---- "Get This Website" CTA — required on every preview page (spec) ---- #}
+<div class="offer-bar">
+  <div class="wrap">
+    <div class="txt"><b>Like this website?</b><span>This is a free preview built for {{ business_name }}.</span></div>
+    <a class="btn btn-accent" href="{{ cta_url }}" rel="nofollow">Get This Website →</a>
+  </div>
+</div>
+
+</body>
+</html>
