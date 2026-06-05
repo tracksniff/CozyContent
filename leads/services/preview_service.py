@@ -19,7 +19,7 @@ from django.utils.text import slugify
 
 from ..models import Business, WebsitePreview
 from .. import preview_content
-from .color_service import extract_brand_colors, readable_text_on, shade
+from .color_service import extract_brand_colors, palette
 
 logger = logging.getLogger(__name__)
 
@@ -67,8 +67,8 @@ def _build_context(business: Business, colors, slug: str) -> dict:
     faqs = [{"q": fill(q), "a": fill(a)} for q, a in content["faqs"]]
     usps = [fill(u) for u in content["usps"]]
 
-    primary, accent = colors.primary, colors.accent
-    return {
+    pal = palette(colors.primary, colors.accent)
+    ctx = {
         # spec variables
         "business_name": business.name,
         "phone_number": business.phone or "",
@@ -83,17 +83,18 @@ def _build_context(business: Business, colors, slug: str) -> dict:
         "services": services,
         "usps": usps,
         "faqs": faqs,
-        # branding
-        "color_primary": primary,
-        "color_primary_dark": shade(primary, -0.25),
-        "color_primary_light": shade(primary, 0.85),
-        "color_accent": accent,
-        "color_on_primary": readable_text_on(primary),
-        "color_on_accent": readable_text_on(accent),
+        # social proof
+        "rating": business.rating or 4.9,
+        "review_count": business.reviews or 0,
+        # branding (full tint scale)
+        "color_primary": colors.primary,
+        "color_accent": colors.accent,
         # meta
         "cta_url": _cta_url(slug),
         "year": 2026,
     }
+    ctx.update(pal)
+    return ctx
 
 
 def build_preview(business: Business) -> WebsitePreview:
