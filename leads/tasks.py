@@ -264,9 +264,21 @@ def _audit_one(business: Business, threshold: int, stats: dict) -> None:
         stats["errors"] += 1
         return
 
-    # 4. Outdated decision (driven by mobile performance per agreed threshold)
-    mobile_perf = mobile.performance
-    business.is_outdated = mobile_perf is not None and mobile_perf < threshold
+    # 4. Outdated decision (driven by average of all available scores per agreed threshold)
+    scores = [
+        mobile.performance,
+        mobile.accessibility,
+        mobile.seo,
+        mobile.best_practices,
+        desktop.performance,
+        desktop.accessibility,
+        desktop.seo,
+        desktop.best_practices,
+    ]
+    valid_scores = [s for s in scores if s is not None]
+    average_score = sum(valid_scores) / len(valid_scores) if valid_scores else None
+
+    business.is_outdated = average_score is not None and average_score < threshold
     business.audit_status = Business.AUDIT_SCORED
     business.audit_notes = ""
     business.last_audited_at = now
@@ -277,7 +289,7 @@ def _audit_one(business: Business, threshold: int, stats: dict) -> None:
     if business.is_outdated:
         # Build the preview first so the outreach email can link to it.
         generate_preview_for_business.delay(business.pk)
-        reason = f"mobile performance {mobile_perf} < {threshold}"
+        reason = f"average score {average_score:.1f} < {threshold}" if average_score else f"score < {threshold}"
         if _enqueue_outreach(business, reason):
             stats["queued"] += 1
             logger.info("Queued outreach for %s — %s", business.name, reason)
