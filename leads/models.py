@@ -181,9 +181,9 @@ class WebsitePreview(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=["slug"]),
-            models.Index(fields=["expires_at"]),
-            models.Index(fields=["is_claimed"]),
+            models.Index(fields=["slug"], name="leads_websi_slug_idx"),
+            models.Index(fields=["expires_at"], name="leads_websi_expires_idx"),
+            models.Index(fields=["is_claimed"], name="leads_websi_claimed_idx"),
         ]
         ordering = ("-created_at",)
 

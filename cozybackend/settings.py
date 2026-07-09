@@ -222,7 +222,17 @@ AUDIT_BATCH_SIZE = int(os.getenv('AUDIT_BATCH_SIZE', '50'))
 AUDIT_OUTDATED_THRESHOLD = int(os.getenv('AUDIT_OUTDATED_THRESHOLD', '50'))  # mobile perf < this -> outdated
 AUDIT_REFRESH_DAYS = int(os.getenv('AUDIT_REFRESH_DAYS', '30'))
 
+# --- Outreach email sending (Brevo) ---
+# MASTER SWITCH. While False, no outreach emails are ever sent, regardless of
+# schedule or manual trigger. Set OUTREACH_ENABLED=True in .env when ready.
+OUTREACH_ENABLED = os.getenv('OUTREACH_ENABLED', 'False') == 'True'
+# Hard cap on emails sent per UTC day.
+OUTREACH_DAILY_LIMIT = int(os.getenv('OUTREACH_DAILY_LIMIT', '50'))
+# Max sent per single task run (clamped by the daily limit anyway).
+OUTREACH_BATCH_SIZE = int(os.getenv('OUTREACH_BATCH_SIZE', '50'))
+
 # --- Website previews (Stage 2) ---
+PREVIEW_BACKFILL_BATCH = int(os.getenv('PREVIEW_BACKFILL_BATCH', '100'))
 # Public base where personalised prospect previews are hosted.
 PREVIEW_BASE_URL = os.getenv('PREVIEW_BASE_URL', 'https://preview.cosycontent.com').rstrip('/')
 # 'Get This Website' CTA target (the purchase / get-started page).
