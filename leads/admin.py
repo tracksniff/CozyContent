@@ -34,7 +34,7 @@ class BusinessAdmin(admin.ModelAdmin):
     ordering = ("-updated_at",)
     actions = [
         "trigger_scrape", "trigger_audit", "audit_selected",
-        "generate_previews", "delete_no_website",
+        "generate_previews", "backfill_previews", "delete_no_website",
     ]
 
     @admin.action(description="Generate website previews for selected")
@@ -45,6 +45,12 @@ class BusinessAdmin(admin.ModelAdmin):
             generate_preview_for_business.delay(biz.pk)
             count += 1
         self.message_user(request, f"Triggered preview generation for {count} businesses.", messages.SUCCESS)
+
+    @admin.action(description="Backfill previews for ALL outdated businesses missing one")
+    def backfill_previews(self, request, queryset):
+        from .tasks import generate_missing_previews
+        generate_missing_previews.delay()
+        self.message_user(request, "Triggered preview backfill for outdated businesses without a preview.", messages.SUCCESS)
 
     @admin.action(description="Delete businesses without websites")
     def delete_no_website(self, request, queryset):
