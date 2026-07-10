@@ -12,6 +12,7 @@ from .services.html_check_service import quick_check
 from .services.preview_service import build_preview
 from .services.outscraper_service import search
 from .services.pagespeed_service import score as pagespeed_score
+from .services.scoring_service import calculate_outdated_score
 from .services.brevo_service import send_outreach_email
 
 logger = logging.getLogger(__name__)
@@ -264,21 +265,16 @@ def _audit_one(business: Business, threshold: int, stats: dict) -> None:
         stats["errors"] += 1
         return
 
-    # 4. Outdated decision (driven by average of all available scores per agreed threshold)
-    scores = [
-        mobile.performance,
-        mobile.accessibility,
-        mobile.seo,
-        mobile.best_practices,
-        desktop.performance,
-        desktop.accessibility,
-        desktop.seo,
-        desktop.best_practices,
-    ]
-    valid_scores = [s for s in scores if s is not None]
-    average_score = sum(valid_scores) / len(valid_scores) if valid_scores else None
+    # 4. Comprehensive Scoring
+    score, priority = calculate_outdated_score(
+        url=url, 
+        html=html.html or "", 
+        mobile_pagespeed=mobile.performance
+    )
 
-    business.is_outdated = average_score is not None and average_score < threshold
+    business.outdated_score = score
+    business.outdated_priority = priority
+    business.is_outdated = priority in ("high", "medium")
     business.audit_status = Business.AUDIT_SCORED
     business.audit_notes = ""
     business.last_audited_at = now
@@ -289,7 +285,7 @@ def _audit_one(business: Business, threshold: int, stats: dict) -> None:
     if business.is_outdated:
         # Build the preview first so the outreach email can link to it.
         generate_preview_for_business.delay(business.pk)
-        reason = f"average score {average_score:.1f} < {threshold}" if average_score else f"score < {threshold}"
+        reason = f"score {score} ({priority} priority)"
         if _enqueue_outreach(business, reason):
             stats["queued"] += 1
             logger.info("Queued outreach for %s — %s", business.name, reason)

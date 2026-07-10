@@ -16,6 +16,8 @@ class BusinessAdmin(admin.ModelAdmin):
         "has_website",
         "audit_status",
         "pagespeed_mobile_performance",
+        "outdated_score",
+        "outdated_priority",
         "is_outdated",
         "rating",
         "reviews",
@@ -26,6 +28,7 @@ class BusinessAdmin(admin.ModelAdmin):
         "location",
         "has_website",
         "audit_status",
+        "outdated_priority",
         "is_outdated",
         "source",
     )
@@ -35,7 +38,6 @@ class BusinessAdmin(admin.ModelAdmin):
     actions = [
         "trigger_scrape", "trigger_audit", "audit_selected",
         "generate_previews", "backfill_previews", "delete_no_website",
-        "reevaluate_outdated_status",
     ]
 
     @admin.action(description="Generate website previews for selected")
@@ -58,50 +60,7 @@ class BusinessAdmin(admin.ModelAdmin):
         deleted_count, _ = Business.objects.filter(has_website=False).delete()
         self.message_user(request, f"Successfully deleted {deleted_count} businesses without websites.", messages.SUCCESS)
 
-    @admin.action(description="Re-evaluate outdated status (apply new average logic)")
-    def reevaluate_outdated_status(self, request, queryset):
-        from django.conf import settings
-        from .models import OutreachQueue
-        threshold = getattr(settings, "AUDIT_OUTDATED_THRESHOLD", 50)
-        
-        updated_count = 0
-        cancelled_outreach = 0
-        
-        for biz in queryset.filter(is_outdated=True):
-            scores = [
-                biz.pagespeed_mobile_performance,
-                biz.pagespeed_mobile_accessibility,
-                biz.pagespeed_mobile_seo,
-                biz.pagespeed_mobile_best_practices,
-                biz.pagespeed_desktop_performance,
-                biz.pagespeed_desktop_accessibility,
-                biz.pagespeed_desktop_seo,
-                biz.pagespeed_desktop_best_practices,
-            ]
-            valid_scores = [s for s in scores if s is not None]
-            
-            if valid_scores:
-                average_score = sum(valid_scores) / len(valid_scores)
-                if average_score >= threshold:
-                    biz.is_outdated = False
-                    biz.save(update_fields=["is_outdated"])
-                    updated_count += 1
-                    
-                    # Cancel pending outreach
-                    pending = OutreachQueue.objects.filter(business=biz, status=OutreachQueue.STATUS_QUEUED)
-                    for p in pending:
-                        p.status = OutreachQueue.STATUS_SKIPPED
-                        p.reason = "Business no longer marked outdated after re-evaluation."
-                        p.save(update_fields=["status", "reason"])
-                        cancelled_outreach += 1
-                        
-        self.message_user(
-            request, 
-            f"Successfully re-evaluated and un-marked {updated_count} businesses. Cancelled {cancelled_outreach} outreach emails.", 
-            messages.SUCCESS
-        )
-
-    @admin.action(description="Audit selected businesses (PageSpeed)")
+    @admin.action(description="Audit selected businesses (PageSpeed + Scoring)")
     def audit_selected(self, request, queryset):
         from .tasks import audit_single_business
         count = 0

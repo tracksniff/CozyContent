@@ -69,6 +69,8 @@ class Business(models.Model):
     pagespeed_desktop_best_practices = models.IntegerField(null=True, blank=True)
 
     is_outdated = models.BooleanField(default=False)
+    outdated_score = models.IntegerField(null=True, blank=True)
+    outdated_priority = models.CharField(max_length=20, null=True, blank=True) # high, medium, none
     audit_notes = models.TextField(blank=True, default="")
 
     created_at = models.DateTimeField(auto_now_add=True)

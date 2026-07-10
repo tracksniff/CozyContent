@@ -30,6 +30,7 @@ class HtmlCheckResult:
     ok: bool
     status_code: int | None
     reason: str  # human-readable why it failed (empty when ok=True)
+    html: str | None = None
 
 
 def quick_check(url: str) -> HtmlCheckResult:
@@ -67,4 +68,4 @@ def quick_check(url: str) -> HtmlCheckResult:
                 ok=False, status_code=code, reason=f"parked-domain signal: {pattern.pattern}"
             )
 
-    return HtmlCheckResult(ok=True, status_code=code, reason="")
+    return HtmlCheckResult(ok=True, status_code=code, reason="", html=body)
