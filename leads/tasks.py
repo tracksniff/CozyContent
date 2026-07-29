@@ -7,11 +7,16 @@ from django.db import IntegrityError, transaction
 from django.db.models import Q
 from django.utils import timezone
 
+
+import json
+
+
 from .models import Business, OutreachQueue, WebsitePreview
 from .services.html_check_service import quick_check
 from .services.preview_service import build_preview
 from .services.outscraper_service import search
 from .services.pagespeed_service import score as pagespeed_score
+from .services.scoring_service import calculate_outdated_score
 from .services.brevo_service import send_outreach_email
 
 logger = logging.getLogger(__name__)
@@ -97,8 +102,6 @@ def scrape_all_businesses() -> dict:
 @shared_task(name="leads.test_single_scrape_task")
 def test_single_scrape_task() -> str:
     """Debug task: Scrape 1 result and log the RAW JSON response."""
-    from .services.outscraper_service import search
-    import json
 
     category = "plumbing"
     query = CATEGORY_QUERIES[category]
@@ -264,9 +267,16 @@ def _audit_one(business: Business, threshold: int, stats: dict) -> None:
         stats["errors"] += 1
         return
 
-    # 4. Outdated decision (driven by mobile performance per agreed threshold)
-    mobile_perf = mobile.performance
-    business.is_outdated = mobile_perf is not None and mobile_perf < threshold
+    # 4. Comprehensive Scoring
+    score, priority = calculate_outdated_score(
+        url=url, 
+        html=html.html or "", 
+        mobile_pagespeed=mobile.performance
+    )
+
+    business.outdated_score = score
+    business.outdated_priority = priority
+    business.is_outdated = priority in ("high", "medium")
     business.audit_status = Business.AUDIT_SCORED
     business.audit_notes = ""
     business.last_audited_at = now
@@ -277,7 +287,7 @@ def _audit_one(business: Business, threshold: int, stats: dict) -> None:
     if business.is_outdated:
         # Build the preview first so the outreach email can link to it.
         generate_preview_for_business.delay(business.pk)
-        reason = f"mobile performance {mobile_perf} < {threshold}"
+        reason = f"score {score} ({priority} priority)"
         if _enqueue_outreach(business, reason):
             stats["queued"] += 1
             logger.info("Queued outreach for %s — %s", business.name, reason)
@@ -285,14 +295,36 @@ def _audit_one(business: Business, threshold: int, stats: dict) -> None:
 
 @shared_task(name="leads.process_outreach_queue")
 def process_outreach_queue() -> dict:
-    """Process the OutreachQueue and send emails via Brevo."""
-    batch_size = getattr(settings, "OUTREACH_BATCH_SIZE", 20)
+    """Send queued outreach emails via Brevo — gated and rate-limited.
+
+    Two safety controls:
+      * OUTREACH_ENABLED master switch (default False). While off, this task is
+        a no-op no matter how it's triggered (schedule or admin) — so nothing is
+        ever sent until you deliberately turn it on.
+      * OUTREACH_DAILY_LIMIT (default 50). Caps total sends per UTC day, counting
+        anything already sent today, so re-runs can't exceed the daily quota.
+    """
+    if not getattr(settings, "OUTREACH_ENABLED", False):
+        logger.info("Outreach is OFF (OUTREACH_ENABLED=False) — not sending.")
+        return {"sent": 0, "failed": 0, "skipped": 0, "disabled": True}
+
+    daily_limit = getattr(settings, "OUTREACH_DAILY_LIMIT", 50)
+    day_start = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    sent_today = OutreachQueue.objects.filter(
+        status=OutreachQueue.STATUS_SENT, sent_at__gte=day_start
+    ).count()
+    remaining = max(0, daily_limit - sent_today)
+    if remaining == 0:
+        logger.info("Daily outreach limit reached (%d) — nothing more today.", daily_limit)
+        return {"sent": 0, "failed": 0, "skipped": 0, "daily_limit_reached": True}
+
+    batch_size = min(remaining, getattr(settings, "OUTREACH_BATCH_SIZE", daily_limit))
     queue = OutreachQueue.objects.filter(
         status=OutreachQueue.STATUS_QUEUED,
         scheduled_at__lte=timezone.now()
     ).select_related("business")[:batch_size]
 
-    stats = {"sent": 0, "failed": 0, "skipped": 0}
+    stats = {"sent": 0, "failed": 0, "skipped": 0, "daily_limit": daily_limit, "sent_today": sent_today}
 
     for entry in queue:
         business = entry.business
@@ -352,6 +384,25 @@ def generate_preview_for_business(business_id: int) -> dict:
         "color_source": preview.color_source,
         "expires_at": preview.expires_at.isoformat(),
     }
+
+
+@shared_task(name="leads.generate_missing_previews")
+def generate_missing_previews(limit: int | None = None) -> dict:
+    """Backfill previews for outdated businesses that don't have one yet.
+
+    New audits already trigger a preview when a site is marked outdated; this
+    catches businesses that became outdated before previews existed (or whose
+    preview expired and was cleaned up), so a site is ready before outreach.
+    """
+    limit = limit or getattr(settings, "PREVIEW_BACKFILL_BATCH", 100)
+    candidates = list(
+        Business.objects.filter(is_outdated=True, previews__isnull=True)[:limit]
+    )
+    for business in candidates:
+        generate_preview_for_business.delay(business.pk)
+
+    logger.info("generate_missing_previews queued %d previews", len(candidates))
+    return {"queued": len(candidates)}
 
 
 @shared_task(name="leads.expire_old_previews")

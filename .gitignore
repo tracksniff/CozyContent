@@ -2,7 +2,6 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
 # Environments
 env/
 venv/
@@ -12,23 +11,22 @@ ENV/
 .venv
 env.bak
 venv.bak
-
 # Database
 db.sqlite3
 db.sqlite3-journal
 *.db
 *.sqlite3
-
 # Django secret files
 .env
 local_settings.py
 secrets.json
-
 # Static and Media
 /static/
 /staticfiles/
 /media/
-
+# Migrations (local dev migrations should not sync with server)
+**/migrations/*.py
+!**/migrations/__init__.py
 # OS-specific
 .DS_Store
 .DS_Store?
@@ -37,13 +35,11 @@ secrets.json
 .Trashes
 ehthumbs.db
 Thumbs.db
-
 # IDEs
 .vscode/
 .idea/
 *.swp
 *.swo
-
 # Tests and Coverage
 .pytest_cache/
 .coverage
@@ -52,7 +48,6 @@ nosetests.xml
 coverage.xml
 *.cover
 .hypothesis/
-
 # Build artifacts
 build/
 dist/
