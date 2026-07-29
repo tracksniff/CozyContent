@@ -7,6 +7,10 @@ from django.db import IntegrityError, transaction
 from django.db.models import Q
 from django.utils import timezone
 
+
+import json
+
+
 from .models import Business, OutreachQueue, WebsitePreview
 from .services.html_check_service import quick_check
 from .services.preview_service import build_preview
@@ -98,8 +102,6 @@ def scrape_all_businesses() -> dict:
 @shared_task(name="leads.test_single_scrape_task")
 def test_single_scrape_task() -> str:
     """Debug task: Scrape 1 result and log the RAW JSON response."""
-    from .services.outscraper_service import search
-    import json
 
     category = "plumbing"
     query = CATEGORY_QUERIES[category]

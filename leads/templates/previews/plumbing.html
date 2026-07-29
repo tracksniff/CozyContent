@@ -7,9 +7,10 @@
 <title>{{ business_name }} — {{ trade }} in {{ town }}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
+    /* dynamic brand tokens, unchanged from spec */
     --brand-50:{{ brand_50 }};
     --brand-100:{{ brand_100 }};
     --brand-200:{{ brand_200 }};
@@ -22,73 +23,70 @@
     --accent-600:{{ accent_600 }};
     --on-brand:{{ on_brand }};
     --on-accent:{{ on_accent }};
-    --ink:#0f1722;
-    --ink-soft:#475264;
-    --line:#e6eaf0;
+
+    /* fixed neutrals — warm paper/ink, not generic SaaS gray */
     --paper:#ffffff;
-    --mist:#f6f8fb;
-    --shadow:0 1px 2px rgba(15,23,34,.06),0 12px 30px -12px rgba(15,23,34,.12);
-    --shadow-sm:0 1px 2px rgba(15,23,34,.05),0 4px 14px -8px rgba(15,23,34,.18);
-    --r:10px;
+    --card:#F6F3EA;
+    --ink:#1B1A17;
+    --ink-soft:#5B584E;
+    --line:#E2DCCC;
+    --line-strong:#B9B198;
+    --shadow-flat:3px 3px 0 var(--ink);
+    --shadow-flat-sm:2px 2px 0 var(--ink);
+    --r:6px;
     --maxw:1180px;
+    --display:'Oswald',system-ui,sans-serif;
+    --body:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
   body{
     margin:0;
-    font-family:'Plus Jakarta Sans',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    font-family:var(--body);
     color:var(--ink);
     background:var(--paper);
     line-height:1.6;
     -webkit-font-smoothing:antialiased;
-    padding-bottom:64px;
+    padding-bottom:60px;
   }
-  h1,h2,h3{line-height:1.1;letter-spacing:-.02em;margin:0;font-weight:800}
+  h1,h2,h3{line-height:1.08;margin:0;font-family:var(--display);font-weight:600;text-transform:uppercase;letter-spacing:.01em}
   p{margin:0}
   a{color:inherit;text-decoration:none}
   img,svg{display:block}
   .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
   .eyebrow{
-    font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
-    color:var(--brand-600);
+    font-family:var(--display);font-size:.78rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--brand-700);display:inline-flex;align-items:center;gap:.5rem;
   }
+  .eyebrow::before{content:"";width:18px;height:2px;background:var(--accent-500)}
 
-  /* Buttons */
+  /* Buttons — flat, hard-edged offset shadow instead of soft blur shadow */
   .btn{
     display:inline-flex;align-items:center;gap:.5rem;justify-content:center;
-    font-family:inherit;font-weight:700;font-size:.98rem;
-    padding:.85rem 1.4rem;border-radius:var(--r);cursor:pointer;border:1px solid transparent;
-    transition:transform .12s ease,box-shadow .12s ease,background .15s ease;
+    font-family:inherit;font-weight:700;font-size:.96rem;
+    padding:.85rem 1.4rem;border-radius:var(--r);cursor:pointer;border:1.5px solid var(--ink);
+    transition:transform .1s ease,box-shadow .1s ease,background .15s ease;
     white-space:nowrap;
   }
-  .btn-primary{
-    background:var(--brand-500);color:var(--on-brand);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.28),var(--shadow-sm);
-  }
-  .btn-primary:hover{background:var(--brand-600);transform:translateY(-1px)}
-  .btn-ghost{
-    background:#fff;color:var(--ink);border-color:var(--line);
-    box-shadow:var(--shadow-sm);
-  }
-  .btn-ghost:hover{border-color:var(--brand-200);color:var(--brand-700)}
+  .btn-primary{background:var(--brand-500);color:var(--on-brand);border-color:var(--brand-700);box-shadow:var(--shadow-flat-sm)}
+  .btn-primary:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--brand-700)}
+  .btn-primary:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--brand-700)}
+  .btn-ghost{background:var(--paper);color:var(--ink);box-shadow:var(--shadow-flat-sm)}
+  .btn-ghost:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .btn-ghost:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--ink)}
   .btn svg{width:18px;height:18px}
 
   /* Header */
-  header.site{
-    position:sticky;top:0;z-index:50;
-    background:rgba(255,255,255,.86);backdrop-filter:blur(12px);
-    border-bottom:1px solid var(--line);
-  }
-  .nav{display:flex;align-items:center;justify-content:space-between;height:72px}
-  .brand{display:flex;align-items:center;gap:.65rem;font-weight:800;font-size:1.12rem;letter-spacing:-.02em}
+  header.site{position:sticky;top:0;z-index:50;background:var(--paper);border-bottom:1.5px solid var(--ink)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:70px}
+  .brand{display:flex;align-items:center;gap:.65rem;font-family:var(--display);font-weight:600;font-size:1.1rem;letter-spacing:.02em;text-transform:uppercase}
   .brand .mark{
-    width:38px;height:38px;border-radius:11px;display:grid;place-items:center;
-    background:linear-gradient(160deg,var(--brand-500),var(--brand-700));color:var(--on-brand);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.3);
+    width:38px;height:38px;border-radius:var(--r);display:grid;place-items:center;
+    background:var(--brand-500);color:var(--on-brand);border:1.5px solid var(--ink);
   }
-  .brand .mark svg{width:21px;height:21px}
+  .brand .mark svg{width:20px;height:20px}
   .nav-links{display:flex;align-items:center;gap:2rem}
-  .nav-links a{font-weight:600;font-size:.95rem;color:var(--ink-soft)}
+  .nav-links a{font-weight:600;font-size:.92rem;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em}
   .nav-links a:hover{color:var(--brand-700)}
   .nav-cta{display:flex;align-items:center;gap:1rem}
   .nav-phone{display:inline-flex;align-items:center;gap:.5rem;font-weight:700;color:var(--ink)}
@@ -96,204 +94,157 @@
   @media(max-width:900px){.nav-links{display:none}.nav-phone span{display:none}}
 
   /* Hero */
-  .hero{padding:72px 0 40px;position:relative;overflow:hidden;background:
-    radial-gradient(900px 380px at 88% -8%,var(--brand-50),transparent 70%);}
-  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
-  .hero h1{font-size:clamp(2.3rem,5.2vw,3.7rem);margin:.9rem 0 1rem}
-  .hero h1 em{font-style:normal;color:var(--brand-600)}
-  .hero-sub{font-size:1.12rem;color:var(--ink-soft);max-width:34ch}
-  .hero-meta{display:flex;align-items:center;gap:1.4rem;margin-top:1.3rem;flex-wrap:wrap}
-  .stars{display:inline-flex;gap:2px;color:var(--accent-500)}
-  .stars svg{width:17px;height:17px}
-  .rate-txt{font-size:.92rem;color:var(--ink-soft);font-weight:600}
-  .rate-txt b{color:var(--ink)}
-  .hero-actions{display:flex;gap:.85rem;margin-top:1.7rem;flex-wrap:wrap}
+  .hero{padding:60px 0 48px;background:var(--card);border-bottom:1.5px solid var(--ink)}
+  .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center}
+  .hero h1{font-size:clamp(2.1rem,4.6vw,3.3rem);margin:.9rem 0 1rem}
+  .hero h1 em{font-style:normal;color:var(--brand-700)}
+  .hero-sub{font-family:var(--body);text-transform:none;letter-spacing:normal;font-size:1.08rem;color:var(--ink-soft);max-width:38ch}
+  .hero-actions{display:flex;gap:.85rem;margin-top:1.6rem;flex-wrap:wrap}
 
-  /* Quote widget */
-  .quote-mock{
-    margin-top:1.9rem;background:#fff;border:1px solid var(--line);border-radius:14px;
-    padding:1rem 1.05rem;box-shadow:var(--shadow);max-width:430px;
+  /* Signature element: the service ticket */
+  .ticket{
+    position:relative;display:grid;grid-template-columns:1fr 108px;
+    background:var(--paper);border:1.5px solid var(--ink);border-radius:var(--r);
+    box-shadow:6px 6px 0 var(--brand-200);
   }
-  .quote-mock .q-label{font-size:.8rem;font-weight:700;color:var(--ink-soft);margin-bottom:.55rem;display:flex;align-items:center;gap:.4rem}
-  .quote-mock .q-label svg{width:15px;height:15px;color:var(--brand-600)}
-  .q-row{display:flex;gap:.5rem}
-  .q-row input{
-    flex:1;font-family:inherit;font-size:.98rem;padding:.7rem .8rem;
-    border:1px solid var(--line);border-radius:9px;background:var(--mist);color:var(--ink);
+  .ticket .main{padding:1.5rem 1.4rem}
+  .ticket .t-label{font-family:var(--display);font-size:.72rem;letter-spacing:.14em;color:var(--ink-soft);text-transform:uppercase;margin-bottom:.5rem}
+  .ticket .t-row{display:flex;justify-content:space-between;gap:.6rem;padding:.5rem 0;border-top:1px dashed var(--line-strong)}
+  .ticket .t-row:first-of-type{border-top:none}
+  .ticket .t-row span:first-child{color:var(--ink-soft);font-size:.9rem}
+  .ticket .t-row span:last-child{font-weight:700;font-size:.9rem;text-align:right}
+  .ticket .stub{
+    position:relative;border-left:1.5px dashed var(--line-strong);
+    background:var(--brand-50);display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:1rem .5rem;text-align:center;gap:.5rem;
   }
-  .q-row input::placeholder{color:#9aa4b2}
-  .q-row input:focus{outline:2px solid var(--brand-200);border-color:var(--brand-500)}
-  .q-row .btn{padding:.7rem 1.1rem}
-  .q-note{font-size:.74rem;color:#9aa4b2;margin-top:.55rem}
+  .ticket .stub::before,.ticket .stub::after{
+    content:"";position:absolute;left:-8px;width:16px;height:16px;border-radius:50%;background:var(--paper);border:1.5px solid var(--ink);
+  }
+  .ticket .stub::before{top:-8px}
+  .ticket .stub::after{bottom:-8px}
+  .seal{
+    width:52px;height:52px;border-radius:50%;border:2px solid var(--accent-600);color:var(--accent-600);
+    display:grid;place-items:center;position:relative;
+  }
+  .seal svg{width:22px;height:22px}
+  .seal::before{content:"";position:absolute;inset:-5px;border-radius:50%;border:1px dashed var(--accent-500)}
+  .stub .rate{font-family:var(--display);font-weight:700;font-size:1.3rem}
+  .stub small{font-size:.68rem;color:var(--ink-soft);line-height:1.3;text-transform:uppercase;letter-spacing:.04em}
 
-  /* Hero illustration */
-  .hero-art{position:relative}
-  .hero-art svg{width:100%;height:auto;filter:drop-shadow(0 24px 40px rgba(15,23,34,.12))}
-  @media(max-width:840px){
-    .hero-grid{grid-template-columns:1fr;gap:34px}
-    .hero{padding:48px 0 24px}
-    .hero-art{order:-1;max-width:380px;margin:0 auto}
-    .hero-sub{max-width:none}
+  /* Trust band — stamped badges, not pills */
+  .trust{background:var(--paper);padding:0}
+  .trust-row{display:grid;grid-template-columns:repeat(4,1fr);border-top:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink)}
+  .stamp{
+    display:flex;align-items:center;justify-content:center;gap:.55rem;padding:1.1rem .8rem;
+    border-left:1px solid var(--line);font-size:.85rem;font-weight:700;text-align:center;
   }
-
-  /* Wave divider */
-  .wave{display:block;width:100%;height:auto;color:var(--brand-50);margin-top:-1px}
-
-  /* Trust band */
-  .trust{background:var(--brand-50);padding:30px 0}
-  .trust-row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
-  .chip{
-    display:inline-flex;align-items:center;gap:.55rem;background:#fff;
-    border:1px solid var(--brand-200);border-radius:999px;padding:.5rem 1rem;
-    font-size:.88rem;font-weight:700;color:var(--brand-900);box-shadow:var(--shadow-sm);
-  }
-  .chip svg{width:16px;height:16px;color:var(--brand-600)}
+  .trust-row .stamp:first-child{border-left:none}
+  .stamp svg{width:20px;height:20px;color:var(--brand-600);flex:none}
+  @media(max-width:760px){.trust-row{grid-template-columns:repeat(2,1fr)}.stamp:nth-child(3){border-left:none}}
 
   /* Sections */
-  section{padding:84px 0}
-  .sec-head{max-width:46ch;margin-bottom:50px}
-  .sec-head h2{font-size:clamp(1.8rem,3.6vw,2.5rem);margin:.55rem 0 .7rem}
-  .sec-head p{color:var(--ink-soft);font-size:1.05rem}
+  section{padding:76px 0}
+  .sec-head{max-width:48ch;margin-bottom:44px}
+  .sec-head h2{font-size:clamp(1.7rem,3.2vw,2.3rem);margin:.6rem 0 .7rem}
+  .sec-head p{font-family:var(--body);text-transform:none;letter-spacing:normal;color:var(--ink-soft);font-size:1.03rem}
 
-  /* Services feature list */
+  /* Services — numbered ledger, kept from original (it was the strongest pattern) */
   .svc{display:flex;flex-direction:column}
   .svc-item{
     display:grid;grid-template-columns:auto 1fr auto;gap:1.6rem;align-items:center;
-    padding:1.9rem 0;border-top:1px solid var(--line);position:relative;
+    padding:1.7rem 0;border-top:1px solid var(--line);position:relative;
   }
   .svc-item:last-child{border-bottom:1px solid var(--line)}
-  .svc-num{
-    font-size:2.6rem;font-weight:800;letter-spacing:-.04em;
-    color:var(--brand-100);line-height:1;min-width:2.4ch;
-  }
-  .svc-body h3{font-size:1.28rem;display:flex;align-items:center;gap:.7rem}
+  .svc-num{font-family:var(--display);font-size:2.2rem;font-weight:600;color:var(--brand-200);line-height:1;min-width:2.4ch}
+  .svc-body h3{font-family:var(--body);text-transform:none;letter-spacing:normal;font-weight:700;font-size:1.2rem;display:flex;align-items:center;gap:.7rem}
   .svc-body h3 .ic{
-    width:34px;height:34px;border-radius:9px;display:grid;place-items:center;flex:none;
-    background:var(--brand-50);color:var(--brand-600);
+    width:34px;height:34px;border-radius:var(--r);display:grid;place-items:center;flex:none;
+    background:var(--paper);border:1.5px solid var(--ink);color:var(--brand-700);
   }
-  .svc-body h3 .ic svg{width:19px;height:19px}
+  .svc-body h3 .ic svg{width:18px;height:18px}
   .svc-body p{color:var(--ink-soft);margin-top:.4rem;font-size:1rem;max-width:62ch}
-  .svc-rule{width:46px;height:3px;border-radius:3px;background:var(--accent-500);justify-self:end}
-  @media(max-width:680px){
-    .svc-item{grid-template-columns:auto 1fr;gap:1rem}
-    .svc-rule{display:none}
-    .svc-num{font-size:2rem}
-  }
+  .svc-rule{width:36px;height:2px;background:var(--accent-500);justify-self:end}
+  @media(max-width:680px){.svc-item{grid-template-columns:auto 1fr;gap:1rem}.svc-rule{display:none}.svc-num{font-size:1.7rem}}
 
   /* Why us */
-  .why{background:var(--mist);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-  .why-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:54px;align-items:center}
-  .why-list{display:flex;flex-direction:column;gap:1.1rem;margin-top:1.6rem}
-  .usp{display:flex;gap:.95rem;align-items:flex-start}
-  .usp .tick{
-    flex:none;width:30px;height:30px;border-radius:8px;display:grid;place-items:center;
-    background:var(--brand-500);color:var(--on-brand);box-shadow:inset 0 1px 0 rgba(255,255,255,.3);
-  }
-  .usp .tick svg{width:16px;height:16px}
-  .usp span{font-weight:600;font-size:1.05rem;padding-top:3px}
-  .why-card{
-    background:#fff;border:1px solid var(--line);border-radius:16px;padding:30px;
-    box-shadow:var(--shadow);
-  }
-  .why-stat{display:flex;flex-wrap:wrap;gap:26px}
-  .why-stat .s{flex:1;min-width:120px}
-  .why-stat .s b{display:block;font-size:2.1rem;font-weight:800;color:var(--brand-700);letter-spacing:-.03em}
-  .why-stat .s small{color:var(--ink-soft);font-size:.9rem;font-weight:600}
-  .why-card hr{border:none;border-top:1px solid var(--line);margin:24px 0}
-  .why-emergency{display:flex;gap:.8rem;align-items:center}
-  .why-emergency .pulse{
-    flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;
-    background:var(--accent-500);color:var(--on-accent);
-  }
-  .why-emergency .pulse svg{width:20px;height:20px}
-  .why-emergency b{display:block;font-size:1.02rem}
-  .why-emergency small{color:var(--ink-soft);font-size:.88rem}
-  @media(max-width:840px){.why-grid{grid-template-columns:1fr;gap:34px}}
+  .why{background:var(--card);border-top:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink)}
+  .why-grid{display:grid;grid-template-columns:.95fr 1.05fr;gap:50px;align-items:center}
+  .why-list{display:flex;flex-direction:column;gap:1.05rem;margin-top:1.5rem}
+  .usp{display:flex;gap:.9rem;align-items:flex-start}
+  .usp .tick{flex:none;width:26px;height:26px;border-radius:4px;display:grid;place-items:center;background:var(--ink);color:var(--paper)}
+  .usp .tick svg{width:14px;height:14px}
+  .usp span{font-weight:600;font-size:1.02rem;padding-top:3px}
+  .why-card{background:var(--paper);border:1.5px solid var(--ink);border-radius:var(--r);padding:0;box-shadow:5px 5px 0 var(--brand-200)}
+  .why-stat{display:flex;flex-wrap:wrap}
+  .why-stat .s{flex:1;min-width:120px;padding:1.4rem 1.2rem;border-right:1px dashed var(--line-strong)}
+  .why-stat .s:last-child{border-right:none}
+  .why-stat .s b{display:block;font-family:var(--display);font-size:1.8rem;font-weight:600;color:var(--brand-700)}
+  .why-stat .s small{color:var(--ink-soft);font-size:.82rem;font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+  .why-card .div{border-top:1px dashed var(--line-strong)}
+  .why-emergency{display:flex;gap:.85rem;align-items:center;padding:1.2rem}
+  .why-emergency .pulse{flex:none;width:40px;height:40px;border-radius:var(--r);display:grid;place-items:center;background:var(--accent-500);color:var(--on-accent)}
+  .why-emergency .pulse svg{width:19px;height:19px}
+  .why-emergency b{display:block;font-family:var(--display);font-size:.95rem;text-transform:uppercase;letter-spacing:.03em}
+  .why-emergency small{color:var(--ink-soft);font-size:.87rem}
+  @media(max-width:840px){.why-grid{grid-template-columns:1fr;gap:32px}}
 
-  /* Reviews */
-  .reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-  .review{
-    background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px;
-    box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:1rem;
-  }
-  .review .stars svg{width:16px;height:16px}
-  .review p{color:var(--ink);font-size:1.02rem;line-height:1.6}
-  .review .who{display:flex;align-items:center;gap:.7rem;margin-top:auto}
-  .review .av{
-    width:38px;height:38px;border-radius:50%;flex:none;display:grid;place-items:center;
-    background:var(--brand-100);color:var(--brand-700);font-weight:800;font-size:.95rem;
-  }
-  .review .who b{display:block;font-size:.95rem}
-  .review .who small{color:var(--ink-soft);font-size:.82rem}
+  /* Reviews — receipt-style slips */
+  .reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .review{background:var(--paper);border:1.5px solid var(--ink);border-radius:var(--r);padding:22px;box-shadow:4px 4px 0 var(--line);display:flex;flex-direction:column;gap:.9rem}
+  .review .stars{display:flex;gap:2px;color:var(--accent-600)}
+  .review .stars svg{width:15px;height:15px}
+  .review p{color:var(--ink);font-size:1rem;line-height:1.6}
+  .review .who{display:flex;align-items:center;gap:.7rem;margin-top:auto;padding-top:.8rem;border-top:1px dashed var(--line-strong)}
+  .review .av{width:34px;height:34px;border-radius:4px;flex:none;display:grid;place-items:center;background:var(--brand-700);color:var(--on-brand);font-weight:700;font-size:.85rem;font-family:var(--display)}
+  .review .who b{display:block;font-size:.93rem}
+  .review .who small{color:var(--ink-soft);font-size:.8rem}
   @media(max-width:840px){.reviews-grid{grid-template-columns:1fr;max-width:480px;margin:0 auto}}
 
   /* FAQ */
   .faq{max-width:780px;margin:0 auto}
-  details{
-    border:1px solid var(--line);border-radius:12px;background:#fff;margin-bottom:.85rem;
-    overflow:hidden;transition:border-color .15s ease;
-  }
-  details[open]{border-color:var(--brand-200);box-shadow:var(--shadow-sm)}
-  summary{
-    list-style:none;cursor:pointer;padding:1.15rem 1.3rem;font-weight:700;font-size:1.05rem;
-    display:flex;align-items:center;justify-content:space-between;gap:1rem;
-  }
+  details{border:1.5px solid var(--ink);border-radius:var(--r);background:var(--paper);margin-bottom:.75rem;overflow:hidden}
+  details[open]{box-shadow:4px 4px 0 var(--brand-200)}
+  summary{list-style:none;cursor:pointer;padding:1.1rem 1.25rem;font-weight:700;font-size:1.02rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
   summary::-webkit-details-marker{display:none}
-  summary .pm{
-    flex:none;width:24px;height:24px;border-radius:6px;display:grid;place-items:center;
-    background:var(--brand-50);color:var(--brand-600);transition:transform .2s ease;
-  }
-  summary .pm svg{width:14px;height:14px}
-  details[open] summary .pm{transform:rotate(45deg)}
-  details .ans{padding:0 1.3rem 1.25rem;color:var(--ink-soft);font-size:1rem}
+  summary .pm{flex:none;width:22px;height:22px;border-radius:4px;display:grid;place-items:center;border:1.5px solid var(--ink);transition:transform .15s ease}
+  summary .pm svg{width:12px;height:12px}
+  details[open] summary .pm{transform:rotate(45deg);background:var(--ink);color:var(--paper)}
+  details .ans{padding:0 1.25rem 1.2rem;color:var(--ink-soft);font-size:.98rem}
 
-  /* Closing CTA */
-  .cta-final{
-    background:linear-gradient(155deg,var(--brand-700),var(--brand-900));
-    color:#fff;border-radius:24px;padding:56px;position:relative;overflow:hidden;
-  }
-  .cta-final .bg-art{position:absolute;right:-40px;top:-30px;opacity:.16;width:320px;color:#fff}
-  .cta-final h2{font-size:clamp(1.8rem,3.6vw,2.6rem);color:#fff;max-width:18ch;position:relative}
-  .cta-final p{color:rgba(255,255,255,.82);margin-top:.9rem;max-width:46ch;font-size:1.08rem;position:relative}
-  .cta-final .actions{display:flex;gap:.9rem;margin-top:1.9rem;flex-wrap:wrap;position:relative}
-  .cta-final .btn-primary{background:#fff;color:var(--brand-700)}
-  .cta-final .btn-primary:hover{background:var(--brand-50)}
-  .cta-final .btn-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
-  .cta-final .btn-ghost:hover{border-color:#fff;color:#fff}
-  @media(max-width:680px){.cta-final{padding:36px 26px}}
+  /* Closing CTA — flat ink block, no gradient */
+  .cta-final{background:var(--ink);color:var(--paper);border-radius:var(--r);padding:52px;position:relative;border-top:5px solid var(--accent-500)}
+  .cta-final h2{color:var(--paper);max-width:20ch}
+  .cta-final p{font-family:var(--body);text-transform:none;letter-spacing:normal;color:rgba(255,255,255,.75);margin-top:.9rem;max-width:46ch;font-size:1.05rem}
+  .cta-final .actions{display:flex;gap:.9rem;margin-top:1.8rem;flex-wrap:wrap}
+  .cta-final .btn-primary{background:var(--accent-500);color:var(--on-accent);border-color:var(--paper)}
+  .cta-final .btn-ghost{background:transparent;color:var(--paper);border-color:var(--paper);box-shadow:2px 2px 0 rgba(255,255,255,.3)}
+  .cta-final .btn-ghost:hover{box-shadow:4px 4px 0 rgba(255,255,255,.3)}
+  @media(max-width:680px){.cta-final{padding:32px 22px}}
 
   /* Footer */
-  footer.site{padding:56px 0 40px;border-top:1px solid var(--line);color:var(--ink-soft)}
+  footer.site{padding:48px 0 36px;border-top:1.5px solid var(--ink);color:var(--ink-soft)}
   .foot-grid{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap}
   .foot-brand{max-width:34ch}
   .foot-brand .brand{margin-bottom:.8rem}
-  .foot-brand p{font-size:.95rem}
-  .foot-col h4{font-size:.82rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ink);margin-bottom:.8rem}
-  .foot-col a,.foot-col p{display:block;font-size:.95rem;margin-bottom:.45rem;color:var(--ink-soft)}
+  .foot-brand p{font-family:var(--body);text-transform:none;letter-spacing:normal;font-size:.95rem}
+  .foot-col h4{font-family:var(--display);font-size:.8rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ink);margin-bottom:.8rem;font-weight:600}
+  .foot-col a,.foot-col p{display:block;font-size:.95rem;margin-bottom:.4rem;color:var(--ink-soft)}
   .foot-col a:hover{color:var(--brand-700)}
-  .foot-bot{margin-top:40px;padding-top:24px;border-top:1px solid var(--line);font-size:.85rem;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .foot-bot{margin-top:36px;padding-top:22px;border-top:1px dashed var(--line-strong);font-size:.84rem;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
   /* Persistent Get-This-Website bar */
-  .get-bar{
-    position:fixed;left:0;right:0;bottom:0;z-index:80;
-    background:var(--ink);color:#fff;border-top:1px solid rgba(255,255,255,.08);
-    box-shadow:0 -8px 24px -10px rgba(0,0,0,.4);
-  }
-  .get-bar .inner{
-    max-width:var(--maxw);margin:0 auto;padding:.7rem 24px;
-    display:flex;align-items:center;justify-content:space-between;gap:1rem;
-  }
-  .get-bar .msg{display:flex;align-items:center;gap:.7rem;font-size:.95rem;font-weight:600;min-width:0}
-  .get-bar .msg .dot{flex:none;width:9px;height:9px;border-radius:50%;background:var(--accent-500)}
+  .get-bar{position:fixed;left:0;right:0;bottom:0;z-index:80;background:var(--ink);color:var(--paper);border-top:1.5px solid var(--accent-500)}
+  .get-bar .inner{max-width:var(--maxw);margin:0 auto;padding:.7rem 24px;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+  .get-bar .msg{display:flex;align-items:center;gap:.7rem;font-size:.93rem;font-weight:600;min-width:0}
+  .get-bar .msg .dot{flex:none;width:8px;height:8px;background:var(--accent-500)}
   .get-bar .msg span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .get-bar .btn{padding:.62rem 1.2rem;font-size:.92rem}
-  .get-bar .btn-primary{background:var(--accent-500);color:var(--on-accent)}
-  .get-bar .btn-primary:hover{background:var(--accent-600)}
+  .get-bar .btn{padding:.6rem 1.15rem;font-size:.9rem}
+  .get-bar .btn-primary{background:var(--accent-500);color:var(--on-accent);border-color:var(--paper)}
   @media(max-width:560px){.get-bar .msg{display:none}.get-bar .inner{justify-content:center}.get-bar .btn{width:100%}}
 </style>
 </head>
 <body>
-
 <!-- HEADER -->
 <header class="site">
   <div class="wrap nav">
@@ -328,18 +279,6 @@
       <span class="eyebrow">{{ trade }} · {{ service_area }}</span>
       <h1>{{ tagline }}<em>.</em></h1>
       <p class="hero-sub">{{ hero_sub }}</p>
-
-      <div class="hero-meta">
-        <span class="stars" aria-label="{{ rating }} out of 5">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg>
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg>
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg>
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg>
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg>
-        </span>
-        <span class="rate-txt"><b>{{ rating }}</b> from {{ review_count }} reviews in {{ town }}</span>
-      </div>
-
       <div class="hero-actions">
         {% if phone_number %}
         <a class="btn btn-primary" href="tel:{{ phone_number }}">
@@ -347,79 +286,37 @@
           Call {{ phone_number }}
         </a>
         {% endif %}
-        <a class="btn btn-ghost" href="#quote">Get a fixed-price quote</a>
-      </div>
-
-      <!-- Inline quote widget mock (non-functional) -->
-      <div class="quote-mock" id="quote">
-        <div class="q-label">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 11-8 11s-8-5-8-11a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-          Check availability in your area
-        </div>
-        <form class="q-row" onsubmit="return false" aria-label="Postcode availability check">
-          <input type="text" placeholder="Enter your postcode" aria-label="Postcode" inputmode="text">
-          <button class="btn btn-primary" type="submit">Check</button>
-        </form>
-        <p class="q-note">Same-day slots usually available across {{ service_area }}.</p>
+        <a class="btn btn-ghost" href="#quote">Request a quote</a>
       </div>
     </div>
 
-    <!-- HERO ILLUSTRATION: clean isometric tap + flow lines -->
-    <div class="hero-art" aria-hidden="true">
-      <svg viewBox="0 0 460 420" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="var(--brand-500)"/>
-            <stop offset="1" stop-color="var(--brand-700)"/>
-          </linearGradient>
-          <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="var(--brand-100)"/>
-            <stop offset="1" stop-color="var(--brand-200)"/>
-          </linearGradient>
-        </defs>
-        <!-- backdrop tile -->
-        <rect x="40" y="40" width="380" height="340" rx="26" fill="var(--brand-50)"/>
-        <circle cx="360" cy="92" r="46" fill="var(--brand-100)" opacity=".7"/>
-        <!-- wall pipe run -->
-        <path d="M90 120 H300 a18 18 0 0 1 18 18 V210" fill="none" stroke="url(#g1)" stroke-width="16" stroke-linecap="round"/>
-        <circle cx="90" cy="120" r="13" fill="none" stroke="url(#g1)" stroke-width="9"/>
-        <!-- tap body -->
-        <rect x="290" y="206" width="56" height="40" rx="10" fill="url(#g1)"/>
-        <path d="M318 206 v-26 a10 10 0 0 1 10 -10 h34" fill="none" stroke="var(--brand-600)" stroke-width="14" stroke-linecap="round"/>
-        <rect x="305" y="246" width="26" height="16" rx="5" fill="var(--brand-700)"/>
-        <!-- handle -->
-        <circle cx="318" cy="176" r="9" fill="var(--accent-500)"/>
-        <!-- droplet stream -->
-        <path d="M318 264 q0 22 0 38" stroke="var(--brand-500)" stroke-width="6" stroke-linecap="round" stroke-dasharray="2 12" fill="none"/>
-        <!-- big droplet -->
-        <path d="M210 250 c-26 30 -42 50 -42 72 a42 42 0 0 0 84 0 c0 -22 -16 -42 -42 -72Z" fill="url(#g2)"/>
-        <path d="M210 250 c-26 30 -42 50 -42 72 a42 42 0 0 0 84 0 c0 -22 -16 -42 -42 -72Z" fill="none" stroke="var(--brand-500)" stroke-width="3"/>
-        <ellipse cx="194" cy="318" rx="9" ry="13" fill="#fff" opacity=".55"/>
-        <!-- flow lines -->
-        <path d="M70 300 h70" stroke="var(--brand-200)" stroke-width="6" stroke-linecap="round"/>
-        <path d="M70 326 h44" stroke="var(--brand-200)" stroke-width="6" stroke-linecap="round"/>
-        <!-- gauge -->
-        <circle cx="378" cy="300" r="30" fill="#fff" stroke="var(--brand-200)" stroke-width="5"/>
-        <path d="M378 300 L378 282" stroke="var(--brand-700)" stroke-width="4" stroke-linecap="round"/>
-        <path d="M378 300 L392 308" stroke="var(--accent-500)" stroke-width="4" stroke-linecap="round"/>
-        <circle cx="378" cy="300" r="4" fill="var(--brand-700)"/>
-      </svg>
+    <!-- SIGNATURE ELEMENT: the service ticket -->
+    <div class="ticket" id="quote">
+      <div class="main">
+        <div class="t-label">Service ticket</div>
+        <div class="t-row"><span>Trade</span><span>{{ trade|capfirst }}</span></div>
+        <div class="t-row"><span>Area covered</span><span>{{ service_area }}</span></div>
+        <div class="t-row"><span>Response</span><span>{{ emergency_line }}</span></div>
+        <div class="t-row"><span>Pricing</span><span>Fixed, upfront</span></div>
+      </div>
+      <div class="stub">
+        <div class="seal" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 6"/></svg>
+        </div>
+        <div class="rate">{{ rating }}</div>
+        <small>{{ review_count }} reviews</small>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- WAVE DIVIDER -->
-<svg class="wave" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
-  <path fill="currentColor" d="M0 48 C 240 96 480 0 720 30 C 960 60 1200 96 1440 54 L1440 90 L0 90 Z"/>
-</svg>
-
 <!-- TRUST BAND -->
 <div class="trust">
   <div class="wrap trust-row">
-    <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg> Gas Safe Registered</span>
-    <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg> Fully Insured</span>
-    <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> 12-Month Guarantee</span>
-    <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4"/></svg> No Call-Out Fee</span>
+    <span class="stamp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg> Gas Safe Registered</span>
+    <span class="stamp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg> Fully Insured</span>
+    <span class="stamp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> 12-Month Guarantee</span>
+    <span class="stamp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4"/></svg> No Call-Out Fee</span>
   </div>
 </div>
 
@@ -428,7 +325,7 @@
   <div class="wrap">
     <div class="sec-head">
       <span class="eyebrow">What we do</span>
-      <h2>Honest, fully-priced plumbing — done right the first time</h2>
+      <h2>Honest, fully-priced plumbing</h2>
       <p>From dripping taps to full heating systems, every job is quoted up front and finished to a standard we guarantee.</p>
     </div>
     <div class="svc">
@@ -466,7 +363,7 @@
   <div class="wrap why-grid">
     <div>
       <span class="eyebrow">Why {{ town }} chooses us</span>
-      <h2 style="font-size:clamp(1.8rem,3.6vw,2.5rem);margin-top:.55rem">The local plumber you can actually rely on</h2>
+      <h2 style="font-size:clamp(1.7rem,3.2vw,2.3rem);margin-top:.55rem">The local plumber you can rely on</h2>
       <div class="why-list">
         {% for u in usps %}
         <div class="usp">
@@ -478,11 +375,11 @@
     </div>
     <div class="why-card">
       <div class="why-stat">
-        <div class="s"><b>{{ rating }}★</b><small>{{ review_count }} verified reviews</small></div>
+        <div class="s"><b>{{ rating }}</b><small>{{ review_count }} verified reviews</small></div>
         <div class="s"><b>60min</b><small>Avg. emergency response</small></div>
         <div class="s"><b>100%</b><small>Upfront fixed pricing</small></div>
       </div>
-      <hr>
+      <div class="div"></div>
       <div class="why-emergency">
         <span class="pulse" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg></span>
         <div>
@@ -499,22 +396,40 @@
   <div class="wrap">
     <div class="sec-head">
       <span class="eyebrow">Reviews</span>
-      <h2>Rated {{ rating }} out of 5 by homeowners in {{ town }}</h2>
+      <h2>Rated {{ rating }} by homeowners in {{ town }}</h2>
       <p>Real feedback from {{ review_count }} jobs completed across {{ service_area }}.</p>
     </div>
     <div class="reviews-grid">
       <div class="review">
-        <span class="stars" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg></span>
+        <span class="stars" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg>
+        </span>
         <p>"Turned up within the hour for a burst pipe, fixed it cleanly and gave me the price before starting. Tidied up after as well — genuinely faultless."</p>
         <div class="who"><span class="av">SM</span><div><b>Sarah M.</b><small>{{ town }}</small></div></div>
       </div>
       <div class="review">
-        <span class="stars" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg></span>
+        <span class="stars" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg>
+        </span>
         <p>"Had a new boiler and bathroom done. Clear quote, no surprises, and the workmanship is spot on. Wouldn't use anyone else now."</p>
         <div class="who"><span class="av">DR</span><div><b>David R.</b><small>{{ town }}</small></div></div>
       </div>
       <div class="review">
-        <span class="stars" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg></span>
+        <span class="stars" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.3 6.9.6-5.2 4.6 1.6 6.7L12 17.3 5.7 20.8l1.6-6.7L2.1 8.9 9 8.3Z"/></svg>
+        </span>
         <p>"Polite, punctual and explained everything in plain English. Sorted a leak two other plumbers couldn't find. Highly recommend to anyone local."</p>
         <div class="who"><span class="av">PL</span><div><b>Priya L.</b><small>{{ town }}</small></div></div>
       </div>
@@ -525,7 +440,7 @@
 <!-- FAQ -->
 <section class="why" id="faq">
   <div class="wrap">
-    <div class="sec-head" style="margin:0 auto 44px;text-align:center">
+    <div class="sec-head" style="margin:0 auto 40px;text-align:center">
       <span class="eyebrow">Good to know</span>
       <h2>Frequently asked questions</h2>
     </div>
@@ -544,8 +459,8 @@
 <section>
   <div class="wrap">
     <div class="cta-final">
-      <svg class="bg-art" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M12 2.7C8.7 6.4 6 9.6 6 13a6 6 0 0 0 12 0c0-3.4-2.7-6.6-6-10.3Z"/></svg>
-      <h2>Got a plumbing problem? Let's sort it today.</h2>
+      <span class="eyebrow" style="color:var(--accent-500)">Ready when you are</span>
+      <h2 style="margin-top:.6rem">Got a plumbing problem? Let's sort it today.</h2>
       <p>Friendly, fully-qualified engineers covering {{ service_area }}. Upfront pricing, no call-out fee, and work backed by our 12-month guarantee.</p>
       <div class="actions">
         {% if phone_number %}
@@ -594,6 +509,5 @@
     <a class="btn btn-primary" href="{{ cta_url }}" rel="nofollow">Get This Website</a>
   </div>
 </div>
-
 </body>
 </html>
