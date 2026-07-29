@@ -25,4 +25,8 @@ jobs:
             docker compose up -d --no-deps cosycontent-django cosycontent-worker cosycontent-beat nginx
             # Clean up
             docker image prune -f
+            
+            # Generate HTML preview samples
+            docker exec cosycontent-django python manage.py preview_samples --out media/_samples
+            
             echo "Backend deployed successfully!"
