@@ -101,12 +101,14 @@ def _accent_from(primary: str, candidates: list[str]) -> str:
     return "#f59e0b" if _luminance(primary) < 0.6 else "#0f766e"
 
 
-def extract_brand_colors(url: str, fallback: tuple[str, str]) -> BrandColors:
-    """Best-effort brand colour extraction. Never raises — returns fallback."""
-    fb_primary, fb_accent = fallback
-    if not url:
-        return BrandColors(fb_primary, fb_accent, "fallback:no-url")
+def fetch_site_html(url: str) -> str | None:
+    """Fetch a prospect's homepage HTML (capped). Never raises — returns None.
 
+    Shared by :func:`extract_brand_colors` and the site-facts service so the
+    prospect's site is fetched exactly once per preview build.
+    """
+    if not url:
+        return None
     try:
         resp = requests.get(
             url,
@@ -116,11 +118,28 @@ def extract_brand_colors(url: str, fallback: tuple[str, str]) -> BrandColors:
             stream=True,
         )
         resp.raise_for_status()
-        html = resp.raw.read(MAX_BYTES, decode_content=True).decode(
+        return resp.raw.read(MAX_BYTES, decode_content=True).decode(
             resp.encoding or "utf-8", errors="ignore"
         )
     except Exception as exc:  # noqa: BLE001 — extraction is strictly best-effort
-        logger.info("Colour extraction failed for %s: %s", url, exc)
+        logger.info("Site fetch failed for %s: %s", url, exc)
+        return None
+
+
+def extract_brand_colors(
+    url: str, fallback: tuple[str, str], html: str | None = None
+) -> BrandColors:
+    """Best-effort brand colour extraction. Never raises — returns fallback.
+
+    Pass ``html`` to reuse an already-fetched page (avoids a second request);
+    otherwise the page is fetched from ``url``.
+    """
+    fb_primary, fb_accent = fallback
+    if html is None:
+        if not url:
+            return BrandColors(fb_primary, fb_accent, "fallback:no-url")
+        html = fetch_site_html(url)
+    if not html:
         return BrandColors(fb_primary, fb_accent, "fallback:fetch-error")
 
     # 1. theme-color meta — strongest brand signal.
