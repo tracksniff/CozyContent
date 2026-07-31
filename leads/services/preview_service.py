@@ -19,7 +19,8 @@ from django.utils.text import slugify
 
 from ..models import Business, WebsitePreview
 from .. import preview_content
-from .color_service import extract_brand_colors, palette
+from .color_service import extract_brand_colors, fetch_site_html, palette
+from .site_facts_service import SiteFacts, extract_site_facts
 
 logger = logging.getLogger(__name__)
 
@@ -46,11 +47,31 @@ def _cta_url(slug: str) -> str:
     return f"{base}{sep}ref={slug}"
 
 
-def _build_context(business: Business, colors, slug: str) -> dict:
+def _coverage_pills(town: str) -> list[str]:
+    """A truthful, non-fabricated coverage list for the areas band.
+
+    We deliberately avoid inventing specific neighbouring place names (which
+    could be wrong); instead we anchor everything on the real town.
+    """
+    town = (town or "").strip()
+    if not town:
+        return ["Your local area", "Surrounding areas", "Nearby towns"]
+    return [
+        town,
+        f"{town} centre",
+        f"Greater {town}",
+        f"{town} & surrounding areas",
+    ]
+
+
+def _build_context(
+    business: Business, colors, slug: str, facts: SiteFacts | None = None
+) -> dict:
     town = (business.location or "").strip()
     trade = preview_content.trade_noun(business.category)
     area = preview_content.service_area(town)
     content = preview_content.content_for(business.category)
+    facts = facts or SiteFacts()
 
     def fill(text: str) -> str:
         return text.format(
@@ -86,6 +107,15 @@ def _build_context(business: Business, colors, slug: str) -> dict:
         # social proof
         "rating": business.rating or 4.9,
         "review_count": business.reviews or 0,
+        # real contact details (from Google / scraped site)
+        "address": (getattr(business, "address", "") or "").strip(),
+        "email": (getattr(business, "email", "") or facts.email or "").strip(),
+        # personalised facts scraped from the prospect's real site
+        # (each degrades gracefully to generic copy in the template)
+        "established_year": facts.established_year,
+        "years_in_business": facts.years_in_business,
+        "accreditations": facts.accreditations,
+        "areas": _coverage_pills(town),
         # branding (full tint scale)
         "color_primary": colors.primary,
         "color_accent": colors.accent,
@@ -101,13 +131,18 @@ def build_preview(business: Business) -> WebsitePreview:
     """Create or refresh the WebsitePreview for a business. Idempotent."""
     content = preview_content.content_for(business.category)
     fallback = preview_content.default_palette(business.category)
-    colors = extract_brand_colors(business.website, fallback)
+
+    # Fetch the prospect's real site once, then mine it for both the brand
+    # palette and the personalised facts we weave into the preview.
+    site_html = fetch_site_html(business.website)
+    colors = extract_brand_colors(business.website, fallback, html=site_html)
+    facts = extract_site_facts(site_html)
 
     # Resolve the slug first so the baked CTA can point back at this preview.
     existing = business.previews.order_by("-created_at").first()
     slug = existing.slug if existing else _unique_slug(business)
 
-    context = _build_context(business, colors, slug)
+    context = _build_context(business, colors, slug, facts=facts)
     template_name = f"previews/{content['template']}.html"
     rendered = render_to_string(template_name, context)
 
