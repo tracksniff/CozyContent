@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
@@ -368,16 +368,11 @@ footer.site{background:var(--white);border-top:1px solid var(--border);padding:5
       </div>
     </div>
     <div class="hero-media">
-      <div class="hero-panel{% if photos.hero %} hero-panel--photo{% endif %}">
+      <div class="hero-panel hero-panel--photo">
         {% if photos.hero %}
         <img src="{{ photos.hero }}" alt="A roofer from {{ business_name }} at work" fetchpriority="high" decoding="async">
         {% else %}
-        <span class="dots"></span>
-        <svg class="roofline" viewBox="0 0 600 160" preserveAspectRatio="none" aria-hidden="true">
-          <polygon points="0,160 0,110 120,55 240,110 240,160" fill="rgba(255,255,255,.10)"/>
-          <polygon points="240,160 240,90 380,30 520,90 520,160" fill="rgba(255,255,255,.16)"/>
-          <polygon points="440,160 440,120 540,70 600,110 600,160" fill="rgba(255,255,255,.08)"/>
-        </svg>
+        <img src="{% static 'images/roofers/people-renovating-house-concept.jpg' %}" alt="A roofer from {{ business_name }} at work" fetchpriority="high" decoding="async">
         {% endif %}
         <span class="glyph"><svg class="i"><use href="#i-home"/></svg></span>
         <span class="veil"></span>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
@@ -415,24 +415,14 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
     <div>
       <div class="cred">
         <span class="cred__tag">Credentials</span>
-        {% if photos.hero %}
         <figure class="cred__photo">
+          {% if photos.hero %}
           <img src="{{ photos.hero }}" alt="A locksmith from {{ business_name }} at work" fetchpriority="high" decoding="async">
+          {% else %}
+          <img src="{% static 'images/locksmiths/door-lock-service-locksmith-working-in-red-uniform.webp' %}" alt="A locksmith from {{ business_name }} at work" fetchpriority="high" decoding="async">
+          {% endif %}
           <figcaption class="mono">// On call across {{ town }}</figcaption>
         </figure>
-        {% else %}
-        <div class="cred__graphic" aria-hidden="true">
-          <svg viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="46" y="88" width="108" height="86" rx="6" stroke-width="4"/>
-            <path d="M66 88V64a34 34 0 0 1 68 0v24" stroke-width="4"/>
-            <circle cx="100" cy="122" r="12"/>
-            <path d="M100 134v18"/>
-            <path d="M100 30 L180 30" stroke="var(--brand-500)" stroke-width="3" opacity=".55"/>
-            <circle cx="170" cy="160" r="9" stroke="var(--brand-500)" opacity=".6"/>
-            <path d="M170 160 L188 142 M182 148l6 6" stroke="var(--brand-500)" opacity=".6"/>
-          </svg>
-        </div>
-        {% endif %}
         <div class="cred__stats">
           <div class="cred__stat">
             <div class="l">Established</div>
@@ -590,6 +580,41 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
         </figcaption>
       </figure>
       {% endfor %}
+    </div>
+  </div>
+</section>
+{% else %}
+<section id="work" class="section">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">// Recent work</span>
+        <h2>Out on the job in {{ town }}.</h2>
+      </div>
+      <p>A look at the call-outs {{ business_name }} handles across {{ service_area }} — locks, doors and keys, sorted cleanly.</p>
+    </div>
+    <div class="work-grid">
+      <figure class="work">
+        <img src="{% static 'images/locksmiths/360_F_1828331092_hapQtxiph0sLEddY3BF1EvJjQW6dBbvU.webp' %}" alt="Locksmith work by {{ business_name }}" loading="lazy" decoding="async">
+        <figcaption>
+          <span class="mono">// 01 · {{ town|upper }}</span>
+          <b>Non-destructive entry, day or night</b>
+        </figcaption>
+      </figure>
+      <figure class="work">
+        <img src="{% static 'images/locksmiths/360_F_1964339855_TXMPQlheCh7K2iX7hyfnaOi7AYW16oqz.webp' %}" alt="Locksmith work by {{ business_name }}" loading="lazy" decoding="async">
+        <figcaption>
+          <span class="mono">// 02 · {{ town|upper }}</span>
+          <b>Non-destructive entry, day or night</b>
+        </figcaption>
+      </figure>
+      <figure class="work">
+        <img src="{% static 'images/locksmiths/360_F_440464916_bUHOThJpEuyUyLWS6cIC4HWkteVsNAup.webp' %}" alt="Locksmith work by {{ business_name }}" loading="lazy" decoding="async">
+        <figcaption>
+          <span class="mono">// 03 · {{ town|upper }}</span>
+          <b>Non-destructive entry, day or night</b>
+        </figcaption>
+      </figure>
     </div>
   </div>
 </section>
