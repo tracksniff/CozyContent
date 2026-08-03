@@ -482,6 +482,7 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
 </section>
 
 <!-- RECENT WORK -->
+{% block work %}
 {% if photos.gallery %}
 <section id="work">
   <div class="wrap">
@@ -503,6 +504,7 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
   </div>
 </section>
 {% endif %}
+{% endblock %}
 
 <!-- GUARANTEE BANNER -->
 {% block banner %}

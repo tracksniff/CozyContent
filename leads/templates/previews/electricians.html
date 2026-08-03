@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
@@ -432,33 +432,11 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
         <span class="mono">DRG-{{ business_name|first|upper }}01</span>
       </div>
       <div class="panel__body">
-        <div class="panel__draw{% if photos.hero %} panel__draw--photo{% endif %}">
+        <div class="panel__draw panel__draw--photo">
           {% if photos.hero %}
           <img src="{{ photos.hero }}" alt="An electrician from {{ business_name }} at work" fetchpriority="high" decoding="async">
           {% else %}
-          <svg viewBox="0 0 320 220" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-            <defs>
-              <pattern id="bp" width="20" height="20" patternUnits="userSpaceOnUse">
-                <path d="M20 0H0V20" fill="none" stroke="rgba(212,242,58,0.10)" stroke-width="1"/>
-              </pattern>
-            </defs>
-            <rect width="320" height="220" fill="url(#bp)"/>
-            <!-- house schematic outline -->
-            <path d="M60 120 L160 55 L260 120" fill="none" stroke="var(--accent-500)" stroke-width="1.6" stroke-linejoin="round"/>
-            <rect x="80" y="120" width="160" height="80" fill="none" stroke="rgba(247,244,236,0.5)" stroke-width="1.2"/>
-            <!-- circuit / wiring runs -->
-            <path d="M100 200 L100 150 L160 150 L160 120" fill="none" stroke="var(--accent-500)" stroke-width="1.4" stroke-dasharray="4 4"/>
-            <path d="M220 200 L220 165 L180 165" fill="none" stroke="rgba(247,244,236,0.45)" stroke-width="1.2" stroke-dasharray="4 4"/>
-            <!-- large bolt symbol -->
-            <polygon points="168,80 150,120 164,120 158,148 186,108 170,108 178,80" fill="var(--accent-500)" opacity="0.95"/>
-            <!-- node dots -->
-            <circle cx="100" cy="150" r="3.5" fill="var(--accent-500)"/>
-            <circle cx="160" cy="150" r="3.5" fill="var(--accent-500)"/>
-            <circle cx="180" cy="165" r="3" fill="rgba(247,244,236,0.7)"/>
-            <!-- dimension marks -->
-            <path d="M80 210 L240 210" stroke="rgba(247,244,236,0.4)" stroke-width="1"/>
-            <path d="M80 206 L80 214 M240 206 L240 214" stroke="rgba(247,244,236,0.4)" stroke-width="1"/>
-          </svg>
+          <img src="{% static 'images/electrician/male-electrician-working-electrical-panel-male-electrician-overalls.jpg' %}" alt="An electrician from {{ business_name }} at work" fetchpriority="high" decoding="async">
           {% endif %}
           <div class="panel__tag">
             <span class="mono">LIVE / COVERAGE</span>
@@ -581,6 +559,42 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
         </figcaption>
       </figure>
       {% endfor %}
+    </div>
+  </div>
+</section>
+{% else %}
+<section class="section section--ink" id="work">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-head__no">/03</div>
+      <div>
+        <span class="section-head__label">Recent work</span>
+        <h2>On site across {{ town }}.</h2>
+        <p>A sample of the electrical work {{ business_name }} carries out across {{ service_area }} — every job tested, certified and signed off.</p>
+      </div>
+    </div>
+    <div class="log-grid">
+      <figure class="log">
+        <img src="{% static 'images/electrician/electrical-technician-working-switchboard-with-fuses.jpg' %}" alt="Electrical work by {{ business_name }}" loading="lazy" decoding="async">
+        <figcaption class="log__cap">
+          <span class="mono">JOB/01</span>
+          <strong>{{ town }} &amp; surrounding areas</strong>
+        </figcaption>
+      </figure>
+      <figure class="log">
+        <img src="{% static 'images/electrician/male-electrician-works-switchboard-with-electrical-connecting-cable.jpg' %}" alt="Electrical work by {{ business_name }}" loading="lazy" decoding="async">
+        <figcaption class="log__cap">
+          <span class="mono">JOB/02</span>
+          <strong>{{ town }} &amp; surrounding areas</strong>
+        </figcaption>
+      </figure>
+      <figure class="log">
+        <img src="{% static 'images/electrician/man-electrical-technician-working-switchboard-with-fuses.jpg' %}" alt="Electrical work by {{ business_name }}" loading="lazy" decoding="async">
+        <figcaption class="log__cap">
+          <span class="mono">JOB/03</span>
+          <strong>{{ town }} &amp; surrounding areas</strong>
+        </figcaption>
+      </figure>
     </div>
   </div>
 </section>

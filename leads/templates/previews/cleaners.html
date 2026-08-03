@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
@@ -381,7 +381,7 @@ footer.site .blob-f{top:-120px;left:35%;width:300px;height:300px;background:var(
         {% if photos.hero %}
           <img src="{{ photos.hero }}" alt="The {{ business_name }} cleaning team at work" fetchpriority="high" decoding="async">
         {% else %}
-          <span class="glyph"><svg class="i"><use href="#i-sparkle"/></svg></span>
+          <img src="{% static 'images/cleaners/commercial-office-cleaners.webp' %}" alt="The {{ business_name }} cleaning team at work" fetchpriority="high" decoding="async">
         {% endif %}
         <span class="word">Spotless, every time</span>
       </div>
@@ -501,6 +501,30 @@ footer.site .blob-f{top:-120px;left:35%;width:300px;height:300px;background:var(
         <img src="{{ shot }}" alt="The {{ business_name }} team on a clean" loading="lazy" decoding="async">
       </figure>
       {% endfor %}
+    </div>
+  </div>
+</section>
+{% else %}
+<section id="work" class="section--white">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Our work</span>
+      <h2>Spaces we've made <span class="serif-em">sparkle</span>.</h2>
+      <p>A glimpse at the cleans {{ business_name }} carries out across {{ service_area }} — homes, offices and everything between.</p>
+    </div>
+    <div class="gallery">
+      <figure class="shot">
+        <img src="{% static 'images/cleaners/depositphotos_697067642-stock-photo-team-multicultural-cleaners-wipes-tables.webp' %}" alt="The {{ business_name }} team on a clean" loading="lazy" decoding="async">
+      </figure>
+      <figure class="shot">
+        <img src="{% static 'images/cleaners/group-of-professional-cleaners-getting-a-brief-on-their-job.webp' %}" alt="The {{ business_name }} team on a clean" loading="lazy" decoding="async">
+      </figure>
+      <figure class="shot">
+        <img src="{% static 'images/cleaners/group-of-professional-cleaners-working-at-an-office-wearing-facemasks-during-the-pandemic.webp' %}" alt="The {{ business_name }} team on a clean" loading="lazy" decoding="async">
+      </figure>
+      <figure class="shot">
+        <img src="{% static 'images/cleaners/male-female-cleaners-cleaning-office-table-cleaners-cleaning-computer-office-desk-high-angle-view-211309146.webp' %}" alt="The {{ business_name }} team on a clean" loading="lazy" decoding="async">
+      </figure>
     </div>
   </div>
 </section>

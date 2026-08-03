@@ -1,3 +1,106 @@
 {% extends "previews/base.html" %}
+{% load static %}
 {# Poster design lives in base.html; per-trade brand colour, icons and copy come from context. #}
 {% block page_title %}Plumbing &amp; heating in {{ town }}{% endblock %}
+
+{% block hero %}
+<section class="hero">
+  <div class="hero-bg" aria-hidden="true">
+    <svg viewBox="0 0 1200 640" preserveAspectRatio="xMidYMid slice">
+      <path d="M1200 0 L1200 400 A200 200 0 0 1 800 400 L800 0 Z" fill="var(--brand-500)" opacity="0.9"/>
+      <circle cx="70" cy="640" r="260" fill="var(--accent-500)" opacity="0.85"/>
+      <circle cx="1060" cy="540" r="120" fill="none" stroke="var(--ink-900)" stroke-width="5"/>
+      <g transform="translate(660 70) rotate(15)"><polygon points="0,-28 8,-8 28,-8 12,4 18,24 0,13 -18,24 -12,4 -28,-8 -8,-8" fill="var(--ink-900)"/></g>
+    </svg>
+  </div>
+  <div class="wrap hero-grid">
+    <div>
+      <span class="chip"><span class="dot"></span>{% if established_year %}{{ town }} · Est. {{ established_year }}{% else %}{{ town }} · Trusted local {{ trade }}{% endif %}</span>
+      <h1>{{ hero_headline }} <span class="em">done right.</span></h1>
+      <p class="lead">{{ hero_sub }}</p>
+      <div class="hero-actions">
+        {% if phone_number %}<a class="btn btn--ink" href="tel:{{ phone_number }}"><svg class="i"><use href="#i-phone"/></svg>{{ phone_number }}</a>{% endif %}
+        <a class="btn btn--outline" href="#contact">Free quote <svg class="i"><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+    <div class="hero-media hero-media--photo">
+      {% if photos.hero %}
+      <figure class="photo-frame">
+        <img src="{{ photos.hero }}" alt="A {{ trade }} from {{ business_name }} at work" fetchpriority="high" decoding="async">
+        <figcaption class="tag">{{ trade|capfirst }}s · {{ town }}</figcaption>
+      </figure>
+      {% else %}
+      <figure class="photo-frame">
+        <img src="{% static 'images/plumbers/asian-plumber-blue-overalls-clearing-blockage-drain.jpg' %}" alt="A {{ trade }} from {{ business_name }} at work" fetchpriority="high" decoding="async">
+        <figcaption class="tag">{{ trade|capfirst }}s · {{ town }}</figcaption>
+      </figure>
+      {% endif %}
+      <div class="badge-card">
+        <span class="star">★</span>
+        {% if years_in_business %}
+          <span class="eb">Serving {{ town|default:"locally" }} for</span>
+          <span class="num">{{ years_in_business }}</span>
+          <span class="unit">YEARS</span>
+          <span class="lab">{% if established_year %}Family trusted since {{ established_year }}{% else %}A trusted name in {{ service_area }}{% endif %}</span>
+        {% else %}
+          <span class="eb">Rated</span>
+          <span class="num">{{ rating }}</span>
+          <span class="unit">★ ★ ★ ★ ★</span>
+          <span class="lab">{% if review_count %}{{ review_count }} reviews across {{ service_area }}{% else %}Trusted across {{ service_area }}{% endif %}</span>
+        {% endif %}
+      </div>
+      <p class="badge-note">// {{ tagline }}</p>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block work %}
+{% if photos.gallery %}
+<section id="work">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">/03 Recent work</span>
+        <h2>On the tools in {{ town }}.</h2>
+      </div>
+      <p>The kind of {{ trade }} work {{ business_name }} takes on across {{ service_area }} — week in, week out.</p>
+    </div>
+    <div class="work-grid">
+      {% for shot in photos.gallery %}
+      <figure class="work">
+        <img src="{{ shot }}" alt="{{ trade|capfirst }} work by {{ business_name }}" loading="lazy" decoding="async">
+        <figcaption><span class="n">/{{ forloop.counter|stringformat:"02d" }}</span>{{ town }} &amp; nearby</figcaption>
+      </figure>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% else %}
+<section id="work">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">/03 Recent work</span>
+        <h2>On the tools in {{ town }}.</h2>
+      </div>
+      <p>The kind of {{ trade }} work {{ business_name }} takes on across {{ service_area }} — week in, week out.</p>
+    </div>
+    <div class="work-grid">
+      <figure class="work">
+        <img src="{% static 'images/plumbers/male-plumber-working-fix-problems-client-s-house.jpg' %}" alt="{{ trade|capfirst }} work by {{ business_name }}" loading="lazy" decoding="async">
+        <figcaption><span class="n">/01</span>{{ town }} &amp; nearby</figcaption>
+      </figure>
+      <figure class="work">
+        <img src="{% static 'images/plumbers/man-installs-heating-system-house-checks-pipes-with-wrench.jpg' %}" alt="{{ trade|capfirst }} work by {{ business_name }}" loading="lazy" decoding="async">
+        <figcaption><span class="n">/02</span>{{ town }} &amp; nearby</figcaption>
+      </figure>
+      <figure class="work">
+        <img src="{% static 'images/plumbers/plumber-man-fixing-kitchen-sink.jpg' %}" alt="{{ trade|capfirst }} work by {{ business_name }}" loading="lazy" decoding="async">
+        <figcaption><span class="n">/03</span>{{ town }} &amp; nearby</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}
