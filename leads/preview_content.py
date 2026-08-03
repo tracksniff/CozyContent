@@ -32,6 +32,25 @@ DEFAULT_PALETTES = {
     "removal_companies": ("#1E3A8A", "#F97316"),
 }
 
+# Trade photography shipped with each template, as (hero, work shots). Files
+# live in ``static/previews/<template>/`` and are keyed by template name. The
+# hero shot fills the template's hero media slot; the work shots fill its
+# "recent work" band (or, for roofing, its service cards).
+#
+# Counts vary because the shots are generic trade stock: only photos that read
+# as real, current work are listed. Work bands lay out 2–4 shots equally well.
+# A template with no photos renders its illustrated (photo-free) layout exactly
+# as before — to switch one on, drop files in the folder and list them here.
+TRADE_PHOTOS = {
+    "plumbing": ("hero.webp", ("work-1.webp", "work-2.webp", "work-3.webp", "work-4.webp")),
+    "electricians": ("hero.webp", ("work-1.webp", "work-2.webp", "work-3.webp", "work-4.webp")),
+    "roofing": ("hero.webp", ("work-1.webp", "work-2.webp", "work-3.webp", "work-4.webp")),
+    "locksmiths": ("hero.webp", ("work-1.webp", "work-2.webp")),
+    "cleaners": ("hero.webp", ("work-1.webp", "work-2.webp", "work-3.webp")),
+    # No removals photography yet — this template stays illustration-only.
+    "removal_companies": ("", ()),
+}
+
 # Rich per-trade copy. ``icon`` keys map to inline SVGs defined in base.html.
 TRADE_CONTENT = {
     "plumbing": {
@@ -194,6 +213,11 @@ def service_area(town: str) -> str:
 def content_for(category: str) -> dict:
     """Return the trade content block, defaulting to plumbing if unknown."""
     return TRADE_CONTENT.get(category, TRADE_CONTENT["plumbing"])
+
+
+def photos_for(category: str) -> tuple[str, tuple[str, ...]]:
+    """Return ``(hero, work_shots)`` filenames for a category's template."""
+    return TRADE_PHOTOS.get(content_for(category)["template"], ("", ()))
 
 
 def default_palette(category: str) -> tuple[str, str]:

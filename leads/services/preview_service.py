@@ -47,6 +47,35 @@ def _cta_url(slug: str) -> str:
     return f"{base}{sep}ref={slug}"
 
 
+def _asset_base() -> str:
+    """URL prefix the baked HTML loads its images from (always ends in '/').
+
+    The HTML is rendered once and served from another host, so image URLs can
+    never be relative to the page path — see PREVIEW_ASSET_BASE_URL.
+    """
+    base = getattr(settings, "PREVIEW_ASSET_BASE_URL", "") or settings.STATIC_URL or "/static/"
+    return base if base.endswith("/") else base + "/"
+
+
+def _photos(template: str, services: list[dict], asset_base: str) -> dict:
+    """Resolve the template's photo set to URLs.
+
+    Returns ``{"hero": url|"", "gallery": [url, ...]}`` and also hangs each work
+    shot off its matching service as ``s.photo``, so a template can show
+    photography in its service cards, in a gallery band, or both. The shots are
+    generic trade stock, so nothing captions them with a specific service —
+    they're only ever pinned to a service where any shot of the trade fits.
+    Everything degrades to empty for a trade we have no photography for, and
+    every template guards on it.
+    """
+    hero, work = preview_content.TRADE_PHOTOS.get(template, ("", ()))
+    prefix = f"{asset_base}previews/{template}/"
+    gallery = [f"{prefix}{shot}" for shot in work]
+    for url, svc in zip(gallery, services):
+        svc["photo"] = url
+    return {"hero": f"{prefix}{hero}" if hero else "", "gallery": gallery}
+
+
 def _coverage_pills(town: str) -> list[str]:
     """A truthful, non-fabricated coverage list for the areas band.
 
@@ -65,7 +94,11 @@ def _coverage_pills(town: str) -> list[str]:
 
 
 def _build_context(
-    business: Business, colors, slug: str, facts: SiteFacts | None = None
+    business: Business,
+    colors,
+    slug: str,
+    facts: SiteFacts | None = None,
+    asset_base: str | None = None,
 ) -> dict:
     town = (business.location or "").strip()
     trade = preview_content.trade_noun(business.category)
@@ -116,6 +149,8 @@ def _build_context(
         "years_in_business": facts.years_in_business,
         "accreditations": facts.accreditations,
         "areas": _coverage_pills(town),
+        # trade photography (hero shot + captioned work gallery)
+        "photos": _photos(content["template"], services, asset_base or _asset_base()),
         # branding (full tint scale)
         "color_primary": colors.primary,
         "color_accent": colors.accent,

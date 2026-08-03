@@ -238,6 +238,11 @@ PREVIEW_BASE_URL = os.getenv('PREVIEW_BASE_URL', 'https://preview.cosycontent.co
 # 'Get This Website' CTA target (the purchase / get-started page).
 PREVIEW_PURCHASE_URL = os.getenv('PREVIEW_PURCHASE_URL', FRONTEND_URL.rstrip('/') + '/get-started')
 PREVIEW_EXPIRY_DAYS = int(os.getenv('PREVIEW_EXPIRY_DAYS', '30'))
+# Where the baked preview HTML loads its images from. Preview HTML is rendered
+# once and served from PREVIEW_BASE_URL, so these must not be page-relative.
+# Defaults to STATIC_URL ('/static/', i.e. the preview host itself); point it at
+# a CDN or absolute origin if static files are served elsewhere.
+PREVIEW_ASSET_BASE_URL = os.getenv('PREVIEW_ASSET_BASE_URL', '')
 
 # --- OAuth Settings ---
 AUTHLIB_OAUTH_CLIENTS = {

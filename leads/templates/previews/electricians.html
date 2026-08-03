@@ -180,6 +180,14 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
 .panel__body{padding:22px}
 .panel__draw{position:relative;aspect-ratio:16/11;background:var(--dark);border:1px solid var(--paper-line);overflow:hidden}
 .panel__draw svg{width:100%;height:100%;display:block}
+/* Photo variant — the site photo keeps the blueprint grid + scrim over it so it
+   still reads as a field report rather than a stock shot. */
+.panel__draw img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.panel__draw--photo::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(color-mix(in srgb,var(--accent-500) 14%,transparent) 1px,transparent 1px),
+    linear-gradient(90deg,color-mix(in srgb,var(--accent-500) 14%,transparent) 1px,transparent 1px);
+  background-size:20px 20px;
+  box-shadow:inset 0 -70px 60px -34px rgba(10,22,58,.9),inset 0 0 0 1px rgba(247,244,236,.08)}
 .panel__tag{position:absolute;bottom:12px;left:12px;background:rgba(8,12,30,.92);color:var(--paper);
   padding:8px 14px;display:flex;flex-direction:column;border-left:3px solid var(--accent-500);line-height:1.25}
 .panel__tag .mono{color:var(--accent-400);font-size:.64rem}
@@ -212,6 +220,17 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
 .svc-cell h3{font-size:1.22rem;margin:0 0 8px}
 .svc-cell p{color:var(--ink-500);flex:1;margin:0 0 18px;font-size:.95rem}
 .svc-cell__foot{border-top:1px dashed var(--paper-line);padding-top:14px}
+/* Recent work — photo plates in the same field-report language */
+.log-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+@media(max-width:520px){.log-grid{grid-template-columns:1fr}}
+.log{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.03);overflow:hidden;
+  transition:border-color var(--t),transform var(--t-fast)}
+.log:hover{border-color:color-mix(in srgb,var(--accent-500) 55%,transparent);transform:translateY(-2px)}
+.log img{width:100%;aspect-ratio:3/2;object-fit:cover}
+.log__cap{display:flex;flex-direction:column;gap:5px;padding:14px 16px;border-top:1px solid rgba(255,255,255,.12)}
+.log__cap .mono{color:var(--accent-400);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase}
+.log__cap strong{font-family:var(--display);font-weight:600;font-size:.94rem;color:#fff;letter-spacing:-.01em}
+
 @media(max-width:900px){.svc-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:540px){.svc-grid{grid-template-columns:1fr}}
 
@@ -392,7 +411,7 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
   <div class="container hero__inner">
     <div>
       <span class="chip chip--live"><span class="dot"></span>{{ trade|capfirst }} · {{ town }}</span>
-      <h1 class="hero__title">{{ hero_headline }} <span class="hero__title-em">in {{ town }}</span>.</h1>
+      <h1 class="hero__title">{{ hero_headline }}, <span class="hero__title-em">done safely</span>.</h1>
       <p class="hero__lede">{{ hero_sub }}</p>
       <div class="hero__cta">
         {% if phone_number %}<a class="btn btn--blue" href="tel:{{ phone_number }}"><svg class="i"><use href="#i-phone"/></svg>{{ phone_number }}</a>{% endif %}
@@ -413,7 +432,10 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
         <span class="mono">DRG-{{ business_name|first|upper }}01</span>
       </div>
       <div class="panel__body">
-        <div class="panel__draw">
+        <div class="panel__draw{% if photos.hero %} panel__draw--photo{% endif %}">
+          {% if photos.hero %}
+          <img src="{{ photos.hero }}" alt="An electrician from {{ business_name }} at work" fetchpriority="high" decoding="async">
+          {% else %}
           <svg viewBox="0 0 320 220" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
             <defs>
               <pattern id="bp" width="20" height="20" patternUnits="userSpaceOnUse">
@@ -437,6 +459,7 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
             <path d="M80 210 L240 210" stroke="rgba(247,244,236,0.4)" stroke-width="1"/>
             <path d="M80 206 L80 214 M240 206 L240 214" stroke="rgba(247,244,236,0.4)" stroke-width="1"/>
           </svg>
+          {% endif %}
           <div class="panel__tag">
             <span class="mono">LIVE / COVERAGE</span>
             <span>{{ service_area }}</span>
@@ -536,11 +559,38 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
   </div>
 </section>
 
+<!-- RECENT WORK / SITE LOG -->
+{% if photos.gallery %}
+<section class="section section--ink" id="work">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-head__no">/03</div>
+      <div>
+        <span class="section-head__label">Recent work</span>
+        <h2>On site across {{ town }}.</h2>
+        <p>A sample of the electrical work {{ business_name }} carries out across {{ service_area }} — every job tested, certified and signed off.</p>
+      </div>
+    </div>
+    <div class="log-grid">
+      {% for shot in photos.gallery %}
+      <figure class="log">
+        <img src="{{ shot }}" alt="Electrical work by {{ business_name }}" loading="lazy" decoding="async">
+        <figcaption class="log__cap">
+          <span class="mono">JOB/{{ forloop.counter|stringformat:"02d" }}</span>
+          <strong>{{ town }} &amp; surrounding areas</strong>
+        </figcaption>
+      </figure>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
 <!-- COVERAGE / AREAS -->
 <section class="section" id="areas">
   <div class="container">
     <div class="section-head">
-      <div class="section-head__no">/03</div>
+      <div class="section-head__no">/04</div>
       <div>
         <span class="section-head__label">Coverage</span>
         <h2>Covering {{ town }} &amp; the surrounding area.</h2>
@@ -593,7 +643,7 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
 <section class="section section--paper-2" id="reviews">
   <div class="container">
     <div class="section-head">
-      <div class="section-head__no">/04</div>
+      <div class="section-head__no">/05</div>
       <div>
         <span class="section-head__label">Reviews</span>
         <h2>Rated {{ rating }}★ across {{ town }}.</h2>
@@ -624,7 +674,7 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
 <section class="section section--ink" id="faq">
   <div class="container">
     <div class="section-head">
-      <div class="section-head__no">/05</div>
+      <div class="section-head__no">/06</div>
       <div>
         <span class="section-head__label">FAQ</span>
         <h2>Good to know.</h2>
