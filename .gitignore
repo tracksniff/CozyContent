@@ -21,7 +21,6 @@ db.sqlite3-journal
 local_settings.py
 secrets.json
 # Static and Media
-/static/
 /staticfiles/
 /media/
 # Migrations (local dev migrations should not sync with server)
