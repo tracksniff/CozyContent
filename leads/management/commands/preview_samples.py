@@ -11,6 +11,7 @@ to try a specific brand colour, otherwise the per-trade default palette is used.
 from pathlib import Path
 from types import SimpleNamespace
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.template.loader import render_to_string
 
@@ -26,10 +27,17 @@ class Command(BaseCommand):
         parser.add_argument("--color", default=None, help="Override brand primary hex")
         parser.add_argument("--town", default="Luton")
         parser.add_argument("--phone", default="01582 123 456")
+        parser.add_argument(
+            "--asset-base",
+            default=None,
+            help="Image URL prefix. Defaults to a file:// URL for the local "
+                 "static dir so samples show their photos when opened directly.",
+        )
 
     def handle(self, *args, **opts):
         out = Path(opts["out"])
         out.mkdir(parents=True, exist_ok=True)
+        asset_base = opts["asset_base"] or (settings.BASE_DIR / "static").as_uri() + "/"
         index_links = []
 
         for category in preview_content.TRADE_CONTENT:
@@ -46,7 +54,7 @@ class Command(BaseCommand):
                 reviews=137,
                 website="",
             )
-            ctx = _build_context(biz, colors, f"sample-{category}")
+            ctx = _build_context(biz, colors, f"sample-{category}", asset_base=asset_base)
             template = preview_content.content_for(category)["template"]
             html = render_to_string(f"previews/{template}.html", ctx)
             path = out / f"{category}.html"

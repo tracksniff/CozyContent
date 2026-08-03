@@ -132,7 +132,12 @@ header.site{position:sticky;top:0;z-index:60;background:color-mix(in srgb,var(--
 .hero-panel .glyph{position:absolute;top:46%;left:50%;transform:translate(-50%,-50%);color:rgba(255,255,255,.9)}
 .hero-panel .glyph svg{width:120px;height:120px;stroke-width:1.4}
 .hero-panel .word{position:absolute;bottom:13%;left:0;right:0;text-align:center;color:#fff;
-  font-family:var(--serif);font-style:italic;font-size:clamp(1.4rem,3vw,2rem);opacity:.92}
+  font-family:var(--serif);font-style:italic;font-size:clamp(1.4rem,3vw,2rem);opacity:.92;z-index:2}
+/* Photo variant of the organic hero panel — scrim keeps the caption legible. */
+.hero-panel img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero-panel--photo::after{background-image:none;opacity:1;
+  background:linear-gradient(175deg,color-mix(in srgb,var(--brand-900) 22%,transparent) 0%,
+    transparent 38%,color-mix(in srgb,var(--brand-900) 76%,transparent) 100%)}
 .sticker{position:absolute;display:flex;align-items:center;gap:12px;background:#fff;padding:12px 18px 12px 12px;
   border-radius:var(--r-pill);box-shadow:var(--shadow);z-index:3}
 .sticker-top{top:12%;right:-16px}
@@ -208,6 +213,19 @@ header.site{position:sticky;top:0;z-index:60;background:color-mix(in srgb,var(--
 .step h3{font-size:1.08rem;margin-bottom:6px}
 .step p{color:var(--ink-500);font-size:.92rem;margin:0}
 .steps-cta{text-align:center;margin-top:clamp(36px,4vw,52px)}
+
+/* Work gallery — soft organic photo cards */
+.section--white{background:var(--white)}
+.gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px}
+@media(max-width:520px){.gallery{grid-template-columns:1fr}}
+.shot{position:relative;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-sm);
+  transition:transform var(--t),box-shadow var(--t)}
+.shot:nth-child(even){border-radius:var(--r-xl) var(--r-lg) var(--r-xl) var(--r-lg)}
+.shot:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+.shot img{width:100%;aspect-ratio:4/3;object-fit:cover}
+.shot figcaption{position:absolute;left:14px;right:14px;bottom:14px;background:rgba(255,255,255,.93);
+  backdrop-filter:blur(6px);border-radius:var(--r-pill);padding:10px 16px;text-align:center;
+  font-family:var(--display);font-weight:700;font-size:.86rem;color:var(--ink-900)}
 
 /* Coverage pills */
 .pills{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
@@ -326,6 +344,7 @@ footer.site .blob-f{top:-120px;left:35%;width:300px;height:300px;background:var(
       <a href="#services">Services</a>
       <a href="#why">Why us</a>
       <a href="#process">How it works</a>
+      <a href="#work">Our work</a>
       <a href="#reviews">Reviews</a>
       <a href="#faq">FAQ</a>
     </nav>
@@ -358,8 +377,12 @@ footer.site .blob-f{top:-120px;left:35%;width:300px;height:300px;background:var(
       </div>
     </div>
     <div class="hero-media">
-      <div class="hero-panel">
-        <span class="glyph"><svg class="i"><use href="#i-sparkle"/></svg></span>
+      <div class="hero-panel{% if photos.hero %} hero-panel--photo{% endif %}">
+        {% if photos.hero %}
+          <img src="{{ photos.hero }}" alt="The {{ business_name }} cleaning team at work" fetchpriority="high" decoding="async">
+        {% else %}
+          <span class="glyph"><svg class="i"><use href="#i-sparkle"/></svg></span>
+        {% endif %}
         <span class="word">Spotless, every time</span>
       </div>
       <div class="sticker sticker-top">
@@ -462,6 +485,26 @@ footer.site .blob-f{top:-120px;left:35%;width:300px;height:300px;background:var(
     </div>
   </div>
 </section>
+
+<!-- WORK GALLERY -->
+{% if photos.gallery %}
+<section id="work" class="section--white">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Our work</span>
+      <h2>Spaces we've made <span class="serif-em">sparkle</span>.</h2>
+      <p>A glimpse at the cleans {{ business_name }} carries out across {{ service_area }} — homes, offices and everything between.</p>
+    </div>
+    <div class="gallery">
+      {% for shot in photos.gallery %}
+      <figure class="shot">
+        <img src="{{ shot }}" alt="The {{ business_name }} team on a clean" loading="lazy" decoding="async">
+      </figure>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
 
 <!-- COVERAGE -->
 <section id="areas" class="section--mint">

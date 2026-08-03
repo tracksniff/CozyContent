@@ -154,8 +154,28 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
 .cred__stat:nth-last-child(-n+2){border-bottom:0}
 .cred__stat .l{color:var(--accent-400);font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase}
 .cred__stat .v{font:700 clamp(1.6rem,3vw,2.1rem)/1 var(--display);letter-spacing:-.03em;color:var(--head);margin-top:8px}
-.cred__tag{position:absolute;top:-1px;right:-1px;background:var(--accent-500);color:var(--on-accent);
+.cred__tag{position:absolute;z-index:2;top:-1px;right:-1px;background:var(--accent-500);color:var(--on-accent);
   font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;padding:6px 12px}
+
+.cred__photo{position:relative;border-bottom:1px solid var(--line);overflow:hidden}
+.cred__photo img{width:100%;aspect-ratio:4/3;object-fit:cover;filter:saturate(.88) contrast(1.04)}
+.cred__photo::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(14,13,16,.28) 0%,transparent 45%,rgba(14,13,16,.72) 100%)}
+.cred__photo figcaption{position:absolute;left:16px;bottom:14px;z-index:1;color:var(--accent-400);
+  font-size:.68rem;letter-spacing:.08em;text-transform:uppercase}
+
+/* Recent work — bordered photo plates, same 0-gap grid language */
+.work-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:0;
+  border-top:1px solid var(--line);border-left:1px solid var(--line)}
+@media(max-width:520px){.work-grid{grid-template-columns:1fr}}
+.work{position:relative;border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+  background:var(--canvas);overflow:hidden}
+.work img{width:100%;aspect-ratio:4/3;object-fit:cover;filter:saturate(.88) contrast(1.04);
+  transition:transform var(--t),filter var(--t)}
+.work:hover img{transform:scale(1.03);filter:saturate(1) contrast(1.04)}
+.work figcaption{display:flex;flex-direction:column;gap:7px;padding:20px 22px;border-top:1px solid var(--line)}
+.work figcaption .mono{color:var(--accent-400);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase}
+.work figcaption b{font-family:var(--display);font-weight:600;font-size:1.02rem;letter-spacing:-.01em;color:var(--head)}
 
 /* Accreditation strip */
 .accred-strip{background:var(--darkest);border-bottom:1px solid var(--line)}
@@ -358,9 +378,10 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
     <nav class="nav">
       <a class="nav__link" href="#services"><span class="nav__code">01</span><span class="nav__label">Services</span></a>
       <a class="nav__link" href="#promises"><span class="nav__code">02</span><span class="nav__label">Why us</span></a>
-      <a class="nav__link" href="#areas"><span class="nav__code">03</span><span class="nav__label">Coverage</span></a>
-      <a class="nav__link" href="#reviews"><span class="nav__code">04</span><span class="nav__label">Reviews</span></a>
-      <a class="nav__link" href="#faq"><span class="nav__code">05</span><span class="nav__label">FAQ</span></a>
+      <a class="nav__link" href="#work"><span class="nav__code">03</span><span class="nav__label">Our work</span></a>
+      <a class="nav__link" href="#areas"><span class="nav__code">04</span><span class="nav__label">Coverage</span></a>
+      <a class="nav__link" href="#reviews"><span class="nav__code">05</span><span class="nav__label">Reviews</span></a>
+      <a class="nav__link" href="#faq"><span class="nav__code">06</span><span class="nav__label">FAQ</span></a>
     </nav>
     <a class="btn btn--accent btn--sm header__cta" href="{% if phone_number %}tel:{{ phone_number }}{% else %}#contact{% endif %}">
       <svg class="i"><use href="#i-phone"/></svg><span class="txt">{% if phone_number %}Call now{% else %}Get a quote{% endif %}</span>
@@ -394,6 +415,12 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
     <div>
       <div class="cred">
         <span class="cred__tag">Credentials</span>
+        {% if photos.hero %}
+        <figure class="cred__photo">
+          <img src="{{ photos.hero }}" alt="A locksmith from {{ business_name }} at work" fetchpriority="high" decoding="async">
+          <figcaption class="mono">// On call across {{ town }}</figcaption>
+        </figure>
+        {% else %}
         <div class="cred__graphic" aria-hidden="true">
           <svg viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
             <rect x="46" y="88" width="108" height="86" rx="6" stroke-width="4"/>
@@ -405,6 +432,7 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
             <path d="M170 160 L188 142 M182 148l6 6" stroke="var(--brand-500)" opacity=".6"/>
           </svg>
         </div>
+        {% endif %}
         <div class="cred__stats">
           <div class="cred__stat">
             <div class="l">Established</div>
@@ -540,6 +568,32 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
     </div>
   </div>
 </section>
+
+<!-- RECENT WORK -->
+{% if photos.gallery %}
+<section id="work" class="section">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">// Recent work</span>
+        <h2>Out on the job in {{ town }}.</h2>
+      </div>
+      <p>A look at the call-outs {{ business_name }} handles across {{ service_area }} — locks, doors and keys, sorted cleanly.</p>
+    </div>
+    <div class="work-grid">
+      {% for shot in photos.gallery %}
+      <figure class="work">
+        <img src="{{ shot }}" alt="Locksmith work by {{ business_name }}" loading="lazy" decoding="async">
+        <figcaption>
+          <span class="mono">// {{ forloop.counter|stringformat:"02d" }} · {{ town|upper }}</span>
+          <b>Non-destructive entry, day or night</b>
+        </figcaption>
+      </figure>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
 
 <!-- COVERAGE / AREAS -->
 <section id="areas" class="section">

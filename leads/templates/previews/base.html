@@ -132,6 +132,18 @@ header.site{position:sticky;top:0;z-index:50;background:var(--paper);border-bott
 .hero .lead{font-size:1.12rem;color:var(--ink-700);max-width:50ch}
 .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin:30px 0 0}
 
+/* Hero photo — hard-framed poster plate, badge card overlapping it */
+.hero-media{position:relative}
+.photo-frame{position:relative;border:3px solid var(--ink-900);box-shadow:var(--shadow-lg);
+  background:var(--ink-800);overflow:hidden}
+.photo-frame img{width:100%;aspect-ratio:4/3;object-fit:cover}
+.photo-frame .tag{position:absolute;left:0;top:0;background:var(--ink-900);color:var(--paper);
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;padding:9px 15px}
+.hero-media--photo .badge-card{width:min(90%,330px);margin:-58px 0 0 auto;padding:24px 22px;z-index:3}
+.hero-media--photo .badge-card .num{font:400 clamp(3rem,6vw,4.4rem)/.85 var(--display)}
+.hero-media--photo .badge-card .star{width:44px;height:44px;font-size:1.2rem;top:-14px;right:-14px}
+@media(max-width:960px){.hero-media--photo .badge-card{margin-right:auto}}
+
 /* Hero badge card */
 .badge-card{position:relative;background:var(--paper);border:3px solid var(--ink-900);box-shadow:var(--shadow-lg);
   padding:34px 30px;display:flex;flex-direction:column;align-items:center;text-align:center}
@@ -142,6 +154,9 @@ header.site{position:sticky;top:0;z-index:50;background:var(--paper);border-bott
 .badge-card .star{position:absolute;top:-18px;right:-18px;width:52px;height:52px;background:var(--accent-500);
   color:var(--on-accent);border:2px solid var(--ink-900);border-radius:50%;display:grid;place-items:center;font-size:1.4rem}
 .badge-note{margin-top:14px;text-align:center;color:var(--ink-500);font-family:var(--mono);font-size:.72rem}
+/* The photo carries the hero, and the tagline note would sit over the
+   background blob with poor contrast — drop it in the photo variant. */
+.hero-media--photo .badge-note{display:none}
 
 /* Accreditation / trust strip */
 .trust{background:var(--ink-900);color:var(--paper);border-top:3px solid var(--ink-900)}
@@ -183,6 +198,17 @@ header.site{position:sticky;top:0;z-index:50;background:var(--paper);border-bott
 .svc--ink{background:var(--ink-900);color:var(--paper)}
 .svc--ink h3{color:var(--paper)}
 .svc--paper{background:var(--paper);color:var(--ink-900)}
+
+/* Recent work — framed photo plates */
+.work-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+@media(max-width:520px){.work-grid{grid-template-columns:1fr}}
+.work{position:relative;border:3px solid var(--ink-900);background:var(--ink-800);overflow:hidden;
+  box-shadow:var(--shadow);transition:transform var(--t-fast),box-shadow var(--t)}
+.work:hover{transform:translate(-3px,-3px);box-shadow:6px 6px 0 var(--ink-900)}
+.work img{width:100%;aspect-ratio:3/2;object-fit:cover}
+.work figcaption{display:flex;align-items:center;gap:10px;background:var(--ink-900);color:var(--paper);
+  padding:13px 16px;font:400 .82rem/1.15 var(--display);text-transform:uppercase;letter-spacing:-.01em}
+.work figcaption .n{font-family:var(--mono);font-size:.72rem;color:var(--accent-500);flex:none}
 
 /* Guarantee banner */
 .banner .wrap{display:grid;grid-template-columns:1.3fr .7fr;gap:48px;align-items:center}
@@ -328,6 +354,7 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
     </a>
     <nav class="nav-links">
       <a href="#services">Services</a>
+      <a href="#work">Our work</a>
       <a href="#why">Why us</a>
       <a href="#reviews">Reviews</a>
       <a href="#faq">FAQ</a>
@@ -357,7 +384,13 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
         <a class="btn btn--outline" href="#contact">Free quote <svg class="i"><use href="#i-arrow"/></svg></a>
       </div>
     </div>
-    <div>
+    <div class="hero-media{% if photos.hero %} hero-media--photo{% endif %}">
+      {% if photos.hero %}
+      <figure class="photo-frame">
+        <img src="{{ photos.hero }}" alt="A {{ trade }} from {{ business_name }} at work" fetchpriority="high" decoding="async">
+        <figcaption class="tag">{{ trade|capfirst }}s · {{ town }}</figcaption>
+      </figure>
+      {% endif %}
       <div class="badge-card">
         <span class="star">★</span>
         {% if years_in_business %}
@@ -448,6 +481,29 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
   </div>
 </section>
 
+<!-- RECENT WORK -->
+{% if photos.gallery %}
+<section id="work">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">/03 Recent work</span>
+        <h2>On the tools in {{ town }}.</h2>
+      </div>
+      <p>The kind of {{ trade }} work {{ business_name }} takes on across {{ service_area }} — week in, week out.</p>
+    </div>
+    <div class="work-grid">
+      {% for shot in photos.gallery %}
+      <figure class="work">
+        <img src="{{ shot }}" alt="{{ trade|capfirst }} work by {{ business_name }}" loading="lazy" decoding="async">
+        <figcaption><span class="n">/{{ forloop.counter|stringformat:"02d" }}</span>{{ town }} &amp; nearby</figcaption>
+      </figure>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
 <!-- GUARANTEE BANNER -->
 {% block banner %}
 <section class="banner section--brand">
@@ -478,7 +534,7 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
   <div class="wrap">
     <div class="sec-head">
       <div>
-        <span class="eyebrow">/03 Coverage</span>
+        <span class="eyebrow">/04 Coverage</span>
         <h2>Covering {{ town }} &amp; beyond.</h2>
       </div>
       <p>Based in {{ town }}, we cover {{ service_area }}. If you're nearby and not sure, give us a call — we probably still reach you.</p>
@@ -495,7 +551,7 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
   <div class="wrap">
     <div class="sec-head">
       <div>
-        <span class="eyebrow">/04 Reviews</span>
+        <span class="eyebrow">/05 Reviews</span>
         <h2>Rated {{ rating }}★ in {{ town }}.</h2>
       </div>
       <p>{% if review_count %}Real feedback from {{ review_count }} jobs completed across {{ service_area }}.{% else %}Real feedback from homeowners across {{ service_area }}.{% endif %}</p>
@@ -526,7 +582,7 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
   <div class="wrap">
     <div class="sec-head">
       <div>
-        <span class="eyebrow">/05 FAQ</span>
+        <span class="eyebrow">/06 FAQ</span>
         <h2>Good to know.</h2>
       </div>
       <p>The questions {{ town }} homeowners ask us most — answered straight.</p>

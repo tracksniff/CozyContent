@@ -153,6 +153,24 @@ header.site{position:sticky;top:0;z-index:50;background:rgba(250,246,236,.92);ba
 .hero__panel .kicker{position:absolute;bottom:60px;padding:0 24px;text-align:center;font-family:var(--serif);font-style:italic;color:rgba(246,239,225,.72);font-size:1.05rem}
 .hero__panel .ftruck{position:absolute;top:56px;color:var(--brand-500);opacity:.85}
 .hero__panel .ftruck svg{width:52px;height:52px;stroke-width:1.5}
+.hero__panel--photo{display:block}
+.hero__panel--photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero__panel--photo::before{opacity:.22}
+.hero__panel--photo::after{width:auto;height:auto;inset:0;border:0;
+  background:linear-gradient(180deg,rgba(14,31,58,.22) 0%,transparent 40%,rgba(14,31,58,.72) 100%)}
+.hero__panel--photo .kicker{z-index:1;color:rgba(246,239,225,.92)}
+
+/* Recent moves — editorial photo plates */
+.moves{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+@media(max-width:520px){.moves{grid-template-columns:1fr}}
+.move{position:relative;background:var(--paper);box-shadow:var(--shadow-sm);border-radius:var(--r-xs);
+  overflow:hidden;transition:transform var(--t),box-shadow var(--t)}
+.move:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.move img{width:100%;aspect-ratio:4/3;object-fit:cover}
+.move figcaption{display:flex;align-items:baseline;gap:10px;padding:16px 18px;border-top:1px solid var(--paper-line)}
+.move figcaption .numeral{color:var(--brand-600);font-size:.8rem;flex:none}
+.move figcaption b{font-family:var(--serif);font-weight:400;font-size:1.08rem;letter-spacing:-.01em;color:var(--ink-900)}
+
 .hero__photo-tag{position:absolute;left:22px;bottom:22px;background:var(--paper);padding:9px 15px;box-shadow:var(--shadow-sm)}
 .hero__photo-tag .numeral{color:var(--ink-900);font-size:.8rem}
 .hero__photo-tag .numeral::before{content:"— ";color:var(--brand-600)}
@@ -350,11 +368,18 @@ footer.site h1,footer.site h2,footer.site h3{color:#f6efe1}
       </div>
     </div>
     <div class="hero__media">
+      {% if photos.hero %}
+      <div class="hero__panel hero__panel--photo">
+        <img src="{{ photos.hero }}" alt="The {{ business_name }} removals crew at work" fetchpriority="high" decoding="async">
+        <span class="kicker">{{ tagline }}</span>
+      </div>
+      {% else %}
       <div class="hero__panel" aria-hidden="true">
         <span class="ftruck"><svg class="i"><use href="#i-truck"/></svg></span>
         <span class="hero__mono">{{ business_name|first|upper }}<span class="amp">&amp;</span>Co</span>
         <span class="kicker">{{ tagline }}</span>
       </div>
+      {% endif %}
       <div class="hero__photo-tag"><span class="numeral">{{ town }} · {{ service_area }}</span></div>
       <div class="hero__seal">
         <span class="est-badge">
@@ -475,6 +500,29 @@ footer.site h1,footer.site h2,footer.site h3{color:#f6efe1}
     </div>
   </div>
 </section>
+
+<!-- RECENT MOVES -->
+{% if photos.gallery %}
+<section id="work">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">Recent moves</span>
+        <h2>Days on the road with {{ business_name }}.</h2>
+      </div>
+      <p>A look at the moves we handle across {{ service_area }} — packed, loaded and delivered with the same care every time.</p>
+    </div>
+    <div class="moves">
+      {% for shot in photos.gallery %}
+      <figure class="move">
+        <img src="{{ shot }}" alt="A move handled by {{ business_name }}" loading="lazy" decoding="async">
+        <figcaption><span class="numeral">{{ forloop.counter|stringformat:"02d" }}</span><b>{{ town }} &amp; nearby</b></figcaption>
+      </figure>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
 
 <!-- TESTIMONIALS -->
 <section id="reviews" class="testimonials">

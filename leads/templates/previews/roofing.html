@@ -141,6 +141,8 @@ header.site{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.9);bac
   background-image:radial-gradient(rgba(255,255,255,.14) 1.5px,transparent 1.5px);background-size:22px 22px}
 .hero-panel .veil{position:absolute;inset:0;
   background:linear-gradient(180deg,transparent 40%,rgba(10,42,100,.55))}
+.hero-panel img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero-panel--photo .veil{background:linear-gradient(180deg,rgba(10,42,100,.3) 0%,transparent 34%,rgba(10,42,100,.8) 100%)}
 .hero-panel .roofline{position:absolute;left:0;right:0;bottom:0;z-index:1;opacity:.9;width:100%;height:auto}
 .hero-panel .glyph{position:absolute;top:26px;left:26px;z-index:2;width:64px;height:64px;border-radius:16px;
   background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);display:grid;place-items:center;color:#fff}
@@ -148,6 +150,8 @@ header.site{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.9);bac
 .hero-panel .plabel{position:absolute;left:26px;bottom:78px;z-index:2;color:#fff;max-width:72%}
 .hero-panel .plabel b{font-family:var(--display);font-weight:700;font-size:1.3rem;display:block;line-height:1.2}
 .hero-panel .plabel span{font-size:.88rem;color:rgba(255,255,255,.82)}
+/* Clear the floating call chip when a photo fills the panel. */
+.hero-panel--photo .plabel{bottom:112px;max-width:60%}
 .chip{position:absolute;background:#fff;border:1px solid var(--border);border-radius:var(--radius);
   padding:12px 16px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow);z-index:3}
 .chip-ic{width:38px;height:38px;border-radius:10px;background:var(--brand-50);color:var(--brand-700);display:grid;place-items:center;flex:none}
@@ -180,6 +184,8 @@ header.site{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.9);bac
 .svc-media .dots{position:absolute;inset:0;opacity:.4;
   background-image:radial-gradient(rgba(255,255,255,.16) 1.2px,transparent 1.2px);background-size:18px 18px}
 .svc-media .veil{position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(10,42,100,.5))}
+.svc-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.svc-media--photo .veil{background:linear-gradient(180deg,transparent 45%,rgba(10,42,100,.62))}
 .svc-icon{position:absolute;left:16px;bottom:14px;z-index:2;width:40px;height:40px;border-radius:10px;
   background:var(--accent-500);color:var(--on-accent);display:grid;place-items:center;box-shadow:0 6px 16px rgba(255,107,26,.4)}
 .svc-icon svg{width:22px;height:22px;stroke-width:2}
@@ -362,14 +368,18 @@ footer.site{background:var(--white);border-top:1px solid var(--border);padding:5
       </div>
     </div>
     <div class="hero-media">
-      <div class="hero-panel">
+      <div class="hero-panel{% if photos.hero %} hero-panel--photo{% endif %}">
+        {% if photos.hero %}
+        <img src="{{ photos.hero }}" alt="A roofer from {{ business_name }} at work" fetchpriority="high" decoding="async">
+        {% else %}
         <span class="dots"></span>
-        <span class="glyph"><svg class="i"><use href="#i-home"/></svg></span>
         <svg class="roofline" viewBox="0 0 600 160" preserveAspectRatio="none" aria-hidden="true">
           <polygon points="0,160 0,110 120,55 240,110 240,160" fill="rgba(255,255,255,.10)"/>
           <polygon points="240,160 240,90 380,30 520,90 520,160" fill="rgba(255,255,255,.16)"/>
           <polygon points="440,160 440,120 540,70 600,110 600,160" fill="rgba(255,255,255,.08)"/>
         </svg>
+        {% endif %}
+        <span class="glyph"><svg class="i"><use href="#i-home"/></svg></span>
         <span class="veil"></span>
         <div class="plabel">
           <b>{% if years_in_business %}{{ years_in_business }} years{% else %}Trusted{% endif %} on the roofs of {{ town }}</b>
@@ -423,8 +433,12 @@ footer.site{background:var(--white);border-top:1px solid var(--border);padding:5
     <div class="svc-grid">
       {% for s in services %}
       <article class="svc">
-        <div class="svc-media">
+        <div class="svc-media{% if s.photo %} svc-media--photo{% endif %}">
+          {% if s.photo %}
+          <img src="{{ s.photo }}" alt="{{ s.title }} in {{ town }}" loading="lazy" decoding="async">
+          {% else %}
           <span class="dots"></span>
+          {% endif %}
           <span class="veil"></span>
           <span class="svc-icon"><svg class="i"><use href="#i-{{ s.icon }}"/></svg></span>
         </div>
