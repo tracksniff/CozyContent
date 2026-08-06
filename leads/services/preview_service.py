@@ -50,11 +50,10 @@ def _cta_url(slug: str) -> str:
 
 def _asset_base() -> str:
     base = getattr(settings, "PREVIEW_ASSET_BASE_URL", "")
-    if not base:
-        raise ImproperlyConfigured(
-            "PREVIEW_ASSET_BASE_URL must be set to an absolute URL — "
-            "preview HTML is served from a different host than STATIC_URL."
-        )
+    if not base or base.startswith("file://"):
+        backend_url = getattr(settings, "BACKEND_URL", "https://api.cosycontent.com").rstrip("/")
+        static_url = getattr(settings, "STATIC_URL", "/static/")
+        base = f"{backend_url}{static_url}"
     return base if base.endswith("/") else base + "/"
 
 def _photos(template: str, services: list[dict], asset_base: str) -> dict:
