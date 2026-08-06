@@ -16,6 +16,7 @@ import logging
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils.text import slugify
+from django.core.exceptions import ImproperlyConfigured
 
 from ..models import Business, WebsitePreview
 from .. import preview_content
@@ -48,14 +49,13 @@ def _cta_url(slug: str) -> str:
 
 
 def _asset_base() -> str:
-    """URL prefix the baked HTML loads its images from (always ends in '/').
-
-    The HTML is rendered once and served from another host, so image URLs can
-    never be relative to the page path — see PREVIEW_ASSET_BASE_URL.
-    """
-    base = getattr(settings, "PREVIEW_ASSET_BASE_URL", "") or settings.STATIC_URL or "/static/"
+    base = getattr(settings, "PREVIEW_ASSET_BASE_URL", "")
+    if not base:
+        raise ImproperlyConfigured(
+            "PREVIEW_ASSET_BASE_URL must be set to an absolute URL — "
+            "preview HTML is served from a different host than STATIC_URL."
+        )
     return base if base.endswith("/") else base + "/"
-
 
 def _photos(template: str, services: list[dict], asset_base: str) -> dict:
     """Resolve the template's photo set to URLs.
