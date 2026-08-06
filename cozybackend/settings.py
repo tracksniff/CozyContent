@@ -242,7 +242,7 @@ PREVIEW_EXPIRY_DAYS = int(os.getenv('PREVIEW_EXPIRY_DAYS', '30'))
 # once and served from PREVIEW_BASE_URL, so these must not be page-relative.
 # Defaults to STATIC_URL ('/static/', i.e. the preview host itself); point it at
 # a CDN or absolute origin if static files are served elsewhere.
-PREVIEW_ASSET_BASE_URL = os.getenv('PREVIEW_ASSET_BASE_URL', '')
+PREVIEW_ASSET_BASE_URL = os.getenv('PREVIEW_ASSET_BASE_URL', f"{BACKEND_URL}/static/")
 
 # --- OAuth Settings ---
 AUTHLIB_OAUTH_CLIENTS = {
