@@ -151,26 +151,27 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
 .header__cta{justify-self:end}
 @media(max-width:600px){.header__cta{display:none}}
 
-/* HERO */
-.hero{position:relative;padding:clamp(56px,8vw,96px) 0 clamp(48px,7vw,80px);overflow:hidden;border-bottom:1px solid var(--paper-line)}
-.hero__grid{position:absolute;inset:0;pointer-events:none;
-  background-image:linear-gradient(rgba(31,58,115,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(31,58,115,.06) 1px,transparent 1px);
-  background-size:64px 64px;-webkit-mask-image:radial-gradient(ellipse at 70% 30%,black,transparent 70%);mask-image:radial-gradient(ellipse at 70% 30%,black,transparent 70%)}
-.hero__inner{position:relative;display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center}
-@media(max-width:980px){.hero__inner{grid-template-columns:1fr;gap:40px}}
+.hero{position:relative;padding:clamp(72px,8vw,120px) 0 clamp(64px,7vw,100px);overflow:hidden;border-bottom:1px solid var(--paper-line)}
+.hero__bg-img{position:absolute;inset:0;z-index:0}
+.hero__bg-img img{width:100%;height:100%;object-fit:cover}
+.hero__overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,22,58,.82) 0%,rgba(10,22,58,.95) 100%)}
+.hero__grid{position:absolute;inset:0;pointer-events:none;z-index:1;
+  background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);
+  background-size:64px 64px;-webkit-mask-image:radial-gradient(ellipse at 50% 50%,black,transparent 70%);mask-image:radial-gradient(ellipse at 50% 50%,black,transparent 70%)}
+.hero__inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr;max-width:900px;margin:0 auto;text-align:center;justify-items:center;gap:40px;align-items:center}
 .hero__title{margin:20px 0 22px;font-size:clamp(2.7rem,6vw,5rem);letter-spacing:-.04em;line-height:1.02}
 .hero__title-em{color:var(--brand-500);background:linear-gradient(transparent 70%,var(--accent-400) 70%);padding:0 6px;
   -webkit-box-decoration-break:clone;box-decoration-break:clone}
-.hero__lede{font-size:1.1rem;color:var(--ink-500);max-width:56ch}
-.hero__cta{display:flex;gap:12px;flex-wrap:wrap;margin:28px 0 36px}
-.hero__stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--paper-line);
-  border-bottom:1px solid var(--paper-line);background:rgba(255,255,255,.5)}
-.hero__stat{padding:18px 20px;border-right:1px solid var(--paper-line);display:flex;flex-direction:column;gap:4px}
+.hero__lede{font-size:1.1rem;color:rgba(247,244,236,.82);max-width:60ch;margin-left:auto;margin-right:auto}
+.hero__cta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:28px 0 36px}
+.hero__stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid rgba(255,255,255,.14);
+  border-bottom:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.03)}
+.hero__stat{padding:18px 20px;border-right:1px solid rgba(255,255,255,.14);display:flex;flex-direction:column;gap:4px;text-align:left}
 .hero__stat:last-child{border-right:0}
-.hero__stat .mono{color:var(--brand-500);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase}
-.hero__stat strong{font-family:var(--display);font-weight:700;font-size:1.25rem;color:var(--ink-900);letter-spacing:-.02em}
-.hero__stat .muted{font-size:.76rem}
-@media(max-width:560px){.hero__stats{grid-template-columns:1fr 1fr}.hero__stat{border-bottom:1px solid var(--paper-line)}
+.hero__stat .mono{color:var(--accent-400);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase}
+.hero__stat strong{font-family:var(--display);font-weight:700;font-size:1.25rem;color:#fff;letter-spacing:-.02em}
+.hero__stat .muted{font-size:.76rem;color:rgba(255,255,255,.6)}
+@media(max-width:560px){.hero__stats{grid-template-columns:1fr 1fr}.hero__stat{border-bottom:1px solid rgba(255,255,255,.14)}
   .hero__stat:nth-child(2){border-right:0}.hero__stat:nth-child(3),.hero__stat:nth-child(4){border-bottom:0}}
 
 /* Engineering drawing card */
@@ -213,6 +214,10 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
 .svc-cell{display:flex;flex-direction:column;background:#fff;border-right:1px solid var(--paper-line);border-bottom:1px solid var(--paper-line);
   padding:28px 28px 22px;color:var(--ink-900);transition:background var(--t)}
 .svc-cell:hover{background:var(--paper)}
+.svc-cell__media{position:relative;aspect-ratio:16/10;margin:-28px -28px 22px;background:var(--dark);border-bottom:1px solid var(--paper-line);overflow:hidden}
+.svc-cell__media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.svc-cell__media .dots{position:absolute;inset:0;opacity:.4;background-image:radial-gradient(rgba(255,255,255,.16) 1.2px,transparent 1.2px);background-size:18px 18px}
+.svc-cell__media .veil{position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(10,22,58,.3))}
 .svc-cell__head{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
 .svc-cell__head .code{background:var(--brand-50);color:var(--brand-700);padding:4px 8px;font-family:var(--mono);font-size:.68rem;letter-spacing:.04em;border:1px solid var(--brand-100)}
 .svc-cell__head .ic{color:var(--brand-500)}
@@ -406,55 +411,30 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
 </header>
 
 <!-- HERO -->
-<section class="hero">
+<section class="hero section--ink" style="border-bottom: 0;">
+  <div class="hero__bg-img" aria-hidden="true">
+    {% if photos.hero %}
+    <img src="{{ photos.hero }}" alt="An electrician from {{ business_name }} at work" fetchpriority="high" decoding="async">
+    {% else %}
+    <img src="{% static 'previews/electricians/hero.webp' %}" alt="An electrician from {{ business_name }} at work" fetchpriority="high" decoding="async">
+    {% endif %}
+    <div class="hero__overlay"></div>
+  </div>
   <div class="hero__grid" aria-hidden="true"></div>
   <div class="container hero__inner">
     <div>
       <span class="chip chip--live"><span class="dot"></span>{{ trade|capfirst }} · {{ town }}</span>
-      <h1 class="hero__title">{{ hero_headline }}, <span class="hero__title-em">done safely</span>.</h1>
+      <h1 class="hero__title">{{ hero_headline }}, <br><span class="hero__title-em">done safely</span>.</h1>
       <p class="hero__lede">{{ hero_sub }}</p>
       <div class="hero__cta">
-        {% if phone_number %}<a class="btn btn--blue" href="tel:{{ phone_number }}"><svg class="i"><use href="#i-phone"/></svg>{{ phone_number }}</a>{% endif %}
-        <a class="btn btn--outline" href="#contact">Request a free quote <svg class="i"><use href="#i-arrow"/></svg></a>
+        {% if phone_number %}<a class="btn btn--lime" href="tel:{{ phone_number }}"><svg class="i"><use href="#i-phone"/></svg>{{ phone_number }}</a>{% endif %}
+        <a class="btn btn--outline-light" href="#contact">Request a free quote <svg class="i"><use href="#i-arrow"/></svg></a>
       </div>
       <div class="hero__stats">
         <div class="hero__stat"><span class="mono">Rating</span><strong>{{ rating }}★</strong><span class="muted">Homeowner rated</span></div>
         <div class="hero__stat"><span class="mono">Reviews</span><strong>{% if review_count %}{{ review_count }}+{% else %}100s{% endif %}</strong><span class="muted">Jobs completed</span></div>
         <div class="hero__stat"><span class="mono">Experience</span><strong>{% if years_in_business %}{{ years_in_business }} yrs{% else %}Local{% endif %}</strong><span class="muted">{% if years_in_business %}Serving {{ town }}{% else %}To {{ town }}{% endif %}</span></div>
         <div class="hero__stat"><span class="mono">Cover</span><strong>7 days</strong><span class="muted">A week</span></div>
-      </div>
-    </div>
-
-    <!-- SIGNATURE ENGINEERING DRAWING CARD -->
-    <div class="panel">
-      <div class="panel__head">
-        <span class="mono">ELEC / FIELD REPORT</span>
-        <span class="mono">DRG-{{ business_name|first|upper }}01</span>
-      </div>
-      <div class="panel__body">
-        <div class="panel__draw panel__draw--photo">
-          {% if photos.hero %}
-          <img src="{{ photos.hero }}" alt="An electrician from {{ business_name }} at work" fetchpriority="high" decoding="async">
-          {% else %}
-          <img src="{% static 'previews/electricians/hero.webp' %}" alt="An electrician from {{ business_name }} at work" fetchpriority="high" decoding="async">
-          {% endif %}
-          <div class="panel__tag">
-            <span class="mono">LIVE / COVERAGE</span>
-            <span>{{ service_area }}</span>
-          </div>
-        </div>
-        <div class="panel__meta">
-          <div class="panel__row"><span class="mono">Client</span><span class="val">{{ business_name }}</span></div>
-          <div class="panel__row"><span class="mono">Area</span><span class="val">{{ town }}{% if service_area %} · {{ service_area }}{% endif %}</span></div>
-          <div class="panel__row"><span class="mono">Response</span><span class="val">Same-day / 7 days</span></div>
-          <div class="panel__row"><span class="mono">Rating</span><span class="val">{{ rating }}★ · {% if review_count %}{{ review_count }}+ reviews{% else %}100s of reviews{% endif %}</span></div>
-          <div class="panel__row"><span class="mono">Est.</span><span class="val">{% if established_year %}{{ established_year }}{% elif years_in_business %}{{ years_in_business }} yrs ago{% else %}Local &amp; trusted{% endif %}</span></div>
-          <div class="panel__row"><span class="mono">Status</span><span class="val"><span class="panel__live"></span>Accepting new jobs</span></div>
-        </div>
-      </div>
-      <div class="panel__foot">
-        <span class="mono">REV. {{ year }}</span>
-        <span class="mono">{{ tagline }}</span>
       </div>
     </div>
   </div>
@@ -494,6 +474,28 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
     <div class="svc-grid">
       {% for s in services %}
       <div class="svc-cell">
+        <div class="svc-cell__media{% if s.photo %} svc-cell__media--photo{% endif %}">
+          {% if s.photo %}
+          <img src="{{ s.photo }}" alt="{{ s.title }} in {{ town }}" loading="lazy" decoding="async">
+          <span class="veil"></span>
+          {% else %}
+            {% if forloop.counter == 1 %}
+            <img src="{% static 'previews/electricians/work-1.webp' %}" alt="{{ s.title }} in {{ town }}" loading="lazy" decoding="async">
+            <span class="veil"></span>
+            {% elif forloop.counter == 2 %}
+            <img src="{% static 'previews/electricians/work-2.webp' %}" alt="{{ s.title }} in {{ town }}" loading="lazy" decoding="async">
+            <span class="veil"></span>
+            {% elif forloop.counter == 3 %}
+            <img src="{% static 'previews/electricians/work-3.webp' %}" alt="{{ s.title }} in {{ town }}" loading="lazy" decoding="async">
+            <span class="veil"></span>
+            {% elif forloop.counter == 4 %}
+            <img src="{% static 'previews/electricians/work-4.webp' %}" alt="{{ s.title }} in {{ town }}" loading="lazy" decoding="async">
+            <span class="veil"></span>
+            {% else %}
+            <span class="dots"></span>
+            {% endif %}
+          {% endif %}
+        </div>
         <div class="svc-cell__head">
           <span class="code">SVC/{{ forloop.counter|stringformat:"02d" }}</span>
           <span class="ic"><svg class="i"><use href="#i-{{ s.icon }}"/></svg></span>
