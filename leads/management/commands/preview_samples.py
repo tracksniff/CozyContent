@@ -30,14 +30,22 @@ class Command(BaseCommand):
         parser.add_argument(
             "--asset-base",
             default=None,
-            help="Image URL prefix. Defaults to a file:// URL for the local "
+            help="Image URL prefix. Defaults to a relative path to the local "
                  "static dir so samples show their photos when opened directly.",
         )
 
     def handle(self, *args, **opts):
+        import os
+
         out = Path(opts["out"])
         out.mkdir(parents=True, exist_ok=True)
-        asset_base = opts["asset_base"] or (settings.BASE_DIR / "static").as_uri() + "/"
+        
+        if opts["asset_base"]:
+            asset_base = opts["asset_base"]
+        else:
+            static_dir = settings.BASE_DIR / "static"
+            rel_path = os.path.relpath(static_dir, out).replace("\\", "/")
+            asset_base = f"{rel_path}/"
         index_links = []
 
         for category in preview_content.TRADE_CONTENT:
