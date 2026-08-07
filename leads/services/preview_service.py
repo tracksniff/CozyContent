@@ -59,20 +59,25 @@ def _asset_base() -> str:
 def _photos(template: str, services: list[dict], asset_base: str) -> dict:
     """Resolve the template's photo set to URLs.
 
-    Returns ``{"hero": url|"", "gallery": [url, ...]}`` and also hangs each work
-    shot off its matching service as ``s.photo``, so a template can show
-    photography in its service cards, in a gallery band, or both. The shots are
-    generic trade stock, so nothing captions them with a specific service —
-    they're only ever pinned to a service where any shot of the trade fits.
-    Everything degrades to empty for a trade we have no photography for, and
-    every template guards on it.
+    Returns ``{"hero": url|"", "gallery": [url, ...], "extra": {key: url}}`` and
+    also hangs each work shot off its matching service as ``s.photo``, so a
+    template can show photography in its service cards, in a gallery band, or
+    both. ``extra`` carries the one-off shots a single template asks for by name
+    (see ``TRADE_EXTRA_PHOTOS``). The shots are generic trade stock, so nothing
+    captions them with a specific service — they're only ever pinned to a
+    service where any shot of the trade fits. Everything degrades to empty for a
+    trade we have no photography for, and every template guards on it.
     """
     hero, work = preview_content.TRADE_PHOTOS.get(template, ("", ()))
     prefix = f"{asset_base}previews/{template}/"
     gallery = [f"{prefix}{shot}" for shot in work]
     for url, svc in zip(gallery, services):
         svc["photo"] = url
-    return {"hero": f"{prefix}{hero}" if hero else "", "gallery": gallery}
+    extra = {
+        key: f"{prefix}{shot}"
+        for key, shot in preview_content.TRADE_EXTRA_PHOTOS.get(template, {}).items()
+    }
+    return {"hero": f"{prefix}{hero}" if hero else "", "gallery": gallery, "extra": extra}
 
 
 def _coverage_pills(town: str) -> list[str]:

@@ -571,12 +571,13 @@ svg.i{width:1.5em;height:1.5em;stroke:currentColor;stroke-width:1.9;fill:none;st
       <p>A look at the call-outs {{ business_name }} handles across {{ service_area }} — locks, doors and keys, sorted cleanly.</p>
     </div>
     <div class="work-grid">
+      {# Generic trade stock, so straplines describe how we work — not the shot. #}
       {% for shot in photos.gallery %}
       <figure class="work">
         <img src="{{ shot }}" alt="Locksmith work by {{ business_name }}" loading="lazy" decoding="async">
         <figcaption>
           <span class="mono">// {{ forloop.counter|stringformat:"02d" }} · {{ town|upper }}</span>
-          <b>Non-destructive entry, day or night</b>
+          <b>{% cycle 'Non-destructive entry, day or night' 'Usually on site within the hour' 'Insurance-rated locks fitted' 'Locks, doors and keys, sorted' %}</b>
         </figcaption>
       </figure>
       {% endfor %}
