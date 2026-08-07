@@ -517,6 +517,32 @@ footer.site h1,footer.site h2,footer.site h3{color:#f6efe1}
     </div>
   </div>
 </section>
+{% else %}
+<section id="work">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">Recent moves</span>
+        <h2>Days on the road with {{ business_name }}.</h2>
+      </div>
+      <p>A look at the moves we handle across {{ service_area }} — packed, loaded and delivered with the same care every time.</p>
+    </div>
+    <div class="moves">
+      <figure class="move">
+        <img src="{% static 'previews/removal_companies/work-1.webp' %}" alt="A move handled by {{ business_name }}" loading="lazy" decoding="async">
+        <figcaption><span class="numeral">01</span><b>{{ town }} &amp; nearby</b></figcaption>
+      </figure>
+      <figure class="move">
+        <img src="{% static 'previews/removal_companies/work-2.webp' %}" alt="A move handled by {{ business_name }}" loading="lazy" decoding="async">
+        <figcaption><span class="numeral">02</span><b>{{ town }} &amp; nearby</b></figcaption>
+      </figure>
+      <figure class="move">
+        <img src="{% static 'previews/removal_companies/work-3.webp' %}" alt="A move handled by {{ business_name }}" loading="lazy" decoding="async">
+        <figcaption><span class="numeral">03</span><b>{{ town }} &amp; nearby</b></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
 {% endif %}
 
 <!-- TESTIMONIALS -->

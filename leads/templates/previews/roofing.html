@@ -386,7 +386,7 @@ footer.site{background:var(--white);border-top:1px solid var(--border);padding:5
         {% if photos.hero %}
         <img src="{{ photos.hero }}" alt="A roofer from {{ business_name }} at work" fetchpriority="high" decoding="async">
         {% else %}
-        <img src="{% static 'images/roofers/people-renovating-house-concept.jpg' %}" alt="A roofer from {{ business_name }} at work" fetchpriority="high" decoding="async">
+        <img src="{% static 'previews/roofing/hero.webp' %}" alt="A roofer from {{ business_name }} at work" fetchpriority="high" decoding="async">
         {% endif %}
         <span class="glyph"><svg class="i"><use href="#i-home"/></svg></span>
         <span class="veil"></span>
@@ -446,7 +446,17 @@ footer.site{background:var(--white);border-top:1px solid var(--border);padding:5
           {% if s.photo %}
           <img src="{{ s.photo }}" alt="{{ s.title }} in {{ town }}" loading="lazy" decoding="async">
           {% else %}
-          <span class="dots"></span>
+            {% if forloop.counter == 1 %}
+            <img src="{% static 'previews/roofing/work-1.webp' %}" alt="{{ s.title }} in {{ town }}" loading="lazy" decoding="async">
+            {% elif forloop.counter == 2 %}
+            <img src="{% static 'previews/roofing/work-2.webp' %}" alt="{{ s.title }} in {{ town }}" loading="lazy" decoding="async">
+            {% elif forloop.counter == 3 %}
+            <img src="{% static 'previews/roofing/work-3.webp' %}" alt="{{ s.title }} in {{ town }}" loading="lazy" decoding="async">
+            {% elif forloop.counter == 4 %}
+            <img src="{% static 'previews/roofing/work-4.webp' %}" alt="{{ s.title }} in {{ town }}" loading="lazy" decoding="async">
+            {% else %}
+            <span class="dots"></span>
+            {% endif %}
           {% endif %}
           <span class="veil"></span>
           <span class="svc-icon"><svg class="i"><use href="#i-{{ s.icon }}"/></svg></span>
