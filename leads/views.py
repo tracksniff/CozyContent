@@ -44,3 +44,49 @@ def preview_detail(request, slug):
     resp["X-Robots-Tag"] = "noindex, nofollow, noarchive"
     resp["Cache-Control"] = "public, max-age=300"
     return resp
+
+
+@require_GET
+def preview_samples_index(request):
+    from django.conf import settings
+    if not settings.DEBUG:
+        return HttpResponseNotFound()
+        
+    from .preview_content import TRADE_CONTENT
+    links = [f'<li><a href="{cat}/">{cat}</a></li>' for cat in TRADE_CONTENT]
+    html = f"<h1>Preview samples</h1><ul>{''.join(links)}</ul>"
+    return HttpResponse(html)
+
+
+@require_GET
+def preview_sample(request, category):
+    from django.conf import settings
+    if not settings.DEBUG:
+        return HttpResponseNotFound()
+        
+    from types import SimpleNamespace
+    from django.template.loader import render_to_string
+    from . import preview_content
+    from .services.preview_service import _build_context
+    
+    if category not in preview_content.TRADE_CONTENT:
+        return HttpResponseNotFound("Category not found")
+        
+    primary, accent = preview_content.default_palette(category)
+    colors = SimpleNamespace(primary=primary, accent=accent, source="sample")
+    biz = SimpleNamespace(
+        name=f"Luton {preview_content.trade_noun(category).title()}s",
+        phone="01582 123 456",
+        location="Luton",
+        category=category,
+        rating=4.9,
+        reviews=137,
+        website="",
+    )
+    
+    # Let _build_context use _asset_base() which uses the correct STATIC_URL
+    ctx = _build_context(biz, colors, f"sample-{category}")
+    template = preview_content.content_for(category)["template"]
+    html = render_to_string(f"previews/{template}.html", ctx)
+    
+    return HttpResponse(html)
