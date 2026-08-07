@@ -84,8 +84,8 @@ def preview_sample(request, category):
         website="",
     )
     
-    # Let _build_context use _asset_base() which uses the correct STATIC_URL
-    ctx = _build_context(biz, colors, f"sample-{category}")
+    # Let _build_context use the local static path so un-deployed images load
+    ctx = _build_context(biz, colors, f"sample-{category}", asset_base="/static/")
     template = preview_content.content_for(category)["template"]
     html = render_to_string(f"previews/{template}.html", ctx)
     

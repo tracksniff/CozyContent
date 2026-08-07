@@ -45,10 +45,18 @@ TRADE_PHOTOS = {
     "plumbing": ("hero.webp", ("work-1.webp", "work-2.webp", "work-3.webp", "work-4.webp")),
     "electricians": ("hero.webp", ("work-1.webp", "work-2.webp", "work-3.webp", "work-4.webp")),
     "roofing": ("hero.webp", ("work-1.webp", "work-2.webp", "work-3.webp", "work-4.webp")),
-    "locksmiths": ("hero.webp", ("work-1.webp", "work-2.webp")),
+    "locksmiths": ("hero.webp", ("work-1.webp", "work-2.webp", "work-3.webp", "work-4.webp")),
     "cleaners": ("hero.webp", ("work-1.webp", "work-2.webp", "work-3.webp")),
-    # No removals photography yet — this template stays illustration-only.
-    "removal_companies": ("", ()),
+    "removal_companies": ("hero.webp", ("work-1.webp", "work-2.webp", "work-3.webp", "work-4.webp")),
+}
+
+# One-off shots a template needs beyond hero/work, keyed by the name the
+# template reads them under (``photos.extra.<key>``). Kept separate from
+# TRADE_PHOTOS so the hero/work contract stays a plain two-tuple.
+TRADE_EXTRA_PHOTOS = {
+    # Roofing spends its work shots on service cards, so its "why us" split
+    # panel needs a photo of its own — without one it renders a bare block.
+    "roofing": {"why": "why.webp"},
 }
 
 # Rich per-trade copy. ``icon`` keys map to inline SVGs defined in base.html.
