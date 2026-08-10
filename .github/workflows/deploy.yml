@@ -27,6 +27,6 @@ jobs:
             docker image prune -f
             
             # Generate HTML preview samples
-            docker exec cosycontent-django python manage.py preview_samples --out media/_samples
-            
+            docker exec -it cosycontent_django python manage.py preview_samples --out media/_samples 
+
             echo "Backend deployed successfully!"
