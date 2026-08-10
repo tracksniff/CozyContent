@@ -349,7 +349,7 @@ footer.site .blob-f{top:-120px;left:35%;width:300px;height:300px;background:var(
       <a href="#faq">FAQ</a>
     </nav>
     <a class="btn btn--brand btn--sm nav-cta" href="{% if phone_number %}tel:{{ phone_number }}{% else %}#contact{% endif %}">
-      {% if phone_number %}<svg class="i"><use href="#i-phone"/></svg>Call now{% else %}Get a quote{% endif %}
+      {% if phone_number %}<svg class="i" viewBox="0 0 24 24"><use href="#i-phone"/></svg>Call now{% else %}Get a quote{% endif %}
     </a>
   </div>
 </header>
@@ -365,8 +365,8 @@ footer.site .blob-f{top:-120px;left:35%;width:300px;height:300px;background:var(
       <h1>{{ hero_headline }} <span class="serif-em">beautifully</span> clean.</h1>
       <p class="lede">{{ hero_sub }}</p>
       <div class="hero-cta">
-        {% if phone_number %}<a class="btn btn--brand" href="tel:{{ phone_number }}"><svg class="i"><use href="#i-phone"/></svg>{{ phone_number }}</a>{% endif %}
-        <a class="btn btn--outline" href="#contact">Free quote <svg class="i"><use href="#i-arrow"/></svg></a>
+        {% if phone_number %}<a class="btn btn--brand" href="tel:{{ phone_number }}"><svg class="i" viewBox="0 0 24 24"><use href="#i-phone"/></svg>{{ phone_number }}</a>{% endif %}
+        <a class="btn btn--outline" href="#contact">Free quote <svg class="i" viewBox="0 0 24 24"><use href="#i-arrow"/></svg></a>
       </div>
       <div class="hero-trust">
         <div class="ht-item"><span class="ht-num">{{ rating }}★</span><span>Client rated</span></div>
@@ -386,15 +386,15 @@ footer.site .blob-f{top:-120px;left:35%;width:300px;height:300px;background:var(
         <span class="word">Spotless, every time</span>
       </div>
       <div class="sticker sticker-top">
-        <span class="sticker-ic"><svg class="i"><use href="#i-shield"/></svg></span>
+        <span class="sticker-ic"><svg class="i" viewBox="0 0 24 24"><use href="#i-shield"/></svg></span>
         <span><strong>Vetted &amp; insured</strong><span>{% if accreditations %}{{ accreditations.0 }}{% else %}Fully covered team{% endif %}</span></span>
       </div>
       <div class="sticker sticker-bot">
-        <span class="sticker-ic sticker-ic--accent"><svg class="i"><use href="#i-sparkle"/></svg></span>
+        <span class="sticker-ic sticker-ic--accent"><svg class="i" viewBox="0 0 24 24"><use href="#i-sparkle"/></svg></span>
         <span><strong>{{ rating }}★ rated</strong><span>{% if review_count %}{{ review_count }}+ reviews{% else %}Loved locally{% endif %}</span></span>
       </div>
       <a class="chat-sticker" href="{% if phone_number %}tel:{{ phone_number }}{% else %}#contact{% endif %}">
-        <svg class="i"><use href="#i-phone"/></svg>
+        <svg class="i" viewBox="0 0 24 24"><use href="#i-phone"/></svg>
         <span><strong>Book a clean</strong></span>
       </a>
     </div>
@@ -406,14 +406,14 @@ footer.site .blob-f{top:-120px;left:35%;width:300px;height:300px;background:var(
   <div class="wrap acc-row">
     {% if accreditations %}
       {% for a in accreditations %}
-      <span class="acc-pill"><span class="ai"><svg class="i"><use href="#i-award"/></svg></span>{{ a }}</span>
+      <span class="acc-pill"><span class="ai"><svg class="i" viewBox="0 0 24 24"><use href="#i-award"/></svg></span>{{ a }}</span>
       {% endfor %}
     {% else %}
-      <span class="acc-pill"><span class="ai"><svg class="i"><use href="#i-shield"/></svg></span>Vetted &amp; insured</span>
-      <span class="acc-pill"><span class="ai"><svg class="i"><use href="#i-thumb"/></svg></span>Satisfaction guaranteed</span>
-      <span class="acc-pill"><span class="ai"><svg class="i"><use href="#i-star"/></svg></span>{{ rating }}★ rated</span>
-      <span class="acc-pill"><span class="ai"><svg class="i"><use href="#i-pin"/></svg></span>Local to {{ town }}</span>
-      <span class="acc-pill"><span class="ai"><svg class="i"><use href="#i-clock"/></svg></span>Flexible bookings</span>
+      <span class="acc-pill"><span class="ai"><svg class="i" viewBox="0 0 24 24"><use href="#i-shield"/></svg></span>Vetted &amp; insured</span>
+      <span class="acc-pill"><span class="ai"><svg class="i" viewBox="0 0 24 24"><use href="#i-thumb"/></svg></span>Satisfaction guaranteed</span>
+      <span class="acc-pill"><span class="ai"><svg class="i" viewBox="0 0 24 24"><use href="#i-star"/></svg></span>{{ rating }}★ rated</span>
+      <span class="acc-pill"><span class="ai"><svg class="i" viewBox="0 0 24 24"><use href="#i-pin"/></svg></span>Local to {{ town }}</span>
+      <span class="acc-pill"><span class="ai"><svg class="i" viewBox="0 0 24 24"><use href="#i-clock"/></svg></span>Flexible bookings</span>
     {% endif %}
   </div>
 </div>
@@ -429,10 +429,10 @@ footer.site .blob-f{top:-120px;left:35%;width:300px;height:300px;background:var(
     <div class="svc-grid">
       {% for s in services %}
       <article class="svc">
-        <span class="svc-ic"><svg class="i"><use href="#i-{{ s.icon }}"/></svg></span>
+        <span class="svc-ic"><svg class="i" viewBox="0 0 24 24"><use href="#i-{{ s.icon }}"/></svg></span>
         <h3>{{ s.title }}</h3>
         <p>{{ s.desc }}</p>
-        <span class="more">Learn more <svg class="i"><use href="#i-arrow"/></svg></span>
+        <span class="more">Learn more <svg class="i" viewBox="0 0 24 24"><use href="#i-arrow"/></svg></span>
       </article>
       {% endfor %}
     </div>
@@ -450,13 +450,13 @@ footer.site .blob-f{top:-120px;left:35%;width:300px;height:300px;background:var(
     <div class="promises">
       {% for u in usps %}
       <article class="promise">
-        <span class="pic"><svg class="i"><use href="#i-check"/></svg></span>
+        <span class="pic"><svg class="i" viewBox="0 0 24 24"><use href="#i-check"/></svg></span>
         <h3>{{ u }}</h3>
         <p>Every visit across {{ service_area }}, done the way it should be — thorough, on time and fully guaranteed.</p>
       </article>
       {% endfor %}
       <article class="promise">
-        <span class="pic"><svg class="i"><use href="#i-award"/></svg></span>
+        <span class="pic"><svg class="i" viewBox="0 0 24 24"><use href="#i-award"/></svg></span>
         <h3>{% if established_year %}Established {{ established_year }}{% else %}Proudly local{% endif %}</h3>
         <p>{% if years_in_business %}{{ years_in_business }} years serving {{ town }} and its neighbours.{% else %}A genuinely local {{ trade }} covering {{ service_area }}.{% endif %}</p>
       </article>
@@ -480,7 +480,7 @@ footer.site .blob-f{top:-120px;left:35%;width:300px;height:300px;background:var(
     </div>
     <div class="steps-cta">
       <a class="btn btn--accent" href="{% if phone_number %}tel:{{ phone_number }}{% else %}#contact{% endif %}">
-        {% if phone_number %}<svg class="i"><use href="#i-phone"/></svg>Book your clean{% else %}Book your clean <svg class="i"><use href="#i-arrow"/></svg>{% endif %}
+        {% if phone_number %}<svg class="i" viewBox="0 0 24 24"><use href="#i-phone"/></svg>Book your clean{% else %}Book your clean <svg class="i" viewBox="0 0 24 24"><use href="#i-arrow"/></svg>{% endif %}
       </a>
     </div>
   </div>
@@ -580,7 +580,7 @@ footer.site .blob-f{top:-120px;left:35%;width:300px;height:300px;background:var(
     <div class="faq">
       {% for f in faqs %}
       <details{% if forloop.first %} open{% endif %}>
-        <summary>{{ f.q }}<span class="pm"><svg class="i"><use href="#i-check"/></svg></span></summary>
+        <summary>{{ f.q }}<span class="pm"><svg class="i" viewBox="0 0 24 24"><use href="#i-check"/></svg></span></summary>
         <div class="ans">{{ f.a }}</div>
       </details>
       {% endfor %}
@@ -597,8 +597,8 @@ footer.site .blob-f{top:-120px;left:35%;width:300px;height:300px;background:var(
     <h2>Want a spotless space in {{ town }}? <span class="serif-em">Let's book it.</span></h2>
     <p>Covering {{ service_area }} with upfront pricing and a satisfaction guarantee{% if established_year %} since {{ established_year }}{% elif years_in_business %} for {{ years_in_business }} years{% endif %}.</p>
     <div class="cta-btns">
-      {% if phone_number %}<a class="btn btn--brand" href="tel:{{ phone_number }}"><svg class="i"><use href="#i-phone"/></svg>{{ phone_number }}</a>{% endif %}
-      <a class="btn btn--ghost" href="#top">Request a free quote <svg class="i"><use href="#i-arrow"/></svg></a>
+      {% if phone_number %}<a class="btn btn--brand" href="tel:{{ phone_number }}"><svg class="i" viewBox="0 0 24 24"><use href="#i-phone"/></svg>{{ phone_number }}</a>{% endif %}
+      <a class="btn btn--ghost" href="#top">Request a free quote <svg class="i" viewBox="0 0 24 24"><use href="#i-arrow"/></svg></a>
     </div>
   </div>
 </section>
@@ -639,7 +639,7 @@ footer.site .blob-f{top:-120px;left:35%;width:300px;height:300px;background:var(
 <div class="offer-bar">
   <div class="inner">
     <div class="msg"><span class="lbl">Preview</span><span class="txt">We built this preview for {{ business_name }} — make it yours.</span></div>
-    <a class="btn btn--accent btn--sm" href="{{ cta_url }}" rel="nofollow">Get This Website <svg class="i"><use href="#i-arrow"/></svg></a>
+    <a class="btn btn--accent btn--sm" href="{{ cta_url }}" rel="nofollow">Get This Website <svg class="i" viewBox="0 0 24 24"><use href="#i-arrow"/></svg></a>
   </div>
 </div>
 
