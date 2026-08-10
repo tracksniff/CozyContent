@@ -180,6 +180,7 @@ header.site{position:sticky;top:0;z-index:50;background:var(--paper);border-bott
 /* Services — bold poster colour blocks */
 .svc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
 @media(min-width:1000px){.svc-grid{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:640px){.svc-grid{grid-template-columns:1fr}}
 .svc{display:flex;flex-direction:column;border:2px solid var(--ink-900);padding:26px 24px 22px;
   box-shadow:var(--shadow);transition:transform var(--t-fast),box-shadow var(--t);min-height:230px}
 .svc:hover{transform:translate(-3px,-3px);box-shadow:6px 6px 0 var(--ink-900)}
