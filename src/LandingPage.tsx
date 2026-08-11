@@ -1,4 +1,4 @@
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import {
   ShieldCheck,
   Zap,
@@ -52,26 +52,26 @@ const MousePerspective = ({ children, className }: { children: React.ReactNode, 
   );
 };
 
-const PORTFOLIO_IMAGES = [
+const DEMO_SITES = [
   {
-    url: "https://images.pexels.com/photos/1779487/pexels-photo-1779487.jpeg",
-    title: "Responsive Business Suite",
-    tag: "Clean Architecture"
+    url: "https://ecoflow-plumbing.vercel.app/",
+    title: "EcoFlow Plumbing",
+    tag: "Plumbing"
   },
   {
-    url: "https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg",
-    title: "Strategic Lead Dashboard",
-    tag: "High Conversion"
+    url: "https://voltsafe-solutions.vercel.app/",
+    title: "VoltSafe Solutions",
+    tag: "Electrical"
   },
   {
-    url: "https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg",
-    title: "Modern Trade Concept",
-    tag: "Modern Aesthetic"
+    url: "https://skyguard-roofing.vercel.app/",
+    title: "SkyGuard Roofing",
+    tag: "Roofing"
   },
   {
-    url: "https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg",
-    title: "Managed Service Platform",
-    tag: "Lightning Speed"
+    url: "https://sparkle-and-shine-co.vercel.app/",
+    title: "Sparkle & Shine Co",
+    tag: "Cleaning"
   }
 ];
 
@@ -80,43 +80,48 @@ const PortfolioSlider = () => {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setIndex((prev) => (prev + 1) % PORTFOLIO_IMAGES.length);
+      setIndex((prev) => (prev + 1) % DEMO_SITES.length);
     }, 5000);
     return () => clearInterval(timer);
   }, []);
 
   return (
-    <div className="relative w-full aspect-video rounded-[2.5rem] overflow-hidden shadow-2xl">
-      <AnimatePresence mode="wait">
+    <div className="relative w-full aspect-video rounded-[2.5rem] overflow-hidden shadow-2xl bg-surface-container">
+      {DEMO_SITES.map((site, i) => (
         <motion.div
-          key={index}
-          initial={{ opacity: 0, scale: 1.05 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
+          key={i}
+          initial={false}
+          animate={{ 
+            opacity: i === index ? 1 : 0, 
+            scale: i === index ? 1 : 1.05,
+            zIndex: i === index ? 10 : 0
+          }}
           transition={{ duration: 1, ease: [0.4, 0, 0.2, 1] }}
-          className="absolute inset-0"
+          className="absolute inset-0 pointer-events-none"
         >
-          <img
-            src={PORTFOLIO_IMAGES[index].url}
-            alt={PORTFOLIO_IMAGES[index].title}
-            className="w-full h-full object-cover shadow-2xl"
+          <iframe
+            src={site.url}
+            title={site.title}
+            className="w-full h-full border-0"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
 
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
+            animate={{ 
+              opacity: i === index ? 1 : 0, 
+              y: i === index ? 0 : 10 
+            }}
+            transition={{ delay: i === index ? 0.5 : 0 }}
             className="absolute bottom-10 left-10 text-left"
           >
-            <span className="text-[10px] font-black tracking-widest uppercase text-white/70 mb-2 block">{PORTFOLIO_IMAGES[index].tag}</span>
-            <h4 className="text-xl font-bold text-white tracking-tight">{PORTFOLIO_IMAGES[index].title}</h4>
+            <span className="text-[10px] font-black tracking-widest uppercase text-white/70 mb-2 block">{site.tag}</span>
+            <h4 className="text-xl font-bold text-white tracking-tight">{site.title}</h4>
           </motion.div>
         </motion.div>
-      </AnimatePresence>
+      ))}
 
       <div className="absolute bottom-10 right-10 flex gap-2 z-30">
-        {PORTFOLIO_IMAGES.map((_, i) => (
+        {DEMO_SITES.map((_, i) => (
           <button
             key={i}
             onClick={() => setIndex(i)}
