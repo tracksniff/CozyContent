@@ -6,6 +6,20 @@ from django.utils.html import format_html
 from .models import Business, OutreachQueue, WebsitePreview
 from .tasks import scrape_all_businesses, audit_website_batch
 
+class OutdatedScoreFilter(admin.SimpleListFilter):
+    title = 'Outdated Score (13+)'
+    parameter_name = 'outdated_score_13_plus'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('yes', '13 and above'),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'yes':
+            return queryset.filter(outdated_score__gte=13)
+        return queryset
+
 
 @admin.register(Business)
 class BusinessAdmin(admin.ModelAdmin):
@@ -31,6 +45,7 @@ class BusinessAdmin(admin.ModelAdmin):
         "outdated_priority",
         "is_outdated",
         "source",
+        OutdatedScoreFilter,
     )
     search_fields = ("name", "phone", "email", "website", "address")
     readonly_fields = ("created_at", "updated_at", "google_id", "last_audited_at")
