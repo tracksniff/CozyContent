@@ -86,7 +86,7 @@ const PortfolioSlider = () => {
   }, []);
 
   return (
-    <div className="relative w-full aspect-video rounded-[2.5rem] overflow-hidden shadow-2xl bg-surface-container">
+    <div className="relative w-full aspect-[4/5] sm:aspect-video rounded-3xl sm:rounded-[2.5rem] overflow-hidden shadow-2xl bg-surface-container">
       {DEMO_SITES.map((site, i) => (
         <motion.div
           key={i}
@@ -104,7 +104,7 @@ const PortfolioSlider = () => {
             title={site.title}
             className="w-full h-full border-0"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 sm:from-black/60 via-transparent to-transparent"></div>
 
           <motion.div
             animate={{ 
@@ -112,20 +112,20 @@ const PortfolioSlider = () => {
               y: i === index ? 0 : 10 
             }}
             transition={{ delay: i === index ? 0.5 : 0 }}
-            className="absolute bottom-10 left-10 text-left"
+            className="absolute bottom-6 left-6 sm:bottom-10 sm:left-10 text-left z-20"
           >
-            <span className="text-[10px] font-black tracking-widest uppercase text-white/70 mb-2 block">{site.tag}</span>
-            <h4 className="text-xl font-bold text-white tracking-tight">{site.title}</h4>
+            <span className="text-[10px] font-black tracking-widest uppercase text-white/70 mb-1 sm:mb-2 block">{site.tag}</span>
+            <h4 className="text-lg sm:text-xl font-bold text-white tracking-tight">{site.title}</h4>
           </motion.div>
         </motion.div>
       ))}
 
-      <div className="absolute bottom-10 right-10 flex gap-2 z-30">
+      <div className="absolute bottom-6 right-6 sm:bottom-10 sm:right-10 flex gap-1.5 sm:gap-2 z-30">
         {DEMO_SITES.map((_, i) => (
           <button
             key={i}
             onClick={() => setIndex(i)}
-            className={`h-1 transition-all duration-500 rounded-full ${i === index ? 'w-8 bg-primary' : 'w-2 bg-white/30 hover:bg-white/50'}`}
+            className={`h-1 transition-all duration-500 rounded-full ${i === index ? 'w-6 sm:w-8 bg-primary' : 'w-1.5 sm:w-2 bg-white/30 hover:bg-white/50'}`}
           />
         ))}
       </div>
@@ -214,8 +214,8 @@ const LandingPage = () => {
             </motion.div>
           </div>
 
-          <MousePerspective className="mt-20 md:mt-24 relative max-w-5xl mx-auto group">
-            <div className="relative z-10 rounded-[2.5rem] overflow-hidden shadow-4xl dark:shadow-primary/10 border border-outline-variant/30 p-2 bg-surface-container-low/30 backdrop-blur-md transition-all duration-700 group-hover:scale-[1.02] group-hover:border-primary/40">
+          <MousePerspective className="mt-12 sm:mt-20 md:mt-24 relative max-w-5xl mx-auto group px-2 sm:px-0">
+            <div className="relative z-10 rounded-3xl sm:rounded-[2.5rem] overflow-hidden shadow-4xl dark:shadow-primary/10 border border-outline-variant/30 p-1 sm:p-2 bg-surface-container-low/30 backdrop-blur-md transition-all duration-700 sm:group-hover:scale-[1.02] group-hover:border-primary/40">
               <PortfolioSlider />
             </div>
           </MousePerspective>
@@ -319,28 +319,7 @@ const LandingPage = () => {
             </div>
           </motion.div>
 
-          <div className="lg:w-1/2 grid grid-cols-2 gap-6 md:gap-8">
-            <div className="space-y-6 md:space-y-8">
-              <div className="p-4 md:p-6 bg-surface-container-low rounded-3xl border border-outline-variant/20 grayscale opacity-40 dark:opacity-20 shadow-xl">
-                <div className="text-[10px] font-black tracking-widest mb-4 opacity-40 uppercase">Outdated Site</div>
-                <img
-                  className="rounded-2xl w-full aspect-[3/4] object-cover"
-                  alt="Old design"
-                  src="https://images.pexels.com/photos/163032/pexels-photo-163032.jpeg"
-                />
-              </div>
-            </div>
-            <div className="space-y-6 md:space-y-8 mt-12 md:mt-20">
-              <MousePerspective className="p-4 md:p-6 bg-primary/5 rounded-3xl border border-primary/20 shadow-4xl shadow-primary/10">
-                <div className="text-[10px] font-black tracking-widest mb-4 text-primary uppercase">Modern (Redesigned)</div>
-                <img
-                  className="rounded-2xl w-full aspect-[3/4] object-cover"
-                  alt="Modern design"
-                  src="https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg"
-                />
-              </MousePerspective>
-            </div>
-          </div>
+
         </div>
       </section>
 
