@@ -32,18 +32,24 @@ import {
 import Sidebar from './Sidebar';
 import toast from 'react-hot-toast';
 
-const funMessages = [
+const monthlyMessages = [
+  "Resolve Old URLs",
+  "Verify Site Structure for Crawling & Indexing",
+  "Speed & Stability Standards",
+  "Design & Mobile Testing",
+  "Contact Forms & Email Functionality",
+  "Google Business Profile Setup",
+  "Website Analytics Setup",
+  "Content Review",
+  "Website Security",
+  "Final Checks",
+];
 
-  "Consulting our system...",
-  "Polishing the Pixels...",
-  "Brewing Digital Coffee...",
-  "Assembling the React Components...",
-  "Optimizing for maximum Cozyness...",
-  "Building your custom brand...",
-  "Constructing the Virtual Foundation...",
-  "Sprinkling some CSS Magic...",
-  "Synchronizing with the Matrix...",
-  "Fine-tuning the User Experience...",
+const oneOffMessages = [
+  "Content & Copy",
+  "On-Page SEO",
+  "Design & Mobile Testing",
+  "Files & Delivery",
 ];
 
 const TIMELINE_STEPS = [
@@ -493,7 +499,7 @@ const Dashboard: React.FC = () => {
   }, [token, authLoading]);
 
   useEffect(() => {
-    const id = setInterval(() => setCurrentMessageIndex((p) => (p + 1) % funMessages.length), 3000);
+    const id = setInterval(() => setCurrentMessageIndex((p) => p + 1), 3000);
     return () => clearInterval(id);
   }, []);
 
@@ -693,7 +699,10 @@ const Dashboard: React.FC = () => {
                     </h2>
                     <p className="text-[11px] font-black uppercase tracking-widest text-on-surface-variant flex items-center justify-center sm:justify-start gap-1.5 mb-4">
                       <Cpu size={11} className="text-primary animate-pulse" />
-                      {funMessages[currentMessageIndex]}
+                      {(() => {
+                        const messages = processingApps[0].plan_type === "one_time" ? oneOffMessages : monthlyMessages;
+                        return messages[currentMessageIndex % messages.length];
+                      })()}
                     </p>
                     <div className="w-full max-w-sm mx-auto sm:mx-0">
                       <div className="flex justify-between mb-1.5">
