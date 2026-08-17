@@ -32,33 +32,28 @@ import {
 import Sidebar from './Sidebar';
 import toast from 'react-hot-toast';
 
-const monthlyMessages = [
-  "Resolve Old URLs",
-  "Verify Site Structure for Crawling & Indexing",
-  "Speed & Stability Standards",
-  "Design & Mobile Testing",
-  "Contact Forms & Email Functionality",
-  "Google Business Profile Setup",
-  "Website Analytics Setup",
-  "Content Review",
-  "Website Security",
-  "Final Checks",
+const MONTHLY_TIMELINE_STEPS = [
+  { label: "Resolve Old URLs", target: 0, desc: "Updating link structures." },
+  { label: "Verify Site Structure for Crawling & Indexing", target: 10, desc: "Optimizing for search engines." },
+  { label: "Speed & Stability Standards", target: 20, desc: "Performance optimizations." },
+  { label: "Design & Mobile Testing", target: 30, desc: "Responsive design checks." },
+  { label: "Contact Forms & Email Functionality", target: 40, desc: "Testing communications." },
+  { label: "Google Business Profile Setup", target: 50, desc: "Setting up local SEO." },
+  { label: "Website Analytics Setup", target: 60, desc: "Configuring tracking tools." },
+  { label: "Content Review", target: 70, desc: "Finalizing copy and assets." },
+  { label: "Website Security", target: 85, desc: "Security and hardening." },
+  { label: "Final Checks", target: 100, desc: "Ready for launch." },
 ];
 
-const oneOffMessages = [
-  "Content & Copy",
-  "On-Page SEO",
-  "Design & Mobile Testing",
-  "Files & Delivery",
+const ONE_OFF_TIMELINE_STEPS = [
+  { label: "Content & Copy", target: 0, desc: "Writing and reviewing content." },
+  { label: "On-Page SEO", target: 30, desc: "Optimizing for search." },
+  { label: "Design & Mobile Testing", target: 60, desc: "Ensuring responsive layout." },
+  { label: "Files & Delivery", target: 100, desc: "Final project handover." },
 ];
 
-const TIMELINE_STEPS = [
-  { label: "Project Confirmed", target: 0, desc: "Details received, build started." },
-  { label: "Design & Build", target: 20, desc: "Your website is being created." },
-  { label: "Quality Check", target: 60, desc: "Testing speed, mobile & UX." },
-  { label: "Final Review", target: 80, desc: "Ready for your approval & tweaks." },
-  { label: "Live!", target: 100, desc: "Your site is live for customers." },
-];
+const monthlyMessages = MONTHLY_TIMELINE_STEPS.map(s => s.label);
+const oneOffMessages = ONE_OFF_TIMELINE_STEPS.map(s => s.label);
 
 /* ─── Reusable sub-components ─────────────────────────────────── */
 
@@ -855,12 +850,14 @@ const Dashboard: React.FC = () => {
                       </span>
                     </div>
                     <div className="space-y-1">
-                      {TIMELINE_STEPS.map((step, idx) => {
-                        const isDone = app.progress >= step.target;
-                        const isCurrent =
-                          isDone &&
-                          (idx === TIMELINE_STEPS.length - 1 ||
-                            app.progress < TIMELINE_STEPS[idx + 1].target);
+                      {(() => {
+                        const timelineSteps = app.plan_type === "one_time" ? ONE_OFF_TIMELINE_STEPS : MONTHLY_TIMELINE_STEPS;
+                        return timelineSteps.map((step, idx) => {
+                          const isDone = app.progress >= step.target;
+                          const isCurrent =
+                            isDone &&
+                            (idx === timelineSteps.length - 1 ||
+                              app.progress < timelineSteps[idx + 1].target);
                         return (
                           <div
                             key={idx}
@@ -885,7 +882,7 @@ const Dashboard: React.FC = () => {
                             </div>
                           </div>
                         );
-                      })}
+                      })})()}
                     </div>
                   </div>
 
