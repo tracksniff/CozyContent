@@ -7,17 +7,18 @@ from .models import Business, OutreachQueue, WebsitePreview
 from .tasks import scrape_all_businesses, audit_website_batch
 
 class OutdatedScoreFilter(admin.SimpleListFilter):
-    title = 'Outdated Score (13+)'
+    title = 'Outdated Score (13+) or No Website'
     parameter_name = 'outdated_score_13_plus'
 
     def lookups(self, request, model_admin):
         return (
-            ('yes', '13 and above'),
+            ('yes', '13+ or No Website'),
         )
 
     def queryset(self, request, queryset):
         if self.value() == 'yes':
-            return queryset.filter(outdated_score__gte=13)
+            from django.db.models import Q
+            return queryset.filter(Q(outdated_score__gte=13) | Q(has_website=False))
         return queryset
 
 
