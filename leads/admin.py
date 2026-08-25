@@ -22,6 +22,41 @@ class OutdatedScoreFilter(admin.SimpleListFilter):
         return queryset
 
 
+class ContactInfoFilter(admin.SimpleListFilter):
+    title = 'Contact Info'
+    parameter_name = 'contact_info'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('has_email', 'Has Email'),
+            ('no_email', 'No Email'),
+            ('email_and_phone', 'Email and Phone'),
+            ('phone_only', 'Phone Only'),
+            ('none', 'None'),
+        )
+
+    def queryset(self, request, queryset):
+        from django.db.models import Q
+        
+        has_email_q = Q(email__isnull=False) & ~Q(email__exact='')
+        no_email_q = Q(email__isnull=True) | Q(email__exact='')
+        
+        has_phone_q = Q(phone__isnull=False) & ~Q(phone__exact='')
+        no_phone_q = Q(phone__isnull=True) | Q(phone__exact='')
+
+        if self.value() == 'has_email':
+            return queryset.filter(has_email_q)
+        elif self.value() == 'no_email':
+            return queryset.filter(no_email_q)
+        elif self.value() == 'email_and_phone':
+            return queryset.filter(has_email_q & has_phone_q)
+        elif self.value() == 'phone_only':
+            return queryset.filter(no_email_q & has_phone_q)
+        elif self.value() == 'none':
+            return queryset.filter(no_email_q & no_phone_q)
+        return queryset
+
+
 @admin.register(Business)
 class BusinessAdmin(admin.ModelAdmin):
     list_display = (
@@ -47,6 +82,7 @@ class BusinessAdmin(admin.ModelAdmin):
         "is_outdated",
         "source",
         OutdatedScoreFilter,
+        ContactInfoFilter,
     )
     search_fields = ("name", "phone", "email", "website", "address")
     readonly_fields = ("created_at", "updated_at", "google_id", "last_audited_at")
