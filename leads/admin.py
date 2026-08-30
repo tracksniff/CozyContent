@@ -90,6 +90,7 @@ class BusinessAdmin(admin.ModelAdmin):
     actions = [
         "trigger_scrape", "trigger_audit", "audit_selected",
         "generate_previews", "backfill_previews", "delete_no_website",
+        "delete_no_contact_info",
     ]
 
     @admin.action(description="Generate website previews for selected")
@@ -111,6 +112,16 @@ class BusinessAdmin(admin.ModelAdmin):
     def delete_no_website(self, request, queryset):
         deleted_count, _ = Business.objects.filter(has_website=False).delete()
         self.message_user(request, f"Successfully deleted {deleted_count} businesses without websites.", messages.SUCCESS)
+
+    @admin.action(description="Delete ALL businesses with no email, website, and phone")
+    def delete_no_contact_info(self, request, queryset):
+        from django.db.models import Q
+        deleted_count, _ = Business.objects.filter(
+            Q(email__isnull=True) | Q(email__exact=''),
+            Q(phone__isnull=True) | Q(phone__exact=''),
+            has_website=False
+        ).delete()
+        self.message_user(request, f"Successfully deleted {deleted_count} businesses with no email, website, and phone.", messages.SUCCESS)
 
     @admin.action(description="Audit selected businesses (PageSpeed + Scoring)")
     def audit_selected(self, request, queryset):
