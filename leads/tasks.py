@@ -17,7 +17,7 @@ from .services.preview_service import build_preview
 from .services.outscraper_service import search
 from .services.pagespeed_service import score as pagespeed_score
 from .services.scoring_service import calculate_outdated_score
-from .services.brevo_service import send_outreach_email
+from .services.instantly_service import add_lead_to_campaign
 
 logger = logging.getLogger(__name__)
 
@@ -295,7 +295,7 @@ def _audit_one(business: Business, threshold: int, stats: dict) -> None:
 
 @shared_task(name="leads.process_outreach_queue")
 def process_outreach_queue() -> dict:
-    """Send queued outreach emails via Brevo — gated and rate-limited.
+    """Send queued outreach emails via Instantly API — gated and rate-limited.
 
     Two safety controls:
       * OUTREACH_ENABLED master switch (default False). While off, this task is
@@ -338,7 +338,7 @@ def process_outreach_queue() -> dict:
         entry.status = OutreachQueue.STATUS_SENDING
         entry.save()
 
-        success = send_outreach_email(business)
+        success = add_lead_to_campaign(business)
         if success:
             entry.status = OutreachQueue.STATUS_SENT
             entry.sent_at = timezone.now()
@@ -347,7 +347,7 @@ def process_outreach_queue() -> dict:
         else:
             entry.status = OutreachQueue.STATUS_FAILED
             entry.attempts += 1
-            entry.last_error = "Brevo API error"
+            entry.last_error = "Instantly API error"
             entry.save()
             stats["failed"] += 1
 
